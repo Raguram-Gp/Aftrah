@@ -1,0 +1,296 @@
+---
+// Section 02 / Portfolio — Project Showcase with Likova Architecture Imagery
+const projects = [
+  {
+    id: 'zenith',
+    category: 'commercial',
+    name: 'The Zenith Landmark',
+    type: 'Commercial High-Rise / London',
+    gia: 'GIA: 1.2M SQ FT',
+    year: '2024 COMPLETION',
+    image: '/images/likova/architecture-1.webp',
+    alt: 'The Zenith Landmark, futuristic glass skyscraper with diagrid exoskeleton',
+    offset: false,
+  },
+  {
+    id: 'likova-tower',
+    category: 'commercial',
+    name: 'Likova Horizon Tower',
+    type: 'Class-A Headquarters / New York',
+    gia: 'GIA: 850K SQ FT',
+    year: '2025 COMPLETION',
+    image: '/images/likova/architecture-3.webp',
+    alt: 'Likova Horizon Tower, sculptural commercial glass architecture',
+    offset: true,
+  },
+  {
+    id: 'civic-lobby',
+    category: 'lobbies',
+    name: 'Grand Marble Atrium',
+    type: 'Civic Lobby Space / Zurich',
+    gia: 'GIA: 420K SQ FT',
+    year: '2024 COMPLETION',
+    image: '/images/likova/lobby-1.webp',
+    alt: 'Grand Marble Atrium, double-height luxury architectural interior',
+    offset: false,
+  },
+  {
+    id: 'sky-offices',
+    category: 'offices',
+    name: 'Panoramic Sky Suites',
+    type: 'High-Density Commercial / Tokyo',
+    gia: 'GIA: 680K SQ FT',
+    year: '2025 COMPLETION',
+    image: '/images/likova/office-1.webp',
+    alt: 'Panoramic Sky Suites, floor-to-ceiling glass corporate workspace',
+    offset: true,
+  },
+  {
+    id: 'eco-infra',
+    category: 'infra',
+    name: 'Sky Garden Promenade',
+    type: 'Sustainable Masterplan / Singapore',
+    gia: 'GIA: 1.5M SQ FT',
+    year: '2026 COMPLETION',
+    image: '/images/likova/infra-1.webp',
+    alt: 'Sky Garden Promenade, elevated urban green infrastructure',
+    offset: false,
+  },
+  {
+    id: 'kinetic-facade',
+    category: 'commercial',
+    name: 'Kinetic Facade Pavilion',
+    type: 'Cultural Landmark / Berlin',
+    gia: 'GIA: 310K SQ FT',
+    year: '2023 COMPLETION',
+    image: '/images/likova/architecture-5.webp',
+    alt: 'Kinetic Facade Pavilion, precision engineered architectural envelope',
+    offset: true,
+  },
+];
+
+const filters = [
+  { label: 'All Projects', key: 'all' },
+  { label: 'Commercial Towers', key: 'commercial' },
+  { label: 'Grand Lobbies', key: 'lobbies' },
+  { label: 'Bespoke Workspaces', key: 'offices' },
+  { label: 'Urban Infrastructure', key: 'infra' },
+];
+---
+
+<section class="section-padding" id="portfolio" style="background-color: var(--surface-container-lowest);">
+  <!-- Section Header with Filters -->
+  <div class="grid-12 portfolio-header">
+    <div class="portfolio-label-col">
+      <h2 class="font-mono-data" style="color: var(--text-secondary); letter-spacing: 0.15em; text-transform: uppercase;" data-animate="fade-up">
+        02 / PORTFOLIO
+      </h2>
+    </div>
+    <div class="portfolio-filters-col">
+      {filters.map((filter, i) => (
+        <button
+          class={`filter-pill font-label-caps ${i === 0 ? 'active' : ''}`}
+          data-filter={filter.key}
+          data-animate="fade-up"
+          style={`--stagger: ${(i + 1) * 80}ms;`}
+        >
+          {filter.label}
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <!-- Projects Grid -->
+  <div class="grid-12 portfolio-grid" id="portfolio-grid">
+    {projects.map((project, i) => (
+      <div
+        class={`portfolio-card ${project.offset ? 'portfolio-card-offset' : ''}`}
+        data-category={project.category}
+        data-animate="fade-up"
+        style={`--stagger: ${(i % 2 === 0 ? 100 : 250)}ms;`}
+      >
+        <div class="portfolio-card-image img-zoom">
+          <img src={project.image} alt={project.alt} loading="lazy" />
+          <div class="portfolio-card-overlay"></div>
+        </div>
+        <div class="portfolio-card-info">
+          <div class="portfolio-card-meta">
+            <h3 class="font-headline-md" style="color: var(--primary); margin-bottom: 8px;">{project.name}</h3>
+            <p class="font-body-sm" style="color: var(--text-secondary);">{project.type}</p>
+          </div>
+          <div class="portfolio-card-data">
+            <span class="portfolio-gia font-mono-data">{project.gia}</span>
+            <span class="font-mono-data" style="color: var(--text-secondary); font-size: 10px;">{project.year}</span>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  function setupPortfolioFilters() {
+    const filterPills = document.querySelectorAll('.filter-pill');
+    const cards = document.querySelectorAll('.portfolio-card');
+
+    filterPills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        filterPills.forEach((p) => p.classList.remove('active'));
+        pill.classList.add('active');
+
+        const filter = pill.getAttribute('data-filter');
+
+        cards.forEach((card) => {
+          const category = card.getAttribute('data-category');
+          if (filter === 'all' || category === filter) {
+            (card as HTMLElement).style.display = '';
+            (card as HTMLElement).style.opacity = '1';
+            (card as HTMLElement).style.transform = 'translateY(0)';
+          } else {
+            (card as HTMLElement).style.display = 'none';
+          }
+        });
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupPortfolioFilters);
+  } else {
+    setupPortfolioFilters();
+  }
+</script>
+
+<style>
+  .portfolio-header {
+    margin-bottom: 64px;
+  }
+
+  .portfolio-label-col {
+    grid-column: span 4;
+  }
+
+  .portfolio-filters-col {
+    grid-column: span 4;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  @media (min-width: 768px) {
+    .portfolio-label-col {
+      grid-column: span 3;
+    }
+    .portfolio-filters-col {
+      grid-column: span 9;
+      justify-content: flex-end;
+    }
+  }
+
+  .filter-pill {
+    padding: 8px 16px;
+    border-radius: 9999px;
+    border: 1px solid var(--border-stroke);
+    color: var(--text-secondary);
+    background: none;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .filter-pill.active {
+    border-color: var(--primary);
+    background-color: var(--primary);
+    color: var(--on-primary);
+    box-shadow: 0 4px 16px var(--glow-color);
+  }
+
+  .filter-pill:not(.active):hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background-color: var(--hover-highlight-bg);
+  }
+
+  /* Projects Grid */
+  .portfolio-grid {
+    row-gap: 64px;
+  }
+
+  .portfolio-card {
+    grid-column: span 4;
+    cursor: pointer;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+  }
+
+  @media (min-width: 768px) {
+    .portfolio-card {
+      grid-column: span 6;
+    }
+    .portfolio-card-offset {
+      margin-top: 80px;
+    }
+  }
+
+  .portfolio-card-image {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background-color: var(--surface-container);
+    margin-bottom: 20px;
+    position: relative;
+    border-radius: 4px;
+    box-shadow: var(--surface-glass-shadow);
+  }
+
+  .portfolio-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .portfolio-card:hover .portfolio-card-image img {
+    transform: scale(1.05);
+  }
+
+  .portfolio-card-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: var(--card-overlay-bg);
+    transition: background-color 0.5s ease;
+  }
+
+  .portfolio-card:hover .portfolio-card-overlay {
+    background-color: transparent;
+  }
+
+  .portfolio-card-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .portfolio-card-data {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+
+  .portfolio-gia {
+    color: var(--primary);
+    background-color: var(--surface);
+    padding: 4px 10px;
+    border-radius: 2px;
+    border: 1px solid var(--border-stroke);
+    font-size: 11px;
+    white-space: nowrap;
+    transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+  }
+</style>

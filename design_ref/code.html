@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AFRAH CONSTRUCTION | Shaping Structural Landmark Excellence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600&amp;family=Space+Mono:wght@400;700&amp;family=Syne:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#d5e3ff",
+                        "text-secondary": "#A1A1AA",
+                        "on-background": "#e2e2e6",
+                        "background": "#111317",
+                        "on-primary-fixed": "#281800",
+                        "primary-fixed": "#fedeb2",
+                        "on-surface-variant": "#d1c5b8",
+                        "surface-tint": "#e0c298",
+                        "on-error-container": "#ffdad6",
+                        "border-stroke": "#232730",
+                        "text-primary": "#F5F5F7",
+                        "tertiary-fixed-dim": "#b9c7e2",
+                        "secondary-container": "#44474e",
+                        "surface-container-lowest": "#0c0e11",
+                        "tertiary-container": "#9fadc7",
+                        "surface-dim": "#111317",
+                        "on-tertiary-fixed": "#0d1c30",
+                        "inverse-primary": "#725b38",
+                        "surface-bright": "#37393d",
+                        "on-primary-container": "#513d1d",
+                        "secondary": "#c4c6cf",
+                        "primary-container": "#c5a880",
+                        "surface-glass": "rgba(20, 23, 29, 0.7)",
+                        "surface-container-low": "#1a1c1f",
+                        "on-error": "#690005",
+                        "surface": "#111317",
+                        "tertiary": "#bac8e3",
+                        "on-tertiary": "#233146",
+                        "surface-container": "#1e2023",
+                        "surface-container-high": "#282a2d",
+                        "outline": "#998f83",
+                        "outline-variant": "#4d463c",
+                        "error-container": "#93000a",
+                        "on-tertiary-container": "#334157",
+                        "on-secondary-fixed": "#191c22",
+                        "on-primary-fixed-variant": "#584323",
+                        "on-tertiary-fixed-variant": "#3a475d",
+                        "primary": "#e2c399",
+                        "secondary-fixed": "#e1e2eb",
+                        "on-secondary": "#2d3037",
+                        "on-secondary-container": "#b3b5bd",
+                        "on-surface": "#e2e2e6",
+                        "primary-fixed-dim": "#e0c298",
+                        "inverse-surface": "#e2e2e6",
+                        "on-primary": "#402d0f",
+                        "on-secondary-fixed-variant": "#44474e",
+                        "secondary-fixed-dim": "#c4c6cf",
+                        "inverse-on-surface": "#2f3034",
+                        "error": "#ffb4ab",
+                        "surface-container-highest": "#333538",
+                        "surface-variant": "#333538"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "160px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "80px",
+                        "container-max": "1440px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md-mobile": ["Syne", "sans-serif"],
+                        "display-lg": ["Syne", "sans-serif"],
+                        "headline-md": ["Syne", "sans-serif"],
+                        "display-xl": ["Syne", "sans-serif"],
+                        "label-caps": ["Hanken Grotesk", "sans-serif"],
+                        "body-lg": ["Hanken Grotesk", "sans-serif"],
+                        "mono-data": ["Space Mono", "monospace"],
+                        "body-sm": ["Hanken Grotesk", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "headline-md-mobile": ["24px", { "lineHeight": "120%", "fontWeight": "600" }],
+                        "display-lg": ["64px", { "lineHeight": "110%", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["32px", { "lineHeight": "120%", "fontWeight": "600" }],
+                        "display-xl": ["96px", { "lineHeight": "100%", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+                        "label-caps": ["12px", { "lineHeight": "100%", "letterSpacing": "0.2em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "160%", "fontWeight": "400" }],
+                        "mono-data": ["13px", { "lineHeight": "140%", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "150%", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .grid-12 {
+                @apply grid grid-cols-4 md:grid-cols-12 gap-gutter px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full;
+            }
+            .section-padding {
+                @apply py-[80px] md:py-section-gap;
+            }
+            .glass-panel {
+                @apply bg-surface-glass backdrop-blur-xl border border-white/10;
+            }
+            .border-b-subtle {
+                @apply border-b border-border-stroke;
+            }
+        }
+        
+        html { scroll-behavior: smooth; }
+        body { @apply bg-background text-text-primary antialiased overflow-x-hidden; }
+    </style>
+</head>
+<body>
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-1/2 -translate-x-1/2 z-50 flex items-center gap-8 bg-surface-glass rounded-full mt-6 mx-auto w-fit px-6 py-3 backdrop-blur-xl border border-white/10 hidden md:flex">
+<a class="font-display-lg text-headline-md tracking-tighter text-primary" href="#">AFRAH</a>
+<div class="flex items-center gap-8">
+<a class="text-text-secondary hover:text-primary transition-colors duration-300 font-label-caps text-label-caps" href="#portfolio">Projects</a>
+<a class="text-text-secondary hover:text-primary transition-colors duration-300 font-label-caps text-label-caps" href="#philosophy">Engineering</a>
+<a class="text-text-secondary hover:text-primary transition-colors duration-300 font-label-caps text-label-caps" href="#capabilities">Capabilities</a>
+<a class="text-text-secondary hover:text-primary transition-colors duration-300 font-label-caps text-label-caps" href="#">Sustainability</a>
+</div>
+<a class="bg-primary text-on-primary font-label-caps text-label-caps px-6 py-3 rounded-full hover:scale-95 transition-transform duration-200" href="#inquiry">Inquire</a>
+</nav>
+<!-- Mobile Nav (Simplified) -->
+<nav class="fixed top-0 left-0 w-full z-50 p-margin-mobile md:hidden flex justify-between items-center glass-panel">
+<a class="font-display-lg text-headline-md-mobile tracking-tighter text-primary" href="#">AFRAH</a>
+<button class="text-primary p-2">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</nav>
+<!-- Hero Section -->
+<header class="relative min-h-screen flex flex-col justify-end pb-margin-desktop">
+<div class="absolute inset-0 z-0">
+<img alt="Cinematic building facade, high-end commercial architecture, dramatic lighting, sharp angles, dark premium aesthetic" class="w-full h-full object-cover opacity-80 mix-blend-luminosity" data-alt="A striking low-angle architectural photograph of a high-rise commercial building facade at dusk. The building features sharp, angular metallic elements illuminated by warm internal lights, contrasting against the deep twilight sky. The style is hyper-realistic and cinematic, emphasizing the bold geometry, premium materials, and structural excellence of the tower. The mood is authoritative and luxurious." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxo63bZXxwR1_xNSz6bYQXm9I5L6LXfZBNSNesJOE0q7Hh2dyAbLTlbUm9Kl-rdrxiv5JtKaBhS8HbikefnAa2TrvVaXjgNsLdgFc66QLyr8A6Apn7C4fdR9bdgxnZFOEZq6lCuCh5Dwq0CnzEg9mL3UU_6uyzWhgdj668xiHcEx7u2jJ7WukKPFSN_gD4uM6rGdr8Xu3WXFepgeYJXCnjczXKRxAyZeW89xnejMQwbaUwmjPEgw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent"></div>
+</div>
+<div class="grid-12 relative z-10">
+<div class="col-span-4 md:col-span-10 md:col-start-2">
+<div class="flex flex-wrap gap-4 mb-8">
+<span class="px-4 py-2 border border-border-stroke rounded-full font-mono-data text-mono-data text-text-secondary uppercase tracking-widest backdrop-blur-md bg-surface/30">Class-A Engineering Standards</span>
+<span class="px-4 py-2 border border-border-stroke rounded-full font-mono-data text-mono-data text-text-secondary uppercase tracking-widest backdrop-blur-md bg-surface/30">BREEAM &amp; LEED Certified</span>
+</div>
+<h1 class="font-display-xl text-display-xl text-primary mb-6 leading-[0.9]">AFRAH — Shaping Structural Landmark Excellence</h1>
+<p class="font-body-lg text-body-lg text-text-secondary max-w-2xl">Next-generation engineering and bold architectural forms for commercial and high-density developments.</p>
+</div>
+<div class="col-span-4 md:col-span-12 flex justify-center mt-16 md:mt-32">
+<a class="w-16 h-16 rounded-full border border-border-stroke flex items-center justify-center text-text-secondary hover:text-primary hover:border-primary transition-all duration-300" href="#philosophy">
+<span class="material-symbols-outlined font-light text-2xl animate-bounce">arrow_downward</span>
+</a>
+</div>
+</div>
+</header>
+<!-- Section 01 / PHILOSOPHY -->
+<section class="section-padding border-t border-border-stroke" id="philosophy">
+<div class="grid-12 mb-16 md:mb-32">
+<div class="col-span-4 md:col-span-3">
+<h2 class="font-mono-data text-mono-data text-text-secondary tracking-widest uppercase">01 / PHILOSOPHY</h2>
+</div>
+<div class="col-span-4 md:col-span-9">
+<h3 class="font-display-lg text-display-lg text-primary max-w-4xl">Daring Vision. Uncompromising Precision.</h3>
+</div>
+</div>
+<div class="grid-12 items-center">
+<div class="col-span-4 md:col-span-7 aspect-[4/5] overflow-hidden bg-surface-container"><img alt="Ultra-premium architectural 3D render of a futuristic, avant-garde commercial skyscraper with a unique twisting geometry." class="w-full h-full object-cover scale-100 hover:scale-105 transition-transform duration-700 ease-in-out filter brightness-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdJ5D5Q7Rk4KGKVTgBNbqWgiRdlvg-G8sdW-NAQ1bjCKpKn63BxfYu5uysEba703H0W9M6WrYSH6pTZ0vhvLBpHVJn32x01ZM2Sane-9AJViClEZqw60phJbID2gWQuMh6HAmmcE5f8QyP4rU-XNdgy2PwlUzrUcHmkiRP0Uxs5JP8zib-VsvzXh1MP76JFMU-74Dt21kyF-dOZ-REemG4_bOlV1TrP6SZFfUfviquM4i0AVipDw"/></div>
+<div class="col-span-4 md:col-span-4 md:col-start-9 flex flex-col gap-8 mt-12 md:mt-0">
+<p class="font-body-lg text-body-lg text-text-secondary">We do not just build structures; we engineer structural narratives. AFRAH stands at the intersection of raw mechanical strength and refined architectural intent, delivering high-density commercial developments that redefine cityscapes.</p>
+<div class="border-t border-border-stroke pt-6">
+<h4 class="font-headline-md text-headline-md-mobile text-primary mb-2">Structural Innovation</h4>
+<p class="font-body-sm text-body-sm text-text-secondary">Pushing the boundaries of load-bearing capacities and dynamic structural frameworks for iconic silhouettes.</p>
+</div>
+<div class="border-t border-border-stroke pt-6">
+<h4 class="font-headline-md text-headline-md-mobile text-primary mb-2">Sustainable Integration</h4>
+<p class="font-body-sm text-body-sm text-text-secondary">Embedding net-zero strategies into the very core of our EPC delivery models, ensuring legacy without ecological compromise.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 02 / PORTFOLIO -->
+<section class="section-padding bg-surface-container-lowest" id="portfolio">
+<div class="grid-12 mb-16">
+<div class="col-span-4 md:col-span-3">
+<h2 class="font-mono-data text-mono-data text-text-secondary tracking-widest uppercase">02 / PORTFOLIO</h2>
+</div>
+<div class="col-span-4 md:col-span-9 flex flex-wrap gap-4 items-center justify-start md:justify-end">
+<button class="font-label-caps text-label-caps px-4 py-2 rounded-full border border-primary text-primary">All</button>
+<button class="font-label-caps text-label-caps px-4 py-2 rounded-full border border-border-stroke text-text-secondary hover:text-primary hover:border-primary transition-colors">Commercial Towers</button>
+<button class="font-label-caps text-label-caps px-4 py-2 rounded-full border border-border-stroke text-text-secondary hover:text-primary hover:border-primary transition-colors">Industrial Infrastructure</button>
+<button class="font-label-caps text-label-caps px-4 py-2 rounded-full border border-border-stroke text-text-secondary hover:text-primary hover:border-primary transition-colors">Bespoke Residences</button>
+</div>
+</div>
+<div class="grid-12 gap-y-16">
+<!-- Project 1 -->
+<div class="col-span-4 md:col-span-6 group cursor-pointer">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container mb-6 relative">
+<img alt="The Zenith Tower, massive skyscraper reflecting golden hour sunset, complex geometric facade, urban landscape" class="w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-700 ease-in-out" data-alt="An expansive aerial view of 'The Zenith Tower', a monumental high-rise skyscraper with a complex, faceted geometric glass facade reflecting the golden hues of sunset. The tower stands prominently in a dense urban landscape beside a river. The architectural style is hyper-modern and imposing, captured in a cinematic, high-contrast visual style fitting for a premium luxury construction portfolio." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwu-ayGst10_vVNcWtcm1TXWqh8BaSYkR_zHNOQEdy650KOR35yYghWKx2xrf0zvKnc-e2Eya2xshQBilhQsAx2ksNaruBmFHWlkWbR45k5WDyNgzijALmwI4WHPFFNrTo9lAYkltXrnbo0-7G9Jq5fJW6wZDqpe8VhDs_vxAwaVjFczANPDEl38xAq-OWNaTL8R_p_skEe0HfW81BVTAAIYRtmQyDowLQ37BRT2vUzTMLrhWD5w"/>
+<div class="absolute inset-0 bg-background/20 group-hover:bg-transparent transition-colors duration-500"></div>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-md text-headline-md text-primary mb-2">The Zenith Tower</h3>
+<p class="font-body-sm text-body-sm text-text-secondary">Commercial High-Rise / London</p>
+</div>
+<div class="text-right flex flex-col items-end gap-1">
+<span class="font-mono-data text-mono-data text-primary bg-surface py-1 px-2 rounded border border-border-stroke">GIA: 1.2M SQ FT</span>
+<span class="font-mono-data text-mono-data text-text-secondary text-[10px]">2023 COMPLETION</span>
+</div>
+</div>
+</div>
+<!-- Project 2 -->
+<div class="col-span-4 md:col-span-6 group cursor-pointer md:mt-24">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container mb-6 relative">
+<img alt="Civic Plaza One interior, vast minimalist lobby space, triangular patterned glass wall, polished concrete floor" class="w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-700 ease-in-out filter brightness-90" data-alt="A wide interior architectural shot of 'Civic Plaza One', featuring a vast, minimalist public lobby space. The dominant feature is a massive glass curtain wall with a complex triangular steel structural pattern, casting intricate geometric shadows onto a polished concrete floor. A modern wooden reception desk sits in the foreground. The aesthetic is clean, bright (but integrated into a dark mode context via contrast), and highly technical." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5ISCV41GBZl9CQTsgig_oma8YBqmj9WYBCeGdX4l0c4OQaafBN2Dkfu5zr0z6htsBbjD7wFoSE3q6TKc9hb8G-iwEnJJDtWhqYqtIOA7HBJZhAjJ1ZiAtcnPWRxGv4Ghi2i0gg7SrPOBCK21wnBigV5A15AavgW9WkqlX2OE-k0GRhs2xtTBLJpcBBYk5gvE6IbSzqGsULdfIZrIBVFhRWDtCyjZXRW4HVYiptFZlYFeIE0Vw7g"/>
+<div class="absolute inset-0 bg-background/20 group-hover:bg-transparent transition-colors duration-500"></div>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-md text-headline-md text-primary mb-2">Civic Plaza One</h3>
+<p class="font-body-sm text-body-sm text-text-secondary">Civic Space / New York</p>
+</div>
+<div class="text-right flex flex-col items-end gap-1">
+<span class="font-mono-data text-mono-data text-primary bg-surface py-1 px-2 rounded border border-border-stroke">GIA: 450K SQ FT</span>
+<span class="font-mono-data text-mono-data text-text-secondary text-[10px]">2024 COMPLETION</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 03 / CAPABILITIES -->
+<section class="section-padding border-t border-border-stroke" id="capabilities">
+<div class="grid-12 mb-16 md:mb-24">
+<div class="col-span-4 md:col-span-3">
+<h2 class="font-mono-data text-mono-data text-text-secondary tracking-widest uppercase">03 / CAPABILITIES</h2>
+</div>
+</div>
+<div class="grid-12 gap-y-12">
+<div class="col-span-4 md:col-span-3 border-l border-border-stroke pl-6">
+<div class="font-display-lg text-headline-md-mobile md:text-display-lg text-primary mb-2">2.4M+</div>
+<p class="font-mono-data text-mono-data text-text-secondary uppercase">Sq. Ft Built Globally</p>
+</div>
+<div class="col-span-4 md:col-span-3 border-l border-border-stroke pl-6">
+<div class="font-display-lg text-headline-md-mobile md:text-display-lg text-primary mb-2">100%</div>
+<p class="font-mono-data text-mono-data text-text-secondary uppercase">Zero-Harm Safety Record</p>
+</div>
+<div class="col-span-4 md:col-span-3 border-l border-border-stroke pl-6">
+<div class="font-display-lg text-headline-md-mobile md:text-display-lg text-primary mb-2">40+</div>
+<p class="font-mono-data text-mono-data text-text-secondary uppercase">National Architecture Awards</p>
+</div>
+<div class="col-span-4 md:col-span-3 border-l border-border-stroke pl-6">
+<div class="font-display-lg text-headline-md-mobile md:text-display-lg text-primary mb-2">Net-Zero</div>
+<p class="font-mono-data text-mono-data text-text-secondary uppercase">Ready Designs Standard</p>
+</div>
+</div>
+<div class="grid-12 mt-24">
+<div class="col-span-4 md:col-span-12">
+<ul class="flex flex-col">
+<li class="py-8 border-b-subtle flex flex-col md:flex-row md:items-center justify-between group hover:bg-surface-container/50 transition-colors px-4 -mx-4 cursor-default">
+<h4 class="font-headline-md text-headline-md-mobile md:text-headline-md text-primary mb-2 md:mb-0 group-hover:pl-4 transition-all duration-300">Turnkey EPC Delivery</h4>
+<p class="font-body-sm text-body-sm text-text-secondary max-w-md text-left md:text-right">End-to-end engineering, procurement, and construction management for massive-scale developments.</p>
+</li>
+<li class="py-8 border-b-subtle flex flex-col md:flex-row md:items-center justify-between group hover:bg-surface-container/50 transition-colors px-4 -mx-4 cursor-default">
+<h4 class="font-headline-md text-headline-md-mobile md:text-headline-md text-primary mb-2 md:mb-0 group-hover:pl-4 transition-all duration-300">BIM 3D Modeling</h4>
+<p class="font-body-sm text-body-sm text-text-secondary max-w-md text-left md:text-right">Clash-detection and digital twin integration ensuring absolute precision before groundbreak.</p>
+</li>
+<li class="py-8 border-b-subtle flex flex-col md:flex-row md:items-center justify-between group hover:bg-surface-container/50 transition-colors px-4 -mx-4 cursor-default">
+<h4 class="font-headline-md text-headline-md-mobile md:text-headline-md text-primary mb-2 md:mb-0 group-hover:pl-4 transition-all duration-300">Structural Steel &amp; Façade</h4>
+<p class="font-body-sm text-body-sm text-text-secondary max-w-md text-left md:text-right">Bespoke kinetic envelopes and high-tensile frameworks designed for extreme load cases.</p>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- Section 04 / INQUIRY -->
+<section class="section-padding bg-surface-container-lowest border-t border-border-stroke relative overflow-hidden" id="inquiry">
+<div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(circle at 100% 100%, theme('colors.primary') 0%, transparent 50%);"></div>
+<div class="grid-12 relative z-10">
+<div class="col-span-4 md:col-span-4">
+<h2 class="font-mono-data text-mono-data text-text-secondary tracking-widest uppercase mb-8">04 / INQUIRY</h2>
+<h3 class="font-display-lg text-headline-md md:text-display-lg text-primary mb-6">Initiate<br/>Dialogue</h3>
+<p class="font-body-sm text-body-sm text-text-secondary max-w-xs mb-8">For pre-construction consultation, tender submissions, or confidential project scoping.</p>
+</div>
+<div class="col-span-4 md:col-span-7 md:col-start-6">
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="font-mono-data text-mono-data text-text-secondary uppercase">Project Name</label>
+<input class="w-full bg-surface border border-border-stroke rounded px-4 py-3 text-primary focus:border-primary focus:ring-0 transition-colors" placeholder="e.g. The Spire" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-mono-data text-mono-data text-text-secondary uppercase">Location</label>
+<input class="w-full bg-surface border border-border-stroke rounded px-4 py-3 text-primary focus:border-primary focus:ring-0 transition-colors" placeholder="City / Coordinates" type="text"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-mono-data text-mono-data text-text-secondary uppercase">Project Scope &amp; Intent</label>
+<textarea class="w-full bg-surface border border-border-stroke rounded px-4 py-3 text-primary focus:border-primary focus:ring-0 transition-colors resize-none" placeholder="Detail the structural requirements..." rows="4"></textarea>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+<div class="space-y-2">
+<label class="font-mono-data text-mono-data text-text-secondary uppercase">Est. Budget Range</label>
+<select class="w-full bg-surface border border-border-stroke rounded px-4 py-3 text-primary focus:border-primary focus:ring-0 transition-colors appearance-none">
+<option>$50M - $100M</option>
+<option>$100M - $500M</option>
+<option>$500M+</option>
+</select>
+</div>
+<div>
+<button class="w-full bg-surface border border-border-stroke border-dashed rounded px-4 py-3 text-text-secondary hover:text-primary hover:border-primary transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]">upload_file</span>
+<span class="font-mono-data text-mono-data">Upload Blueprint (PDF/CAD)</span>
+</button>
+</div>
+</div>
+<div class="pt-8">
+<button class="w-full md:w-auto bg-primary text-on-primary font-label-caps text-label-caps px-8 py-4 rounded-full hover:bg-primary-fixed transition-colors" type="submit">Submit Inquiry</button>
+</div>
+</form>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="w-full py-20 px-margin-desktop grid grid-cols-1 md:grid-cols-12 gap-gutter bg-surface-container-lowest border-t border-border-stroke">
+<div class="col-span-1 md:col-span-4 flex flex-col justify-between h-full min-h-[200px]">
+<img alt="AFRAH Logo" class="w-32 h-auto opacity-80 mix-blend-screen" data-alt="AFRAH CONSTRUCTION wordmark, bold geometric sans-serif, minimalist, architectural, structural, luxury, high-contrast white." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRo0QihAT00r-qA4d2vCTRjKzvjAG1Wgk6OUGRAuxKCFI78FkctTB7Eiq3ARgBpIbp1cXwsqAEHbnMlbnR1eNw-RQM1oDNiZSpEhzv3YJGAhff2l17xKCQY15i3KYhzXYzHgM1ftwQCBhhRWDNaPLhWPpPoqk9W-5G85Rh4RC0eoNOS9qBCf8PwwEaO1TgouuFQuePADlMyIchtKK9H-30B1zCPGMvtJ2oPDVQJq318CvWPK6AMw"/>
+<div class="mt-auto">
+<p class="font-mono-data text-mono-data text-text-secondary">© 2024 AFRAH CONSTRUCTION. ALL RIGHTS RESERVED.</p>
+</div>
+</div>
+<div class="col-span-1 md:col-span-4 md:col-start-9 flex flex-col justify-between h-full gap-8">
+<ul class="space-y-4">
+<li class=""><a class="font-mono-data text-mono-data text-text-secondary hover:text-primary underline transition-all" href="#">London / 51.5074° N, 0.1278° W</a></li>
+<li class=""><a class="font-mono-data text-mono-data text-text-secondary hover:text-primary underline transition-all" href="#">New York / 40.7128° N, 74.0060° W</a></li>
+</ul>
+<ul class="space-y-4 mt-auto">
+<li class="font-mono-data text-mono-data text-primary">ISO 9001 CERTIFIED</li>
+<li class="font-mono-data text-mono-data text-primary">LEED PLATINUM</li>
+</ul>
+</div>
+</footer>
+</body></html>

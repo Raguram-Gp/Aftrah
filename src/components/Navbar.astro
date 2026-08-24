@@ -1,0 +1,425 @@
+---
+// Navbar — Luxury Header that Appears Only After Crossing the Hero Section
+---
+
+<!-- Desktop Navigation -->
+<nav class="navbar-header" id="navbar-desktop">
+  <div class="navbar-left">
+    <button class="navbar-burger-btn" id="desktop-menu-btn" aria-label="Toggle Navigation Menu">
+      <span class="burger-line"></span>
+      <span class="burger-line"></span>
+    </button>
+    <a href="#" class="navbar-brand">AFRAH</a>
+  </div>
+
+  <div class="navbar-right">
+    <div class="navbar-links">
+      <a href="/#portfolio" class="nav-link">Select Office Space</a>
+      <a href="/#engineering" class="nav-link">Engineering</a>
+      <a href="/#capabilities" class="nav-link">Capabilities</a>
+      <a href="/app" class="nav-link nav-link-app">
+        <span>App</span>
+        <span class="nav-badge">LIVE</span>
+      </a>
+    </div>
+
+    <div class="navbar-actions">
+      <!-- Theme Switcher Button -->
+      <button class="theme-toggle-btn" id="theme-toggle-desktop" aria-label="Toggle Light/Dark Theme" title="Toggle Theme">
+        <span class="material-symbols-outlined theme-toggle-icon icon-sun">light_mode</span>
+        <span class="material-symbols-outlined theme-toggle-icon icon-moon">dark_mode</span>
+      </button>
+
+      <a href="/#inquiry" class="navbar-contact-link">Contact Us</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Navigation -->
+<nav class="navbar-mobile" id="navbar-mobile">
+  <div class="navbar-left">
+    <button class="navbar-burger-btn" id="mobile-menu-btn" aria-label="Open menu">
+      <span class="burger-line"></span>
+      <span class="burger-line"></span>
+    </button>
+    <a href="/" class="navbar-brand">AFRAH</a>
+  </div>
+
+  <div class="navbar-mobile-actions">
+    <a href="/app" class="mobile-app-quick-btn" title="Launch App">
+      <span class="material-symbols-outlined" style="font-size: 18px;">apps</span>
+      <span>App</span>
+    </a>
+    <button class="theme-toggle-btn" id="theme-toggle-mobile" aria-label="Toggle Light/Dark Theme" title="Toggle Theme">
+      <span class="material-symbols-outlined theme-toggle-icon icon-sun">light_mode</span>
+      <span class="material-symbols-outlined theme-toggle-icon icon-moon">dark_mode</span>
+    </button>
+  </div>
+</nav>
+
+<!-- Fullscreen Menu Overlay -->
+<div class="mobile-overlay" id="mobile-overlay">
+  <div class="mobile-overlay-content">
+    <button class="mobile-close-btn" id="mobile-close-btn" aria-label="Close menu">
+      <span class="material-symbols-outlined" style="font-size: 32px;">close</span>
+    </button>
+    <div class="mobile-menu-links">
+      <a href="/#portfolio" class="mobile-menu-link">Select Office Space</a>
+      <a href="/#engineering" class="mobile-menu-link">Engineering</a>
+      <a href="/#capabilities" class="mobile-menu-link">Capabilities</a>
+      <a href="/app" class="mobile-menu-link" style="color: var(--primary); display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+        <span>App Platform</span>
+        <span class="nav-badge">ACTIVE</span>
+      </a>
+      <a href="/#inquiry" class="mobile-menu-link">Contact Us</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function setupNavbar() {
+    const desktopToggle = document.getElementById('theme-toggle-desktop');
+    const mobileToggle = document.getElementById('theme-toggle-mobile');
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+      document.documentElement.setAttribute('data-theme', newTheme);
+      document.documentElement.classList.remove('dark', 'light');
+      document.documentElement.classList.add(newTheme);
+
+      try {
+        localStorage.setItem('afrah-theme', newTheme);
+      } catch (e) {
+        console.warn('Unable to persist theme to localStorage', e);
+      }
+
+      window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: newTheme } }));
+    }
+
+    desktopToggle?.addEventListener('click', toggleTheme);
+    mobileToggle?.addEventListener('click', toggleTheme);
+
+    // Overlay
+    const desktopMenuBtn = document.getElementById('desktop-menu-btn');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const closeBtn = document.getElementById('mobile-close-btn');
+    const overlay = document.getElementById('mobile-overlay');
+
+    function openMenu() {
+      overlay?.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+      overlay?.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    desktopMenuBtn?.addEventListener('click', openMenu);
+    mobileMenuBtn?.addEventListener('click', openMenu);
+    closeBtn?.addEventListener('click', closeMenu);
+
+    overlay?.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // GSAP ScrollTrigger: Show navbar only after crossing Hero section
+    const desktopNav = document.getElementById('navbar-desktop');
+    const mobileNav = document.getElementById('navbar-mobile');
+
+    ScrollTrigger.create({
+      trigger: '#hero',
+      start: 'bottom top+=40',
+      onEnter: () => {
+        desktopNav?.classList.add('is-visible');
+        mobileNav?.classList.add('is-visible');
+      },
+      onLeaveBack: () => {
+        desktopNav?.classList.remove('is-visible');
+        mobileNav?.classList.remove('is-visible');
+      },
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupNavbar);
+  } else {
+    setupNavbar();
+  }
+</script>
+
+<style>
+  /* Header Container (Hidden initially by translateY(-100%) and opacity: 0) */
+  .navbar-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 48px;
+    background: var(--surface-glass);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--surface-glass-border);
+    box-shadow: var(--surface-glass-shadow);
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+  }
+
+  @media (min-width: 768px) {
+    .navbar-header {
+      display: flex;
+    }
+  }
+
+  /* When scrolled past hero, smoothly slide in */
+  .navbar-header.is-visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Left: Burger + Brand */
+  .navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+  }
+
+  .navbar-burger-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    width: 28px;
+    height: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .burger-line {
+    display: block;
+    width: 24px;
+    height: 1.5px;
+    background-color: var(--text-primary);
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+
+  .navbar-burger-btn:hover .burger-line:first-child {
+    width: 18px;
+  }
+
+  .navbar-brand {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    font-family: 'Hanken Grotesk', sans-serif;
+  }
+
+  /* Right: Links & Actions */
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+  }
+
+  .nav-link {
+    color: var(--text-secondary);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+
+  .nav-link:hover {
+    color: var(--primary) !important;
+  }
+
+  .nav-link-app {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .nav-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 8.5px;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-container, #c5a880) 100%);
+    color: var(--on-primary, #111317);
+    border-radius: 999px;
+    line-height: 1.2;
+    box-shadow: 0 0 12px var(--glow-color, rgba(226, 195, 153, 0.3));
+  }
+
+  .mobile-app-quick-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background: rgba(226, 195, 153, 0.12);
+    border: 1px solid var(--primary);
+    border-radius: 999px;
+    color: var(--primary);
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-app-quick-btn:hover {
+    background: var(--primary);
+    color: var(--on-primary, #111317);
+  }
+
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .navbar-contact-link {
+    color: var(--primary);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 600;
+    padding-bottom: 2px;
+    border-bottom: 1px solid var(--primary);
+    transition: opacity 0.3s ease;
+  }
+
+  .navbar-contact-link:hover {
+    opacity: 0.7;
+  }
+
+  /* Mobile Navbar */
+  .navbar-mobile {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface-glass);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--surface-glass-border);
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+  }
+
+  @media (min-width: 768px) {
+    .navbar-mobile {
+      display: none;
+    }
+  }
+
+  .navbar-mobile.is-visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .navbar-mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* Fullscreen Menu Overlay */
+  .mobile-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background-color: var(--mobile-overlay-bg);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  .mobile-overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-overlay-content {
+    text-align: center;
+    position: relative;
+    width: 100%;
+    padding: 24px;
+  }
+
+  .mobile-close-btn {
+    position: absolute;
+    top: -60px;
+    right: 0;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+  }
+
+  .mobile-menu-links {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .mobile-menu-link {
+    color: var(--text-primary);
+    font-size: 26px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .mobile-menu-link:hover {
+    color: var(--primary);
+  }
+</style>

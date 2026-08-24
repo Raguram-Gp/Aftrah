@@ -1,0 +1,204 @@
+---
+// Section 05 / Inquiry — Contact Form
+---
+
+<section class="section-padding inquiry" id="inquiry" style="background-color: var(--surface-container-lowest); border-top: 1px solid var(--border-stroke); position: relative; overflow: hidden;">
+  <!-- Background Radial Glow -->
+  <div class="inquiry-glow"></div>
+
+  <div class="grid-12" style="position: relative; z-index: 10;">
+    <!-- Left Column -->
+    <div class="inquiry-info-col">
+      <h2 class="font-mono-data" style="color: var(--text-secondary); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 32px;" data-animate="fade-up">
+        05 / INQUIRY
+      </h2>
+      <h3 class="font-display-lg inquiry-title" data-animate="fade-up" style="--stagger: 100ms; color: var(--primary); margin-bottom: 24px;">
+        Initiate<br />Dialogue
+      </h3>
+      <p class="font-body-sm" style="color: var(--text-secondary); max-width: 280px;" data-animate="fade-up" style="--stagger: 200ms;">
+        For pre-construction consultation, tender submissions, or confidential project scoping.
+      </p>
+    </div>
+
+    <!-- Right Column — Form -->
+    <div class="inquiry-form-col">
+      <form class="inquiry-form">
+        <!-- Row 1: Project Name & Location -->
+        <div class="form-row">
+          <div class="form-group" data-animate="fade-up" style="--stagger: 200ms;">
+            <label class="font-mono-data form-label">Project Name</label>
+            <input type="text" class="form-input" placeholder="e.g. The Spire" />
+          </div>
+          <div class="form-group" data-animate="fade-up" style="--stagger: 300ms;">
+            <label class="font-mono-data form-label">Location</label>
+            <input type="text" class="form-input" placeholder="City / Coordinates" />
+          </div>
+        </div>
+
+        <!-- Row 2: Project Scope -->
+        <div class="form-group" data-animate="fade-up" style="--stagger: 400ms;">
+          <label class="font-mono-data form-label">Project Scope & Intent</label>
+          <textarea class="form-input form-textarea" rows="4" placeholder="Detail the structural requirements..."></textarea>
+        </div>
+
+        <!-- Row 3: Budget & Upload -->
+        <div class="form-row form-row-end">
+          <div class="form-group" data-animate="fade-up" style="--stagger: 500ms;">
+            <label class="font-mono-data form-label">Est. Budget Range</label>
+            <select class="form-input form-select">
+              <option>$50M - $100M</option>
+              <option>$100M - $500M</option>
+              <option>$500M+</option>
+            </select>
+          </div>
+          <div class="form-group" data-animate="fade-up" style="--stagger: 600ms;">
+            <button type="button" class="form-upload">
+              <span class="material-symbols-outlined" style="font-size: 18px;">upload_file</span>
+              <span class="font-mono-data">Upload Blueprint (PDF/CAD)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div style="padding-top: 32px;" data-animate="fade-up" style="--stagger: 700ms;">
+          <button type="submit" class="submit-btn font-label-caps glow-pulse">Submit Inquiry</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  .inquiry-glow {
+    position: absolute;
+    inset: 0;
+    opacity: 0.8;
+    pointer-events: none;
+    background-image: var(--inquiry-radial);
+    transition: opacity 0.4s ease;
+  }
+
+  .inquiry-info-col {
+    grid-column: span 4;
+  }
+
+  .inquiry-form-col {
+    grid-column: span 4;
+    margin-top: 48px;
+  }
+
+  @media (min-width: 768px) {
+    .inquiry-info-col {
+      grid-column: span 4;
+    }
+    .inquiry-form-col {
+      grid-column: 6 / span 7;
+      margin-top: 0;
+    }
+  }
+
+  .inquiry-title {
+    font-size: 32px;
+    transition: color 0.4s ease;
+  }
+
+  @media (min-width: 768px) {
+    .inquiry-title {
+      font-size: 64px;
+    }
+  }
+
+  .inquiry-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  @media (min-width: 768px) {
+    .form-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .form-row-end {
+    align-items: end;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-label {
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    transition: color 0.4s ease;
+  }
+
+  .form-textarea {
+    resize: none;
+  }
+
+  .form-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23967032' viewBox='0 0 16 16'%3E%3Cpath d='m4.427 7.427 3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 11.396 7H4.604a.25.25 0 0 0-.177.427z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+  }
+
+  .form-upload {
+    width: 100%;
+    background: var(--surface);
+    border: 1px dashed var(--border-stroke);
+    padding: 12px 16px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: color 0.3s ease, border-color 0.3s ease, background-color 0.4s ease;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+
+  .form-upload:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+
+  .submit-btn {
+    background-color: var(--primary);
+    color: var(--on-primary);
+    padding: 16px 32px;
+    border-radius: 9999px;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .submit-btn {
+      width: auto;
+    }
+  }
+
+  .submit-btn:hover {
+    background-color: var(--primary-fixed-dim);
+    transform: scale(0.98);
+  }
+</style>

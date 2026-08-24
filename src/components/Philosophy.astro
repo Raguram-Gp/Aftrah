@@ -1,0 +1,167 @@
+---
+// Section 01 / Philosophy — Daring Vision. Uncompromising Precision.
+---
+
+<section class="section-padding philosophy" id="philosophy" style="border-top: 1px solid var(--border-stroke);">
+  <!-- Section Header -->
+  <div class="grid-12 philosophy-header">
+    <div class="philosophy-label-col">
+      <h2 class="font-mono-data" style="color: var(--text-secondary); letter-spacing: 0.15em; text-transform: uppercase;" data-animate="fade-up">
+        01 / PHILOSOPHY
+      </h2>
+    </div>
+    <div class="philosophy-title-col">
+      <h3 class="font-display-lg" style="color: var(--primary); max-width: 800px;" data-animate="fade-up" data-animate-delay="100">
+        Daring Vision. Uncompromising Precision.
+      </h3>
+    </div>
+  </div>
+
+  <!-- Content Grid -->
+  <div class="grid-12 philosophy-content">
+    <!-- Image with Architecture Badge -->
+    <div class="philosophy-image-col img-zoom" data-animate="slide-left">
+      <img
+        alt="AFRAH Construction Landmark Commercial Skyscraper Architecture"
+        class="philosophy-img"
+        src="/images/likova/philosophy-1.webp"
+        loading="lazy"
+      />
+      <div class="philosophy-img-badge font-mono-data">
+        <span>CLASS-A COMMERCIAL</span>
+        <span>53,300 M² GIA</span>
+      </div>
+    </div>
+
+    <!-- Text & Feature Cards -->
+    <div class="philosophy-text-col" data-animate="slide-right">
+      <p class="font-body-lg" style="color: var(--text-secondary); margin-bottom: 32px;">
+        We do not just build structures; we engineer structural narratives. AFRAH stands at the intersection of raw mechanical strength and refined architectural intent, delivering high-density commercial developments that redefine cityscapes.
+      </p>
+
+      <!-- Feature Card: Structural Innovation -->
+      <div class="philosophy-feature" data-animate="fade-up" style="--stagger: 200ms;">
+        <h4 class="font-headline-md-mobile" style="color: var(--primary); margin-bottom: 8px;">Structural Innovation</h4>
+        <p class="font-body-sm" style="color: var(--text-secondary);">
+          Pushing the boundaries of load-bearing capacities and dynamic structural frameworks for iconic silhouettes.
+        </p>
+      </div>
+
+      <!-- Feature Card: Sustainable Integration -->
+      <div class="philosophy-feature" data-animate="fade-up" style="--stagger: 400ms;">
+        <h4 class="font-headline-md-mobile" style="color: var(--primary); margin-bottom: 8px;">Sustainable Integration</h4>
+        <p class="font-body-sm" style="color: var(--text-secondary);">
+          Embedding net-zero strategies into the very core of our EPC delivery models, ensuring legacy without ecological compromise.
+        </p>
+      </div>
+
+      <!-- Feature Card: Kinetic Envelopes -->
+      <div class="philosophy-feature" data-animate="fade-up" style="--stagger: 600ms;">
+        <h4 class="font-headline-md-mobile" style="color: var(--primary); margin-bottom: 8px;">Kinetic Facade Engineering</h4>
+        <p class="font-body-sm" style="color: var(--text-secondary);">
+          Dynamic solar-responsive double-skin facades reducing HVAC loads by up to 34% across high-rise envelopes.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .philosophy-header {
+    margin-bottom: 64px;
+  }
+
+  @media (min-width: 768px) {
+    .philosophy-header {
+      margin-bottom: 128px;
+    }
+  }
+
+  .philosophy-label-col {
+    grid-column: span 4;
+  }
+
+  .philosophy-title-col {
+    grid-column: span 4;
+  }
+
+  @media (min-width: 768px) {
+    .philosophy-label-col {
+      grid-column: span 3;
+    }
+    .philosophy-title-col {
+      grid-column: span 9;
+    }
+  }
+
+  .philosophy-content {
+    align-items: center;
+  }
+
+  .philosophy-image-col {
+    grid-column: span 4;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background-color: var(--surface-container);
+    position: relative;
+    border-radius: 4px;
+    box-shadow: var(--surface-glass-shadow);
+  }
+
+  @media (min-width: 768px) {
+    .philosophy-image-col {
+      grid-column: span 7;
+    }
+  }
+
+  .philosophy-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .philosophy-image-col:hover .philosophy-img {
+    transform: scale(1.04);
+  }
+
+  .philosophy-img-badge {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface-glass);
+    border: 1px solid var(--surface-glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 10px 16px;
+    border-radius: 9999px;
+    color: var(--primary);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+
+  .philosophy-text-col {
+    grid-column: span 4;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    margin-top: 48px;
+  }
+
+  @media (min-width: 768px) {
+    .philosophy-text-col {
+      grid-column: 9 / span 4;
+      margin-top: 0;
+    }
+  }
+
+  .philosophy-feature {
+    border-top: 1px solid var(--border-stroke);
+    padding-top: 20px;
+    transition: border-color 0.4s ease;
+  }
+</style>

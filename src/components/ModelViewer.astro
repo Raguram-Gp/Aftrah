@@ -1,0 +1,738 @@
+---
+// Section 03 / Engineering — Interactive 3D Architectural Blueprint & BIM Model Viewer
+---
+
+<section class="section-padding model-section" id="engineering" style="border-top: 1px solid var(--border-stroke); position: relative; overflow: hidden;">
+  <!-- Section Header -->
+  <div class="grid-12 model-header">
+    <div class="model-label-col">
+      <div class="blueprint-badge font-mono-data" data-animate="fade-up">
+        <span class="pulse-dot"></span>
+        BIM DIGITAL TWIN · REV 4.2
+      </div>
+      <h2 class="font-mono-data" style="color: var(--text-secondary); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 12px;" data-animate="fade-up">
+        03 / ENGINEERING
+      </h2>
+    </div>
+    <div class="model-title-col">
+      <h3 class="font-display-lg" style="color: var(--primary);" data-animate="fade-up" style="--stagger: 100ms;">
+        Structural Framework & Real Blueprint
+      </h3>
+      <p class="font-body-lg" style="color: var(--text-secondary); margin-top: 16px; max-width: 680px;" data-animate="fade-up" style="--stagger: 200ms;">
+        Inspect the engineered digital twin of our landmark tower. Toggle between the interactive 3D BIM structural skeleton and high-resolution CAD blueprint schematics.
+      </p>
+    </div>
+  </div>
+
+  <!-- Mode Switcher Tabs -->
+  <div class="grid-12" style="margin-bottom: 24px;">
+    <div class="viewer-tabs-col" data-animate="fade-up" style="--stagger: 250ms;">
+      <div class="viewer-tabs glass-panel">
+        <button class="viewer-tab active" id="tab-3d" data-view="3d">
+          <span class="material-symbols-outlined tab-icon">view_in_ar</span>
+          <span>Interactive 3D BIM Twin</span>
+        </button>
+        <button class="viewer-tab" id="tab-blueprint" data-view="blueprint">
+          <span class="material-symbols-outlined tab-icon">architecture</span>
+          <span>Real CAD Blueprint Schematic</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Display Container -->
+  <div class="model-canvas-wrapper glass-panel" data-animate="scale-in" style="--stagger: 300ms;">
+    <!-- ============================================
+         VIEW 1: 3D THREE.JS WEBGL VIEWER
+         ============================================ -->
+    <div class="view-panel active" id="panel-3d">
+      <canvas id="model-viewer-canvas" class="model-canvas"></canvas>
+
+      <!-- 3D Camera Angle Presets (Top Right) -->
+      <div class="camera-presets font-mono-data">
+        <span class="preset-label">VIEW:</span>
+        <button class="preset-btn active" data-cam="iso" title="Axonometric Perspective">3D ISO</button>
+        <button class="preset-btn" data-cam="elevation" title="Elevation Cross-Section">ELEVATION</button>
+        <button class="preset-btn" data-cam="plan" title="Top-Down Plan">PLAN</button>
+        <button class="preset-btn" data-cam="crown" title="Crown & Tuned Mass Damper">DAMPER</button>
+      </div>
+
+      <!-- 3D Layer Toggles (Bottom Left) -->
+      <div class="layer-toggles font-mono-data">
+        <span class="layer-title">BIM LAYERS</span>
+        <label class="layer-item">
+          <input type="checkbox" id="layer-diagrid" checked />
+          <span class="layer-checkmark"></span>
+          <span>Diagrid Steel</span>
+        </label>
+        <label class="layer-item">
+          <input type="checkbox" id="layer-slabs" checked />
+          <span class="layer-checkmark"></span>
+          <span>Floor Slabs (L1-72)</span>
+        </label>
+        <label class="layer-item">
+          <input type="checkbox" id="layer-core" checked />
+          <span class="layer-checkmark"></span>
+          <span>Shear Core</span>
+        </label>
+        <label class="layer-item">
+          <input type="checkbox" id="layer-damper" checked />
+          <span class="layer-checkmark"></span>
+          <span>Tuned Damper</span>
+        </label>
+      </div>
+
+      <!-- Hotspot Callouts Overlay -->
+      <div class="hotspot-card hotspot-damper font-mono-data">
+        <div class="hotspot-header">
+          <span class="hotspot-pin"></span>
+          <strong>+312.0m CROWN</strong>
+        </div>
+        <div class="hotspot-body">650-Ton Tuned Mass Damper (Harmonic Oscillation Control)</div>
+      </div>
+
+      <div class="hotspot-card hotspot-skygarden font-mono-data">
+        <div class="hotspot-header">
+          <span class="hotspot-pin"></span>
+          <strong>+148.0m SKY GARDEN</strong>
+        </div>
+        <div class="hotspot-body">Level 35 Outrigger Truss & Cantilever Terrace</div>
+      </div>
+
+      <!-- Orbit Drag Hint -->
+      <div class="model-hint font-mono-data">
+        <span class="material-symbols-outlined" style="font-size: 16px;">3d_rotation</span>
+        Drag to orbit · Scroll to zoom · Click presets to jump
+      </div>
+    </div>
+
+    <!-- ============================================
+         VIEW 2: REAL CAD BLUEPRINT MASTER SHEET
+         ============================================ -->
+    <div class="view-panel" id="panel-blueprint">
+      <div class="blueprint-sheet-container" id="blueprint-zoom-container">
+        <!-- Dark Mode Blueprint Image -->
+        <img
+          src="/images/blueprint-dark.jpg"
+          alt="AFRAH Construction Super Modern Architectural Blueprint CAD Schematic"
+          class="blueprint-img blueprint-dark-img"
+          id="blueprint-img-dark"
+        />
+        <!-- Light Mode Blueprint Image -->
+        <img
+          src="/images/blueprint-light.jpg"
+          alt="AFRAH Construction Super Modern Architectural Blueprint CAD Schematic"
+          class="blueprint-img blueprint-light-img"
+          id="blueprint-img-light"
+        />
+
+        <!-- Interactive Blueprint Coordinate Crosshairs -->
+        <div class="blueprint-grid-overlay"></div>
+      </div>
+
+      <!-- Blueprint Toolset Bar -->
+      <div class="blueprint-tools font-mono-data">
+        <div class="blueprint-meta">
+          <span class="blueprint-id" style="color: var(--primary);">DWG #AFR-2026-X01</span>
+          <span class="blueprint-scale" style="color: var(--text-secondary);">SCALE: 1:200 @ A0</span>
+        </div>
+        <div class="blueprint-actions">
+          <button class="blueprint-tool-btn" id="btn-zoom-in" title="Zoom In">
+            <span class="material-symbols-outlined">zoom_in</span>
+          </button>
+          <button class="blueprint-tool-btn" id="btn-zoom-out" title="Zoom Out">
+            <span class="material-symbols-outlined">zoom_out</span>
+          </button>
+          <button class="blueprint-tool-btn" id="btn-zoom-reset" title="Reset Zoom">
+            <span class="material-symbols-outlined">restart_alt</span>
+          </button>
+          <a href="/images/blueprint-dark.jpg" target="_blank" class="blueprint-tool-btn" id="btn-full-res" title="Open Full Resolution">
+            <span class="material-symbols-outlined">open_in_new</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Technical Telemetry Specs below the viewer -->
+  <div class="grid-12 model-specs">
+    <div class="model-spec" data-animate="fade-up" style="--stagger: 400ms;">
+      <span class="font-mono-data spec-title" style="color: var(--primary);">STRUCTURAL EXOSKELETON</span>
+      <span class="font-mono-data spec-val" style="color: var(--text-secondary);">High-Tensile Diagrid Steel S355</span>
+    </div>
+    <div class="model-spec" data-animate="fade-up" style="--stagger: 500ms;">
+      <span class="font-mono-data spec-title" style="color: var(--primary);">MASS DAMPER SYSTEM</span>
+      <span class="font-mono-data spec-val" style="color: var(--text-secondary);">650t Spherical Pendulum</span>
+    </div>
+    <div class="model-spec" data-animate="fade-up" style="--stagger: 600ms;">
+      <span class="font-mono-data spec-title" style="color: var(--primary);">FLOOR COUNT & HEIGHT</span>
+      <span class="font-mono-data spec-val" style="color: var(--text-secondary);">72 Levels / 312m Landmark</span>
+    </div>
+    <div class="model-spec" data-animate="fade-up" style="--stagger: 700ms;">
+      <span class="font-mono-data spec-title" style="color: var(--primary);">SEISMIC / WIND RATING</span>
+      <span class="font-mono-data spec-val" style="color: var(--text-secondary);">Zone 4 · Cat. IV 180 mph</span>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initModelViewer } from '../scripts/model-viewer.js';
+
+  function setupModelViewerUI() {
+    initModelViewer('model-viewer-canvas');
+
+    // Tab Switching
+    const tab3d = document.getElementById('tab-3d');
+    const tabBlueprint = document.getElementById('tab-blueprint');
+    const panel3d = document.getElementById('panel-3d');
+    const panelBlueprint = document.getElementById('panel-blueprint');
+
+    tab3d?.addEventListener('click', () => {
+      tab3d.classList.add('active');
+      tabBlueprint?.classList.remove('active');
+      panel3d?.classList.add('active');
+      panelBlueprint?.classList.remove('active');
+    });
+
+    tabBlueprint?.addEventListener('click', () => {
+      tabBlueprint.classList.add('active');
+      tab3d?.classList.remove('active');
+      panelBlueprint?.classList.add('active');
+      panel3d?.classList.remove('active');
+    });
+
+    // 3D Camera Angle Presets
+    const presetBtns = document.querySelectorAll('.preset-btn');
+    presetBtns.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        presetBtns.forEach((b) => b.classList.remove('active'));
+        const target = e.currentTarget;
+        target.classList.add('active');
+        const camView = target.getAttribute('data-cam');
+        if (window.setBlueprintView) {
+          window.setBlueprintView(camView);
+        }
+      });
+    });
+
+    // 3D Layer Toggles
+    const layerDiagrid = document.getElementById('layer-diagrid');
+    const layerSlabs = document.getElementById('layer-slabs');
+    const layerCore = document.getElementById('layer-core');
+    const layerDamper = document.getElementById('layer-damper');
+
+    layerDiagrid?.addEventListener('change', (e) => {
+      window.setBlueprintLayer && window.setBlueprintLayer('diagrid', e.target.checked);
+    });
+    layerSlabs?.addEventListener('change', (e) => {
+      window.setBlueprintLayer && window.setBlueprintLayer('slabs', e.target.checked);
+    });
+    layerCore?.addEventListener('change', (e) => {
+      window.setBlueprintLayer && window.setBlueprintLayer('core', e.target.checked);
+    });
+    layerDamper?.addEventListener('change', (e) => {
+      window.setBlueprintLayer && window.setBlueprintLayer('damper', e.target.checked);
+    });
+
+    // Blueprint Sheet Zoom & Pan Controller
+    let currentZoom = 1;
+    const zoomContainer = document.getElementById('blueprint-zoom-container');
+    const btnZoomIn = document.getElementById('btn-zoom-in');
+    const btnZoomOut = document.getElementById('btn-zoom-out');
+    const btnZoomReset = document.getElementById('btn-zoom-reset');
+    const btnFullRes = document.getElementById('btn-full-res');
+
+    function updateZoom() {
+      if (zoomContainer) {
+        zoomContainer.style.transform = `scale(${currentZoom})`;
+      }
+    }
+
+    btnZoomIn?.addEventListener('click', () => {
+      currentZoom = Math.min(currentZoom + 0.25, 2.5);
+      updateZoom();
+    });
+
+    btnZoomOut?.addEventListener('click', () => {
+      currentZoom = Math.max(currentZoom - 0.25, 0.75);
+      updateZoom();
+    });
+
+    btnZoomReset?.addEventListener('click', () => {
+      currentZoom = 1;
+      updateZoom();
+    });
+
+    // Update Full Res Link based on theme
+    function updateFullResLink() {
+      const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+      if (btnFullRes) {
+        btnFullRes.setAttribute('href', theme === 'light' ? '/images/blueprint-light.jpg' : '/images/blueprint-dark.jpg');
+      }
+    }
+    updateFullResLink();
+    window.addEventListener('themechange', updateFullResLink);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupModelViewerUI);
+  } else {
+    setupModelViewerUI();
+  }
+</script>
+
+<style>
+  .model-header {
+    margin-bottom: 32px;
+  }
+
+  .blueprint-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    background: var(--surface-glass-subtle);
+    border: 1px solid var(--border-stroke);
+    color: var(--primary);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    backdrop-filter: blur(8px);
+  }
+
+  .pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    box-shadow: 0 0 8px var(--primary);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .model-label-col {
+    grid-column: span 4;
+  }
+
+  .model-title-col {
+    grid-column: span 4;
+  }
+
+  @media (min-width: 768px) {
+    .model-label-col {
+      grid-column: span 3;
+    }
+    .model-title-col {
+      grid-column: span 9;
+    }
+  }
+
+  /* Viewer Tabs */
+  .viewer-tabs-col {
+    grid-column: span 4;
+  }
+
+  @media (min-width: 768px) {
+    .viewer-tabs-col {
+      grid-column: span 12;
+    }
+  }
+
+  .viewer-tabs {
+    display: inline-flex;
+    padding: 6px;
+    border-radius: 9999px;
+    gap: 6px;
+  }
+
+  .viewer-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border-radius: 9999px;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .viewer-tab .tab-icon {
+    font-size: 18px;
+  }
+
+  .viewer-tab.active {
+    background-color: var(--primary);
+    color: var(--on-primary);
+    box-shadow: 0 4px 16px var(--glow-color);
+  }
+
+  .viewer-tab:not(.active):hover {
+    color: var(--primary);
+    background: var(--hover-highlight-bg);
+  }
+
+  /* Canvas Wrapper with Responsive Heights */
+  .model-canvas-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+    min-height: 560px;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: var(--surface-container-lowest);
+  }
+
+  @media (max-width: 767px) {
+    .model-canvas-wrapper {
+      aspect-ratio: auto;
+      height: 72vh;
+      min-height: 540px;
+      margin-left: 0;
+      margin-right: 0;
+      border-radius: 0;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .model-canvas-wrapper {
+      margin-left: var(--margin-desktop);
+      margin-right: var(--margin-desktop);
+    }
+  }
+
+  /* View Panels */
+  .view-panel {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  .view-panel.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .model-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: grab;
+  }
+
+  .model-canvas:active {
+    cursor: grabbing;
+  }
+
+  /* Camera Presets (Top Right) */
+  .camera-presets {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface-glass);
+    padding: 6px 12px;
+    border-radius: 9999px;
+    border: 1px solid var(--surface-glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 10;
+  }
+
+  .preset-label {
+    font-size: 10px;
+    color: var(--text-secondary);
+    letter-spacing: 0.1em;
+    margin-right: 4px;
+  }
+
+  .preset-btn {
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 10px;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+  }
+
+  .preset-btn.active,
+  .preset-btn:hover {
+    background-color: var(--primary);
+    color: var(--on-primary);
+  }
+
+  /* Layer Toggles (Bottom Left) */
+  .layer-toggles {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--surface-glass);
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--surface-glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 10;
+  }
+
+  @media (max-width: 767px) {
+    .layer-toggles {
+      display: none;
+    }
+  }
+
+  .layer-title {
+    font-size: 10px;
+    color: var(--primary);
+    letter-spacing: 0.15em;
+    margin-bottom: 2px;
+  }
+
+  .layer-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  .layer-item input {
+    accent-color: var(--primary);
+  }
+
+  /* Hotspot Cards */
+  .hotspot-card {
+    position: absolute;
+    background: var(--surface-glass);
+    border: 1px solid var(--surface-glass-border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 10px;
+    backdrop-filter: blur(8px);
+    box-shadow: var(--surface-glass-shadow);
+    pointer-events: none;
+    z-index: 5;
+    transition: transform 0.3s ease;
+  }
+
+  .hotspot-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--primary);
+    margin-bottom: 2px;
+  }
+
+  .hotspot-pin {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 6px var(--primary);
+  }
+
+  .hotspot-body {
+    color: var(--text-secondary);
+  }
+
+  .hotspot-damper {
+    top: 60px;
+    right: 20px;
+    max-width: 220px;
+  }
+
+  .hotspot-skygarden {
+    bottom: 80px;
+    right: 20px;
+    max-width: 220px;
+  }
+
+  @media (max-width: 1024px) {
+    .hotspot-card {
+      display: none;
+    }
+  }
+
+  /* Orbit Hint */
+  .model-hint {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    background: var(--surface-glass);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 8px 18px;
+    border-radius: 9999px;
+    border: 1px solid var(--surface-glass-border);
+    box-shadow: var(--surface-glass-shadow);
+    pointer-events: none;
+    font-size: 11px;
+    white-space: nowrap;
+    opacity: 0.9;
+    z-index: 10;
+  }
+
+  @media (max-width: 767px) {
+    .model-hint {
+      bottom: 12px;
+      padding: 6px 12px;
+      font-size: 10px;
+    }
+  }
+
+  /* ============================================
+     VIEW 2: BLUEPRINT SHEET STYLES
+     ============================================ */
+  .blueprint-sheet-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: var(--surface-container-lowest);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: center center;
+  }
+
+  .blueprint-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    user-select: none;
+  }
+
+  /* Show appropriate blueprint image based on data-theme */
+  [data-theme="light"] .blueprint-dark-img,
+  html.light .blueprint-dark-img {
+    display: none;
+  }
+  [data-theme="light"] .blueprint-light-img,
+  html.light .blueprint-light-img {
+    display: block;
+  }
+
+  [data-theme="dark"] .blueprint-light-img,
+  :root:not([data-theme="light"]) .blueprint-light-img {
+    display: none;
+  }
+  [data-theme="dark"] .blueprint-dark-img,
+  :root:not([data-theme="light"]) .blueprint-dark-img {
+    display: block;
+  }
+
+  /* Blueprint Tools Toolbar */
+  .blueprint-tools {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface-glass);
+    border: 1px solid var(--surface-glass-border);
+    padding: 8px 16px;
+    border-radius: 9999px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--surface-glass-shadow);
+    z-index: 15;
+  }
+
+  .blueprint-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+
+  .blueprint-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .blueprint-tool-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border-stroke);
+    background: var(--surface-glass-subtle);
+    color: var(--primary);
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .blueprint-tool-btn:hover {
+    background-color: var(--primary);
+    color: var(--on-primary);
+    transform: scale(1.08);
+  }
+
+  .blueprint-tool-btn span {
+    font-size: 18px;
+  }
+
+  /* Tech Specs */
+  .model-specs {
+    margin-top: 48px;
+    row-gap: 24px;
+  }
+
+  .model-spec {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-left: 16px;
+    border-left: 1px solid var(--border-stroke);
+    transition: border-color 0.4s ease;
+  }
+
+  @media (min-width: 768px) {
+    .model-spec {
+      grid-column: span 3;
+    }
+  }
+
+  .spec-title {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    transition: color 0.4s ease;
+  }
+
+  .spec-val {
+    font-size: 13px;
+    transition: color 0.4s ease;
+  }
+</style>

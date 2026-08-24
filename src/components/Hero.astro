@@ -1,0 +1,324 @@
+---
+// Section: Hero — GSAP ScrollTrigger Scrubbed Morning-to-Night, Scale Zoom & Clean Editorial AFRAH Branding
+---
+
+<section class="hero-scroll-track" id="hero">
+  <div class="hero-sticky-frame" id="hero-sticky-frame">
+    <!-- 1. Full-Bleed 100% Fit Skyscraper Stage -->
+    <div class="hero-building-viewport" id="hero-building-viewport">
+      <div class="hero-building-motion" id="hero-building-motion">
+        <!-- Morning Daylight Version (Visible on Load) -->
+        <img
+          src="/images/afrah-tower-morning.jpg"
+          alt="AFRAH Commercial Skyscraper in Morning Daylight"
+          class="building-layer building-morning"
+          id="building-morning"
+        />
+
+        <!-- Radiant Night Version (Gradually Appears on Scroll via GSAP) -->
+        <img
+          src="/images/afrah-tower-night.jpg"
+          alt="AFRAH Commercial Skyscraper in Radiant Night Illumination"
+          class="building-layer building-night"
+          id="building-night"
+        />
+      </div>
+    </div>
+
+    <!-- 2. Clean Editorial Architectural Branding (Refined Luxury Aesthetic) -->
+    <div class="hero-brand-layer" id="hero-brand-layer">
+      <div class="hero-brand-content">
+        <span class="hero-eyebrow font-mono-data">SHAPING STRUCTURAL EXCELLENCE</span>
+        <h1 class="hero-title">AFRAH</h1>
+        <p class="hero-desc font-body-lg">You bring the dream, we’ll build the home.</p>
+      </div>
+    </div>
+
+    <!-- 3. Minimalist Architectural Telemetry Indicators -->
+    <div class="hero-telemetry-bar font-mono-data" id="hero-telemetry-bar">
+      <div class="telemetry-item">
+        <span class="telemetry-line"></span>
+        <span>01 / FLAGSHIP TOWER · 312M</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="telemetry-line"></span>
+        <span>72 STOREYS · HIGH-TENSILE DIAGRID</span>
+      </div>
+    </div>
+
+    <!-- 4. Bottom Seamless Vignette Fade into Section 01 -->
+    <div class="hero-bottom-vignette"></div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initGsapHero() {
+    const track = document.getElementById('hero');
+    const motion = document.getElementById('hero-building-motion');
+    const nightLayer = document.getElementById('building-night');
+    const brandLayer = document.getElementById('hero-brand-layer');
+    const telemetryBar = document.getElementById('hero-telemetry-bar');
+
+    if (!track || !motion || !nightLayer) return;
+
+    // 1. GSAP ScrollTrigger Timeline for synchronized Day-to-Night, Scale Zoom & Typography Motion
+    const heroTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: track,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.5,
+        invalidateOnRefresh: true,
+      },
+    });
+
+    heroTl
+      .to(nightLayer, {
+        opacity: 1,
+        ease: 'none',
+      }, 0)
+      .to(motion, {
+        scale: 1.18,
+        y: -30,
+        ease: 'none',
+      }, 0);
+
+    if (brandLayer) {
+      heroTl.to(brandLayer, {
+        scale: 1.08,
+        y: -90, // Floats upwards towards the top as you scroll
+        ease: 'none',
+      }, 0);
+    }
+
+    if (telemetryBar) {
+      heroTl.to(telemetryBar, {
+        opacity: 0.3,
+        y: -15,
+        ease: 'none',
+      }, 0);
+    }
+
+    // 2. Hardware-accelerated mouse parallax using GSAP quickTo
+    const setParallaxX = gsap.quickTo(motion, 'x', { duration: 0.6, ease: 'power2.out' });
+    const setBrandParallaxX = brandLayer ? gsap.quickTo(brandLayer, 'x', { duration: 0.6, ease: 'power2.out' }) : null;
+
+    window.addEventListener('mousemove', (e) => {
+      const normX = (e.clientX / window.innerWidth - 0.5) * -20;
+      setParallaxX(normX);
+      if (setBrandParallaxX) {
+        setBrandParallaxX(normX * 0.6);
+      }
+    }, { passive: true });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGsapHero);
+  } else {
+    initGsapHero();
+  }
+</script>
+
+<style>
+  /* 1. Optimized Scroll Track (165vh — 2 Scrolls to Exit) */
+  .hero-scroll-track {
+    position: relative;
+    width: 100vw;
+    height: 165vh;
+    margin: 0;
+    padding: 0;
+    background-color: #070B20;
+  }
+
+  [data-theme="light"] .hero-scroll-track,
+  html.light .hero-scroll-track {
+    background-color: #F8F9FB;
+  }
+
+  /* 2. Sticky Viewport Frame */
+  .hero-sticky-frame {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  /* 3. 100% Full-Bleed Edge-to-Edge Building Viewport */
+  .hero-building-viewport {
+    position: absolute;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .hero-building-motion {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    transform-origin: center 80%;
+    will-change: transform;
+  }
+
+  .building-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center bottom;
+    display: block;
+    user-select: none;
+  }
+
+  /* Morning Daylight Layer (Base) */
+  .building-morning {
+    z-index: 1;
+    opacity: 1;
+  }
+
+  /* Radiant Night Layer (Fades in over morning on scroll via GSAP) */
+  .building-night {
+    z-index: 2;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  /* 4. AFRAH Typography Layer (Centered on load, floats up on scroll) */
+  .hero-brand-layer {
+    position: absolute;
+    top: 48%;
+    left: 0;
+    width: 100vw;
+    z-index: 3;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    padding: 0 24px;
+    transform: translateY(-50%);
+    transform-origin: center center;
+    will-change: transform;
+  }
+
+  @media (max-width: 767px) {
+    .hero-brand-layer {
+      top: 46%;
+    }
+  }
+
+  .hero-brand-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    max-width: 840px;
+    background: none;
+    padding: 0;
+  }
+
+  /* Eyebrow Pure White Monospace Tag */
+  .hero-eyebrow {
+    font-size: clamp(13px, 1.1vw, 15px);
+    letter-spacing: 0.32em;
+    color: #FFFFFF !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.95);
+  }
+
+  /* Main Headline */
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(48px, 9vw, 110px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: #FFFFFF !important;
+    margin: 0;
+    line-height: 0.95;
+    text-shadow: 0 8px 40px rgba(0, 0, 0, 0.9);
+  }
+
+  /* Bold Editorial Description */
+  .hero-desc {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: clamp(16px, 1.6vw, 22px);
+    font-weight: 600;
+    color: #FFFFFF !important;
+    max-width: 680px;
+    line-height: 1.45;
+    margin: 0;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.95);
+  }
+
+  /* 5. Minimalist Bottom Architectural Telemetry Indicators */
+  .hero-telemetry-bar {
+    position: absolute;
+    bottom: 36px;
+    left: 48px;
+    right: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 3;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+
+  @media (max-width: 767px) {
+    .hero-telemetry-bar {
+      display: none;
+    }
+  }
+
+  .telemetry-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: rgba(255, 255, 255, 0.85) !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+  }
+
+  .telemetry-line {
+    width: 16px;
+    height: 1px;
+    background-color: #E2C399;
+  }
+
+  /* 6. Bottom Vignette Fade into Section 01 */
+  .hero-bottom-vignette {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(to top, #070B20 0%, transparent 100%);
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  [data-theme="light"] .hero-bottom-vignette,
+  html.light .hero-bottom-vignette {
+    background: linear-gradient(to top, #F8F9FB 0%, transparent 100%);
+  }
+</style>

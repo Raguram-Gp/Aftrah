@@ -1,0 +1,25 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+import Hero from '../components/Hero.astro';
+import Philosophy from '../components/Philosophy.astro';
+import Portfolio from '../components/Portfolio.astro';
+import ModelViewer from '../components/ModelViewer.astro';
+import Capabilities from '../components/Capabilities.astro';
+import Inquiry from '../components/Inquiry.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout>
+  <Navbar />
+  <div style="position: relative; z-index: 1;">
+    <Hero />
+    <Philosophy />
+    <Portfolio />
+    <ModelViewer />
+    <Capabilities />
+    <Inquiry />
+    <Footer />
+  </div>
+</Layout>

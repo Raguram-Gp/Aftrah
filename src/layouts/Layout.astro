@@ -1,0 +1,67 @@
+---
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'AFRAH CONSTRUCTION | Shaping Structural Landmark Excellence',
+  description = 'Next-generation engineering and bold architectural forms for commercial and high-density developments. AFRAH stands at the intersection of raw mechanical strength and refined architectural intent.'
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Theme Initialization Script (Zero FOUC) -->
+    <script is:inline>
+      (function() {
+        try {
+          const savedTheme = localStorage.getItem('afrah-theme');
+          const systemPrefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+          const theme = savedTheme ? savedTheme : (systemPrefersLight ? 'light' : 'dark');
+          document.documentElement.setAttribute('data-theme', theme);
+          document.documentElement.classList.remove('dark', 'light');
+          document.documentElement.classList.add(theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+
+    <title>{title}</title>
+
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <!-- Global Critical Styles -->
+    <style>
+      /* Critical above-the-fold: prevent FOUC */
+      html { background-color: var(--background, #111317); }
+    </style>
+  </head>
+  <body>
+    <slot />
+
+    <!-- Client-side animations -->
+    <script>
+      import '../scripts/animations.js';
+    </script>
+  </body>
+</html>
+

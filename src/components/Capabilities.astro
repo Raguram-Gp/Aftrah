@@ -1,0 +1,151 @@
+---
+// Section 04 / Capabilities — Stats & Service List
+const stats = [
+  { value: '2.4M+', label: 'Sq. Ft Built Globally', countTo: 2400000 },
+  { value: '100%', label: 'Zero-Harm Safety Record', countTo: 100 },
+  { value: '40+', label: 'National Architecture Awards', countTo: 40 },
+  { value: 'Net-Zero', label: 'Ready Designs Standard', countTo: null },
+];
+
+const capabilities = [
+  {
+    title: 'Turnkey EPC Delivery',
+    description: 'End-to-end engineering, procurement, and construction management for massive-scale developments.',
+  },
+  {
+    title: 'BIM 3D Modeling',
+    description: 'Clash-detection and digital twin integration ensuring absolute precision before groundbreak.',
+  },
+  {
+    title: 'Structural Steel & Façade',
+    description: 'Bespoke kinetic envelopes and high-tensile frameworks designed for extreme load cases.',
+  },
+];
+---
+
+<section class="section-padding capabilities-section" id="capabilities" style="border-top: 1px solid var(--border-stroke); position: relative; overflow: hidden;">
+  <!-- Section Label -->
+  <div class="grid-12" style="margin-bottom: 64px; position: relative; z-index: 2;">
+    <div style="grid-column: span 4;">
+      <h2 class="font-mono-data" style="color: var(--text-secondary); letter-spacing: 0.15em; text-transform: uppercase;">
+        04 / CAPABILITIES
+      </h2>
+    </div>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="grid-12 stats-row" style="position: relative; z-index: 2;">
+    {stats.map((stat) => (
+      <div class="stat-item">
+        <div
+          class="font-display-lg stat-value"
+          style="color: var(--primary); margin-bottom: 8px;"
+          data-count-to={stat.countTo?.toString()}
+          data-count-suffix={stat.value.replace(/[\d.,]+/g, '')}
+        >
+          {stat.value}
+        </div>
+        <p class="font-mono-data" style="color: var(--text-secondary); text-transform: uppercase;">
+          {stat.label}
+        </p>
+      </div>
+    ))}
+  </div>
+
+  <!-- Capabilities List -->
+  <div class="grid-12" style="margin-top: 96px; position: relative; z-index: 2;">
+    <div class="capabilities-list-col">
+      <ul class="capabilities-list">
+        {capabilities.map((cap) => (
+          <li class="capability-item border-b-subtle">
+            <h4 class="capability-title font-headline-md" style="color: var(--primary);">{cap.title}</h4>
+            <p class="font-body-sm" style="color: var(--text-secondary); max-width: 480px;">{cap.description}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .capabilities-section {
+    position: relative;
+  }
+
+  .stats-row {
+    row-gap: 48px;
+  }
+
+  .stat-item {
+    grid-column: span 2;
+    border-left: 1px solid var(--border-stroke);
+    padding-left: 24px;
+  }
+
+  @media (min-width: 768px) {
+    .stat-item {
+      grid-column: span 3;
+    }
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+
+  @media (min-width: 768px) {
+    .stat-value {
+      font-size: 64px;
+    }
+  }
+
+  .capabilities-list-col {
+    grid-column: span 4;
+  }
+
+  @media (min-width: 768px) {
+    .capabilities-list-col {
+      grid-column: span 12;
+    }
+  }
+
+  .capabilities-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .capability-item {
+    padding: 32px 16px;
+    margin-left: -16px;
+    margin-right: -16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: background-color 0.3s ease;
+    cursor: default;
+  }
+
+  @media (min-width: 768px) {
+    .capability-item {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .capability-item p {
+      text-align: right;
+    }
+  }
+
+  .capability-item:hover {
+    background-color: var(--hover-highlight-bg);
+  }
+
+  .capability-item:hover .capability-title {
+    padding-left: 16px;
+  }
+
+  .capability-title {
+    transition: padding-left 0.3s ease;
+    margin-bottom: 0;
+  }
+</style>

@@ -1,0 +1,130 @@
+---
+// Footer — AFRAH Construction
+---
+
+<footer class="footer" style="background-color: var(--surface-container-lowest); border-top: 1px solid var(--border-stroke);">
+  <div class="footer-inner">
+    <!-- Left Column: Logo & Copyright -->
+    <div class="footer-left">
+      <img
+        alt="AFRAH Logo"
+        class="footer-logo"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRo0QihAT00r-qA4d2vCTRjKzvjAG1Wgk6OUGRAuxKCFI78FkctTB7Eiq3ARgBpIbp1cXwsqAEHbnMlbnR1eNw-RQM1oDNiZSpEhzv3YJGAhff2l17xKCQY15i3KYhzXYzHgM1ftwQCBhhRWDNaPLhWPpPoqk9W-5G85Rh4RC0eoNOS9qBCf8PwwEaO1TgouuFQuePADlMyIchtKK9H-30B1zCPGMvtJ2oPDVQJq318CvWPK6AMw"
+      />
+      <div class="footer-copyright">
+        <p class="font-mono-data" style="color: var(--text-secondary);">
+          © 2024 AFRAH CONSTRUCTION. ALL RIGHTS RESERVED.
+        </p>
+      </div>
+    </div>
+
+    <!-- Right Column: Locations & Certifications -->
+    <div class="footer-right">
+      <ul class="footer-locations">
+        <li>
+          <a href="#" class="font-mono-data footer-link">London / 51.5074° N, 0.1278° W</a>
+        </li>
+        <li>
+          <a href="#" class="font-mono-data footer-link">New York / 40.7128° N, 74.0060° W</a>
+        </li>
+      </ul>
+      <ul class="footer-certs">
+        <li class="font-mono-data" style="color: var(--primary);">ISO 9001 CERTIFIED</li>
+        <li class="font-mono-data" style="color: var(--primary);">LEED PLATINUM</li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    width: 100%;
+    padding: 80px var(--margin-mobile);
+  }
+
+  @media (min-width: 768px) {
+    .footer {
+      padding: 80px var(--margin-desktop);
+    }
+  }
+
+  .footer-inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--gutter);
+  }
+
+  @media (min-width: 768px) {
+    .footer-inner {
+      grid-template-columns: repeat(12, 1fr);
+    }
+  }
+
+  .footer-left {
+    grid-column: span 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 200px;
+  }
+
+  @media (min-width: 768px) {
+    .footer-left {
+      grid-column: span 4;
+    }
+  }
+
+  .footer-logo {
+    width: 128px;
+    height: auto;
+    opacity: 0.85;
+    mix-blend-mode: var(--logo-blend-mode);
+    filter: var(--logo-filter);
+    transition: opacity 0.3s ease, filter 0.4s ease;
+  }
+
+  .footer-copyright {
+    margin-top: auto;
+    transition: color 0.4s ease;
+  }
+
+  .footer-right {
+    grid-column: span 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 32px;
+    min-height: 200px;
+  }
+
+  @media (min-width: 768px) {
+    .footer-right {
+      grid-column: 9 / span 4;
+    }
+  }
+
+  .footer-locations {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-link {
+    color: var(--text-secondary);
+    text-decoration: underline;
+    transition: color 0.3s ease;
+  }
+
+  .footer-link:hover {
+    color: var(--primary);
+  }
+
+  .footer-certs {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: auto;
+  }
+</style>
