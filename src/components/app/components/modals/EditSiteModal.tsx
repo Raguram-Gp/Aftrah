@@ -50,7 +50,7 @@ export const EditSiteModal: React.FC<EditSiteModalProps> = ({ site, isOpen, onCl
     if (site) {
       setSiteName(site.siteName || '');
       setClientName(site.clientName || '');
-      setSiteAddress(site.siteAddress || site.address || '');
+      setSiteAddress(site.siteAddress || '');
       setContactNumber(site.contactNumber || '');
       setEmail(site.email || '');
       setProjectType(site.projectType || 'Commercial High-Rise');
@@ -75,7 +75,6 @@ export const EditSiteModal: React.FC<EditSiteModalProps> = ({ site, isOpen, onCl
       siteName: siteName.trim(),
       clientName: clientName.trim(),
       siteAddress: siteAddress.trim(),
-      address: siteAddress.trim(),
       contactNumber: contactNumber.trim(),
       email: email.trim() || undefined,
       projectType,

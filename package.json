@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^6.0.4",
+    "@supabase/supabase-js": "^2.112.4",
     "@tanstack/react-table": "^8.21.3",
     "astro": "^7.2.4",
     "gsap": "^3.15.0",
@@ -22,7 +23,9 @@
     "three": "^0.185.1"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.5"
+    "@types/react-dom": "^19.2.5",
+    "typescript": "^6.0.3"
   }
 }

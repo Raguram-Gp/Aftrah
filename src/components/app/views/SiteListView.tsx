@@ -95,7 +95,7 @@ export const SiteListView: React.FC<SiteListViewProps> = ({ onOpenAddSite }) => 
         cell: ({ row }) => {
           const site = row.original;
           const fullAddress = site.siteAddress || (site as any).address || '';
-          const addressParts = fullAddress.split(',').map((p) => p.trim()).filter(Boolean);
+          const addressParts = fullAddress.split(',').map((p: string) => p.trim()).filter(Boolean);
           const locationText = addressParts.length > 2 
             ? addressParts.slice(-2).join(', ') 
             : (addressParts.length > 0 ? addressParts.join(', ') : '');
@@ -372,7 +372,7 @@ export const SiteListView: React.FC<SiteListViewProps> = ({ onOpenAddSite }) => 
     return (
       s.siteName.toLowerCase().includes(q) ||
       s.clientName.toLowerCase().includes(q) ||
-      s.address.toLowerCase().includes(q) ||
+      (s.siteAddress || '').toLowerCase().includes(q) ||
       s.contactNumber.toLowerCase().includes(q) ||
       s.projectType.toLowerCase().includes(q)
     );

@@ -1,0 +1,12 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../styles/global.css';
+import AftrahAppPortal from '../components/aftrah-app/AftrahAppPortal';
+---
+
+<Layout 
+  title="Aftrah Constructions | Client Directory & Portfolio Management ERP"
+  description="Manage enterprise client accounts, milestone billing schedules, payment collections, and multi-site project delivery for Aftrah Constructions."
+>
+  <AftrahAppPortal client:only="react" />
+</Layout>
