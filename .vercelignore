@@ -1,0 +1,9 @@
+.venv
+design_ref
+stitch_aftra_construction_digital_experience.zip
+supabase
+.git
+.astro
+dist
+node_modules
+.env*
