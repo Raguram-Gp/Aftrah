@@ -496,29 +496,42 @@ html.light .app2-sidebar {
   max-width: 100%;
   margin: 0;
   box-sizing: border-box;
+  min-width: 0;
 }
 
 /* Wireframe 2-Column Layout */
 .aftrah-app-wireframe-layout,
 .app2-wireframe-layout {
   display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 20px;
   align-items: flex-start;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1320px) {
   .aftrah-app-wireframe-layout,
   .app2-wireframe-layout {
-    grid-template-columns: 1fr 320px;
-    gap: 18px;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 16px;
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1120px) {
+  .aftrah-app-wireframe-layout,
+  .app2-wireframe-layout {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 920px) {
   .aftrah-app-wireframe-layout,
   .app2-wireframe-layout {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 }
 
@@ -530,6 +543,9 @@ html.light .app2-sidebar {
   border-radius: 12px;
   padding: 20px;
   box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 [data-theme="light"] .aftrah-app-table-section,
@@ -636,6 +652,10 @@ html.light .app2-sidebar {
   overflow-x: auto;
   border-radius: 8px;
   border: 1px solid var(--border-stroke, #252830);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 [data-theme="light"] .aftrah-app-table-container,
@@ -934,6 +954,9 @@ html.light .app2-sidebar {
   box-sizing: border-box;
   position: sticky;
   top: 74px;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
 }
 
 [data-theme="light"] .aftrah-app-form-card,
@@ -999,8 +1022,10 @@ html.light .app2-sidebar {
 
 .aftrah-app-input,
 .aftrah-app-textarea,
+.aftrah-app-select,
 .app2-input,
-.app2-textarea {
+.app2-textarea,
+.app2-select {
   width: 100%;
   height: 38px;
   padding: 0 12px;
@@ -1014,6 +1039,16 @@ html.light .app2-sidebar {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.aftrah-app-select,
+.app2-select {
+  padding: 0 32px 0 12px;
+  background: var(--surface-container, #1e2126) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
 .aftrah-app-textarea,
 .app2-textarea {
   height: auto;
@@ -1023,16 +1058,28 @@ html.light .app2-sidebar {
 
 [data-theme="light"] .aftrah-app-input,
 [data-theme="light"] .aftrah-app-textarea,
+[data-theme="light"] .aftrah-app-select,
 [data-theme="light"] .app2-input,
-[data-theme="light"] .app2-textarea {
+[data-theme="light"] .app2-textarea,
+[data-theme="light"] .app2-select {
   background: #F8FAFC;
   border-color: #CBD5E1;
+  color: #1E293B;
+}
+
+[data-theme="light"] .aftrah-app-select,
+[data-theme="light"] .app2-select {
+  background: #F8FAFC url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center;
 }
 
 .aftrah-app-input:focus,
 .aftrah-app-textarea:focus,
+.aftrah-app-select:focus,
+.aftrah-app-select:hover,
 .app2-input:focus,
-.app2-textarea:focus {
+.app2-textarea:focus,
+.app2-select:focus,
+.app2-select:hover {
   border-color: var(--primary);
   box-shadow: 0 0 0 2px rgba(226, 195, 153, 0.18);
 }
@@ -1100,6 +1147,10 @@ html.light .app2-sidebar {
   display: flex;
   flex-direction: column;
   gap: 28px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .client-details-header {
@@ -1280,6 +1331,22 @@ html.light .app2-sidebar {
 
 .metric-value.red {
   color: #f87171;
+}
+
+[data-theme="light"] .metric-value.gold {
+  color: #b45309;
+}
+
+[data-theme="light"] .metric-value.blue {
+  color: #2563eb;
+}
+
+[data-theme="light"] .metric-value.green {
+  color: #16a34a;
+}
+
+[data-theme="light"] .metric-value.red {
+  color: #dc2626;
 }
 
 .client-details-side-by-side-grid {
@@ -1662,4 +1729,704 @@ html.light .app2-sidebar {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+/* Tab Placeholder View */
+.aftrah-app-tab-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 120px);
+  width: 100%;
+  padding: 32px 16px;
+  box-sizing: border-box;
+}
+
+.aftrah-app-placeholder-card {
+  background: var(--surface-container, #1c1f24);
+  border: 1px solid var(--border-stroke, #2a2f3a);
+  border-radius: 16px;
+  padding: 48px 36px;
+  text-align: center;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+[data-theme="light"] .aftrah-app-placeholder-card,
+html.light .aftrah-app-placeholder-card {
+  background: #FFFFFF;
+  border-color: #E2E8F0;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
+}
+
+.aftrah-app-placeholder-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  background: rgba(226, 195, 153, 0.12);
+  border: 1px solid rgba(226, 195, 153, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aftrah-app-placeholder-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary, #F5F5F7);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+[data-theme="light"] .aftrah-app-placeholder-title,
+html.light .aftrah-app-placeholder-title {
+  color: #0F172A;
+}
+
+.aftrah-app-placeholder-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary, #94A3B8);
+  margin: 0;
+  max-width: 420px;
+}
+
+.aftrah-app-placeholder-status {
+  margin-top: 8px;
+}
+
+.aftrah-app-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(226, 195, 153, 0.15);
+  color: var(--primary, #E2C399);
+  border: 1px solid rgba(226, 195, 153, 0.3);
+}
+
+/* ==========================================================================
+   DATE FILTER TOOLBAR & BULK ACTIONS
+   ========================================================================== */
+
+.table-filter-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 18px;
+  background: var(--surface-container-low, #181b1f);
+  border: 1px solid var(--border-stroke, #282c35);
+  border-radius: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+[data-theme="light"] .table-filter-toolbar,
+html.light .table-filter-toolbar {
+  background: #FFFFFF;
+  border-color: #E2E8F0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.filter-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.date-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.date-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.date-filter-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary, #94A3B8);
+  white-space: nowrap;
+}
+
+.date-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.date-input-icon {
+  position: absolute;
+  left: 9px;
+  color: var(--primary, #e2c399);
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.date-input-control {
+  height: 34px;
+  padding: 0 10px 0 28px;
+  background: var(--surface-container, #141619);
+  border: 1px solid var(--border-stroke, #282c35);
+  border-radius: 8px;
+  color: var(--text-primary, #F5F5F7);
+  font-size: 12.5px;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+[data-theme="light"] .date-input-control,
+html.light .date-input-control {
+  background: #F8FAFC;
+  border-color: #CBD5E1;
+  color: #0F172A;
+}
+
+.date-input-control:focus {
+  border-color: var(--primary, #e2c399);
+  box-shadow: 0 0 0 2px rgba(226, 195, 153, 0.2);
+}
+
+.clear-date-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 10px;
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.clear-date-filter-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+[data-theme="light"] .clear-date-filter-btn,
+html.light .clear-date-filter-btn {
+  background: #FEE2E2;
+  color: #DC2626;
+  border-color: #FCA5A5;
+}
+
+.date-quick-presets {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-left: 1px solid var(--border-stroke, #282c35);
+  padding-left: 14px;
+}
+
+[data-theme="light"] .date-quick-presets,
+html.light .date-quick-presets {
+  border-left-color: #E2E8F0;
+}
+
+.quick-preset-chip {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  background: var(--surface-container, #1e2126);
+  border: 1px solid var(--border-stroke, #2e333d);
+  color: var(--text-secondary, #94A3B8);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+[data-theme="light"] .quick-preset-chip,
+html.light .quick-preset-chip {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+  color: #475569;
+}
+
+.quick-preset-chip:hover {
+  background: rgba(226, 195, 153, 0.15);
+  color: var(--primary, #e2c399);
+  border-color: rgba(226, 195, 153, 0.35);
+}
+
+[data-theme="light"] .quick-preset-chip:hover,
+html.light .quick-preset-chip:hover {
+  background: #FEF3C7;
+  color: #B45309;
+  border-color: #FCD34D;
+}
+
+/* Bulk Delete Action Button */
+.bulk-delete-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+  transition: all 0.2s ease;
+}
+
+.bulk-delete-action-btn:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.4);
+}
+
+/* Print Action Button */
+.print-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  background: var(--surface-container, #1e2126);
+  color: var(--text-primary, #F5F5F7);
+  border: 1px solid var(--border-stroke, #333842);
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+[data-theme="light"] .print-action-btn,
+html.light .print-action-btn {
+  background: #F8FAFC;
+  border-color: #CBD5E1;
+  color: #0F172A;
+}
+
+.print-action-btn:hover {
+  background: rgba(226, 195, 153, 0.15);
+  color: var(--primary, #e2c399);
+  border-color: rgba(226, 195, 153, 0.4);
+}
+
+/* Table Checkbox Styles */
+.table-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary, #e2c399);
+  cursor: pointer;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+/* Selected Table Row Highlight */
+.aftrah-app-table tr.selected-row,
+.selected-row {
+  background: rgba(226, 195, 153, 0.08) !important;
+  border-left: 3px solid var(--primary, #e2c399);
+}
+
+[data-theme="light"] .aftrah-app-table tr.selected-row,
+html.light .selected-row {
+  background: #FEF3C7 !important;
+  border-left: 3px solid #D97706;
+}
+
+/* ==========================================================================
+   PRINT-ONLY STATEMENT HEADER & STYLES
+   ========================================================================== */
+
+.print-only-statement-header {
+  display: none;
+}
+
+@media print {
+  /* Hide all interactive chrome and navigation */
+  .no-print,
+  .aftrah-app-sidebar,
+  .aftrah-app-topbar,
+  .aftrah-app-ambient-glow,
+  .aftrah-app-ambient-glow-2,
+  .aftrah-app-back-btn,
+  .btn-theme-primary,
+  .aftrah-app-action-btn,
+  .aftrah-app-modal-overlay,
+  .aftrah-app-pagination-bar,
+  .aftrah-app-search-wrapper,
+  .aftrah-app-search-input,
+  .table-filter-toolbar,
+  .bank-card-quick-form,
+  aside.aftrah-app-form-card,
+  button,
+  input[type="checkbox"] {
+    display: none !important;
+  }
+
+  /* Show Statement Header */
+  .print-only-statement-header {
+    display: block !important;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #111827;
+  }
+
+  .print-brand-row {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .print-company-name {
+    font-size: 22px !important;
+    font-weight: 800 !important;
+    color: #111827 !important;
+    margin: 0 !important;
+    letter-spacing: -0.02em;
+  }
+
+  .print-company-sub {
+    font-size: 11px !important;
+    color: #4B5563 !important;
+    margin: 2px 0 0 0 !important;
+  }
+
+  .print-badge-statement {
+    display: inline-block;
+    padding: 6px 14px;
+    background: #F3F4F6 !important;
+    border: 1.5px solid #111827 !important;
+    border-radius: 6px;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    color: #111827 !important;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .print-meta-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+
+  .print-meta-box {
+    background: #F9FAFB !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 6px;
+    padding: 10px 14px;
+  }
+
+  .print-meta-title {
+    display: block;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    color: #6B7280 !important;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  .print-meta-val {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+  }
+
+  .print-meta-sub {
+    font-size: 11.5px !important;
+    color: #4B5563 !important;
+    margin-top: 2px;
+  }
+
+  .print-totals-summary-bar {
+    display: flex !important;
+    justify-content: space-between;
+    gap: 12px;
+    background: #F3F4F6 !important;
+    border: 1px solid #D1D5DB !important;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 12px !important;
+    color: #111827 !important;
+    flex-wrap: wrap;
+  }
+
+  .print-total-item strong {
+    font-weight: 800 !important;
+    color: #111827 !important;
+  }
+
+  /* Global Page Print Styles */
+  body,
+  html,
+  .aftrah-app-container,
+  .aftrah-app-main-viewport,
+  .aftrah-app-main-content,
+  .client-details-page,
+  .aftrah-app-table-section {
+    background: #FFFFFF !important;
+    color: #111827 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    min-height: auto !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  }
+
+  /* Tables formatting for print */
+  .aftrah-app-table-container {
+    border: 1px solid #D1D5DB !important;
+    border-radius: 6px !important;
+    box-shadow: none !important;
+    background: #FFFFFF !important;
+    overflow: visible !important;
+  }
+
+  .aftrah-app-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  .aftrah-app-table th {
+    background: #F3F4F6 !important;
+    color: #111827 !important;
+    font-size: 10.5px !important;
+    font-weight: 800 !important;
+    border-bottom: 1.5px solid #9CA3AF !important;
+    padding: 8px 10px !important;
+    text-transform: uppercase;
+  }
+
+  .aftrah-app-table td {
+    color: #111827 !important;
+    border-bottom: 1px solid #E5E7EB !important;
+    padding: 7px 10px !important;
+    font-size: 11.5px !important;
+    background: transparent !important;
+  }
+
+  .client-details-side-by-side-grid {
+    display: block !important;
+  }
+
+  .details-column-panel {
+    margin-bottom: 24px;
+    page-break-inside: avoid;
+  }
+
+  /* Ensure page breaks cleanly */
+  tr {
+    page-break-inside: avoid;
+  }
+
+  @page {
+    margin: 12mm 10mm;
+    size: auto;
+  }
+}
+
+/* ==========================================================================
+   KABIBULLAH BRICKS SUB-NAVIGATION & ACCORDION STYLES
+   ========================================================================== */
+
+.aftrah-app-nav-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.aftrah-app-division-header {
+  border: 1px solid var(--border-stroke, #2a2e37);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  margin-bottom: 2px;
+  color: var(--text-primary);
+}
+
+.aftrah-app-division-header:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(226, 195, 153, 0.3);
+}
+
+.aftrah-app-division-header.division-active {
+  border-color: rgba(226, 195, 153, 0.35);
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid var(--primary, #e2c399);
+}
+
+[data-theme="light"] .aftrah-app-division-header {
+  border-color: #E2E8F0;
+  background: #F8FAFC;
+  color: #1E293B;
+}
+
+[data-theme="light"] .aftrah-app-division-header:hover {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+}
+
+[data-theme="light"] .aftrah-app-division-header.division-active {
+  border-color: #CBD5E1;
+  background: #F8FAFC;
+  border-left: 3px solid #d97706;
+}
+
+.aftrah-app-nav-sublist {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-left: 14px;
+  padding-left: 10px;
+  border-left: 2px solid var(--border-stroke, #232730);
+  margin-top: 4px;
+  margin-bottom: 6px;
+}
+
+.aftrah-app-nav-subitem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.aftrah-app-nav-subitem:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.aftrah-app-nav-subitem.active {
+  color: var(--primary, #e2c399);
+  background: rgba(226, 195, 153, 0.12);
+  border: 1px solid rgba(226, 195, 153, 0.25);
+  font-weight: 600;
+}
+
+[data-theme="light"] .aftrah-app-nav-subitem.active {
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FDE68A;
+}
+
+.aftrah-app-subbadge-count {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(226, 195, 153, 0.15);
+  color: var(--primary);
+}
+
+[data-theme="light"] .aftrah-app-subbadge-count {
+  background: #E2E8F0;
+  color: #0F172A;
+}
+
+/* Sub-navigation bar at top of Kabibullah Bricks views */
+.aftrah-app-subnav-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 32px 0 32px;
+  background: transparent;
+  border-bottom: 1px solid var(--border-stroke, #232730);
+  flex-wrap: wrap;
+}
+
+.aftrah-app-subnav-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 8px 8px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.aftrah-app-subnav-pill-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.aftrah-app-subnav-pill-btn.active {
+  color: var(--primary, #e2c399);
+  background: rgba(226, 195, 153, 0.08);
+  border-bottom: 2px solid var(--primary, #e2c399);
+}
+
+[data-theme="light"] .aftrah-app-subnav-pill-btn.active {
+  color: #92400E;
+  background: rgba(254, 243, 199, 0.5);
+  border-bottom: 2px solid #D97706;
+}
+
+.aftrah-app-subnav-counter {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+}
+
+.aftrah-app-subnav-pill-btn.active .aftrah-app-subnav-counter {
+  background: rgba(226, 195, 153, 0.2);
+  color: var(--primary);
+}
+
+[data-theme="light"] .aftrah-app-subnav-pill-btn.active .aftrah-app-subnav-counter {
+  background: #FDE68A;
+  color: #92400E;
 }

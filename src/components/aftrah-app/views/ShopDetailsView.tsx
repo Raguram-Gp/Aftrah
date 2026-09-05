@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import type { Vendor, VendorShop, ShopTransaction } from '../types';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
+import { DateFilterBar } from '../components/DateFilterBar';
 import {
   ArrowLeft,
   Phone,
@@ -21,7 +22,8 @@ import {
   User,
   CreditCard,
   ShoppingBag,
-  ArrowDownLeft
+  ArrowDownLeft,
+  Printer
 } from 'lucide-react';
 
 interface ShopDetailsViewProps {
@@ -33,6 +35,7 @@ interface ShopDetailsViewProps {
   onAddTransaction?: (categoryId: string, shopId: string, txData: Omit<ShopTransaction, 'id' | 'sNo'>) => Promise<any>;
   onUpdateTransaction?: (categoryId: string, shopId: string, txData: ShopTransaction) => Promise<any>;
   onDeleteTransaction?: (categoryId: string, shopId: string, txId: string) => Promise<any>;
+  onDeleteMultipleShopTransactions?: (categoryId: string, shopId: string, txIds: string[]) => Promise<any>;
 }
 
 export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
@@ -43,12 +46,20 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
   onUpdateShop,
   onAddTransaction,
   onUpdateTransaction,
-  onDeleteTransaction
+  onDeleteTransaction,
+  onDeleteMultipleShopTransactions
 }) => {
   const transactions = shop.transactions || [];
   const [searchQuery, setSearchQuery] = useState('');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+  const [selectedTxIds, setSelectedTxIds] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // Bulk Delete Modal State
+  const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   // Add Modal State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -112,31 +123,89 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
         editTxReceived !== ''
       : editTxDate.trim().length > 0 && parseFloat(editTxReceived) > 0;
 
-  // Filter transactions
+  // Filter transactions by search query AND date range
   const filteredTransactions = useMemo(() => {
-    if (!searchQuery.trim()) return transactions;
-    const q = searchQuery.toLowerCase();
-    return transactions.filter(
-      (tx) =>
-        tx.itemType.toLowerCase().includes(q) ||
-        (tx.clientName && tx.clientName.toLowerCase().includes(q)) ||
-        tx.date.includes(q) ||
-        String(tx.quantity).includes(q) ||
-        String(tx.rate).includes(q) ||
-        String(tx.totalAmount).includes(q) ||
-        String(tx.receivedAmount).includes(q) ||
-        String(tx.balanceAmount).includes(q) ||
-        String(tx.sNo).includes(q)
-    );
-  }, [transactions, searchQuery]);
+    let list = transactions;
+    if (fromDate) {
+      list = list.filter((tx) => tx.date >= fromDate);
+    }
+    if (toDate) {
+      list = list.filter((tx) => tx.date <= toDate);
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      list = list.filter(
+        (tx) =>
+          tx.itemType.toLowerCase().includes(q) ||
+          (tx.clientName && tx.clientName.toLowerCase().includes(q)) ||
+          tx.date.includes(q) ||
+          String(tx.quantity).includes(q) ||
+          String(tx.rate).includes(q) ||
+          String(tx.totalAmount).includes(q) ||
+          String(tx.receivedAmount).includes(q) ||
+          String(tx.balanceAmount).includes(q) ||
+          String(tx.sNo).includes(q)
+      );
+    }
+    return list;
+  }, [transactions, searchQuery, fromDate, toDate]);
 
   // Financial summary computations
-  const totalPurchase = transactions.reduce((sum, tx) => sum + (tx.totalAmount || 0), 0);
-  const totalReceived = transactions.reduce((sum, tx) => sum + (tx.receivedAmount || 0), 0);
+  const totalPurchase = filteredTransactions.reduce((sum, tx) => sum + (tx.totalAmount || 0), 0);
+  const totalReceived = filteredTransactions.reduce((sum, tx) => sum + (tx.receivedAmount || 0), 0);
   const totalBalance = Math.max(0, totalPurchase - totalReceived);
 
   const formatINR = (val: number) => {
     return '₹' + Number(val || 0).toLocaleString('en-IN');
+  };
+
+  // Multi-select Checkbox Handlers
+  const isAllSelected =
+    filteredTransactions.length > 0 &&
+    filteredTransactions.every((tx) => selectedTxIds.has(tx.id));
+
+  const isSomeSelected = selectedTxIds.size > 0 && !isAllSelected;
+
+  const handleToggleSelectAll = () => {
+    if (isAllSelected) {
+      setSelectedTxIds(new Set());
+    } else {
+      setSelectedTxIds(new Set(filteredTransactions.map((tx) => tx.id)));
+    }
+  };
+
+  const handleToggleSelectRow = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedTxIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  // Bulk Delete Confirmation
+  const handleConfirmBulkDelete = async () => {
+    if (selectedTxIds.size === 0) return;
+    setIsBulkDeleting(true);
+    try {
+      if (onDeleteMultipleShopTransactions) {
+        await onDeleteMultipleShopTransactions(vendor.id, shop.id, Array.from(selectedTxIds));
+      } else if (onDeleteTransaction) {
+        for (const id of selectedTxIds) {
+          await onDeleteTransaction(vendor.id, shop.id, id);
+        }
+      }
+      setSelectedTxIds(new Set());
+      setIsBulkDeleteOpen(false);
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
+
+  // Print Statement Handler
+  const handlePrint = () => {
+    window.print();
   };
 
   // Helper to check if a transaction is a direct settlement
@@ -365,12 +434,72 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
 
   return (
     <div className="client-details-page">
-      {/* Header Bar */}
-      <div className="client-details-header">
-        <button onClick={onBack} className="aftrah-app-back-btn">
-          <ArrowLeft size={16} />
-          <span>Back to {vendor.type} Shops</span>
-        </button>
+      {/* PRINT-ONLY STATEMENT HEADER */}
+      <div className="print-only-statement-header">
+        <div className="print-brand-row">
+          <div>
+            <h1 className="print-company-name">AFTRAH CONSTRUCTIONS</h1>
+            <p className="print-company-sub">Civil Construction, Materials Procurement & Financial ERP</p>
+          </div>
+          <div className="print-badge-statement">
+            <span>VENDOR SUPPLIER STATEMENT</span>
+          </div>
+        </div>
+
+        <div className="print-meta-grid">
+          <div className="print-meta-box">
+            <span className="print-meta-title">SHOP / SUPPLIER DETAILS</span>
+            <div className="print-meta-val"><strong>{shop.name}</strong></div>
+            <div className="print-meta-sub">Category: {vendor.type} Supplier</div>
+            <div className="print-meta-sub">Phone: {shop.phone} · Address: {shop.address}</div>
+          </div>
+
+          <div className="print-meta-box">
+            <span className="print-meta-title">STATEMENT SUMMARY</span>
+            <div className="print-meta-sub">
+              Period: <strong>{fromDate && toDate ? `${fromDate} to ${toDate}` : fromDate ? `From ${fromDate}` : toDate ? `Up to ${toDate}` : 'All Recorded Transactions'}</strong>
+            </div>
+            <div className="print-meta-sub">Generated: {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
+            <div className="print-meta-val" style={{ marginTop: '4px', color: totalBalance > 0 ? '#b91c1c' : '#15803d' }}>
+              Pending Balance: {formatINR(totalBalance)}
+            </div>
+          </div>
+        </div>
+
+        {/* Print Summary Totals Row */}
+        <div className="print-totals-summary-bar">
+          <div className="print-total-item">
+            <span>Total Records:</span> <strong>{filteredTransactions.length} Transactions</strong>
+          </div>
+          <div className="print-total-item">
+            <span>Total Purchases:</span> <strong>{formatINR(totalPurchase)}</strong>
+          </div>
+          <div className="print-total-item">
+            <span>Amount Settled / Paid:</span> <strong>{formatINR(totalReceived)}</strong>
+          </div>
+          <div className="print-total-item">
+            <span>Outstanding Balance:</span> <strong style={{ color: totalBalance > 0 ? '#b91c1c' : '#15803d' }}>{formatINR(totalBalance)}</strong>
+          </div>
+        </div>
+      </div>
+
+      {/* Screen Header Bar */}
+      <div className="client-details-header no-print">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '12px' }}>
+          <button onClick={onBack} className="aftrah-app-back-btn">
+            <ArrowLeft size={16} />
+            <span>Back to {vendor.type} Shops</span>
+          </button>
+
+          <button
+            onClick={handlePrint}
+            className="aftrah-app-back-btn"
+            title="Print or Export Supplier Statement"
+          >
+            <Printer size={15} />
+            <span>Print Statement</span>
+          </button>
+        </div>
 
         <div className="client-details-title-row">
           <div>
@@ -432,13 +561,37 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
         </div>
       </div>
 
+      {/* Date Range Filter Toolbar & Bulk Actions */}
+      <DateFilterBar
+        fromDate={fromDate}
+        toDate={toDate}
+        onFromDateChange={(d) => {
+          setFromDate(d);
+          setCurrentPage(1);
+        }}
+        onToDateChange={(d) => {
+          setToDate(d);
+          setCurrentPage(1);
+        }}
+        onClearDates={() => {
+          setFromDate('');
+          setToDate('');
+          setCurrentPage(1);
+        }}
+        selectedCount={selectedTxIds.size}
+        onBulkDelete={() => setIsBulkDeleteOpen(true)}
+        onPrint={handlePrint}
+        printLabel="Print Statement"
+      />
+
       {/* Main Ledger Table Section */}
       <section className="aftrah-app-table-section">
-        <div className="aftrah-app-section-header">
+        <div className="aftrah-app-section-header no-print">
           <div>
             <h2 className="aftrah-app-section-title">MATERIAL PROCUREMENT & SETTLEMENT LEDGER</h2>
             <span className="aftrah-app-section-subtitle">
               {filteredTransactions.length} {filteredTransactions.length === 1 ? 'record' : 'records'} logged
+              {(fromDate || toDate) && ' (filtered by date)'}
             </span>
           </div>
 
@@ -500,14 +653,14 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                 <th style={{ textAlign: 'right' }}>TOTAL AMOUNT</th>
                 <th style={{ textAlign: 'right' }}>RECEIVED / PAID</th>
                 <th style={{ textAlign: 'right' }}>STATUS / BALANCE</th>
-                <th style={{ width: '70px', textAlign: 'center' }}>ACTIONS</th>
+                <th className="no-print" style={{ width: '70px', textAlign: 'center' }}>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
               {paginatedTransactions.length === 0 ? (
                 <tr>
                   <td colSpan={10} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
-                    {searchQuery ? 'No matching transactions.' : 'No entries logged for this shop yet. Use "Record Purchase" or "Settle Amount" above.'}
+                    {searchQuery || fromDate || toDate ? 'No matching transactions.' : 'No entries logged for this shop yet. Use "Record Purchase" or "Settle Amount" above.'}
                   </td>
                 </tr>
               ) : (
@@ -517,7 +670,8 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                     <tr
                       key={tx.id}
                       style={{
-                        background: isSettlement ? 'rgba(16, 185, 129, 0.04)' : undefined
+                        background: isSettlement ? 'rgba(16, 185, 129, 0.04)' : undefined,
+                        cursor: 'default'
                       }}
                     >
                       <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
@@ -1155,7 +1309,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
         </div>
       )}
 
-      {/* CONFIRM DELETE TRANSACTION / SETTLEMENT MODAL */}
+      {/* CONFIRM SINGLE DELETE TRANSACTION / SETTLEMENT MODAL */}
       <ConfirmDeleteModal
         isOpen={Boolean(deleteTxTarget)}
         title={deleteTxTarget && isSettlementTx(deleteTxTarget) ? 'Delete Settlement Payment' : 'Delete Purchase Record'}
@@ -1165,6 +1319,17 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
         isDeleting={isDeletingTx}
         onConfirm={handleConfirmDeleteTransaction}
         onClose={() => setDeleteTxTarget(null)}
+      />
+
+      {/* CONFIRM BULK DELETE TRANSACTIONS MODAL */}
+      <ConfirmDeleteModal
+        isOpen={isBulkDeleteOpen}
+        title="Delete Selected Ledger Records"
+        message={`Are you sure you want to delete ${selectedTxIds.size} selected ledger entries? The supplier's balances will be recalculated immediately.`}
+        confirmText={`Delete ${selectedTxIds.size} Records`}
+        isDeleting={isBulkDeleting}
+        onConfirm={handleConfirmBulkDelete}
+        onClose={() => setIsBulkDeleteOpen(false)}
       />
     </div>
   );

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import type { BankAccount, BankTransaction } from '../types';
 import { BankLogo } from '../components/BankLogo';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
+import { DateFilterBar } from '../components/DateFilterBar';
 import {
   Landmark,
   Plus,
@@ -14,7 +15,8 @@ import {
   X,
   Search,
   ArrowUpRight,
-  ArrowDownLeft
+  ArrowDownLeft,
+  Printer
 } from 'lucide-react';
 
 interface BankDetailsViewProps {
@@ -24,6 +26,7 @@ interface BankDetailsViewProps {
   onDeleteAccount: (id: string) => Promise<any> | void;
   onAddTransaction?: (bankId: string, txData: Omit<BankTransaction, 'id'>) => Promise<any>;
   onDeleteTransaction?: (bankId: string, txId: string) => Promise<any>;
+  onDeleteMultipleTransactions?: (bankId: string, txIds: string[]) => Promise<any>;
 }
 
 export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
@@ -32,7 +35,8 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
   onUpdateAccount,
   onDeleteAccount,
   onAddTransaction,
-  onDeleteTransaction
+  onDeleteTransaction,
+  onDeleteMultipleTransactions
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -42,6 +46,11 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
 
   // History / Ledger Modal State
   const [activeLedgerBankId, setActiveLedgerBankId] = useState<string | null>(null);
+  const [ledgerFromDate, setLedgerFromDate] = useState('');
+  const [ledgerToDate, setLedgerToDate] = useState('');
+  const [selectedTxIds, setSelectedTxIds] = useState<Set<string>>(new Set());
+  const [isBulkDeleteTxOpen, setIsBulkDeleteTxOpen] = useState(false);
+  const [isBulkDeletingTx, setIsBulkDeletingTx] = useState(false);
 
   // New Bank Account Modal State (Clean: only Bank Name & Opening Balance)
   const [isAddAccountModalOpen, setIsAddAccountModalOpen] = useState(false);
@@ -222,6 +231,67 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
 
   // Active bank for ledger modal
   const activeLedgerBank = bankAccounts.find((b) => b.id === activeLedgerBankId);
+
+  // Filter active ledger transactions by date
+  const filteredLedgerTransactions = useMemo(() => {
+    if (!activeLedgerBank) return [];
+    let list = activeLedgerBank.transactions || [];
+    if (ledgerFromDate) {
+      list = list.filter((t) => t.date >= ledgerFromDate);
+    }
+    if (ledgerToDate) {
+      list = list.filter((t) => t.date <= ledgerToDate);
+    }
+    return list;
+  }, [activeLedgerBank, ledgerFromDate, ledgerToDate]);
+
+  // Ledger Multi-select Checkbox Handlers
+  const isAllTxSelected =
+    filteredLedgerTransactions.length > 0 &&
+    filteredLedgerTransactions.every((tx) => selectedTxIds.has(tx.id));
+
+  const isSomeTxSelected = selectedTxIds.size > 0 && !isAllTxSelected;
+
+  const handleToggleSelectAllTx = () => {
+    if (isAllTxSelected) {
+      setSelectedTxIds(new Set());
+    } else {
+      setSelectedTxIds(new Set(filteredLedgerTransactions.map((tx) => tx.id)));
+    }
+  };
+
+  const handleToggleSelectTxRow = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedTxIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  // Bulk Delete Transactions Handler
+  const handleConfirmBulkDeleteTx = async () => {
+    if (!activeLedgerBank || selectedTxIds.size === 0) return;
+    setIsBulkDeletingTx(true);
+    try {
+      if (onDeleteMultipleTransactions) {
+        await onDeleteMultipleTransactions(activeLedgerBank.id, Array.from(selectedTxIds));
+      } else if (onDeleteTransaction) {
+        for (const id of selectedTxIds) {
+          await onDeleteTransaction(activeLedgerBank.id, id);
+        }
+      }
+      setSelectedTxIds(new Set());
+      setIsBulkDeleteTxOpen(false);
+    } finally {
+      setIsBulkDeletingTx(false);
+    }
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -430,21 +500,17 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                   )}
                 </div>
 
-                {/* Quick Add Balance (Credit / Debit) */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>
-                    QUICK BALANCE ADJUSTMENT
-                  </label>
-
+                {/* Inline Transaction / Quick Update Controls */}
+                <div className="bank-card-quick-form no-print">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    {/* Mode Toggle: + (Credit) / - (Debit) */}
+                    {/* Mode Toggle Buttons (+ / -) */}
                     <div
                       style={{
                         display: 'flex',
-                        border: '1px solid var(--border-stroke, #2c303a)',
-                        borderRadius: '7px',
+                        border: '1px solid var(--border-stroke, #282c35)',
+                        borderRadius: '8px',
                         overflow: 'hidden',
-                        background: 'var(--surface-container, #1e2126)'
+                        background: 'var(--surface-container-lowest, #101214)'
                       }}
                     >
                       <button
@@ -455,7 +521,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                         title="Add Money (Credit)"
                         style={{
                           padding: '8px 10px',
-                          background: currentType === 'credit' ? 'rgba(74, 222, 128, 0.2)' : 'transparent',
+                          background: currentType === 'credit' ? 'rgba(74, 222, 128, 0.15)' : 'transparent',
                           color: currentType === 'credit' ? '#4ade80' : 'var(--text-secondary)',
                           border: 'none',
                           cursor: 'pointer',
@@ -475,7 +541,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                         title="Deduct Money (Debit)"
                         style={{
                           padding: '8px 10px',
-                          background: currentType === 'debit' ? 'rgba(248, 113, 113, 0.2)' : 'transparent',
+                          background: currentType === 'debit' ? 'rgba(248, 113, 113, 0.15)' : 'transparent',
                           color: currentType === 'debit' ? '#f87171' : 'var(--text-secondary)',
                           border: 'none',
                           cursor: 'pointer',
@@ -494,18 +560,13 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                       type="number"
                       step="any"
                       min="1"
-                      placeholder="Enter amount (₹)..."
+                      placeholder="Amount..."
                       value={currentInput}
                       onChange={(e) =>
                         setInputAmounts((prev) => ({ ...prev, [bank.id]: e.target.value }))
                       }
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          handleQuickTransaction(bank);
-                        }
-                      }}
                       className="aftrah-app-input"
-                      style={{ height: '36px', fontSize: '13px' }}
+                      style={{ height: '36px', flex: 1, fontSize: '13px' }}
                     />
 
                     {/* Submit Button */}
@@ -522,7 +583,6 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                       }}
                     >
                       <Check size={14} strokeWidth={2.5} />
-                      <span>{currentType === 'credit' ? 'Add' : 'Deduct'}</span>
                     </button>
                   </div>
                 </div>
@@ -588,17 +648,17 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
         </div>
       )}
 
-      {/* MODAL 2: AUDIT LEDGER / TRANSACTION HISTORY */}
+      {/* MODAL 2: AUDIT LEDGER / PASSBOOK MODAL WITH DATE FILTER & BULK ACTIONS */}
       {activeLedgerBank && (
         <div className="aftrah-app-modal-overlay" onClick={() => setActiveLedgerBankId(null)}>
-          <div className="aftrah-app-modal-container" style={{ maxWidth: '680px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="aftrah-app-modal-container" style={{ maxWidth: '780px' }} onClick={(e) => e.stopPropagation()}>
             <div className="aftrah-app-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <BankLogo bankName={activeLedgerBank.bankName} size={36} />
                 <div>
                   <h3 className="aftrah-app-modal-title">{activeLedgerBank.bankName}</h3>
                   <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-                    Audit Ledger & Balance History · Balance: <strong style={{ color: 'var(--primary)' }}>{formatINR(activeLedgerBank.balance)}</strong>
+                    Passbook Ledger & Audit History · Current Balance: <strong style={{ color: 'var(--primary)' }}>{formatINR(activeLedgerBank.balance)}</strong>
                   </span>
                 </div>
               </div>
@@ -608,7 +668,23 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
             </div>
 
             <div className="aftrah-app-modal-body" style={{ padding: '16px 20px' }}>
-              <div className="aftrah-app-table-container">
+              {/* Date Filter Bar inside Passbook Ledger */}
+              <DateFilterBar
+                fromDate={ledgerFromDate}
+                toDate={ledgerToDate}
+                onFromDateChange={setLedgerFromDate}
+                onToDateChange={setLedgerToDate}
+                onClearDates={() => {
+                  setLedgerFromDate('');
+                  setLedgerToDate('');
+                }}
+                selectedCount={selectedTxIds.size}
+                onBulkDelete={() => setIsBulkDeleteTxOpen(true)}
+                onPrint={handlePrint}
+                printLabel="Print Passbook"
+              />
+
+              <div className="aftrah-app-table-container" style={{ marginTop: '12px' }}>
                 <table className="aftrah-app-table">
                   <thead>
                     <tr>
@@ -617,21 +693,26 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                       <th>TYPE</th>
                       <th>DESCRIPTION / NOTE</th>
                       <th style={{ textAlign: 'right' }}>AMOUNT</th>
-                      <th style={{ width: '50px', textAlign: 'center' }}>ACTION</th>
+                      <th className="no-print" style={{ width: '50px', textAlign: 'center' }}>ACTION</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {(activeLedgerBank.transactions || []).length === 0 ? (
+                    {filteredLedgerTransactions.length === 0 ? (
                       <tr>
                         <td colSpan={6} style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--text-secondary)' }}>
-                          No transactions recorded for this bank account yet.
+                          {ledgerFromDate || ledgerToDate
+                            ? 'No transactions found for the selected date range.'
+                            : 'No transactions recorded for this bank account yet.'}
                         </td>
                       </tr>
                     ) : (
-                      (activeLedgerBank.transactions || []).map((tx, idx) => {
+                      filteredLedgerTransactions.map((tx, idx) => {
                         const isCredit = tx.type === 'credit' || tx.type === 'deposit' || tx.type === 'adjustment';
                         return (
-                          <tr key={tx.id}>
+                          <tr
+                            key={tx.id}
+                            style={{ cursor: 'default' }}
+                          >
                             <td style={{ fontFamily: 'monospace', color: 'var(--text-secondary)', textAlign: 'center' }}>
                               #{idx + 1}
                             </td>
@@ -673,7 +754,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                             >
                               {isCredit ? '+' : '-'}{formatINR(tx.amount)}
                             </td>
-                            <td style={{ textAlign: 'center' }}>
+                            <td className="no-print" style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                               <button
                                 onClick={() => setDeleteBankTxTarget({ bank: activeLedgerBank, tx })}
                                 className="aftrah-app-action-btn aftrah-app-delete-btn"
@@ -712,7 +793,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
         onClose={() => setDeleteBankTarget(null)}
       />
 
-      {/* CONFIRM DELETE BANK TRANSACTION MODAL */}
+      {/* CONFIRM SINGLE DELETE BANK TRANSACTION MODAL */}
       <ConfirmDeleteModal
         isOpen={Boolean(deleteBankTxTarget)}
         title="Revert & Delete Transaction"
@@ -722,6 +803,17 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
         isDeleting={isDeletingBankTx}
         onConfirm={handleConfirmDeleteTx}
         onClose={() => setDeleteBankTxTarget(null)}
+      />
+
+      {/* CONFIRM BULK DELETE BANK TRANSACTIONS MODAL */}
+      <ConfirmDeleteModal
+        isOpen={isBulkDeleteTxOpen}
+        title="Revert & Delete Selected Transactions"
+        message={`Are you sure you want to delete ${selectedTxIds.size} selected transactions? The bank account balance will be adjusted accordingly.`}
+        confirmText={`Delete ${selectedTxIds.size} Transactions`}
+        isDeleting={isBulkDeletingTx}
+        onConfirm={handleConfirmBulkDeleteTx}
+        onClose={() => setIsBulkDeleteTxOpen(false)}
       />
     </div>
   );

@@ -412,21 +412,32 @@ html.light .app2-sidebar {
 /* Wireframe 2-Column Layout */
 .app2-wireframe-layout {
   display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 20px;
   align-items: flex-start;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1320px) {
   .app2-wireframe-layout {
-    grid-template-columns: 1fr 320px;
-    gap: 18px;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 16px;
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1120px) {
+  .app2-wireframe-layout {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 920px) {
   .app2-wireframe-layout {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 }
 
@@ -437,6 +448,9 @@ html.light .app2-sidebar {
   border-radius: 12px;
   padding: 20px;
   box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 [data-theme="light"] .app2-table-section {

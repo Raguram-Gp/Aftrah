@@ -1,17 +1,36 @@
 import React, { useState, useMemo } from 'react';
-import { AftrahAppSidebar } from './layout/AftrahAppSidebar';
+import { AftrahAppSidebar, type TabType } from './layout/AftrahAppSidebar';
 import { AftrahAppTopBar } from './layout/AftrahAppTopBar';
 import { ToastContainer } from './layout/ToastContainer';
 import { ConfirmDeleteModal } from './components/ConfirmDeleteModal';
 import { useClients } from './hooks/useClients';
+import { useInteriorClients } from './hooks/useInteriorClients';
 import { useVendors } from './hooks/useVendors';
+import { useInteriorVendors } from './hooks/useInteriorVendors';
+import { useLabourContracts } from './hooks/useLabourContracts';
+import { useConstructionLabourContracts } from './hooks/useConstructionLabourContracts';
 import { useBanks } from './hooks/useBanks';
+import { useBrickCustomers } from './hooks/useBrickCustomers';
+import { useBrickProductionExpenses } from './hooks/useBrickProductionExpenses';
+import { useBrickStock } from './hooks/useBrickStock';
 import { ClientDetailsView } from './views/ClientDetailsView';
+import { InteriorClientView } from './views/InteriorClientView';
+import { InteriorClientDetailsView } from './views/InteriorClientDetailsView';
+import { InteriorVendorView } from './views/InteriorVendorView';
+import { InteriorLabourContractView } from './views/InteriorLabourContractView';
+import { InteriorLabourContractDetailsView } from './views/InteriorLabourContractDetailsView';
+import { ConstructionLabourContractView } from './views/ConstructionLabourContractView';
+import { ConstructionLabourContractDetailsView } from './views/ConstructionLabourContractDetailsView';
 import { VendorView } from './views/VendorView';
 import { VendorShopsView } from './views/VendorShopsView';
 import { ShopDetailsView } from './views/ShopDetailsView';
 import { BankDetailsView } from './views/BankDetailsView';
-import type { Client, Vendor, VendorShop } from './types';
+import { BricksCustomerView } from './views/BricksCustomerView';
+import { BricksCustomerDetailsView } from './views/BricksCustomerDetailsView';
+import { BricksProductionExpensesView } from './views/BricksProductionExpensesView';
+import { BricksStockRegisterView } from './views/BricksStockRegisterView';
+import { BricksStockItemDetailView } from './views/BricksStockItemDetailView';
+import type { Client, InteriorClient, Vendor, VendorShop, BrickCustomer, BrickStockItem, BricksSubTab, InteriorSubTab, LabourContract } from './types';
 import {
   Users,
   Search,
@@ -24,16 +43,30 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  AlertCircle
+  AlertCircle,
+  BrickWall,
+  Flame,
+  Boxes,
+  Paintbrush,
+  HardHat
 } from 'lucide-react';
 import './styles/aftrah-app.css';
 
 export const AftrahAppPortal: React.FC = () => {
   // Navigation & Drilldown State
-  const [activeTab, setActiveTab] = useState<'clients' | 'vendor' | 'banks'>('clients');
+  const [activeTab, setActiveTab] = useState<TabType>('clients');
+  const [activeInteriorSubTab, setActiveInteriorSubTab] = useState<InteriorSubTab>('directory');
+  const [activeBricksSubTab, setActiveBricksSubTab] = useState<BricksSubTab>('directory');
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
+  const [selectedConstructionLabourContractId, setSelectedConstructionLabourContractId] = useState<string | null>(null);
+  const [selectedInteriorClientId, setSelectedInteriorClientId] = useState<string | null>(null);
+  const [selectedInteriorVendorId, setSelectedInteriorVendorId] = useState<string | null>(null);
+  const [selectedInteriorShopId, setSelectedInteriorShopId] = useState<string | null>(null);
+  const [selectedLabourContractId, setSelectedLabourContractId] = useState<string | null>(null);
   const [selectedVendorId, setSelectedVendorId] = useState<string | null>(null);
   const [selectedShopId, setSelectedShopId] = useState<string | null>(null);
+  const [selectedBrickCustomerId, setSelectedBrickCustomerId] = useState<string | null>(null);
+  const [selectedStockItemId, setSelectedStockItemId] = useState<string | null>(null);
 
   // Responsive Drawer & Sidebar State
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -69,13 +102,69 @@ export const AftrahAppPortal: React.FC = () => {
     addClient,
     updateClient,
     deleteClient,
+    deleteMultipleClients,
     addAdvancePayment,
     updateAdvancePayment,
     deleteAdvancePayment,
+    deleteMultipleAdvancePayments,
     addExpense,
     updateExpense,
-    deleteExpense
+    deleteExpense,
+    deleteMultipleExpenses
   } = useClients();
+
+  const {
+    interiorClients,
+    addClient: addInteriorClient,
+    updateClient: updateInteriorClient,
+    deleteClient: deleteInteriorClient,
+    deleteMultipleClients: deleteMultipleInteriorClients,
+    addAdvancePayment: addInteriorAdvance,
+    updateAdvancePayment: updateInteriorAdvance,
+    deleteAdvancePayment: deleteInteriorAdvance,
+    deleteMultipleAdvancePayments: deleteMultipleInteriorAdvances,
+    addExpense: addInteriorExpense,
+    updateExpense: updateInteriorExpense,
+    deleteExpense: deleteInteriorExpense,
+    deleteMultipleExpenses: deleteMultipleInteriorExpenses
+  } = useInteriorClients();
+
+  const {
+    vendors: interiorVendors,
+    addCategory: addInteriorCategory,
+    updateCategory: updateInteriorCategory,
+    deleteCategory: deleteInteriorCategory,
+    addVendorShop: addInteriorVendorShop,
+    updateVendorShop: updateInteriorVendorShop,
+    deleteVendorShop: deleteInteriorVendorShop,
+    addShopTransaction: addInteriorShopTransaction,
+    updateShopTransaction: updateInteriorShopTransaction,
+    deleteShopTransaction: deleteInteriorShopTransaction,
+    deleteMultipleShopTransactions: deleteMultipleInteriorShopTransactions
+  } = useInteriorVendors();
+
+  const {
+    contracts: labourContracts,
+    addContract: addLabourContract,
+    updateContract: updateLabourContract,
+    updateLabourCharge,
+    deleteContract: deleteLabourContract,
+    deleteMultipleContracts: deleteMultipleLabourContracts,
+    addEntry: addLabourEntry,
+    updateEntry: updateLabourEntry,
+    deleteEntry: deleteLabourEntry
+  } = useLabourContracts();
+
+  const {
+    contracts: constructionLabourContracts,
+    addContract: addConstructionLabourContract,
+    updateContract: updateConstructionLabourContract,
+    updateLabourCharge: updateConstructionLabourCharge,
+    deleteContract: deleteConstructionLabourContract,
+    addEntry: addConstructionLabourEntry,
+    updateEntry: updateConstructionLabourEntry,
+    deleteEntry: deleteConstructionLabourEntry
+  } = useConstructionLabourContracts();
 
   const {
     vendors,
@@ -84,12 +173,15 @@ export const AftrahAppPortal: React.FC = () => {
     addCategory,
     updateCategory,
     deleteCategory,
+    deleteMultipleVendors,
     addVendorShop,
     updateVendorShop,
     deleteVendorShop,
+    deleteMultipleShops,
     addShopTransaction,
     updateShopTransaction,
-    deleteShopTransaction
+    deleteShopTransaction,
+    deleteMultipleShopTransactions
   } = useVendors();
 
   const {
@@ -100,13 +192,71 @@ export const AftrahAppPortal: React.FC = () => {
     updateBankAccount,
     deleteBankAccount,
     addBankTransaction,
-    deleteBankTransaction
+    deleteBankTransaction,
+    deleteMultipleTransactions: deleteMultipleBankTransactions
   } = useBanks();
+
+  const {
+    brickCustomers,
+    isLoading: bricksLoading,
+    error: bricksError,
+    addCustomer: addBrickCustomer,
+    updateCustomer: updateBrickCustomer,
+    deleteCustomer: deleteBrickCustomer,
+    deleteMultipleCustomers: deleteMultipleBrickCustomers,
+    addTransaction: addBrickTransaction,
+    updateTransaction: updateBrickTransaction,
+    deleteTransaction: deleteBrickTransaction,
+    deleteMultipleTransactions: deleteMultipleBrickTransactions
+  } = useBrickCustomers();
+
+  const {
+    expenses: brickExpenses,
+    stats: brickExpensesStats,
+    addExpense: addBrickExpense,
+    updateExpense: updateBrickExpense,
+    deleteExpense: deleteBrickExpense,
+    deleteMultipleExpenses: deleteMultipleBrickExpenses
+  } = useBrickProductionExpenses();
+
+  const {
+    stockItems,
+    stats: stockStats,
+    addStockItem,
+    updateStockItem,
+    deleteStockItem,
+    deleteMultipleStockItems,
+    addStockItemEntry,
+    updateStockItemEntry,
+    deleteStockItemEntry,
+    deleteMultipleStockItemEntries
+  } = useBrickStock();
 
   // Selected Entities Memo
   const selectedClient = useMemo(() => {
     return clients.find((c) => c.id === selectedClientId) || null;
   }, [clients, selectedClientId]);
+
+  const selectedConstructionLabourContract = useMemo(() => {
+    return constructionLabourContracts.find((c) => c.id === selectedConstructionLabourContractId) || null;
+  }, [constructionLabourContracts, selectedConstructionLabourContractId]);
+
+  const selectedInteriorClient = useMemo(() => {
+    return interiorClients.find((c) => c.id === selectedInteriorClientId) || null;
+  }, [interiorClients, selectedInteriorClientId]);
+
+  const selectedInteriorVendor = useMemo(() => {
+    return interiorVendors.find((v) => v.id === selectedInteriorVendorId) || null;
+  }, [interiorVendors, selectedInteriorVendorId]);
+
+  const selectedInteriorShop = useMemo(() => {
+    if (!selectedInteriorVendor) return null;
+    return (selectedInteriorVendor.shops || []).find((s) => s.id === selectedInteriorShopId) || null;
+  }, [selectedInteriorVendor, selectedInteriorShopId]);
+
+  const selectedLabourContract = useMemo(() => {
+    return labourContracts.find((c) => c.id === selectedLabourContractId) || null;
+  }, [labourContracts, selectedLabourContractId]);
 
   const selectedVendor = useMemo(() => {
     return vendors.find((v) => v.id === selectedVendorId) || null;
@@ -116,6 +266,14 @@ export const AftrahAppPortal: React.FC = () => {
     if (!selectedVendor) return null;
     return (selectedVendor.shops || []).find((s) => s.id === selectedShopId) || null;
   }, [selectedVendor, selectedShopId]);
+
+  const selectedBrickCustomer = useMemo(() => {
+    return brickCustomers.find((bc) => bc.id === selectedBrickCustomerId) || null;
+  }, [brickCustomers, selectedBrickCustomerId]);
+
+  const selectedStockItem = useMemo(() => {
+    return stockItems.find((s) => s.id === selectedStockItemId) || null;
+  }, [stockItems, selectedStockItemId]);
 
   // Validation Flags
   const isAddClientValid =
@@ -223,17 +381,53 @@ export const AftrahAppPortal: React.FC = () => {
       <div className="aftrah-app-ambient-glow" />
       <div className="aftrah-app-ambient-glow-2" />
 
-      {/* Sidebar with Brand 'Aftrah constructions' and items 'Clients', 'Vendor', & 'Bank Details' */}
+      {/* Sidebar with Brand 'Aftrah constructions' and items arranged according to sketch */}
       <AftrahAppSidebar
         clientsCount={clients.length}
+        constructionLabourContractsCount={constructionLabourContracts.length}
+        interiorClientsCount={interiorClients.length}
+        interiorVendorsCount={interiorVendors.length}
+        interiorLabourContractsCount={labourContracts.length}
         vendorsCount={vendors.length}
         banksCount={bankAccounts.length}
+        brickCustomersCount={brickCustomers.length}
+        brickExpensesCount={brickExpenses.length}
+        brickStockCount={stockItems.length}
         activeTab={activeTab}
-        onSelectTab={(tab) => {
+        activeInteriorSubTab={activeInteriorSubTab}
+        activeBricksSubTab={activeBricksSubTab}
+        onSelectTab={(tab, subTab) => {
           setActiveTab(tab);
+          if (tab === 'kaab_interior' && (subTab === 'directory' || subTab === 'vendor' || subTab === 'labour_contract')) {
+            setActiveInteriorSubTab(subTab as InteriorSubTab);
+          }
+          if (tab === 'kabibullah_bricks' && (subTab === 'directory' || subTab === 'expenses' || subTab === 'stock')) {
+            setActiveBricksSubTab(subTab as BricksSubTab);
+          }
           setSelectedClientId(null);
+          setSelectedConstructionLabourContractId(null);
+          setSelectedInteriorClientId(null);
+          setSelectedInteriorVendorId(null);
+          setSelectedInteriorShopId(null);
+          setSelectedLabourContractId(null);
           setSelectedVendorId(null);
           setSelectedShopId(null);
+          setSelectedBrickCustomerId(null);
+          setSelectedStockItemId(null);
+        }}
+        onSelectInteriorSubTab={(subTab) => {
+          setActiveTab('kaab_interior');
+          setActiveInteriorSubTab(subTab);
+          setSelectedInteriorClientId(null);
+          setSelectedInteriorVendorId(null);
+          setSelectedInteriorShopId(null);
+          setSelectedLabourContractId(null);
+        }}
+        onSelectBricksSubTab={(subTab) => {
+          setActiveTab('kabibullah_bricks');
+          setActiveBricksSubTab(subTab);
+          setSelectedBrickCustomerId(null);
+          setSelectedStockItemId(null);
         }}
         isMobileOpen={isMobileMenuOpen}
         onCloseMobile={() => setIsMobileMenuOpen(false)}
@@ -246,18 +440,56 @@ export const AftrahAppPortal: React.FC = () => {
         {/* Top Header */}
         <AftrahAppTopBar
           activeTab={activeTab}
+          activeInteriorSubTab={activeInteriorSubTab}
+          activeBricksSubTab={activeBricksSubTab}
           clientsCount={clients.length}
+          constructionLabourContractsCount={constructionLabourContracts.length}
+          interiorClientsCount={interiorClients.length}
+          interiorVendorsCount={interiorVendors.length}
+          interiorLabourContractsCount={labourContracts.length}
           vendorsCount={vendors.length}
           banksCount={bankAccounts.length}
+          brickCustomersCount={brickCustomers.length}
+          brickExpensesCount={brickExpenses.length}
+          brickStockUnits={stockStats.totalStockUnits}
           selectedClient={selectedClient}
+          selectedConstructionLabourContract={selectedConstructionLabourContract}
+          selectedInteriorClient={selectedInteriorClient}
+          selectedInteriorVendor={selectedInteriorVendor}
+          selectedInteriorShop={selectedInteriorShop}
+          selectedInteriorLabourContract={selectedLabourContract}
           selectedVendor={selectedVendor}
           selectedShop={selectedShop}
+          selectedBrickCustomer={selectedBrickCustomer}
+          selectedStockItemName={selectedStockItem?.item}
           isMobileMenuOpen={isMobileMenuOpen}
           onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           onNavigateHome={() => setSelectedClientId(null)}
+          onNavigateConstructionLabourRoot={() => {
+            setSelectedConstructionLabourContractId(null);
+          }}
+          onNavigateInteriorRoot={(subTab) => {
+            setSelectedInteriorClientId(null);
+            setSelectedInteriorVendorId(null);
+            setSelectedInteriorShopId(null);
+            setSelectedLabourContractId(null);
+            if (subTab) setActiveInteriorSubTab(subTab);
+          }}
+          onNavigateInteriorVendorRoot={() => {
+            setSelectedInteriorVendorId(null);
+            setSelectedInteriorShopId(null);
+          }}
+          onNavigateInteriorLabourContractRoot={() => {
+            setSelectedLabourContractId(null);
+          }}
           onNavigateVendorRoot={() => {
             setSelectedVendorId(null);
             setSelectedShopId(null);
+          }}
+          onNavigateBricksRoot={(subTab) => {
+            setSelectedBrickCustomerId(null);
+            setSelectedStockItemId(null);
+            if (subTab) setActiveBricksSubTab(subTab);
           }}
           isLiveDb={isLiveDb}
         />
@@ -282,7 +514,191 @@ export const AftrahAppPortal: React.FC = () => {
 
         {/* Main Content */}
         <main className="aftrah-app-main-content">
-          {activeTab === 'banks' ? (
+          {activeTab === 'construction_labour' ? (
+            selectedConstructionLabourContract ? (
+              /* CONSTRUCTION LABOUR CONTRACTOR DETAILS & WORK MUSTER LEDGER */
+              <ConstructionLabourContractDetailsView
+                contract={selectedConstructionLabourContract}
+                onBack={() => setSelectedConstructionLabourContractId(null)}
+                onUpdateContract={updateConstructionLabourContract}
+                onUpdateLabourCharge={updateConstructionLabourCharge}
+                onAddEntry={addConstructionLabourEntry}
+                onUpdateEntry={updateConstructionLabourEntry}
+                onDeleteEntry={deleteConstructionLabourEntry}
+              />
+            ) : (
+              /* CONSTRUCTION LABOUR CONTRACTS DIRECTORY */
+              <ConstructionLabourContractView
+                contracts={constructionLabourContracts}
+                onSelectContract={(c) => setSelectedConstructionLabourContractId(c.id)}
+                onAddContract={addConstructionLabourContract}
+                onUpdateContract={updateConstructionLabourContract}
+                onDeleteContract={deleteConstructionLabourContract}
+                siteOptions={Array.from(new Set([
+                  ...clients.map((c) => c.name),
+                  'Dr. K. Rajendran Villa - Site #4',
+                  'Commercial Complex - Anna Nagar',
+                  'Green Valley Plot 14 Residence',
+                  ...constructionLabourContracts.map((c) => c.siteName).filter(Boolean)
+                ]))}
+              />
+            )
+          ) : activeTab === 'kaab_interior' ? (
+            activeInteriorSubTab === 'vendor' ? (
+              selectedInteriorVendor && selectedInteriorShop ? (
+                /* INTERIOR SHOP DETAILS VIEW (Transaction Ledger) */
+                <ShopDetailsView
+                  vendor={selectedInteriorVendor}
+                  shop={selectedInteriorShop}
+                  clientOptions={interiorClients.map((c) => c.name)}
+                  onBack={() => setSelectedInteriorShopId(null)}
+                  onUpdateShop={(updated) => updateInteriorVendorShop(selectedInteriorVendor.id, updated)}
+                  onAddTransaction={addInteriorShopTransaction}
+                  onUpdateTransaction={updateInteriorShopTransaction}
+                  onDeleteTransaction={deleteInteriorShopTransaction}
+                  onDeleteMultipleShopTransactions={deleteMultipleInteriorShopTransactions}
+                />
+              ) : selectedInteriorVendor ? (
+                /* INTERIOR VENDOR SHOPS LIST */
+                <VendorShopsView
+                  vendor={selectedInteriorVendor}
+                  onBack={() => setSelectedInteriorVendorId(null)}
+                  onSelectShop={(shop) => setSelectedInteriorShopId(shop.id)}
+                  onAddShop={(shopData) => addInteriorVendorShop(selectedInteriorVendor.id, shopData)}
+                  onUpdateShop={(updatedShop) => updateInteriorVendorShop(selectedInteriorVendor.id, updatedShop)}
+                  onDeleteShop={(shopId) => deleteInteriorVendorShop(selectedInteriorVendor.id, shopId)}
+                />
+              ) : (
+                /* INTERIOR VENDOR CATEGORIES LIST (Hardware, Carpenter, Plywoods...) */
+                <InteriorVendorView
+                  vendors={interiorVendors}
+                  onSelectVendor={(vendor) => {
+                    setSelectedInteriorVendorId(vendor.id);
+                    setSelectedInteriorShopId(null);
+                  }}
+                  onAddVendor={addInteriorCategory}
+                  onUpdateVendor={updateInteriorCategory}
+                  onDeleteVendor={deleteInteriorCategory}
+                />
+              )
+            ) : activeInteriorSubTab === 'labour_contract' ? (
+              selectedLabourContract ? (
+                /* LABOUR CONTRACTOR DETAILS & WORK LEDGER */
+                <InteriorLabourContractDetailsView
+                  contract={selectedLabourContract}
+                  onBack={() => setSelectedLabourContractId(null)}
+                  onUpdateContract={updateLabourContract}
+                  onUpdateLabourCharge={updateLabourCharge}
+                  onAddEntry={addLabourEntry}
+                  onUpdateEntry={updateLabourEntry}
+                  onDeleteEntry={deleteLabourEntry}
+                />
+              ) : (
+                /* LABOUR CONTRACTS DIRECTORY (Matching wireframe & sketch) */
+                <InteriorLabourContractView
+                  contracts={labourContracts}
+                  onSelectContract={(c) => setSelectedLabourContractId(c.id)}
+                  onAddContract={addLabourContract}
+                  onUpdateContract={updateLabourContract}
+                  onDeleteContract={deleteLabourContract}
+                  siteOptions={Array.from(new Set([
+                    ...interiorClients.map((c) => c.name),
+                    'Palayam',
+                    'A.R. Rahman Villa',
+                    'Dr. Vikramaditya Reddy Site',
+                    'Green Meadows Apt',
+                    ...labourContracts.map((c) => c.siteName).filter(Boolean)
+                  ]))}
+                />
+              )
+            ) : selectedInteriorClient ? (
+              /* KAAB INTERIOR - CLIENT DETAILS & PROJECT LEDGER */
+              <InteriorClientDetailsView
+                client={selectedInteriorClient}
+                onBack={() => setSelectedInteriorClientId(null)}
+                onUpdateClient={updateInteriorClient}
+                onAddAdvance={addInteriorAdvance}
+                onUpdateAdvance={updateInteriorAdvance}
+                onDeleteAdvance={deleteInteriorAdvance}
+                onDeleteMultipleAdvancePayments={deleteMultipleInteriorAdvances}
+                onAddExpense={addInteriorExpense}
+                onUpdateExpense={updateInteriorExpense}
+                onDeleteExpense={deleteInteriorExpense}
+                onDeleteMultipleExpenses={deleteMultipleInteriorExpenses}
+              />
+            ) : (
+              /* KAAB INTERIOR - CLIENTS DIRECTORY */
+              <InteriorClientView
+                clients={interiorClients}
+                onSelectClient={(c) => setSelectedInteriorClientId(c.id)}
+                onAddClient={addInteriorClient}
+                onUpdateClient={updateInteriorClient}
+                onDeleteClient={deleteInteriorClient}
+                onDeleteMultipleClients={deleteMultipleInteriorClients}
+              />
+            )
+          ) : activeTab === 'kabibullah_bricks' ? (
+            <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%' }}>
+              {/* Sub-view rendering */}
+              {activeBricksSubTab === 'directory' ? (
+                selectedBrickCustomer ? (
+                  /* KABIBULLAH BRICKS - CUSTOMER DETAILS & TRANSACTIONS VIEW */
+                  <BricksCustomerDetailsView
+                    customer={selectedBrickCustomer}
+                    onBack={() => setSelectedBrickCustomerId(null)}
+                    onUpdateCustomer={updateBrickCustomer}
+                    onAddTransaction={addBrickTransaction}
+                    onUpdateTransaction={updateBrickTransaction}
+                    onDeleteTransaction={deleteBrickTransaction}
+                    onDeleteMultipleTransactions={deleteMultipleBrickTransactions}
+                  />
+                ) : (
+                  /* KABIBULLAH BRICKS - CUSTOMER DIRECTORY */
+                  <BricksCustomerView
+                    customers={brickCustomers}
+                    onSelectCustomer={(cust) => setSelectedBrickCustomerId(cust.id)}
+                    onAddCustomer={addBrickCustomer}
+                    onUpdateCustomer={updateBrickCustomer}
+                    onDeleteCustomer={deleteBrickCustomer}
+                    onDeleteMultipleCustomers={deleteMultipleBrickCustomers}
+                  />
+                )
+              ) : activeBricksSubTab === 'expenses' ? (
+                /* KABIBULLAH BRICKS - PRODUCTION EXPENSES */
+                <BricksProductionExpensesView
+                  expenses={brickExpenses}
+                  stats={brickExpensesStats}
+                  onAddExpense={addBrickExpense}
+                  onUpdateExpense={updateBrickExpense}
+                  onDeleteExpense={deleteBrickExpense}
+                  onDeleteMultipleExpenses={deleteMultipleBrickExpenses}
+                />
+              ) : (
+                /* KABIBULLAH BRICKS - STOCK REGISTER & INVENTORY */
+                selectedStockItem ? (
+                  <BricksStockItemDetailView
+                    item={selectedStockItem}
+                    onBack={() => setSelectedStockItemId(null)}
+                    onUpdateStockItem={updateStockItem}
+                    onAddEntry={addStockItemEntry}
+                    onUpdateEntry={updateStockItemEntry}
+                    onDeleteEntry={deleteStockItemEntry}
+                    onDeleteMultipleEntries={deleteMultipleStockItemEntries}
+                  />
+                ) : (
+                  <BricksStockRegisterView
+                    stockItems={stockItems}
+                    stats={stockStats}
+                    onSelectItem={(item) => setSelectedStockItemId(item.id)}
+                    onAddStockItem={addStockItem}
+                    onUpdateStockItem={updateStockItem}
+                    onDeleteStockItem={deleteStockItem}
+                    onDeleteMultipleStockItems={deleteMultipleStockItems}
+                  />
+                )
+              )}
+            </div>
+          ) : activeTab === 'banks' ? (
             /* BANK DETAILS VIEW (Canara Bank, Bank of Baroda, etc.) */
             <BankDetailsView
               bankAccounts={bankAccounts}
@@ -291,6 +707,7 @@ export const AftrahAppPortal: React.FC = () => {
               onDeleteAccount={deleteBankAccount}
               onAddTransaction={addBankTransaction}
               onDeleteTransaction={deleteBankTransaction}
+              onDeleteMultipleTransactions={deleteMultipleBankTransactions}
             />
           ) : activeTab === 'vendor' ? (
             selectedVendor && selectedShop ? (
@@ -304,6 +721,7 @@ export const AftrahAppPortal: React.FC = () => {
                 onAddTransaction={addShopTransaction}
                 onUpdateTransaction={updateShopTransaction}
                 onDeleteTransaction={deleteShopTransaction}
+                onDeleteMultipleShopTransactions={deleteMultipleShopTransactions}
               />
             ) : selectedVendor ? (
               /* VENDOR SHOPS LIST (List of shops for e.g. Bricks + Add Shop form) */
@@ -337,9 +755,11 @@ export const AftrahAppPortal: React.FC = () => {
               onAddAdvance={addAdvancePayment}
               onUpdateAdvance={updateAdvancePayment}
               onDeleteAdvance={deleteAdvancePayment}
+              onDeleteMultipleAdvancePayments={deleteMultipleAdvancePayments}
               onAddExpense={addExpense}
               onUpdateExpense={updateExpense}
               onDeleteExpense={deleteExpense}
+              onDeleteMultipleExpenses={deleteMultipleExpenses}
             />
           ) : (
             /* CLIENT LIST 2-COLUMN VIEW */

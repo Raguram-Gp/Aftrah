@@ -492,6 +492,94 @@ export const useClients = () => {
     }
   };
 
+  const deleteMultipleAdvancePayments = async (clientId: string, paymentIds: string[]) => {
+    const previousClients = [...clients];
+    const idSet = new Set(paymentIds);
+    setClients((prev) =>
+      prev.map((c) =>
+        c.id === clientId
+          ? {
+              ...c,
+              advancePayments: (c.advancePayments || [])
+                .filter((p) => !idSet.has(p.id))
+                .map((p, idx) => ({ ...p, sNo: idx + 1 })),
+            }
+          : c
+      )
+    );
+
+    if (!isSupabaseConfigured) return;
+
+    try {
+      const { error: deleteError } = await supabase
+        .from('client_advance_payments')
+        .delete()
+        .in('id', paymentIds);
+
+      if (deleteError) throw deleteError;
+    } catch (err: any) {
+      console.error('Failed to delete advance payments:', err);
+      setClients(previousClients);
+      setError(err.message || 'Failed to delete selected advance payments.');
+      throw err;
+    }
+  };
+
+  const deleteMultipleExpenses = async (clientId: string, expenseIds: string[]) => {
+    const previousClients = [...clients];
+    const idSet = new Set(expenseIds);
+    setClients((prev) =>
+      prev.map((c) =>
+        c.id === clientId
+          ? {
+              ...c,
+              expenses: (c.expenses || [])
+                .filter((e) => !idSet.has(e.id))
+                .map((e, idx) => ({ ...e, sNo: idx + 1 })),
+            }
+          : c
+      )
+    );
+
+    if (!isSupabaseConfigured) return;
+
+    try {
+      const { error: deleteError } = await supabase
+        .from('client_expenses')
+        .delete()
+        .in('id', expenseIds);
+
+      if (deleteError) throw deleteError;
+    } catch (err: any) {
+      console.error('Failed to delete expenses:', err);
+      setClients(previousClients);
+      setError(err.message || 'Failed to delete selected expenses.');
+      throw err;
+    }
+  };
+
+  const deleteMultipleClients = async (ids: string[]) => {
+    const previousClients = [...clients];
+    const idSet = new Set(ids);
+    setClients((prev) => prev.filter((c) => !idSet.has(c.id)));
+
+    if (!isSupabaseConfigured) return;
+
+    try {
+      const { error: deleteError } = await supabase
+        .from('clients')
+        .delete()
+        .in('id', ids);
+
+      if (deleteError) throw deleteError;
+    } catch (err: any) {
+      console.error('Failed to delete clients:', err);
+      setClients(previousClients);
+      setError(err.message || 'Failed to delete selected clients.');
+      throw err;
+    }
+  };
+
   return {
     clients,
     isLoading,
@@ -501,11 +589,14 @@ export const useClients = () => {
     addClient,
     updateClient,
     deleteClient,
+    deleteMultipleClients,
     addAdvancePayment,
     updateAdvancePayment,
     deleteAdvancePayment,
+    deleteMultipleAdvancePayments,
     addExpense,
     updateExpense,
     deleteExpense,
+    deleteMultipleExpenses,
   };
 };

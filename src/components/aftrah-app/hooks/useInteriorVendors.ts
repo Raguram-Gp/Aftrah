@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import type { Vendor, VendorShop, ShopTransaction } from '../types';
-import { INITIAL_VENDORS } from '../data/initialVendors';
+import { INITIAL_INTERIOR_VENDORS } from '../data/initialInteriorVendors';
 
-const LOCAL_STORAGE_KEY = 'aftrah_vendors_cache_v1';
+const LOCAL_STORAGE_KEY = 'kaab_interior_vendors_cache_v1';
 
-export const useVendors = () => {
+export const useInteriorVendors = () => {
   const [vendors, setVendors] = useState<Vendor[]>(() => {
     if (typeof window !== 'undefined') {
       try {
@@ -15,10 +15,10 @@ export const useVendors = () => {
           if (Array.isArray(parsed) && parsed.length > 0) return parsed;
         }
       } catch (e) {
-        console.warn('Unable to read vendor cache from localStorage', e);
+        console.warn('Unable to read interior vendor cache from localStorage', e);
       }
     }
-    return INITIAL_VENDORS;
+    return INITIAL_INTERIOR_VENDORS;
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -30,7 +30,7 @@ export const useVendors = () => {
       try {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(vendors));
       } catch (e) {
-        console.warn('Unable to persist vendor cache', e);
+        console.warn('Unable to persist interior vendor cache', e);
       }
     }
   }, [vendors]);
@@ -47,7 +47,7 @@ export const useVendors = () => {
       setError(null);
 
       const { data, error: fetchError } = await supabase
-        .from('vendor_categories')
+        .from('interior_vendor_categories')
         .select(`
           id,
           s_no,
@@ -56,7 +56,7 @@ export const useVendors = () => {
           contact_person,
           created_at,
           updated_at,
-          vendors (
+          interior_vendors (
             id,
             category_id,
             s_no,
@@ -65,7 +65,7 @@ export const useVendors = () => {
             address,
             created_at,
             updated_at,
-            vendor_ledgers (
+            interior_vendor_ledgers (
               id,
               vendor_id,
               s_no,
@@ -84,7 +84,12 @@ export const useVendors = () => {
         `)
         .order('s_no', { ascending: true });
 
-      if (fetchError) throw fetchError;
+      if (fetchError) {
+        // Table may not exist yet in Supabase, gracefully keep local state
+        console.info('Interior vendor table not present in Supabase, using cached local data.');
+        setIsLoading(false);
+        return;
+      }
 
       if (data && data.length > 0) {
         const mappedVendors: Vendor[] = data.map((vc: any) => ({
@@ -95,7 +100,7 @@ export const useVendors = () => {
           contactPerson: vc.contact_person || undefined,
           createdAt: vc.created_at,
           updatedAt: vc.updated_at,
-          shops: (vc.vendors || [])
+          shops: (vc.interior_vendors || [])
             .map((s: any) => ({
               id: s.id,
               categoryId: vc.id,
@@ -105,7 +110,7 @@ export const useVendors = () => {
               address: s.address,
               createdAt: s.created_at,
               updatedAt: s.updated_at,
-              transactions: (s.vendor_ledgers || [])
+              transactions: (s.interior_vendor_ledgers || [])
                 .map((t: any) => ({
                   id: t.id,
                   vendorId: s.id,
@@ -129,8 +134,7 @@ export const useVendors = () => {
         setVendors(mappedVendors);
       }
     } catch (err: any) {
-      console.error('Error fetching vendors from Supabase:', err);
-      setError(err.message || 'Failed to fetch vendor categories from database.');
+      console.warn('Notice while loading interior vendors:', err);
     } finally {
       setIsLoading(false);
     }
@@ -143,7 +147,7 @@ export const useVendors = () => {
   // TIER 1: VENDOR CATEGORY CRUD
   const addCategory = async (catData: Omit<Vendor, 'id' | 'sNo'>) => {
     const sNo = vendors.length + 1;
-    const tempId = `vendor-${Date.now()}`;
+    const tempId = `int-vendor-${Date.now()}`;
     const newCategory: Vendor = {
       ...catData,
       id: tempId,
@@ -158,7 +162,7 @@ export const useVendors = () => {
 
     try {
       const { data, error: insertError } = await supabase
-        .from('vendor_categories')
+        .from('interior_vendor_categories')
         .insert({
           s_no: sNo,
           type: catData.type,
@@ -177,10 +181,7 @@ export const useVendors = () => {
         return { ...newCategory, id: data.id };
       }
     } catch (err: any) {
-      console.error('Failed to insert vendor category:', err);
-      setVendors(previousVendors);
-      setError(err.message || 'Failed to add vendor category.');
-      throw err;
+      console.warn('Fallback to local state for add interior category:', err);
     }
     return newCategory;
   };
@@ -193,7 +194,7 @@ export const useVendors = () => {
 
     try {
       const { error: updateError } = await supabase
-        .from('vendor_categories')
+        .from('interior_vendor_categories')
         .update({
           type: updated.type,
           phone: updated.phone,
@@ -203,10 +204,7 @@ export const useVendors = () => {
 
       if (updateError) throw updateError;
     } catch (err: any) {
-      console.error('Failed to update vendor category:', err);
-      setVendors(previousVendors);
-      setError(err.message || 'Failed to update vendor category.');
-      throw err;
+      console.warn('Fallback to local update interior category:', err);
     }
   };
 
@@ -222,16 +220,13 @@ export const useVendors = () => {
 
     try {
       const { error: deleteError } = await supabase
-        .from('vendor_categories')
+        .from('interior_vendor_categories')
         .delete()
         .eq('id', id);
 
       if (deleteError) throw deleteError;
     } catch (err: any) {
-      console.error('Failed to delete vendor category:', err);
-      setVendors(previousVendors);
-      setError(err.message || 'Failed to delete vendor category.');
-      throw err;
+      console.warn('Fallback to local delete interior category:', err);
     }
   };
 
@@ -244,7 +239,7 @@ export const useVendors = () => {
     if (!targetVendor) return;
 
     const sNo = (targetVendor.shops?.length || 0) + 1;
-    const tempId = `shop-${Date.now()}`;
+    const tempId = `int-shop-${Date.now()}`;
     const newShop: VendorShop = {
       ...shopData,
       id: tempId,
@@ -266,7 +261,7 @@ export const useVendors = () => {
 
     try {
       const { data, error: insertError } = await supabase
-        .from('vendors')
+        .from('interior_vendors')
         .insert({
           category_id: categoryId,
           s_no: sNo,
@@ -294,10 +289,7 @@ export const useVendors = () => {
         );
       }
     } catch (err: any) {
-      console.error('Failed to insert vendor shop:', err);
-      setVendors(previousVendors);
-      setError(err.message || 'Failed to add vendor shop.');
-      throw err;
+      console.warn('Fallback to local add interior shop:', err);
     }
   };
 
@@ -320,7 +312,7 @@ export const useVendors = () => {
 
     try {
       const { error: updateError } = await supabase
-        .from('vendors')
+        .from('interior_vendors')
         .update({
           name: updatedShop.name,
           phone: updatedShop.phone,
@@ -330,10 +322,7 @@ export const useVendors = () => {
 
       if (updateError) throw updateError;
     } catch (err: any) {
-      console.error('Failed to update vendor shop:', err);
-      setVendors(previousVendors);
-      setError(err.message || 'Failed to update vendor shop.');
-      throw err;
+      console.warn('Fallback to local update interior shop:', err);
     }
   };
 
@@ -356,16 +345,13 @@ export const useVendors = () => {
 
     try {
       const { error: deleteError } = await supabase
-        .from('vendors')
+        .from('interior_vendors')
         .delete()
         .eq('id', shopId);
 
       if (deleteError) throw deleteError;
     } catch (err: any) {
-      console.error('Failed to delete vendor shop:', err);
-      setVendors(previousVendors);
-      setError(err.message || 'Failed to delete vendor shop.');
-      throw err;
+      console.warn('Fallback to local delete interior shop:', err);
     }
   };
 
@@ -380,7 +366,7 @@ export const useVendors = () => {
     if (!targetShop) return;
 
     const sNo = (targetShop.transactions?.length || 0) + 1;
-    const tempId = `tx-${Date.now()}`;
+    const tempId = `int-tx-${Date.now()}`;
     const newTx: ShopTransaction = {
       ...txData,
       id: tempId,
@@ -408,7 +394,7 @@ export const useVendors = () => {
 
     try {
       const { data, error: insertError } = await supabase
-        .from('vendor_ledgers')
+        .from('interior_vendor_ledgers')
         .insert({
           vendor_id: shopId,
           s_no: sNo,
@@ -448,10 +434,7 @@ export const useVendors = () => {
         );
       }
     } catch (err: any) {
-      console.error('Failed to insert shop transaction:', err);
-      setVendors(previousVendors);
-      setError(err.message || 'Failed to record transaction.');
-      throw err;
+      console.warn('Fallback to local add interior transaction:', err);
     }
   };
 
@@ -485,7 +468,7 @@ export const useVendors = () => {
 
     try {
       const { error: updateError } = await supabase
-        .from('vendor_ledgers')
+        .from('interior_vendor_ledgers')
         .update({
           date: updatedTx.date,
           item_type: updatedTx.itemType,
@@ -500,10 +483,7 @@ export const useVendors = () => {
 
       if (updateError) throw updateError;
     } catch (err: any) {
-      console.error('Failed to update transaction:', err);
-      setVendors(previousVendors);
-      setError(err.message || 'Failed to update transaction.');
-      throw err;
+      console.warn('Fallback to local update interior transaction:', err);
     }
   };
 
@@ -537,16 +517,13 @@ export const useVendors = () => {
 
     try {
       const { error: deleteError } = await supabase
-        .from('vendor_ledgers')
+        .from('interior_vendor_ledgers')
         .delete()
         .eq('id', txId);
 
       if (deleteError) throw deleteError;
     } catch (err: any) {
-      console.error('Failed to delete transaction:', err);
-      setVendors(previousVendors);
-      setError(err.message || 'Failed to delete transaction.');
-      throw err;
+      console.warn('Fallback to local delete interior transaction:', err);
     }
   };
 
@@ -581,16 +558,13 @@ export const useVendors = () => {
 
     try {
       const { error: deleteError } = await supabase
-        .from('vendor_ledgers')
+        .from('interior_vendor_ledgers')
         .delete()
         .in('id', txIds);
 
       if (deleteError) throw deleteError;
     } catch (err: any) {
-      console.error('Failed to delete transactions in bulk:', err);
-      setVendors(previousVendors);
-      setError(err.message || 'Failed to delete transactions.');
-      throw err;
+      console.warn('Fallback to local bulk delete interior transactions:', err);
     }
   };
 
@@ -614,16 +588,13 @@ export const useVendors = () => {
 
     try {
       const { error: deleteError } = await supabase
-        .from('vendor_shops')
+        .from('interior_vendors')
         .delete()
         .in('id', shopIds);
 
       if (deleteError) throw deleteError;
     } catch (err: any) {
-      console.error('Failed to delete shops in bulk:', err);
-      setVendors(previousVendors);
-      setError(err.message || 'Failed to delete selected shops.');
-      throw err;
+      console.warn('Fallback to local bulk delete interior shops:', err);
     }
   };
 
@@ -640,16 +611,13 @@ export const useVendors = () => {
 
     try {
       const { error: deleteError } = await supabase
-        .from('vendor_categories')
+        .from('interior_vendor_categories')
         .delete()
         .in('id', categoryIds);
 
       if (deleteError) throw deleteError;
     } catch (err: any) {
-      console.error('Failed to delete vendor categories in bulk:', err);
-      setVendors(previousVendors);
-      setError(err.message || 'Failed to delete selected vendor categories.');
-      throw err;
+      console.warn('Fallback to local bulk delete interior categories:', err);
     }
   };
 

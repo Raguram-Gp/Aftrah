@@ -4,6 +4,7 @@ import {
   Users,
   Truck,
   Landmark,
+  BrickWall,
   Sun,
   Moon,
   ArrowLeft,
@@ -16,8 +17,9 @@ interface App2SidebarProps {
   clientsCount: number;
   vendorsCount: number;
   banksCount: number;
-  activeTab: 'clients' | 'vendor' | 'banks';
-  onSelectTab: (tab: 'clients' | 'vendor' | 'banks') => void;
+  brickCustomersCount?: number;
+  activeTab: 'clients' | 'vendor' | 'banks' | 'kabibullah_bricks';
+  onSelectTab: (tab: 'clients' | 'vendor' | 'banks' | 'kabibullah_bricks') => void;
   isMobileOpen: boolean;
   onCloseMobile: () => void;
   isCollapsed: boolean;
@@ -28,6 +30,7 @@ export const App2Sidebar: React.FC<App2SidebarProps> = ({
   clientsCount,
   vendorsCount,
   banksCount,
+  brickCustomersCount = 0,
   activeTab,
   onSelectTab,
   isMobileOpen,
@@ -170,6 +173,26 @@ export const App2Sidebar: React.FC<App2SidebarProps> = ({
               </div>
               {!isCollapsed ? (
                 <span className="app2-badge-count">{banksCount}</span>
+              ) : (
+                <span className="app2-badge-dot" />
+              )}
+            </button>
+
+            {/* 4th Element: Kabibullah bricks */}
+            <button
+              onClick={() => {
+                onSelectTab('kabibullah_bricks');
+                onCloseMobile();
+              }}
+              className={`app2-nav-item ${activeTab === 'kabibullah_bricks' ? 'active' : ''}`}
+              title="Kabibullah bricks"
+            >
+              <div className="app2-nav-left">
+                <BrickWall size={18} className="nav-icon" />
+                {!isCollapsed && <span className="nav-label">Kabibullah bricks</span>}
+              </div>
+              {!isCollapsed ? (
+                <span className="app2-badge-count">{brickCustomersCount}</span>
               ) : (
                 <span className="app2-badge-dot" />
               )}

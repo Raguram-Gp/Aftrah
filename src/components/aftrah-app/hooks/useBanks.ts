@@ -350,6 +350,61 @@ export const useBanks = () => {
     }
   };
 
+  // DELETE MULTIPLE TRANSACTIONS IN BULK
+  const deleteMultipleBankTransactions = async (bankId: string, txIds: string[]) => {
+    const targetBank = bankAccounts.find((b) => b.id === bankId);
+    if (!targetBank) return;
+
+    const idSet = new Set(txIds);
+    const targetTxs = (targetBank.transactions || []).filter((t) => idSet.has(t.id));
+    if (targetTxs.length === 0) return;
+
+    let balanceDelta = 0;
+    targetTxs.forEach((tx) => {
+      const isDebit = tx.type === 'debit' || tx.type === 'withdrawal';
+      balanceDelta += isDebit ? tx.amount : -tx.amount;
+    });
+
+    const adjustedBalance = (targetBank.balance || 0) + balanceDelta;
+    const previousBanks = [...bankAccounts];
+
+    setBankAccounts((prev) =>
+      prev.map((b) =>
+        b.id === bankId
+          ? {
+              ...b,
+              balance: adjustedBalance,
+              updatedAt: new Date().toISOString(),
+              transactions: (b.transactions || []).filter((t) => !idSet.has(t.id)),
+            }
+          : b
+      )
+    );
+
+    if (!isSupabaseConfigured) return;
+
+    try {
+      const { error: deleteError } = await supabase
+        .from('bank_transactions')
+        .delete()
+        .in('id', txIds);
+
+      if (deleteError) throw deleteError;
+
+      const { error: balError } = await supabase
+        .from('bank_accounts')
+        .update({ balance: adjustedBalance })
+        .eq('id', bankId);
+
+      if (balError) throw balError;
+    } catch (err: any) {
+      console.error('Failed to delete transactions in bulk:', err);
+      setBankAccounts(previousBanks);
+      setError(err.message || 'Failed to revert transactions.');
+      throw err;
+    }
+  };
+
   return {
     bankAccounts,
     isLoading,
@@ -361,5 +416,6 @@ export const useBanks = () => {
     deleteBankAccount,
     addBankTransaction,
     deleteBankTransaction,
+    deleteMultipleBankTransactions,
   };
 };

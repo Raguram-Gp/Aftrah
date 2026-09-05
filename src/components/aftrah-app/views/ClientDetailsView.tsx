@@ -3,6 +3,7 @@ import type { Client, AdvancePayment, ExpenseItem } from '../types';
 import { PAYMENT_MODES } from '../types';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
+import { DateFilterBar } from '../components/DateFilterBar';
 import {
   ArrowLeft,
   Phone,
@@ -19,7 +20,8 @@ import {
   X,
   Search,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Printer
 } from 'lucide-react';
 
 interface ClientDetailsViewProps {
@@ -29,9 +31,11 @@ interface ClientDetailsViewProps {
   onAddAdvance?: (clientId: string, payment: Omit<AdvancePayment, 'id' | 'sNo'>) => Promise<any>;
   onUpdateAdvance?: (clientId: string, payment: AdvancePayment) => Promise<any>;
   onDeleteAdvance?: (clientId: string, paymentId: string) => Promise<any>;
+  onDeleteMultipleAdvancePayments?: (clientId: string, paymentIds: string[]) => Promise<any>;
   onAddExpense?: (clientId: string, expense: Omit<ExpenseItem, 'id' | 'sNo'>) => Promise<any>;
   onUpdateExpense?: (clientId: string, expense: ExpenseItem) => Promise<any>;
   onDeleteExpense?: (clientId: string, expenseId: string) => Promise<any>;
+  onDeleteMultipleExpenses?: (clientId: string, expenseIds: string[]) => Promise<any>;
 }
 
 export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
@@ -41,13 +45,20 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   onAddAdvance,
   onUpdateAdvance,
   onDeleteAdvance,
+  onDeleteMultipleAdvancePayments,
   onAddExpense,
   onUpdateExpense,
-  onDeleteExpense
+  onDeleteExpense,
+  onDeleteMultipleExpenses
 }) => {
   // Advance Payments State
   const advancePayments = client.advancePayments || [];
   const [advSearch, setAdvSearch] = useState('');
+  const [advFromDate, setAdvFromDate] = useState('');
+  const [advToDate, setAdvToDate] = useState('');
+  const [selectedAdvIds, setSelectedAdvIds] = useState<Set<string>>(new Set());
+  const [isBulkDeleteAdvOpen, setIsBulkDeleteAdvOpen] = useState(false);
+  const [isBulkDeletingAdv, setIsBulkDeletingAdv] = useState(false);
   const [advCurrentPage, setAdvCurrentPage] = useState(1);
   const [advItemsPerPage, setAdvItemsPerPage] = useState(5);
 
@@ -67,6 +78,11 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   // Expenses State
   const expenses = client.expenses || [];
   const [expSearch, setExpSearch] = useState('');
+  const [expFromDate, setExpFromDate] = useState('');
+  const [expToDate, setExpToDate] = useState('');
+  const [selectedExpIds, setSelectedExpIds] = useState<Set<string>>(new Set());
+  const [isBulkDeleteExpOpen, setIsBulkDeleteExpOpen] = useState(false);
+  const [isBulkDeletingExp, setIsBulkDeletingExp] = useState(false);
   const [expCurrentPage, setExpCurrentPage] = useState(1);
   const [expItemsPerPage, setExpItemsPerPage] = useState(5);
 
@@ -98,33 +114,142 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   const editExpTotalAmount =
     (parseFloat(editExpQuantity) || 0) * (parseFloat(editExpRate) || 0);
 
-  // Filtered Advance Payments
+  // Filtered Advance Payments by search AND date range
   const filteredAdvance = useMemo(() => {
-    if (!advSearch.trim()) return advancePayments;
-    const q = advSearch.toLowerCase();
-    return advancePayments.filter(
-      (p) =>
-        p.date.toLowerCase().includes(q) ||
-        p.mode.toLowerCase().includes(q) ||
-        String(p.amount).includes(q) ||
-        String(p.sNo).includes(q)
-    );
-  }, [advancePayments, advSearch]);
+    let list = advancePayments;
+    if (advFromDate) {
+      list = list.filter((p) => p.date >= advFromDate);
+    }
+    if (advToDate) {
+      list = list.filter((p) => p.date <= advToDate);
+    }
+    if (advSearch.trim()) {
+      const q = advSearch.toLowerCase().trim();
+      list = list.filter(
+        (p) =>
+          p.date.toLowerCase().includes(q) ||
+          p.mode.toLowerCase().includes(q) ||
+          String(p.amount).includes(q) ||
+          String(p.sNo).includes(q)
+      );
+    }
+    return list;
+  }, [advancePayments, advSearch, advFromDate, advToDate]);
 
-  // Filtered Expenses
+  // Filtered Expenses by search AND date range
   const filteredExpenses = useMemo(() => {
-    if (!expSearch.trim()) return expenses;
-    const q = expSearch.toLowerCase();
-    return expenses.filter(
-      (exp) =>
-        exp.expenseName.toLowerCase().includes(q) ||
-        exp.date.toLowerCase().includes(q) ||
-        String(exp.quantity).includes(q) ||
-        String(exp.rate).includes(q) ||
-        String(exp.totalAmount).includes(q) ||
-        String(exp.sNo).includes(q)
-    );
-  }, [expenses, expSearch]);
+    let list = expenses;
+    if (expFromDate) {
+      list = list.filter((e) => e.date >= expFromDate);
+    }
+    if (expToDate) {
+      list = list.filter((e) => e.date <= expToDate);
+    }
+    if (expSearch.trim()) {
+      const q = expSearch.toLowerCase().trim();
+      list = list.filter(
+        (exp) =>
+          exp.expenseName.toLowerCase().includes(q) ||
+          exp.date.toLowerCase().includes(q) ||
+          String(exp.quantity).includes(q) ||
+          String(exp.rate).includes(q) ||
+          String(exp.totalAmount).includes(q) ||
+          String(exp.sNo).includes(q)
+      );
+    }
+    return list;
+  }, [expenses, expSearch, expFromDate, expToDate]);
+
+  // Advance Multi-select handlers
+  const isAllAdvSelected =
+    filteredAdvance.length > 0 &&
+    filteredAdvance.every((p) => selectedAdvIds.has(p.id));
+
+  const isSomeAdvSelected = selectedAdvIds.size > 0 && !isAllAdvSelected;
+
+  const handleToggleSelectAllAdv = () => {
+    if (isAllAdvSelected) {
+      setSelectedAdvIds(new Set());
+    } else {
+      setSelectedAdvIds(new Set(filteredAdvance.map((p) => p.id)));
+    }
+  };
+
+  const handleToggleSelectAdvRow = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedAdvIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const handleConfirmBulkDeleteAdv = async () => {
+    if (selectedAdvIds.size === 0) return;
+    setIsBulkDeletingAdv(true);
+    try {
+      if (onDeleteMultipleAdvancePayments) {
+        await onDeleteMultipleAdvancePayments(client.id, Array.from(selectedAdvIds));
+      } else if (onDeleteAdvance) {
+        for (const id of selectedAdvIds) {
+          await onDeleteAdvance(client.id, id);
+        }
+      }
+      setSelectedAdvIds(new Set());
+      setIsBulkDeleteAdvOpen(false);
+    } finally {
+      setIsBulkDeletingAdv(false);
+    }
+  };
+
+  // Expenses Multi-select handlers
+  const isAllExpSelected =
+    filteredExpenses.length > 0 &&
+    filteredExpenses.every((e) => selectedExpIds.has(e.id));
+
+  const isSomeExpSelected = selectedExpIds.size > 0 && !isAllExpSelected;
+
+  const handleToggleSelectAllExp = () => {
+    if (isAllExpSelected) {
+      setSelectedExpIds(new Set());
+    } else {
+      setSelectedExpIds(new Set(filteredExpenses.map((e) => e.id)));
+    }
+  };
+
+  const handleToggleSelectExpRow = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedExpIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const handleConfirmBulkDeleteExp = async () => {
+    if (selectedExpIds.size === 0) return;
+    setIsBulkDeletingExp(true);
+    try {
+      if (onDeleteMultipleExpenses) {
+        await onDeleteMultipleExpenses(client.id, Array.from(selectedExpIds));
+      } else if (onDeleteExpense) {
+        for (const id of selectedExpIds) {
+          await onDeleteExpense(client.id, id);
+        }
+      }
+      setSelectedExpIds(new Set());
+      setIsBulkDeleteExpOpen(false);
+    } finally {
+      setIsBulkDeletingExp(false);
+    }
+  };
+
+  // Print Statement Handler
+  const handlePrint = () => {
+    window.print();
+  };
 
   // Validation
   const isAdvValid =
@@ -378,12 +503,66 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
   return (
     <div className="client-details-page">
-      {/* Header Bar */}
-      <div className="client-details-header">
-        <button onClick={onBack} className="aftrah-app-back-btn">
-          <ArrowLeft size={16} />
-          <span>Back to Clients</span>
-        </button>
+      {/* PRINT-ONLY STATEMENT HEADER */}
+      <div className="print-only-statement-header">
+        <div className="print-brand-row">
+          <div>
+            <h1 className="print-company-name">AFTRAH CONSTRUCTIONS</h1>
+            <p className="print-company-sub">Civil Construction, Materials Procurement & Financial ERP</p>
+          </div>
+          <div className="print-badge-statement">
+            <span>CLIENT ACCOUNT STATEMENT</span>
+          </div>
+        </div>
+
+        <div className="print-meta-grid">
+          <div className="print-meta-box">
+            <span className="print-meta-title">CLIENT DETAILS</span>
+            <div className="print-meta-val"><strong>{client.name}</strong></div>
+            <div className="print-meta-sub">Phone: {client.phone}</div>
+            <div className="print-meta-sub">Site / Address: {client.address}</div>
+          </div>
+
+          <div className="print-meta-box">
+            <span className="print-meta-title">FINANCIAL SUMMARY</span>
+            <div className="print-meta-sub">Total Advances: <strong>{formatINR(totalAdvance)}</strong></div>
+            <div className="print-meta-sub">Total Expenses: <strong>{formatINR(totalExpenses)}</strong></div>
+            <div className="print-meta-val" style={{ marginTop: '4px', color: balance >= 0 ? '#15803d' : '#b91c1c' }}>
+              {balance >= 0 ? `Net Balance: ${formatINR(balance)}` : `Overdue Deficit: ${formatINR(Math.abs(balance))}`}
+            </div>
+          </div>
+        </div>
+
+        <div className="print-totals-summary-bar">
+          <div className="print-total-item">
+            <span>Advance Payments:</span> <strong>{filteredAdvance.length} Entries ({formatINR(totalAdvance)})</strong>
+          </div>
+          <div className="print-total-item">
+            <span>Site Expenses:</span> <strong>{filteredExpenses.length} Entries ({formatINR(totalExpenses)})</strong>
+          </div>
+          <div className="print-total-item">
+            <span>Statement Date:</span> <strong>{new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</strong>
+          </div>
+        </div>
+      </div>
+
+      {/* Screen Header Bar */}
+      <div className="client-details-header no-print">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '12px' }}>
+          <button onClick={onBack} className="aftrah-app-back-btn">
+            <ArrowLeft size={16} />
+            <span>Back to Clients</span>
+          </button>
+
+          <button
+            onClick={handlePrint}
+            className="aftrah-app-back-btn"
+            title="Print or Export Client Statement"
+          >
+            <Printer size={15} />
+            <span>Print Statement</span>
+          </button>
+        </div>
 
         <div className="client-details-title-row">
           <div>
@@ -445,17 +624,40 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       <div className="client-details-side-by-side-grid">
         {/* COLUMN 1: ADVANCE PAYMENTS */}
         <div className="details-column-panel">
+          {/* Date Filter & Bulk Actions for Advance Payments */}
+          <DateFilterBar
+            fromDate={advFromDate}
+            toDate={advToDate}
+            onFromDateChange={(d) => {
+              setAdvFromDate(d);
+              setAdvCurrentPage(1);
+            }}
+            onToDateChange={(d) => {
+              setAdvToDate(d);
+              setAdvCurrentPage(1);
+            }}
+            onClearDates={() => {
+              setAdvFromDate('');
+              setAdvToDate('');
+              setAdvCurrentPage(1);
+            }}
+            selectedCount={selectedAdvIds.size}
+            onBulkDelete={() => setIsBulkDeleteAdvOpen(true)}
+            deleteLabel="Delete Selected"
+          />
+
           <section className="aftrah-app-table-section">
-            <div className="aftrah-app-section-header">
+            <div className="aftrah-app-section-header no-print">
               <div>
                 <h2 className="aftrah-app-section-title">Advance Payments</h2>
                 <span className="aftrah-app-section-subtitle">
                   {filteredAdvance.length} {filteredAdvance.length === 1 ? 'payment' : 'payments'} recorded
+                  {(advFromDate || advToDate) && ' (filtered)'}
                 </span>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div className="aftrah-app-search-wrapper" style={{ minWidth: '160px' }}>
+                <div className="aftrah-app-search-wrapper" style={{ minWidth: '150px' }}>
                   <Search size={13} className="aftrah-app-search-icon" />
                   <input
                     type="text"
@@ -472,7 +674,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 <button
                   onClick={() => setIsAddAdvModalOpen(true)}
                   className="btn-theme-primary"
-                  style={{ height: '34px', padding: '0 12px', fontSize: '12px' }}
+                  style={{ height: '34px', padding: '0 12px', fontSize: '12px', whiteSpace: 'nowrap' }}
                 >
                   <Plus size={14} />
                   <span>Add Advance</span>
@@ -488,56 +690,61 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     <th>DATE</th>
                     <th>AMOUNT</th>
                     <th>PAYMENT MODE</th>
-                    <th style={{ width: '70px', textAlign: 'center' }}>ACTIONS</th>
+                    <th className="no-print" style={{ width: '70px', textAlign: 'center' }}>ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
                   {paginatedAdvance.length === 0 ? (
                     <tr>
                       <td colSpan={5} style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--text-secondary)' }}>
-                        {advSearch ? 'No matching advance payments.' : 'No advance payments added yet.'}
+                        {advSearch || advFromDate || advToDate ? 'No matching advance payments.' : 'No advance payments added yet.'}
                       </td>
                     </tr>
                   ) : (
-                    paginatedAdvance.map((item, index) => (
-                      <tr key={item.id}>
-                        <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
-                          #{advStartIndex + index + 1}
-                        </td>
-                        <td>
-                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                            <Calendar size={12} color="var(--primary)" />
-                            <span>{item.date}</span>
-                          </div>
-                        </td>
-                        <td style={{ fontWeight: 700, color: 'var(--primary)', fontFamily: 'JetBrains Mono, monospace' }}>
-                          {formatINR(item.amount)}
-                        </td>
-                        <td>
-                          <span className="payment-mode-tag">
-                            {item.mode}
-                          </span>
-                        </td>
-                        <td style={{ textAlign: 'center' }}>
-                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                            <button
-                              onClick={() => handleOpenEditAdv(item)}
-                              className="aftrah-app-action-btn aftrah-app-edit-btn"
-                              title="Edit Payment"
-                            >
-                              <Pencil size={13} />
-                            </button>
-                            <button
-                              onClick={() => setDeleteAdvTarget(item)}
-                              className="aftrah-app-action-btn aftrah-app-delete-btn"
-                              title="Delete Payment"
-                            >
-                              <Trash2 size={13} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
+                    paginatedAdvance.map((item, index) => {
+                      return (
+                        <tr
+                          key={item.id}
+                          style={{ cursor: 'default' }}
+                        >
+                          <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
+                            #{advStartIndex + index + 1}
+                          </td>
+                          <td>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                              <Calendar size={12} color="var(--primary)" />
+                              <span>{item.date}</span>
+                            </div>
+                          </td>
+                          <td style={{ fontWeight: 700, color: 'var(--primary)', fontFamily: 'JetBrains Mono, monospace' }}>
+                            {formatINR(item.amount)}
+                          </td>
+                          <td>
+                            <span className="payment-mode-tag">
+                              {item.mode}
+                            </span>
+                          </td>
+                          <td className="no-print" style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                              <button
+                                onClick={() => handleOpenEditAdv(item)}
+                                className="aftrah-app-action-btn aftrah-app-edit-btn"
+                                title="Edit Payment"
+                              >
+                                <Pencil size={13} />
+                              </button>
+                              <button
+                                onClick={() => setDeleteAdvTarget(item)}
+                                className="aftrah-app-action-btn aftrah-app-delete-btn"
+                                title="Delete Payment"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>
@@ -545,7 +752,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
             {/* Advance Pagination */}
             {filteredAdvance.length > 0 && (
-              <div className="aftrah-app-pagination-bar compact">
+              <div className="aftrah-app-pagination-bar compact no-print">
                 <div className="aftrah-app-pagination-left">
                   <span className="aftrah-app-pagination-info">
                     {advStartIndex + 1}–{advEndIndex} of {filteredAdvance.length}
@@ -600,17 +807,40 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
         {/* COLUMN 2: SITE EXPENSES */}
         <div className="details-column-panel">
+          {/* Date Filter & Bulk Actions for Expenses */}
+          <DateFilterBar
+            fromDate={expFromDate}
+            toDate={expToDate}
+            onFromDateChange={(d) => {
+              setExpFromDate(d);
+              setExpCurrentPage(1);
+            }}
+            onToDateChange={(d) => {
+              setExpToDate(d);
+              setExpCurrentPage(1);
+            }}
+            onClearDates={() => {
+              setExpFromDate('');
+              setExpToDate('');
+              setExpCurrentPage(1);
+            }}
+            selectedCount={selectedExpIds.size}
+            onBulkDelete={() => setIsBulkDeleteExpOpen(true)}
+            deleteLabel="Delete Selected"
+          />
+
           <section className="aftrah-app-table-section">
-            <div className="aftrah-app-section-header">
+            <div className="aftrah-app-section-header no-print">
               <div>
                 <h2 className="aftrah-app-section-title">Site Expenses</h2>
                 <span className="aftrah-app-section-subtitle">
                   {filteredExpenses.length} {filteredExpenses.length === 1 ? 'expense' : 'expenses'} recorded
+                  {(expFromDate || expToDate) && ' (filtered)'}
                 </span>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div className="aftrah-app-search-wrapper" style={{ minWidth: '160px' }}>
+                <div className="aftrah-app-search-wrapper" style={{ minWidth: '150px' }}>
                   <Search size={13} className="aftrah-app-search-icon" />
                   <input
                     type="text"
@@ -627,7 +857,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 <button
                   onClick={() => setIsAddExpModalOpen(true)}
                   className="btn-theme-primary"
-                  style={{ height: '34px', padding: '0 12px', fontSize: '12px' }}
+                  style={{ height: '34px', padding: '0 12px', fontSize: '12px', whiteSpace: 'nowrap' }}
                 >
                   <Plus size={14} />
                   <span>Add Expense</span>
@@ -645,62 +875,67 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     <th>QTY</th>
                     <th>RATE</th>
                     <th>TOTAL</th>
-                    <th style={{ width: '70px', textAlign: 'center' }}>ACTIONS</th>
+                    <th className="no-print" style={{ width: '70px', textAlign: 'center' }}>ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
                   {paginatedExpenses.length === 0 ? (
                     <tr>
                       <td colSpan={7} style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--text-secondary)' }}>
-                        {expSearch ? 'No matching expenses found.' : 'No expenses logged yet.'}
+                        {expSearch || expFromDate || expToDate ? 'No matching expenses found.' : 'No expenses logged yet.'}
                       </td>
                     </tr>
                   ) : (
-                    paginatedExpenses.map((exp, index) => (
-                      <tr key={exp.id}>
-                        <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
-                          #{expStartIndex + index + 1}
-                        </td>
-                        <td>
-                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                            <Calendar size={12} color="var(--primary)" />
-                            <span>{exp.date}</span>
-                          </div>
-                        </td>
-                        <td>
-                          <span className="expense-name-tag">
-                            {exp.expenseName}
-                          </span>
-                        </td>
-                        <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '12px' }}>
-                          {exp.quantity}
-                        </td>
-                        <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '12px' }}>
-                          {formatINR(exp.rate)}
-                        </td>
-                        <td style={{ fontWeight: 700, color: 'var(--primary)', fontFamily: 'JetBrains Mono, monospace' }}>
-                          {formatINR(exp.totalAmount)}
-                        </td>
-                        <td style={{ textAlign: 'center' }}>
-                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                            <button
-                              onClick={() => handleOpenEditExp(exp)}
-                              className="aftrah-app-action-btn aftrah-app-edit-btn"
-                              title="Edit Expense"
-                            >
-                              <Pencil size={13} />
-                            </button>
-                            <button
-                              onClick={() => setDeleteExpTarget(exp)}
-                              className="aftrah-app-action-btn aftrah-app-delete-btn"
-                              title="Delete Expense"
-                            >
-                              <Trash2 size={13} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
+                    paginatedExpenses.map((exp, index) => {
+                      return (
+                        <tr
+                          key={exp.id}
+                          style={{ cursor: 'default' }}
+                        >
+                          <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
+                            #{expStartIndex + index + 1}
+                          </td>
+                          <td>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                              <Calendar size={12} color="var(--primary)" />
+                              <span>{exp.date}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <span className="expense-name-tag">
+                              {exp.expenseName}
+                            </span>
+                          </td>
+                          <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '12px' }}>
+                            {exp.quantity}
+                          </td>
+                          <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '12px' }}>
+                            {formatINR(exp.rate)}
+                          </td>
+                          <td style={{ fontWeight: 700, color: 'var(--primary)', fontFamily: 'JetBrains Mono, monospace' }}>
+                            {formatINR(exp.totalAmount)}
+                          </td>
+                          <td className="no-print" style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                              <button
+                                onClick={() => handleOpenEditExp(exp)}
+                                className="aftrah-app-action-btn aftrah-app-edit-btn"
+                                title="Edit Expense"
+                              >
+                                <Pencil size={13} />
+                              </button>
+                              <button
+                                onClick={() => setDeleteExpTarget(exp)}
+                                className="aftrah-app-action-btn aftrah-app-delete-btn"
+                                title="Delete Expense"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>
@@ -708,7 +943,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
             {/* Expenses Pagination */}
             {filteredExpenses.length > 0 && (
-              <div className="aftrah-app-pagination-bar compact">
+              <div className="aftrah-app-pagination-bar compact no-print">
                 <div className="aftrah-app-pagination-left">
                   <span className="aftrah-app-pagination-info">
                     {expStartIndex + 1}–{expEndIndex} of {filteredExpenses.length}
@@ -1066,6 +1301,17 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         onClose={() => setDeleteAdvTarget(null)}
       />
 
+      {/* CONFIRM BULK DELETE ADVANCE PAYMENTS MODAL */}
+      <ConfirmDeleteModal
+        isOpen={isBulkDeleteAdvOpen}
+        title="Delete Selected Advance Payments"
+        message={`Are you sure you want to delete ${selectedAdvIds.size} selected advance payments? Financial totals will be recalculated immediately.`}
+        confirmText={`Delete ${selectedAdvIds.size} Payments`}
+        isDeleting={isBulkDeletingAdv}
+        onConfirm={handleConfirmBulkDeleteAdv}
+        onClose={() => setIsBulkDeleteAdvOpen(false)}
+      />
+
       {/* CONFIRM DELETE EXPENSE MODAL */}
       <ConfirmDeleteModal
         isOpen={Boolean(deleteExpTarget)}
@@ -1076,6 +1322,17 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         isDeleting={isDeletingExp}
         onConfirm={handleConfirmDeleteExpense}
         onClose={() => setDeleteExpTarget(null)}
+      />
+
+      {/* CONFIRM BULK DELETE EXPENSES MODAL */}
+      <ConfirmDeleteModal
+        isOpen={isBulkDeleteExpOpen}
+        title="Delete Selected Site Expenses"
+        message={`Are you sure you want to delete ${selectedExpIds.size} selected expense records? Financial totals will be recalculated immediately.`}
+        confirmText={`Delete ${selectedExpIds.size} Expenses`}
+        isDeleting={isBulkDeletingExp}
+        onConfirm={handleConfirmBulkDeleteExp}
+        onClose={() => setIsBulkDeleteExpOpen(false)}
       />
     </div>
   );
