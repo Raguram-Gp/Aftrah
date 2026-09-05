@@ -1,9 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import type { LabourContract, LabourContractEntry } from '../types';
-import { INITIAL_CONSTRUCTION_LABOUR_CONTRACTS } from '../data/initialConstructionLabourContracts';
-
-const LOCAL_STORAGE_KEY = 'afrah_construction_labour_contracts_cache_v2';
 
 const cleanWorkType = (wt: string) => {
   if (!wt) return wt;
@@ -11,51 +8,11 @@ const cleanWorkType = (wt: string) => {
 };
 
 export const useConstructionLabourContracts = () => {
-  const [contracts, setContracts] = useState<LabourContract[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem(LOCAL_STORAGE_KEY) || localStorage.getItem('afrah_construction_labour_contracts_cache_v1');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed.map((c: any) => {
-              const defaultContract = INITIAL_CONSTRUCTION_LABOUR_CONTRACTS.find((ic) => ic.id === c.id);
-              const entries = Array.isArray(c.entries) && c.entries.length > 0
-                ? c.entries
-                : defaultContract?.entries || [];
-              return {
-                ...c,
-                labourCharge: Number(c.labourCharge || defaultContract?.labourCharge || 50000),
-                entries: entries.map((e: any) => ({
-                  ...e,
-                  workType: cleanWorkType(e.workType)
-                }))
-              };
-            });
-          }
-        }
-      } catch (e) {
-        console.warn('Unable to read construction labour contracts cache from localStorage', e);
-      }
-    }
-    return INITIAL_CONSTRUCTION_LABOUR_CONTRACTS;
-  });
-
+  const [contracts, setContracts] = useState<LabourContract[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Persist locally
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(contracts));
-      } catch (e) {
-        console.warn('Unable to persist construction labour contracts cache', e);
-      }
-    }
-  }, [contracts]);
-
-  // Optional Supabase fetch with fallback
+  // Fetch from Supabase
   const fetchContracts = useCallback(async () => {
     if (!isSupabaseConfigured) {
       setIsLoading(false);
@@ -94,15 +51,10 @@ export const useConstructionLabourContracts = () => {
         `)
         .order('s_no', { ascending: true });
 
-      if (fetchError) {
-        // Table not in Supabase yet, fallback gracefully to cached data
-        setIsLoading(false);
-        return;
-      }
+      if (fetchError) throw fetchError;
 
-      if (data && data.length > 0) {
-        const mapped: LabourContract[] = data.map((c: any) => {
-          const defaultContract = INITIAL_CONSTRUCTION_LABOUR_CONTRACTS.find((ic) => ic.id === c.id);
+      if (data) {
+        const mapped: LabourContract[] = data.map((c: any, idx: number) => {
           const rawEntries = (c.construction_labour_entries || []).map((e: any) => ({
             id: e.id,
             contractId: e.contract_id,
@@ -112,29 +64,30 @@ export const useConstructionLabourContracts = () => {
             days: Number(e.days || 1),
             salaryPerDay: Number(e.salary_per_day || 0),
             totalAmount: Number(e.total_amount || 0),
-            note: e.note,
+            note: e.note || '',
             createdAt: e.created_at
           })).sort((a: any, b: any) => a.sNo - b.sNo);
 
           return {
             id: c.id,
-            sNo: c.s_no,
+            sNo: c.s_no || idx + 1,
             date: c.date,
             labourName: c.labour_name,
             siteName: c.site_name,
-            phone: c.phone,
-            labourCharge: Number(c.labour_charge || defaultContract?.labourCharge || 50000),
-            notes: c.notes,
+            phone: c.phone || '',
+            labourCharge: Number(c.labour_charge || 0),
+            notes: c.notes || '',
             createdAt: c.created_at,
             updatedAt: c.updated_at,
-            entries: rawEntries.length > 0 ? rawEntries : defaultContract?.entries || []
+            entries: rawEntries
           };
         });
 
         setContracts(mapped);
       }
     } catch (err: any) {
-      console.warn('Notice while loading construction labour contracts:', err);
+      console.error('Error loading construction labour contracts from Supabase:', err);
+      setError(err?.message || 'Failed to load construction labour contracts');
     } finally {
       setIsLoading(false);
     }
@@ -146,21 +99,10 @@ export const useConstructionLabourContracts = () => {
 
   // CONTRACT CRUD
   const addContract = async (contractData: Omit<LabourContract, 'id' | 'sNo'>) => {
-    const sNo = contracts.length + 1;
-    const tempId = `c-contract-${Date.now()}`;
-    const newContract: LabourContract = {
-      ...contractData,
-      id: tempId,
-      sNo,
-      labourCharge: contractData.labourCharge || 50000,
-      entries: contractData.entries || []
-    };
-
-    setContracts((prev) => [...prev, newContract]);
-
-    if (!isSupabaseConfigured) return newContract;
-
     try {
+      setError(null);
+      const sNo = contracts.length + 1;
+
       const { data, error: insertError } = await supabase
         .from('construction_labour_contracts')
         .insert({
@@ -168,124 +110,132 @@ export const useConstructionLabourContracts = () => {
           date: contractData.date,
           labour_name: contractData.labourName,
           site_name: contractData.siteName,
-          phone: contractData.phone,
-          labour_charge: contractData.labourCharge || 50000,
-          notes: contractData.notes
+          phone: contractData.phone || null,
+          labour_charge: contractData.labourCharge || 0,
+          notes: contractData.notes || null
         })
         .select()
         .single();
 
       if (insertError) throw insertError;
 
-      if (data) {
-        setContracts((prev) =>
-          prev.map((c) => (c.id === tempId ? { ...c, id: data.id } : c))
-        );
-        return { ...newContract, id: data.id };
-      }
+      const newContract: LabourContract = {
+        ...contractData,
+        id: data.id,
+        sNo: data.s_no,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+        entries: []
+      };
+
+      setContracts((prev) => [...prev, newContract]);
+      return newContract;
     } catch (err: any) {
-      console.warn('Fallback to local state for addContract:', err);
+      console.error('Error adding construction labour contract:', err);
+      setError(err?.message || 'Failed to add contract');
+      throw err;
     }
-    return newContract;
   };
 
   const updateContract = async (updated: LabourContract) => {
-    setContracts((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
-
-    if (!isSupabaseConfigured) return;
-
     try {
-      await supabase
+      setError(null);
+      const { error: updateError } = await supabase
         .from('construction_labour_contracts')
         .update({
           date: updated.date,
           labour_name: updated.labourName,
           site_name: updated.siteName,
-          phone: updated.phone,
+          phone: updated.phone || null,
           labour_charge: updated.labourCharge,
-          notes: updated.notes
+          notes: updated.notes || null
         })
         .eq('id', updated.id);
+
+      if (updateError) throw updateError;
+
+      setContracts((prev) =>
+        prev.map((c) => (c.id === updated.id ? { ...updated, updatedAt: new Date().toISOString() } : c))
+      );
     } catch (err: any) {
-      console.warn('Fallback to local updateContract:', err);
+      console.error('Error updating construction labour contract:', err);
+      setError(err?.message || 'Failed to update contract');
+      throw err;
     }
   };
 
   const updateLabourCharge = async (contractId: string, charge: number) => {
-    setContracts((prev) =>
-      prev.map((c) => (c.id === contractId ? { ...c, labourCharge: charge } : c))
-    );
-
-    if (!isSupabaseConfigured) return;
-
     try {
-      await supabase
+      setError(null);
+      const { error: updateError } = await supabase
         .from('construction_labour_contracts')
         .update({ labour_charge: charge })
         .eq('id', contractId);
-    } catch (err) {
-      console.warn('Fallback to local updateLabourCharge:', err);
+
+      if (updateError) throw updateError;
+
+      setContracts((prev) =>
+        prev.map((c) => (c.id === contractId ? { ...c, labourCharge: charge } : c))
+      );
+    } catch (err: any) {
+      console.error('Error updating construction labour charge:', err);
+      setError(err?.message || 'Failed to update labour charge');
+      throw err;
     }
   };
 
   const deleteContract = async (id: string) => {
-    setContracts((prev) =>
-      prev
-        .filter((c) => c.id !== id)
-        .map((c, idx) => ({ ...c, sNo: idx + 1 }))
-    );
-
-    if (!isSupabaseConfigured) return;
-
     try {
-      await supabase.from('construction_labour_contracts').delete().eq('id', id);
+      setError(null);
+      const { error: deleteError } = await supabase
+        .from('construction_labour_contracts')
+        .delete()
+        .eq('id', id);
+
+      if (deleteError) throw deleteError;
+
+      setContracts((prev) =>
+        prev
+          .filter((c) => c.id !== id)
+          .map((c, idx) => ({ ...c, sNo: idx + 1 }))
+      );
     } catch (err: any) {
-      console.warn('Fallback to local deleteContract:', err);
+      console.error('Error deleting construction labour contract:', err);
+      setError(err?.message || 'Failed to delete contract');
+      throw err;
     }
   };
 
   const deleteMultipleContracts = async (ids: string[]) => {
-    const idSet = new Set(ids);
-    setContracts((prev) =>
-      prev
-        .filter((c) => !idSet.has(c.id))
-        .map((c, idx) => ({ ...c, sNo: idx + 1 }))
-    );
-
-    if (!isSupabaseConfigured) return;
-
     try {
-      await supabase.from('construction_labour_contracts').delete().in('id', ids);
-    } catch (err) {
-      console.warn('Fallback to local bulk delete construction labour contracts:', err);
+      setError(null);
+      const { error: deleteError } = await supabase
+        .from('construction_labour_contracts')
+        .delete()
+        .in('id', ids);
+
+      if (deleteError) throw deleteError;
+
+      const idSet = new Set(ids);
+      setContracts((prev) =>
+        prev
+          .filter((c) => !idSet.has(c.id))
+          .map((c, idx) => ({ ...c, sNo: idx + 1 }))
+      );
+    } catch (err: any) {
+      console.error('Error bulk deleting construction labour contracts:', err);
+      setError(err?.message || 'Failed to delete contracts');
+      throw err;
     }
   };
 
   // ENTRIES CRUD
   const addEntry = async (contractId: string, entryData: Omit<LabourContractEntry, 'id' | 'sNo'>) => {
-    const target = contracts.find((c) => c.id === contractId);
-    if (!target) return;
-
-    const sNo = (target.entries?.length || 0) + 1;
-    const tempId = `c-entry-${Date.now()}`;
-    const newEntry: LabourContractEntry = {
-      ...entryData,
-      id: tempId,
-      contractId,
-      sNo
-    };
-
-    setContracts((prev) =>
-      prev.map((c) =>
-        c.id === contractId
-          ? { ...c, entries: [...(c.entries || []), newEntry] }
-          : c
-      )
-    );
-
-    if (!isSupabaseConfigured) return newEntry;
-
     try {
+      setError(null);
+      const target = contracts.find((c) => c.id === contractId);
+      const sNo = (target?.entries?.length || 0) + 1;
+
       const { data, error: insertError } = await supabase
         .from('construction_labour_entries')
         .insert({
@@ -296,49 +246,40 @@ export const useConstructionLabourContracts = () => {
           days: entryData.days,
           salary_per_day: entryData.salaryPerDay,
           total_amount: entryData.totalAmount,
-          note: entryData.note
+          note: entryData.note || null
         })
         .select()
         .single();
 
       if (insertError) throw insertError;
-      if (data) {
-        setContracts((prev) =>
-          prev.map((c) =>
-            c.id === contractId
-              ? {
-                  ...c,
-                  entries: (c.entries || []).map((e) =>
-                    e.id === tempId ? { ...e, id: data.id } : e
-                  )
-                }
-              : c
-          )
-        );
-      }
-    } catch (err) {
-      console.warn('Fallback to local addEntry:', err);
+
+      const newEntry: LabourContractEntry = {
+        ...entryData,
+        id: data.id,
+        contractId,
+        sNo: data.s_no,
+        createdAt: data.created_at
+      };
+
+      setContracts((prev) =>
+        prev.map((c) =>
+          c.id === contractId
+            ? { ...c, entries: [...(c.entries || []), newEntry] }
+            : c
+        )
+      );
+      return newEntry;
+    } catch (err: any) {
+      console.error('Error adding construction labour entry:', err);
+      setError(err?.message || 'Failed to add entry');
+      throw err;
     }
   };
 
   const updateEntry = async (contractId: string, updatedEntry: LabourContractEntry) => {
-    setContracts((prev) =>
-      prev.map((c) =>
-        c.id === contractId
-          ? {
-              ...c,
-              entries: (c.entries || []).map((e) =>
-                e.id === updatedEntry.id ? updatedEntry : e
-              )
-            }
-          : c
-      )
-    );
-
-    if (!isSupabaseConfigured) return;
-
     try {
-      await supabase
+      setError(null);
+      const { error: updateError } = await supabase
         .from('construction_labour_entries')
         .update({
           date: updatedEntry.date,
@@ -346,34 +287,57 @@ export const useConstructionLabourContracts = () => {
           days: updatedEntry.days,
           salary_per_day: updatedEntry.salaryPerDay,
           total_amount: updatedEntry.totalAmount,
-          note: updatedEntry.note
+          note: updatedEntry.note || null
         })
         .eq('id', updatedEntry.id);
-    } catch (err) {
-      console.warn('Fallback to local updateEntry:', err);
+
+      if (updateError) throw updateError;
+
+      setContracts((prev) =>
+        prev.map((c) =>
+          c.id === contractId
+            ? {
+                ...c,
+                entries: (c.entries || []).map((e) =>
+                  e.id === updatedEntry.id ? updatedEntry : e
+                )
+              }
+            : c
+        )
+      );
+    } catch (err: any) {
+      console.error('Error updating construction labour entry:', err);
+      setError(err?.message || 'Failed to update entry');
+      throw err;
     }
   };
 
   const deleteEntry = async (contractId: string, entryId: string) => {
-    setContracts((prev) =>
-      prev.map((c) =>
-        c.id === contractId
-          ? {
-              ...c,
-              entries: (c.entries || [])
-                .filter((e) => e.id !== entryId)
-                .map((e, idx) => ({ ...e, sNo: idx + 1 }))
-            }
-          : c
-      )
-    );
-
-    if (!isSupabaseConfigured) return;
-
     try {
-      await supabase.from('construction_labour_entries').delete().eq('id', entryId);
-    } catch (err) {
-      console.warn('Fallback to local deleteEntry:', err);
+      setError(null);
+      const { error: deleteError } = await supabase
+        .from('construction_labour_entries')
+        .delete()
+        .eq('id', entryId);
+
+      if (deleteError) throw deleteError;
+
+      setContracts((prev) =>
+        prev.map((c) =>
+          c.id === contractId
+            ? {
+                ...c,
+                entries: (c.entries || [])
+                  .filter((e) => e.id !== entryId)
+                  .map((e, idx) => ({ ...e, sNo: idx + 1 }))
+              }
+            : c
+        )
+      );
+    } catch (err: any) {
+      console.error('Error deleting construction labour entry:', err);
+      setError(err?.message || 'Failed to delete entry');
+      throw err;
     }
   };
 

@@ -3,37 +3,10 @@ import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import type { Vendor, VendorShop, ShopTransaction } from '../types';
 import { INITIAL_INTERIOR_VENDORS } from '../data/initialInteriorVendors';
 
-const LOCAL_STORAGE_KEY = 'kaab_interior_vendors_cache_v1';
-
 export const useInteriorVendors = () => {
-  const [vendors, setVendors] = useState<Vendor[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-        }
-      } catch (e) {
-        console.warn('Unable to read interior vendor cache from localStorage', e);
-      }
-    }
-    return INITIAL_INTERIOR_VENDORS;
-  });
-
+  const [vendors, setVendors] = useState<Vendor[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Sync to local fallback storage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(vendors));
-      } catch (e) {
-        console.warn('Unable to persist interior vendor cache', e);
-      }
-    }
-  }, [vendors]);
 
   // Fetch vendors hierarchy from Supabase
   const fetchVendors = useCallback(async () => {

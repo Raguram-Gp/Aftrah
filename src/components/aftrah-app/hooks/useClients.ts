@@ -3,37 +3,10 @@ import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import type { Client, AdvancePayment, ExpenseItem } from '../types';
 import { INITIAL_CLIENTS } from '../data/initialClients';
 
-const LOCAL_STORAGE_KEY = 'aftrah_clients_cache_v1';
-
 export const useClients = () => {
-  const [clients, setClients] = useState<Client[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-        }
-      } catch (e) {
-        console.warn('Unable to read client cache from localStorage', e);
-      }
-    }
-    return INITIAL_CLIENTS;
-  });
-
+  const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Sync to local fallback storage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(clients));
-      } catch (e) {
-        console.warn('Unable to persist client cache', e);
-      }
-    }
-  }, [clients]);
 
   // Fetch clients from Supabase
   const fetchClients = useCallback(async () => {

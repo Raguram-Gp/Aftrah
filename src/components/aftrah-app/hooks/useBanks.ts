@@ -3,37 +3,10 @@ import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import type { BankAccount, BankTransaction } from '../types';
 import { INITIAL_BANKS } from '../data/initialBanks';
 
-const LOCAL_STORAGE_KEY = 'aftrah_banks_cache_v1';
-
 export const useBanks = () => {
-  const [bankAccounts, setBankAccounts] = useState<BankAccount[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-        }
-      } catch (e) {
-        console.warn('Unable to read bank cache from localStorage', e);
-      }
-    }
-    return INITIAL_BANKS;
-  });
-
+  const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Sync to local fallback storage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(bankAccounts));
-      } catch (e) {
-        console.warn('Unable to persist bank cache', e);
-      }
-    }
-  }, [bankAccounts]);
 
   // Fetch bank accounts from Supabase
   const fetchBanks = useCallback(async () => {
