@@ -507,7 +507,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       <div className="print-only-statement-header">
         <div className="print-brand-row">
           <div>
-            <h1 className="print-company-name">AFTRAH CONSTRUCTIONS</h1>
+            <h1 className="print-company-name">AFRAH CONSTRUCTIONS</h1>
             <p className="print-company-sub">Civil Construction, Materials Procurement & Financial ERP</p>
           </div>
           <div className="print-badge-statement">
@@ -549,14 +549,14 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       {/* Screen Header Bar */}
       <div className="client-details-header no-print">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '12px' }}>
-          <button onClick={onBack} className="aftrah-app-back-btn">
+          <button onClick={onBack} className="afrah-app-back-btn">
             <ArrowLeft size={16} />
             <span>Back to Clients</span>
           </button>
 
           <button
             onClick={handlePrint}
-            className="aftrah-app-back-btn"
+            className="afrah-app-back-btn"
             title="Print or Export Client Statement"
           >
             <Printer size={15} />
@@ -646,19 +646,19 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
             deleteLabel="Delete Selected"
           />
 
-          <section className="aftrah-app-table-section">
-            <div className="aftrah-app-section-header no-print">
+          <section className="afrah-app-table-section">
+            <div className="afrah-app-section-header no-print">
               <div>
-                <h2 className="aftrah-app-section-title">Advance Payments</h2>
-                <span className="aftrah-app-section-subtitle">
+                <h2 className="afrah-app-section-title">Advance Payments</h2>
+                <span className="afrah-app-section-subtitle">
                   {filteredAdvance.length} {filteredAdvance.length === 1 ? 'payment' : 'payments'} recorded
                   {(advFromDate || advToDate) && ' (filtered)'}
                 </span>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div className="aftrah-app-search-wrapper" style={{ minWidth: '150px' }}>
-                  <Search size={13} className="aftrah-app-search-icon" />
+                <div className="afrah-app-search-wrapper" style={{ minWidth: '150px' }}>
+                  <Search size={13} className="afrah-app-search-icon" />
                   <input
                     type="text"
                     placeholder="Search payments..."
@@ -667,7 +667,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       setAdvSearch(e.target.value);
                       setAdvCurrentPage(1);
                     }}
-                    className="aftrah-app-search-input"
+                    className="afrah-app-search-input"
                   />
                 </div>
 
@@ -682,8 +682,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               </div>
             </div>
 
-            <div className="aftrah-app-table-container">
-              <table className="aftrah-app-table">
+            <div className="afrah-app-table-container">
+              <table className="afrah-app-table">
                 <thead>
                   <tr>
                     <th style={{ width: '45px', textAlign: 'center' }}>S.NO</th>
@@ -728,14 +728,14 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                               <button
                                 onClick={() => handleOpenEditAdv(item)}
-                                className="aftrah-app-action-btn aftrah-app-edit-btn"
+                                className="afrah-app-action-btn afrah-app-edit-btn"
                                 title="Edit Payment"
                               >
                                 <Pencil size={13} />
                               </button>
                               <button
                                 onClick={() => setDeleteAdvTarget(item)}
-                                className="aftrah-app-action-btn aftrah-app-delete-btn"
+                                className="afrah-app-action-btn afrah-app-delete-btn"
                                 title="Delete Payment"
                               >
                                 <Trash2 size={13} />
@@ -752,19 +752,19 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
             {/* Advance Pagination */}
             {filteredAdvance.length > 0 && (
-              <div className="aftrah-app-pagination-bar compact no-print">
-                <div className="aftrah-app-pagination-left">
-                  <span className="aftrah-app-pagination-info">
+              <div className="afrah-app-pagination-bar compact no-print">
+                <div className="afrah-app-pagination-left">
+                  <span className="afrah-app-pagination-info">
                     {advStartIndex + 1}–{advEndIndex} of {filteredAdvance.length}
                   </span>
-                  <div className="aftrah-app-rows-selector">
+                  <div className="afrah-app-rows-selector">
                     <select
                       value={advItemsPerPage}
                       onChange={(e) => {
                         setAdvItemsPerPage(Number(e.target.value));
                         setAdvCurrentPage(1);
                       }}
-                      className="aftrah-app-select-sm"
+                      className="afrah-app-select-sm"
                     >
                       <option value={5}>5</option>
                       <option value={10}>10</option>
@@ -773,20 +773,20 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   </div>
                 </div>
 
-                <div className="aftrah-app-pagination-controls">
+                <div className="afrah-app-pagination-controls">
                   <button
                     onClick={() => setAdvCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={advCurrentPage === 1}
-                    className="aftrah-app-page-nav-btn"
+                    className="afrah-app-page-nav-btn"
                   >
                     <ChevronLeft size={14} />
                   </button>
-                  <div className="aftrah-app-page-numbers-wrap">
+                  <div className="afrah-app-page-numbers-wrap">
                     {advPageNumbers.map((p) => (
                       <button
                         key={p}
                         onClick={() => setAdvCurrentPage(p)}
-                        className={`aftrah-app-page-num-btn ${advCurrentPage === p ? 'active' : ''}`}
+                        className={`afrah-app-page-num-btn ${advCurrentPage === p ? 'active' : ''}`}
                       >
                         {p}
                       </button>
@@ -795,7 +795,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   <button
                     onClick={() => setAdvCurrentPage((p) => Math.min(advTotalPages, p + 1))}
                     disabled={advCurrentPage === advTotalPages}
-                    className="aftrah-app-page-nav-btn"
+                    className="afrah-app-page-nav-btn"
                   >
                     <ChevronRight size={14} />
                   </button>
@@ -829,19 +829,19 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
             deleteLabel="Delete Selected"
           />
 
-          <section className="aftrah-app-table-section">
-            <div className="aftrah-app-section-header no-print">
+          <section className="afrah-app-table-section">
+            <div className="afrah-app-section-header no-print">
               <div>
-                <h2 className="aftrah-app-section-title">Site Expenses</h2>
-                <span className="aftrah-app-section-subtitle">
+                <h2 className="afrah-app-section-title">Site Expenses</h2>
+                <span className="afrah-app-section-subtitle">
                   {filteredExpenses.length} {filteredExpenses.length === 1 ? 'expense' : 'expenses'} recorded
                   {(expFromDate || expToDate) && ' (filtered)'}
                 </span>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div className="aftrah-app-search-wrapper" style={{ minWidth: '150px' }}>
-                  <Search size={13} className="aftrah-app-search-icon" />
+                <div className="afrah-app-search-wrapper" style={{ minWidth: '150px' }}>
+                  <Search size={13} className="afrah-app-search-icon" />
                   <input
                     type="text"
                     placeholder="Search expenses..."
@@ -850,7 +850,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       setExpSearch(e.target.value);
                       setExpCurrentPage(1);
                     }}
-                    className="aftrah-app-search-input"
+                    className="afrah-app-search-input"
                   />
                 </div>
 
@@ -865,8 +865,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               </div>
             </div>
 
-            <div className="aftrah-app-table-container">
-              <table className="aftrah-app-table">
+            <div className="afrah-app-table-container">
+              <table className="afrah-app-table">
                 <thead>
                   <tr>
                     <th style={{ width: '45px', textAlign: 'center' }}>S.NO</th>
@@ -919,14 +919,14 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                               <button
                                 onClick={() => handleOpenEditExp(exp)}
-                                className="aftrah-app-action-btn aftrah-app-edit-btn"
+                                className="afrah-app-action-btn afrah-app-edit-btn"
                                 title="Edit Expense"
                               >
                                 <Pencil size={13} />
                               </button>
                               <button
                                 onClick={() => setDeleteExpTarget(exp)}
-                                className="aftrah-app-action-btn aftrah-app-delete-btn"
+                                className="afrah-app-action-btn afrah-app-delete-btn"
                                 title="Delete Expense"
                               >
                                 <Trash2 size={13} />
@@ -943,19 +943,19 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
             {/* Expenses Pagination */}
             {filteredExpenses.length > 0 && (
-              <div className="aftrah-app-pagination-bar compact no-print">
-                <div className="aftrah-app-pagination-left">
-                  <span className="aftrah-app-pagination-info">
+              <div className="afrah-app-pagination-bar compact no-print">
+                <div className="afrah-app-pagination-left">
+                  <span className="afrah-app-pagination-info">
                     {expStartIndex + 1}–{expEndIndex} of {filteredExpenses.length}
                   </span>
-                  <div className="aftrah-app-rows-selector">
+                  <div className="afrah-app-rows-selector">
                     <select
                       value={expItemsPerPage}
                       onChange={(e) => {
                         setExpItemsPerPage(Number(e.target.value));
                         setExpCurrentPage(1);
                       }}
-                      className="aftrah-app-select-sm"
+                      className="afrah-app-select-sm"
                     >
                       <option value={5}>5</option>
                       <option value={10}>10</option>
@@ -964,20 +964,20 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   </div>
                 </div>
 
-                <div className="aftrah-app-pagination-controls">
+                <div className="afrah-app-pagination-controls">
                   <button
                     onClick={() => setExpCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={expCurrentPage === 1}
-                    className="aftrah-app-page-nav-btn"
+                    className="afrah-app-page-nav-btn"
                   >
                     <ChevronLeft size={14} />
                   </button>
-                  <div className="aftrah-app-page-numbers-wrap">
+                  <div className="afrah-app-page-numbers-wrap">
                     {expPageNumbers.map((p) => (
                       <button
                         key={p}
                         onClick={() => setExpCurrentPage(p)}
-                        className={`aftrah-app-page-num-btn ${expCurrentPage === p ? 'active' : ''}`}
+                        className={`afrah-app-page-num-btn ${expCurrentPage === p ? 'active' : ''}`}
                       >
                         {p}
                       </button>
@@ -986,7 +986,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   <button
                     onClick={() => setExpCurrentPage((p) => Math.min(expTotalPages, p + 1))}
                     disabled={expCurrentPage === expTotalPages}
-                    className="aftrah-app-page-nav-btn"
+                    className="afrah-app-page-nav-btn"
                   >
                     <ChevronRight size={14} />
                   </button>
@@ -999,31 +999,31 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
       {/* MODAL 1: ADD ADVANCE PAYMENT */}
       {isAddAdvModalOpen && (
-        <div className="aftrah-app-modal-overlay" onClick={() => setIsAddAdvModalOpen(false)}>
-          <div className="aftrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="aftrah-app-modal-header">
+        <div className="afrah-app-modal-overlay" onClick={() => setIsAddAdvModalOpen(false)}>
+          <div className="afrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="afrah-app-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Receipt size={17} color="var(--primary)" />
-                <h3 className="aftrah-app-modal-title">Add Advance Payment</h3>
+                <h3 className="afrah-app-modal-title">Add Advance Payment</h3>
               </div>
-              <button onClick={() => setIsAddAdvModalOpen(false)} className="aftrah-app-modal-close-btn">
+              <button onClick={() => setIsAddAdvModalOpen(false)} className="afrah-app-modal-close-btn">
                 <X size={18} />
               </button>
             </div>
             <form onSubmit={handleAddAdvanceSubmit}>
-              <div className="aftrah-app-modal-body">
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Date *</label>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Date *</label>
                   <input
                     type="date"
                     required
                     value={advDate}
                     onChange={(e) => setAdvDate(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Amount (₹) *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Amount (₹) *</label>
                   <input
                     type="number"
                     step="any"
@@ -1032,15 +1032,15 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     placeholder="e.g. 250000"
                     value={advAmount}
                     onChange={(e) => setAdvAmount(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Payment Mode *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Payment Mode *</label>
                   <select
                     value={advMode}
                     onChange={(e) => setAdvMode(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   >
                     {PAYMENT_MODES.map((mode) => (
                       <option key={mode} value={mode}>
@@ -1050,8 +1050,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   </select>
                 </div>
               </div>
-              <div className="aftrah-app-modal-footer">
-                <button type="button" onClick={() => setIsAddAdvModalOpen(false)} className="aftrah-app-back-btn">
+              <div className="afrah-app-modal-footer">
+                <button type="button" onClick={() => setIsAddAdvModalOpen(false)} className="afrah-app-back-btn">
                   Cancel
                 </button>
                 <button type="submit" disabled={!isAdvValid} className="btn-theme-primary">
@@ -1066,31 +1066,31 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
       {/* MODAL 2: EDIT ADVANCE PAYMENT */}
       {isEditAdvModalOpen && (
-        <div className="aftrah-app-modal-overlay" onClick={() => setIsEditAdvModalOpen(false)}>
-          <div className="aftrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="aftrah-app-modal-header">
+        <div className="afrah-app-modal-overlay" onClick={() => setIsEditAdvModalOpen(false)}>
+          <div className="afrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="afrah-app-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Pencil size={17} color="var(--primary)" />
-                <h3 className="aftrah-app-modal-title">Edit Advance Payment</h3>
+                <h3 className="afrah-app-modal-title">Edit Advance Payment</h3>
               </div>
-              <button onClick={() => setIsEditAdvModalOpen(false)} className="aftrah-app-modal-close-btn">
+              <button onClick={() => setIsEditAdvModalOpen(false)} className="afrah-app-modal-close-btn">
                 <X size={18} />
               </button>
             </div>
             <form onSubmit={handleSaveEditAdv}>
-              <div className="aftrah-app-modal-body">
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Date *</label>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Date *</label>
                   <input
                     type="date"
                     required
                     value={editAdvDate}
                     onChange={(e) => setEditAdvDate(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Amount (₹) *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Amount (₹) *</label>
                   <input
                     type="number"
                     step="any"
@@ -1098,15 +1098,15 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     required
                     value={editAdvAmount}
                     onChange={(e) => setEditAdvAmount(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Payment Mode *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Payment Mode *</label>
                   <select
                     value={editAdvMode}
                     onChange={(e) => setEditAdvMode(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   >
                     {PAYMENT_MODES.map((mode) => (
                       <option key={mode} value={mode}>
@@ -1116,8 +1116,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   </select>
                 </div>
               </div>
-              <div className="aftrah-app-modal-footer">
-                <button type="button" onClick={() => setIsEditAdvModalOpen(false)} className="aftrah-app-back-btn">
+              <div className="afrah-app-modal-footer">
+                <button type="button" onClick={() => setIsEditAdvModalOpen(false)} className="afrah-app-back-btn">
                   Cancel
                 </button>
                 <button type="submit" disabled={!isEditAdvValid} className="btn-theme-primary">
@@ -1131,31 +1131,31 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
       {/* MODAL 3: ADD EXPENSE */}
       {isAddExpModalOpen && (
-        <div className="aftrah-app-modal-overlay" onClick={() => setIsAddExpModalOpen(false)}>
-          <div className="aftrah-app-modal-container" style={{ maxWidth: '460px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="aftrah-app-modal-header">
+        <div className="afrah-app-modal-overlay" onClick={() => setIsAddExpModalOpen(false)}>
+          <div className="afrah-app-modal-container" style={{ maxWidth: '460px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="afrah-app-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <CreditCard size={17} color="var(--primary)" />
-                <h3 className="aftrah-app-modal-title">Add Site Expense</h3>
+                <h3 className="afrah-app-modal-title">Add Site Expense</h3>
               </div>
-              <button onClick={() => setIsAddExpModalOpen(false)} className="aftrah-app-modal-close-btn">
+              <button onClick={() => setIsAddExpModalOpen(false)} className="afrah-app-modal-close-btn">
                 <X size={18} />
               </button>
             </div>
             <form onSubmit={handleAddExpenseSubmit}>
-              <div className="aftrah-app-modal-body">
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Date *</label>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Date *</label>
                   <input
                     type="date"
                     required
                     value={expDate}
                     onChange={(e) => setExpDate(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Expense Category *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Expense Category *</label>
                   <SearchableExpenseSelect
                     value={expName}
                     onChange={(val) => setExpName(val)}
@@ -1163,8 +1163,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   />
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Quantity *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Quantity *</label>
                     <input
                       type="number"
                       step="any"
@@ -1173,11 +1173,11 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       placeholder="e.g. 10"
                       value={expQuantity}
                       onChange={(e) => setExpQuantity(e.target.value)}
-                      className="aftrah-app-input"
+                      className="afrah-app-input"
                     />
                   </div>
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Rate (₹) *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Rate (₹) *</label>
                     <input
                       type="number"
                       step="any"
@@ -1186,19 +1186,19 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       placeholder="e.g. 1500"
                       value={expRate}
                       onChange={(e) => setExpRate(e.target.value)}
-                      className="aftrah-app-input"
+                      className="afrah-app-input"
                     />
                   </div>
                 </div>
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Total Calculated (₹)</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Total Calculated (₹)</label>
                   <div className="total-amount-display">
                     {formatINR(expTotalAmount)}
                   </div>
                 </div>
               </div>
-              <div className="aftrah-app-modal-footer">
-                <button type="button" onClick={() => setIsAddExpModalOpen(false)} className="aftrah-app-back-btn">
+              <div className="afrah-app-modal-footer">
+                <button type="button" onClick={() => setIsAddExpModalOpen(false)} className="afrah-app-back-btn">
                   Cancel
                 </button>
                 <button type="submit" disabled={!isExpValid} className="btn-theme-primary">
@@ -1213,39 +1213,39 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
       {/* MODAL 4: EDIT EXPENSE */}
       {isEditExpModalOpen && (
-        <div className="aftrah-app-modal-overlay" onClick={() => setIsEditExpModalOpen(false)}>
-          <div className="aftrah-app-modal-container" style={{ maxWidth: '460px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="aftrah-app-modal-header">
+        <div className="afrah-app-modal-overlay" onClick={() => setIsEditExpModalOpen(false)}>
+          <div className="afrah-app-modal-container" style={{ maxWidth: '460px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="afrah-app-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Pencil size={17} color="var(--primary)" />
-                <h3 className="aftrah-app-modal-title">Edit Site Expense</h3>
+                <h3 className="afrah-app-modal-title">Edit Site Expense</h3>
               </div>
-              <button onClick={() => setIsEditExpModalOpen(false)} className="aftrah-app-modal-close-btn">
+              <button onClick={() => setIsEditExpModalOpen(false)} className="afrah-app-modal-close-btn">
                 <X size={18} />
               </button>
             </div>
             <form onSubmit={handleSaveEditExp}>
-              <div className="aftrah-app-modal-body">
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Date *</label>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Date *</label>
                   <input
                     type="date"
                     required
                     value={editExpDate}
                     onChange={(e) => setEditExpDate(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Expense Category *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Expense Category *</label>
                   <SearchableExpenseSelect
                     value={editExpName}
                     onChange={(val) => setEditExpName(val)}
                   />
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Quantity *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Quantity *</label>
                     <input
                       type="number"
                       step="any"
@@ -1253,11 +1253,11 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       required
                       value={editExpQuantity}
                       onChange={(e) => setEditExpQuantity(e.target.value)}
-                      className="aftrah-app-input"
+                      className="afrah-app-input"
                     />
                   </div>
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Rate (₹) *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Rate (₹) *</label>
                     <input
                       type="number"
                       step="any"
@@ -1265,19 +1265,19 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       required
                       value={editExpRate}
                       onChange={(e) => setEditExpRate(e.target.value)}
-                      className="aftrah-app-input"
+                      className="afrah-app-input"
                     />
                   </div>
                 </div>
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Total Calculated (₹)</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Total Calculated (₹)</label>
                   <div className="total-amount-display">
                     {formatINR(editExpTotalAmount)}
                   </div>
                 </div>
               </div>
-              <div className="aftrah-app-modal-footer">
-                <button type="button" onClick={() => setIsEditExpModalOpen(false)} className="aftrah-app-back-btn">
+              <div className="afrah-app-modal-footer">
+                <button type="button" onClick={() => setIsEditExpModalOpen(false)} className="afrah-app-back-btn">
                   Cancel
                 </button>
                 <button type="submit" disabled={!isEditExpValid} className="btn-theme-primary">

@@ -217,12 +217,12 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
   };
 
   return (
-    <div className="aftrah-app-wireframe-layout">
+    <div className="afrah-app-wireframe-layout">
       {/* PRINT-ONLY STATEMENT HEADER */}
       <div className="print-only-statement-header">
         <div className="print-brand-row">
           <div>
-            <h1 className="print-company-name">KAAB INTERIOR · AFTRAH CONSTRUCTIONS</h1>
+            <h1 className="print-company-name">KAAB INTERIOR · AFRAH CONSTRUCTIONS</h1>
             <p className="print-company-sub">Luxury Interiors, Modular Woodwork, Architectural Ceiling & Turnkey Execution</p>
           </div>
           <div className="print-badge-statement">
@@ -247,8 +247,8 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
       </div>
 
       {/* LEFT COLUMN: CLIENT LIST TABLE */}
-      <section className="aftrah-app-table-section">
-        <div className="aftrah-app-section-header no-print">
+      <section className="afrah-app-table-section">
+        <div className="afrah-app-section-header no-print">
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div
@@ -265,19 +265,19 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
               >
                 <Paintbrush size={18} color="var(--primary)" />
               </div>
-              <h1 className="aftrah-app-section-title" style={{ letterSpacing: '0.02em' }}>
+              <h1 className="afrah-app-section-title" style={{ letterSpacing: '0.02em' }}>
                 KAAB INTERIOR CLIENTS
               </h1>
             </div>
-            <span className="aftrah-app-section-subtitle">
+            <span className="afrah-app-section-subtitle">
               {filteredClients.length} {filteredClients.length === 1 ? 'project logged' : 'projects logged'} · Total Advances: <strong style={{ color: 'var(--primary)' }}>{formatINR(totalAdvancesSum)}</strong> · Click client row to view project ledger
             </span>
           </div>
 
           {/* Search, Bulk Actions & Print */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            <div className="aftrah-app-search-wrapper">
-              <Search size={14} className="aftrah-app-search-icon" />
+            <div className="afrah-app-search-wrapper">
+              <Search size={14} className="afrah-app-search-icon" />
               <input
                 type="text"
                 placeholder="Search name, phone, site..."
@@ -286,13 +286,13 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="aftrah-app-search-input"
+                className="afrah-app-search-input"
               />
             </div>
 
             <button
               onClick={handlePrint}
-              className="aftrah-app-back-btn"
+              className="afrah-app-back-btn"
               title="Print Interior Directory"
             >
               <Printer size={15} />
@@ -302,8 +302,8 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
         </div>
 
         {/* Directory Table */}
-        <div className="aftrah-app-table-container">
-          <table className="aftrah-app-table">
+        <div className="afrah-app-table-container">
+          <table className="afrah-app-table">
             <thead>
               <tr>
                 <th style={{ width: '45px', textAlign: 'center' }}>S.NO</th>
@@ -416,7 +416,7 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                           <button
                             onClick={(e) => handleOpenEdit(client, e)}
-                            className="aftrah-app-action-btn aftrah-app-edit-btn"
+                            className="afrah-app-action-btn afrah-app-edit-btn"
                             title="Edit Client"
                           >
                             <Pencil size={13} />
@@ -426,7 +426,7 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
                               e.stopPropagation();
                               setDeleteClientTarget(client);
                             }}
-                            className="aftrah-app-action-btn aftrah-app-delete-btn"
+                            className="afrah-app-action-btn afrah-app-delete-btn"
                             title="Delete Client"
                           >
                             <Trash2 size={13} />
@@ -443,22 +443,22 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
 
         {/* Pagination Controls */}
         {filteredClients.length > 0 && (
-          <div className="aftrah-app-pagination-bar no-print">
-            <div className="aftrah-app-pagination-left">
-              <span className="aftrah-app-pagination-info">
+          <div className="afrah-app-pagination-bar no-print">
+            <div className="afrah-app-pagination-left">
+              <span className="afrah-app-pagination-info">
                 Showing <strong>{startIndex + 1}</strong>–<strong>{endIndex}</strong> of{' '}
                 <strong>{filteredClients.length}</strong>
               </span>
 
-              <div className="aftrah-app-rows-selector">
-                <label className="aftrah-app-rows-label">Rows per page:</label>
+              <div className="afrah-app-rows-selector">
+                <label className="afrah-app-rows-label">Rows per page:</label>
                 <select
                   value={itemsPerPage}
                   onChange={(e) => {
                     setItemsPerPage(Number(e.target.value));
                     setCurrentPage(1);
                   }}
-                  className="aftrah-app-select-sm"
+                  className="afrah-app-select-sm"
                 >
                   <option value={5}>5</option>
                   <option value={10}>10</option>
@@ -468,11 +468,11 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
               </div>
             </div>
 
-            <div className="aftrah-app-pagination-controls">
+            <div className="afrah-app-pagination-controls">
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(currentPage - 1)}
-                className="aftrah-app-page-nav-btn"
+                className="afrah-app-page-nav-btn"
                 title="Previous Page"
               >
                 <ChevronLeft size={16} />
@@ -482,7 +482,7 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
                 <button
                   key={p}
                   onClick={() => setCurrentPage(p)}
-                  className={`aftrah-app-page-btn ${currentPage === p ? 'active' : ''}`}
+                  className={`afrah-app-page-btn ${currentPage === p ? 'active' : ''}`}
                 >
                   {p}
                 </button>
@@ -491,7 +491,7 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage(currentPage + 1)}
-                className="aftrah-app-page-nav-btn"
+                className="afrah-app-page-nav-btn"
                 title="Next Page"
               >
                 <ChevronRight size={16} />
@@ -502,50 +502,50 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
       </section>
 
       {/* RIGHT COLUMN: ADD INTERIOR CLIENT FORM */}
-      <aside className="aftrah-app-form-card no-print">
-        <div className="aftrah-app-form-header">
-          <div className="aftrah-app-form-icon-wrap">
+      <aside className="afrah-app-form-card no-print">
+        <div className="afrah-app-form-header">
+          <div className="afrah-app-form-icon-wrap">
             <Plus size={18} color="var(--primary)" />
           </div>
           <div>
-            <h2 className="aftrah-app-form-title">Add Interior Client</h2>
-            <p className="aftrah-app-form-subtitle">Register new turnkey interior project</p>
+            <h2 className="afrah-app-form-title">Add Interior Client</h2>
+            <p className="afrah-app-form-subtitle">Register new turnkey interior project</p>
           </div>
         </div>
 
-        <form onSubmit={handleAddSubmit} className="aftrah-app-form-body">
-          <div className="aftrah-app-form-group">
-            <label className="aftrah-app-label">Client Name *</label>
+        <form onSubmit={handleAddSubmit} className="afrah-app-form-body">
+          <div className="afrah-app-form-group">
+            <label className="afrah-app-label">Client Name *</label>
             <input
               type="text"
               required
               placeholder="e.g. Dr. Aravind Swamy"
               value={addName}
               onChange={(e) => setAddName(e.target.value)}
-              className="aftrah-app-input"
+              className="afrah-app-input"
             />
           </div>
 
-          <div className="aftrah-app-form-group">
-            <label className="aftrah-app-label">Phone Number *</label>
+          <div className="afrah-app-form-group">
+            <label className="afrah-app-label">Phone Number *</label>
             <input
               type="text"
               required
               placeholder="e.g. 98401 23456"
               value={addPhone}
               onChange={(e) => setAddPhone(e.target.value)}
-              className="aftrah-app-input"
+              className="afrah-app-input"
             />
           </div>
 
-          <div className="aftrah-app-form-group">
-            <label className="aftrah-app-label">Address</label>
+          <div className="afrah-app-form-group">
+            <label className="afrah-app-label">Address</label>
             <textarea
               rows={3}
               placeholder="e.g. Uthamapalayam, Theni"
               value={addAddress}
               onChange={(e) => setAddAddress(e.target.value)}
-              className="aftrah-app-textarea"
+              className="afrah-app-textarea"
             />
           </div>
 
@@ -563,55 +563,55 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
 
       {/* EDIT CLIENT MODAL */}
       {isEditModalOpen && (
-        <div className="aftrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
-          <div className="aftrah-app-modal-container" style={{ maxWidth: '480px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="aftrah-app-modal-header">
+        <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
+          <div className="afrah-app-modal-container" style={{ maxWidth: '480px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="afrah-app-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Pencil size={18} color="var(--primary)" />
-                <h3 className="aftrah-app-modal-title">Edit Interior Client</h3>
+                <h3 className="afrah-app-modal-title">Edit Interior Client</h3>
               </div>
-              <button onClick={() => setIsEditModalOpen(false)} className="aftrah-app-modal-close-btn">
+              <button onClick={() => setIsEditModalOpen(false)} className="afrah-app-modal-close-btn">
                 <X size={18} />
               </button>
             </div>
 
             <form onSubmit={handleSaveEdit}>
-              <div className="aftrah-app-modal-body">
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Client Name *</label>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Client Name *</label>
                   <input
                     type="text"
                     required
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Phone Number *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Phone Number *</label>
                   <input
                     type="text"
                     required
                     value={editPhone}
                     onChange={(e) => setEditPhone(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Address</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Address</label>
                   <textarea
                     rows={3}
                     value={editAddress}
                     onChange={(e) => setEditAddress(e.target.value)}
-                    className="aftrah-app-textarea"
+                    className="afrah-app-textarea"
                   />
                 </div>
               </div>
 
-              <div className="aftrah-app-modal-footer">
-                <button type="button" onClick={() => setIsEditModalOpen(false)} className="aftrah-app-back-btn">
+              <div className="afrah-app-modal-footer">
+                <button type="button" onClick={() => setIsEditModalOpen(false)} className="afrah-app-back-btn">
                   Cancel
                 </button>
                 <button type="submit" disabled={!editName.trim()} className="btn-theme-primary">

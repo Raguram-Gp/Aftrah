@@ -26,8 +26,8 @@ export const ToastContainer: React.FC = () => {
       }
     };
 
-    window.addEventListener('aftrah-toast', handleToast);
-    return () => window.removeEventListener('aftrah-toast', handleToast);
+    window.addEventListener('afrah-toast', handleToast);
+    return () => window.removeEventListener('afrah-toast', handleToast);
   }, []);
 
   if (toasts.length === 0) return null;

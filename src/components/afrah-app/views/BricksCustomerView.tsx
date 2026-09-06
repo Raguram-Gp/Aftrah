@@ -227,12 +227,12 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
   };
 
   return (
-    <div className="aftrah-app-wireframe-layout">
+    <div className="afrah-app-wireframe-layout">
       {/* PRINT-ONLY HEADER */}
       <div className="print-only-statement-header">
         <div className="print-brand-row">
           <div>
-            <h1 className="print-company-name">AFTRAH CONSTRUCTIONS</h1>
+            <h1 className="print-company-name">AFRAH CONSTRUCTIONS</h1>
             <p className="print-company-sub">Civil Construction, Materials Procurement & Financial ERP</p>
           </div>
           <div className="print-badge-statement">
@@ -254,8 +254,8 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
       </div>
 
       {/* LEFT COLUMN: VIEW BRICKS CUSTOMER TABLE */}
-      <section className="aftrah-app-table-section">
-        <div className="aftrah-app-section-header no-print">
+      <section className="afrah-app-table-section">
+        <div className="afrah-app-section-header no-print">
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div
@@ -272,19 +272,19 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
               >
                 <BrickWall size={18} color="var(--primary)" />
               </div>
-              <h1 className="aftrah-app-section-title" style={{ letterSpacing: '0.02em' }}>
+              <h1 className="afrah-app-section-title" style={{ letterSpacing: '0.02em' }}>
                 BRICKS CUSTOMER LIST
               </h1>
             </div>
-            <span className="aftrah-app-section-subtitle">
+            <span className="afrah-app-section-subtitle">
               {filteredCustomers.length} {filteredCustomers.length === 1 ? 'customer record' : 'customer records'} · Total Outstanding: <strong style={{ color: totalOutstandingBalance > 0 ? '#f87171' : 'var(--primary)' }}>{formatINR(totalOutstandingBalance)}</strong> · Click row to view transactions
             </span>
           </div>
 
           {/* Quick Search & Print / Bulk Delete Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            <div className="aftrah-app-search-wrapper">
-              <Search size={14} className="aftrah-app-search-icon" />
+            <div className="afrah-app-search-wrapper">
+              <Search size={14} className="afrah-app-search-icon" />
               <input
                 type="text"
                 placeholder="Search name, phone, address..."
@@ -293,13 +293,13 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="aftrah-app-search-input"
+                className="afrah-app-search-input"
               />
             </div>
 
             <button
               onClick={handlePrint}
-              className="aftrah-app-back-btn"
+              className="afrah-app-back-btn"
               title="Print Customer Directory"
             >
               <Printer size={15} />
@@ -309,8 +309,8 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
         </div>
 
         {/* Table matching the sketch: S.NO | NAME | PHONE | BALANCE | Address | Edit / Delete */}
-        <div className="aftrah-app-table-container">
-          <table className="aftrah-app-table">
+        <div className="afrah-app-table-container">
+          <table className="afrah-app-table">
             <thead>
               <tr>
                 <th style={{ width: '55px', textAlign: 'center' }}>S.NO</th>
@@ -360,7 +360,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                       </td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <div className="aftrah-app-user-avatar" style={{ background: 'rgba(226, 195, 153, 0.15)', color: 'var(--primary)' }}>
+                          <div className="afrah-app-user-avatar" style={{ background: 'rgba(226, 195, 153, 0.15)', color: 'var(--primary)' }}>
                             {customer.name.charAt(0).toUpperCase()}
                           </div>
                           <div>
@@ -451,7 +451,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                         >
                           <button
                             onClick={(e) => handleOpenEdit(customer, e)}
-                            className="aftrah-app-action-btn aftrah-app-edit-btn"
+                            className="afrah-app-action-btn afrah-app-edit-btn"
                             title="Edit Customer Details"
                             aria-label="Edit Customer Details"
                           >
@@ -462,7 +462,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                               e.stopPropagation();
                               setDeleteTarget(customer);
                             }}
-                            className="aftrah-app-action-btn aftrah-app-delete-btn"
+                            className="afrah-app-action-btn afrah-app-delete-btn"
                             title="Delete Customer"
                             aria-label="Delete Customer"
                           >
@@ -480,22 +480,22 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
 
         {/* Pagination Controls */}
         {filteredCustomers.length > 0 && (
-          <div className="aftrah-app-pagination-bar">
-            <div className="aftrah-app-pagination-left">
-              <span className="aftrah-app-pagination-info">
+          <div className="afrah-app-pagination-bar">
+            <div className="afrah-app-pagination-left">
+              <span className="afrah-app-pagination-info">
                 Showing <strong>{startIndex + 1}</strong>–<strong>{endIndex}</strong> of{' '}
                 <strong>{filteredCustomers.length}</strong>
               </span>
 
-              <div className="aftrah-app-rows-selector">
-                <label className="aftrah-app-rows-label">Rows per page:</label>
+              <div className="afrah-app-rows-selector">
+                <label className="afrah-app-rows-label">Rows per page:</label>
                 <select
                   value={itemsPerPage}
                   onChange={(e) => {
                     setItemsPerPage(Number(e.target.value));
                     setCurrentPage(1);
                   }}
-                  className="aftrah-app-select-sm"
+                  className="afrah-app-select-sm"
                 >
                   <option value={5}>5</option>
                   <option value={10}>10</option>
@@ -505,23 +505,23 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
               </div>
             </div>
 
-            <div className="aftrah-app-pagination-controls">
+            <div className="afrah-app-pagination-controls">
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="aftrah-app-page-nav-btn"
+                className="afrah-app-page-nav-btn"
                 title="Previous Page"
                 aria-label="Previous Page"
               >
                 <ChevronLeft size={16} />
               </button>
 
-              <div className="aftrah-app-page-numbers-wrap">
+              <div className="afrah-app-page-numbers-wrap">
                 {pageNumbers.map((p) => (
                   <button
                     key={p}
                     onClick={() => setCurrentPage(p)}
-                    className={`aftrah-app-page-num-btn ${currentPage === p ? 'active' : ''}`}
+                    className={`afrah-app-page-num-btn ${currentPage === p ? 'active' : ''}`}
                   >
                     {p}
                   </button>
@@ -531,7 +531,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
               <button
                 onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                 disabled={currentPage === totalPages}
-                className="aftrah-app-page-nav-btn"
+                className="afrah-app-page-nav-btn"
                 title="Next Page"
                 aria-label="Next Page"
               >
@@ -543,53 +543,53 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
       </section>
 
       {/* RIGHT COLUMN: ADD BRICKS CUSTOMER CARD */}
-      <aside className="aftrah-app-form-card">
-        <div className="aftrah-app-form-card-header">
+      <aside className="afrah-app-form-card">
+        <div className="afrah-app-form-card-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <BrickWall size={17} color="var(--primary)" />
-            <h2 className="aftrah-app-form-card-title">Add Bricks Customer</h2>
+            <h2 className="afrah-app-form-card-title">Add Bricks Customer</h2>
           </div>
         </div>
 
-        <form onSubmit={handleAddSubmit} className="aftrah-app-add-form">
-          <div className="aftrah-app-form-group">
-            <label className="aftrah-app-label">NAME *</label>
+        <form onSubmit={handleAddSubmit} className="afrah-app-add-form">
+          <div className="afrah-app-form-group">
+            <label className="afrah-app-label">NAME *</label>
             <input
               type="text"
               required
               placeholder="e.g. Kabibullah Rahman"
               value={addName}
               onChange={(e) => setAddName(e.target.value)}
-              className="aftrah-app-input"
+              className="afrah-app-input"
             />
           </div>
 
-          <div className="aftrah-app-form-group">
-            <label className="aftrah-app-label">PHONE *</label>
+          <div className="afrah-app-form-group">
+            <label className="afrah-app-label">PHONE *</label>
             <input
               type="tel"
               required
               placeholder="+91 98410 23456"
               value={addPhone}
               onChange={(e) => setAddPhone(e.target.value)}
-              className="aftrah-app-input"
+              className="afrah-app-input"
             />
           </div>
 
-          <div className="aftrah-app-form-group">
-            <label className="aftrah-app-label">Address *</label>
+          <div className="afrah-app-form-group">
+            <label className="afrah-app-label">Address *</label>
             <textarea
               rows={3}
               required
               placeholder="Site location, Street, Area, City..."
               value={addAddress}
               onChange={(e) => setAddAddress(e.target.value)}
-              className="aftrah-app-input aftrah-app-textarea"
+              className="afrah-app-input afrah-app-textarea"
             />
           </div>
 
           {!isAddValid && (
-            <div className="aftrah-app-validation-notice">
+            <div className="afrah-app-validation-notice">
               * Name, Phone and Address are required to submit.
             </div>
           )}
@@ -598,7 +598,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
             <button
               type="submit"
               disabled={!isAddValid}
-              className="btn-theme-primary aftrah-app-submit-btn"
+              className="btn-theme-primary afrah-app-submit-btn"
               style={{ flex: 1 }}
             >
               <UserPlus size={16} strokeWidth={2.5} />
@@ -609,7 +609,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
               <button
                 type="button"
                 onClick={handleClearAddForm}
-                className="aftrah-app-back-btn"
+                className="afrah-app-back-btn"
                 style={{ height: '42px', padding: '0 14px' }}
                 title="Close / Clear Form"
               >
@@ -623,20 +623,20 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
 
       {/* EDIT CUSTOMER MODAL */}
       {isEditModalOpen && (
-        <div className="aftrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
+        <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
           <div
-            className="aftrah-app-modal-container"
+            className="afrah-app-modal-container"
             style={{ maxWidth: '460px' }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="aftrah-app-modal-header">
+            <div className="afrah-app-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Pencil size={17} color="var(--primary)" />
-                <h3 className="aftrah-app-modal-title">Edit Bricks Customer</h3>
+                <h3 className="afrah-app-modal-title">Edit Bricks Customer</h3>
               </div>
               <button
                 onClick={() => setIsEditModalOpen(false)}
-                className="aftrah-app-modal-close-btn"
+                className="afrah-app-modal-close-btn"
                 aria-label="Close"
               >
                 <X size={18} />
@@ -644,52 +644,52 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
             </div>
 
             <form onSubmit={handleSaveEdit}>
-              <div className="aftrah-app-modal-body">
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">NAME *</label>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">NAME *</label>
                   <input
                     type="text"
                     required
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">PHONE *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">PHONE *</label>
                   <input
                     type="tel"
                     required
                     value={editPhone}
                     onChange={(e) => setEditPhone(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Address *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Address *</label>
                   <textarea
                     rows={3}
                     required
                     value={editAddress}
                     onChange={(e) => setEditAddress(e.target.value)}
-                    className="aftrah-app-input aftrah-app-textarea"
+                    className="afrah-app-input afrah-app-textarea"
                   />
                 </div>
 
                 {!isEditValid && (
-                  <div className="aftrah-app-validation-notice">
+                  <div className="afrah-app-validation-notice">
                     * All fields must be filled to save changes.
                   </div>
                 )}
               </div>
 
-              <div className="aftrah-app-modal-footer">
+              <div className="afrah-app-modal-footer">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
-                  className="aftrah-app-back-btn"
+                  className="afrah-app-back-btn"
                 >
                   Close
                 </button>

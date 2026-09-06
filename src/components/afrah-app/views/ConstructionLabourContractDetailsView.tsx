@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import type { LabourContract, LabourContractEntry } from '../types';
+import { PREDEFINED_CONSTRUCTION_WORK_TYPES } from '../types';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import {
@@ -19,10 +20,11 @@ import {
   Briefcase,
   Wallet,
   Clock,
-  Scale
+  Scale,
+  MapPin
 } from 'lucide-react';
 
-interface InteriorLabourContractDetailsViewProps {
+interface ConstructionLabourContractDetailsViewProps {
   contract: LabourContract;
   onBack: () => void;
   onUpdateContract: (updated: LabourContract) => Promise<any> | void;
@@ -32,19 +34,7 @@ interface InteriorLabourContractDetailsViewProps {
   onDeleteEntry: (contractId: string, entryId: string) => Promise<any> | void;
 }
 
-const PRESET_WORK_TYPES = [
-  'Carpenter',
-  'Masonry Work',
-  'False Ceiling / POP',
-  'Painting & Polish',
-  'Electrical Work',
-  'Plumbing Work',
-  'Tiling & Granite',
-  'Glass & Aluminum',
-  'Helper / Unskilled'
-];
-
-export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractDetailsViewProps> = ({
+export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourContractDetailsViewProps> = ({
   contract,
   onBack,
   onUpdateContract,
@@ -60,15 +50,15 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
   // Add Details Form State (Right Column Card)
   const todayStr = new Date().toISOString().split('T')[0];
   const [addDate, setAddDate] = useState(todayStr);
-  const [addWorkType, setAddWorkType] = useState('Carpenter');
+  const [addWorkType, setAddWorkType] = useState('Centring & Shuttering');
   const [addDays, setAddDays] = useState('1');
-  const [addSalaryPerDay, setAddSalaryPerDay] = useState('5000');
-  const [addTotalAmount, setAddTotalAmount] = useState('5000');
+  const [addSalaryPerDay, setAddSalaryPerDay] = useState('4500');
+  const [addTotalAmount, setAddTotalAmount] = useState('4500');
   const [addNote, setAddNote] = useState('');
 
   // Edit Labour Charge Modal
   const [isEditChargeOpen, setIsEditChargeOpen] = useState(false);
-  const [chargeInput, setChargeInput] = useState(String(contract.labourCharge || 45000));
+  const [chargeInput, setChargeInput] = useState(String(contract.labourCharge || 50000));
 
   // Edit Entry Modal State
   const [editingEntry, setEditingEntry] = useState<LabourContractEntry | null>(null);
@@ -108,7 +98,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
     return entries.reduce((sum, e) => sum + (Number(e.days) || 0), 0);
   }, [entries]);
 
-  const labourCharge = Number(contract.labourCharge || 45000);
+  const labourCharge = Number(contract.labourCharge || 50000);
   const balanceAmount = labourCharge - paidAmount;
 
   // Format INR Currency
@@ -123,12 +113,12 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
     return entries.filter(
       (e) =>
         e.workType.toLowerCase().includes(q) ||
-        e.date.includes(q) ||
-        (e.note && e.note.toLowerCase().includes(q))
+        (e.note && e.note.toLowerCase().includes(q)) ||
+        e.date.includes(q)
     );
   }, [entries, searchQuery]);
 
-  // Pagination
+  // Pagination computations
   const totalPages = Math.ceil(filteredEntries.length / itemsPerPage) || 1;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, filteredEntries.length);
@@ -142,25 +132,36 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
     return pages;
   }, [currentPage, totalPages]);
 
+  // Form Validation
+  const isAddFormValid =
+    addDate.trim().length > 0 &&
+    addWorkType.trim().length > 0 &&
+    parseFloat(addDays) > 0 &&
+    parseFloat(addSalaryPerDay) > 0;
+
+  const isEditFormValid =
+    editDate.trim().length > 0 &&
+    editWorkType.trim().length > 0 &&
+    parseFloat(editDays) > 0 &&
+    parseFloat(editSalaryPerDay) > 0;
+
   // Handle Add Submit
   const handleAddSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const days = parseFloat(addDays);
-    const salary = parseFloat(addSalaryPerDay);
-    const total = parseFloat(addTotalAmount);
-
-    if (!addWorkType.trim() || isNaN(days) || isNaN(salary) || isNaN(total)) return;
+    if (!isAddFormValid) return;
 
     await onAddEntry(contract.id, {
       date: addDate.trim(),
       workType: addWorkType.trim(),
-      days,
-      salaryPerDay: salary,
-      totalAmount: total,
+      days: parseFloat(addDays) || 1,
+      salaryPerDay: parseFloat(addSalaryPerDay) || 0,
+      totalAmount: parseFloat(addTotalAmount) || (parseFloat(addDays) * parseFloat(addSalaryPerDay)),
       note: addNote.trim() || undefined
     });
 
+    setAddDays('1');
     setAddNote('');
+    handleDaysOrSalaryChange('1', addSalaryPerDay);
     setCurrentPage(1);
   };
 
@@ -179,62 +180,107 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
   // Save Edit Entry
   const handleSaveEdit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingEntry) return;
-
-    const days = parseFloat(editDays);
-    const salary = parseFloat(editSalaryPerDay);
-    const total = parseFloat(editTotalAmount);
-
-    if (!editWorkType.trim() || isNaN(days) || isNaN(salary) || isNaN(total)) return;
+    if (!isEditFormValid || !editingEntry) return;
 
     await onUpdateEntry(contract.id, {
       ...editingEntry,
       date: editDate.trim(),
       workType: editWorkType.trim(),
-      days,
-      salaryPerDay: salary,
-      totalAmount: total,
+      days: parseFloat(editDays) || 1,
+      salaryPerDay: parseFloat(editSalaryPerDay) || 0,
+      totalAmount: parseFloat(editTotalAmount) || (parseFloat(editDays) * parseFloat(editSalaryPerDay)),
       note: editNote.trim() || undefined
     });
 
     setEditingEntry(null);
   };
 
-  // Save Labour Charge
+  // Handle Save Labour Charge
   const handleSaveCharge = async (e: React.FormEvent) => {
     e.preventDefault();
-    const num = parseFloat(chargeInput);
-    if (isNaN(num) || num < 0) return;
+    const val = parseFloat(chargeInput);
+    if (isNaN(val) || val < 0) return;
 
-    await onUpdateLabourCharge(contract.id, num);
+    await onUpdateLabourCharge(contract.id, val);
     setIsEditChargeOpen(false);
+  };
+
+  // Confirm Delete Entry
+  const handleConfirmDeleteEntry = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    try {
+      await onDeleteEntry(contract.id, deleteTarget.id);
+    } finally {
+      setIsDeleting(false);
+      setDeleteTarget(null);
+    }
+  };
+
+  // Handle Print
+  const handlePrint = () => {
+    window.print();
   };
 
   return (
     <div className="client-details-page">
-      {/* Top Header Card using Theme Design System */}
+      {/* Print-Only Formal Statement Header */}
+      <div className="print-only-statement-header">
+        <div className="print-brand-row">
+          <div>
+            <h1 className="print-company-name">AFRAH CONSTRUCTIONS</h1>
+            <p className="print-company-sub">
+              Engineering, Civil Construction & Infrastructure · Site Labour Ledger Statement
+            </p>
+          </div>
+          <div className="print-badge-statement">
+            <span>LABOUR MUSTER ROLL</span>
+          </div>
+        </div>
+
+        <div className="print-meta-grid">
+          <div className="print-meta-box">
+            <span className="print-meta-title">CONTRACTOR INFORMATION</span>
+            <div className="print-meta-val">{contract.labourName}</div>
+            <div className="print-meta-sub">Phone: {contract.phone}</div>
+            <div className="print-meta-sub">Site: {contract.siteName}</div>
+          </div>
+          <div className="print-meta-box">
+            <span className="print-meta-title">CONTRACT FINANCIALS</span>
+            <div className="print-meta-val">Agreed Labour Charge: {formatINR(labourCharge)}</div>
+            <div className="print-meta-sub" style={{ color: '#047857' }}>Total Paid: {formatINR(paidAmount)}</div>
+            <div className="print-meta-sub" style={{ color: '#b45309' }}>Balance Remaining: {formatINR(balanceAmount)}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Screen View Header & Navigation */}
       <div className="client-details-header no-print">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', flexWrap: 'wrap', gap: '12px' }}>
-          <button onClick={onBack} className="aftrah-app-back-btn">
+          <button onClick={onBack} className="afrah-app-back-btn">
             <ArrowLeft size={16} />
-            <span>Back to Labour Contracts</span>
+            <span>Back to Contracts</span>
           </button>
 
-          <button onClick={() => window.print()} className="aftrah-app-print-btn">
+          <button onClick={handlePrint} className="afrah-app-print-btn">
             <Printer size={15} />
-            <span>Print Statement</span>
+            <span>Print Muster Roll</span>
           </button>
         </div>
 
         <div className="client-details-title-row">
           <div>
             <h1 className="client-details-main-title">
-              {contract.labourName} - {contract.siteName}
+              {contract.labourName}
             </h1>
             <div className="client-meta-row">
               <span className="client-meta-pill">
                 <HardHat size={13} color="var(--primary)" />
-                Labour Contractor
+                Construction Contractor
+              </span>
+              <span className="client-meta-pill">
+                <MapPin size={13} color="var(--primary)" />
+                {contract.siteName}
               </span>
               <span className="client-meta-pill">
                 <Phone size={13} color="var(--primary)" />
@@ -242,14 +288,14 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
               </span>
               <span className="client-meta-pill">
                 <Calendar size={13} color="var(--primary)" />
-                Registered: {contract.date}
+                Started: {contract.date}
               </span>
             </div>
           </div>
 
-          {/* Top 3 KPI Cards matching sketch: LABOUR CHARGE, Paid Amount, Balance Amount */}
+          {/* Top 3 KPI Cards: Agreed Labour Charge, Paid Amount, Balance Amount */}
           <div className="client-financial-summary">
-            {/* Card 1: LABOUR CHARGE */}
+            {/* Card 1: Agreed Labour Charge */}
             <div
               className="summary-metric-card"
               style={{ cursor: 'pointer' }}
@@ -264,7 +310,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px' }}>
-                  <span className="metric-label">LABOUR CHARGE</span>
+                  <span className="metric-label">AGREED CHARGE</span>
                   <Pencil size={11} color="var(--primary)" />
                 </div>
                 <span className="metric-value gold">{formatINR(labourCharge)}</span>
@@ -288,7 +334,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                 <Scale size={22} />
               </div>
               <div>
-                <span className="metric-label">BALANCE AMOUNT</span>
+                <span className="metric-label">BALANCE PAYABLE</span>
                 <span className={`metric-value ${balanceAmount > 0 ? 'red' : 'green'}`}>
                   {formatINR(balanceAmount)}
                 </span>
@@ -299,19 +345,19 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
       </div>
 
       {/* 2-Column Wireframe Layout matching sketch */}
-      <div className="aftrah-app-wireframe-layout">
+      <div className="afrah-app-wireframe-layout">
         {/* LEFT COLUMN: TABLE (S.NO, Date, Work Type, DAYS, Salary/Day, Total Amount, ACTIONS) */}
-        <section className="aftrah-app-table-section">
-          <div className="aftrah-app-section-header">
+        <section className="afrah-app-table-section">
+          <div className="afrah-app-section-header">
             <div>
-              <h2 className="aftrah-app-section-title">WORK & ATTENDANCE ENTRIES</h2>
-              <span className="aftrah-app-section-subtitle">
+              <h2 className="afrah-app-section-title">DAILY MUSTER & WORK ENTRIES</h2>
+              <span className="afrah-app-section-subtitle">
                 {filteredEntries.length} {filteredEntries.length === 1 ? 'entry' : 'entries'} · Total Paid: {formatINR(paidAmount)} ({totalDays} {totalDays === 1 ? 'Day' : 'Days'})
               </span>
             </div>
 
-            <div className="aftrah-app-search-wrapper">
-              <Search size={14} className="aftrah-app-search-icon" />
+            <div className="afrah-app-search-wrapper">
+              <Search size={14} className="afrah-app-search-icon" />
               <input
                 type="text"
                 placeholder="Search work type, date..."
@@ -320,13 +366,13 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="aftrah-app-search-input"
+                className="afrah-app-search-input"
               />
             </div>
           </div>
 
-          <div className="aftrah-app-table-container">
-            <table className="aftrah-app-table">
+          <div className="afrah-app-table-container">
+            <table className="afrah-app-table">
               <thead>
                 <tr>
                   <th style={{ width: '55px', textAlign: 'center' }}>S.NO</th>
@@ -335,7 +381,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                   <th style={{ width: '85px', textAlign: 'center' }}>DAYS</th>
                   <th style={{ width: '130px' }}>SALARY / DAY</th>
                   <th style={{ width: '130px' }}>TOTAL AMOUNT</th>
-                  <th style={{ width: '80px', textAlign: 'center' }}>ACTIONS</th>
+                  <th style={{ width: '80px', textAlign: 'center' }} className="no-print">ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
@@ -359,7 +405,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                       </td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <div className="aftrah-app-user-avatar" style={{ background: 'rgba(226, 195, 153, 0.12)', color: 'var(--primary)', width: '28px', height: '28px' }}>
+                          <div className="afrah-app-user-avatar" style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', width: '28px', height: '28px' }}>
                             <Briefcase size={13} />
                           </div>
                           <div>
@@ -397,18 +443,18 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                           {formatINR(entry.totalAmount)}
                         </strong>
                       </td>
-                      <td style={{ textAlign: 'center' }}>
+                      <td style={{ textAlign: 'center' }} className="no-print">
                         <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
                           <button
                             onClick={(e) => handleOpenEdit(entry, e)}
-                            className="aftrah-app-action-btn aftrah-app-edit-btn"
+                            className="afrah-app-action-btn afrah-app-edit-btn"
                             title="Edit Entry"
                           >
                             <Pencil size={13} />
                           </button>
                           <button
                             onClick={() => setDeleteTarget(entry)}
-                            className="aftrah-app-action-btn aftrah-app-delete-btn"
+                            className="afrah-app-action-btn afrah-app-delete-btn"
                             title="Delete Entry"
                           >
                             <Trash2 size={13} />
@@ -428,7 +474,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                     <td style={{ textAlign: 'center', color: '#60a5fa' }}>{totalDays}</td>
                     <td>-</td>
                     <td style={{ color: '#4ade80' }}>{formatINR(paidAmount)}</td>
-                    <td />
+                    <td className="no-print" />
                   </tr>
                 </tfoot>
               )}
@@ -437,21 +483,21 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
 
           {/* Pagination Bar */}
           {filteredEntries.length > 0 && (
-            <div className="aftrah-app-pagination-bar">
-              <div className="aftrah-app-pagination-left">
-                <span className="aftrah-app-pagination-info">
+            <div className="afrah-app-pagination-bar no-print">
+              <div className="afrah-app-pagination-left">
+                <span className="afrah-app-pagination-info">
                   Showing <strong>{startIndex + 1}</strong>–<strong>{endIndex}</strong> of <strong>{filteredEntries.length}</strong>
                 </span>
 
-                <div className="aftrah-app-rows-selector">
-                  <label className="aftrah-app-rows-label">Rows per page:</label>
+                <div className="afrah-app-rows-selector">
+                  <label className="afrah-app-rows-label">Rows per page:</label>
                   <select
                     value={itemsPerPage}
                     onChange={(e) => {
                       setItemsPerPage(Number(e.target.value));
                       setCurrentPage(1);
                     }}
-                    className="aftrah-app-select-sm"
+                    className="afrah-app-select-sm"
                   >
                     <option value={5}>5</option>
                     <option value={10}>10</option>
@@ -461,22 +507,22 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                 </div>
               </div>
 
-              <div className="aftrah-app-pagination-controls">
+              <div className="afrah-app-pagination-controls">
                 <button
                   onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
-                  className="aftrah-app-page-nav-btn"
+                  className="afrah-app-page-nav-btn"
                   title="Previous Page"
                 >
                   <ChevronLeft size={16} />
                 </button>
 
-                <div className="aftrah-app-page-numbers-wrap">
+                <div className="afrah-app-page-numbers-wrap">
                   {pageNumbers.map((p) => (
                     <button
                       key={p}
                       onClick={() => setCurrentPage(p)}
-                      className={`aftrah-app-page-num-btn ${currentPage === p ? 'active' : ''}`}
+                      className={`afrah-app-page-num-btn ${currentPage === p ? 'active' : ''}`}
                     >
                       {p}
                     </button>
@@ -486,7 +532,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                 <button
                   onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
-                  className="aftrah-app-page-nav-btn"
+                  className="afrah-app-page-nav-btn"
                   title="Next Page"
                 >
                   <ChevronRight size={16} />
@@ -496,246 +542,230 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
           )}
         </section>
 
-        {/* RIGHT COLUMN: ADD DETAILS CARD (Matching Sketch) */}
-        <aside className="aftrah-app-form-card">
-          <div className="aftrah-app-form-card-header">
-            <h2 className="aftrah-app-form-card-title">Add details</h2>
+        {/* RIGHT COLUMN: ADD DETAILS CARD (Matching handwritten sketch) */}
+        <aside className="afrah-app-form-card no-print">
+          <div className="afrah-app-form-card-header">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Plus size={16} color="#f59e0b" />
+              <h2 className="afrah-app-form-card-title">Add Details</h2>
+            </div>
           </div>
 
-          <form onSubmit={handleAddSubmit} className="aftrah-app-add-form">
-            <div className="aftrah-app-form-group">
-              <label className="aftrah-app-label">DATE *</label>
+          <form onSubmit={handleAddSubmit} className="afrah-app-add-form">
+            <div className="afrah-app-form-group">
+              <label className="afrah-app-label">Date *</label>
               <input
                 type="date"
                 required
                 value={addDate}
                 onChange={(e) => setAddDate(e.target.value)}
-                className="aftrah-app-input"
+                className="afrah-app-input"
               />
             </div>
 
-            <div className="aftrah-app-form-group">
-              <label className="aftrah-app-label">WORK TYPE *</label>
+            <div className="afrah-app-form-group">
+              <label className="afrah-app-label">Work Type *</label>
               <SearchableExpenseSelect
+                options={PREDEFINED_CONSTRUCTION_WORK_TYPES}
                 value={addWorkType}
-                onChange={setAddWorkType}
-                options={PRESET_WORK_TYPES}
-                placeholder="Search or select work type..."
-                searchPlaceholder="Type to filter or enter work type..."
-                required
+                onChange={(val) => setAddWorkType(val)}
+                placeholder="Select or enter work type..."
               />
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              <div className="aftrah-app-form-group">
-                <label className="aftrah-app-label">DAYS *</label>
+              <div className="afrah-app-form-group">
+                <label className="afrah-app-label">Days / Labours *</label>
                 <input
                   type="number"
-                  step="any"
-                  min="0.5"
                   required
-                  placeholder="e.g. 1"
+                  min="0.5"
+                  step="0.5"
                   value={addDays}
                   onChange={(e) => {
                     setAddDays(e.target.value);
                     handleDaysOrSalaryChange(e.target.value, addSalaryPerDay);
                   }}
-                  className="aftrah-app-input"
+                  className="afrah-app-input"
                 />
               </div>
 
-              <div className="aftrah-app-form-group">
-                <label className="aftrah-app-label">SALARY / DAY *</label>
+              <div className="afrah-app-form-group">
+                <label className="afrah-app-label">Salary / Day (₹) *</label>
                 <input
                   type="number"
-                  step="any"
                   required
-                  placeholder="e.g. 5000"
+                  min="0"
+                  step="50"
                   value={addSalaryPerDay}
                   onChange={(e) => {
                     setAddSalaryPerDay(e.target.value);
                     handleDaysOrSalaryChange(addDays, e.target.value);
                   }}
-                  className="aftrah-app-input"
+                  className="afrah-app-input"
                 />
               </div>
             </div>
 
-            <div className="aftrah-app-form-group">
-              <label className="aftrah-app-label">TOTAL AMOUNT (₹) *</label>
+            <div className="afrah-app-form-group">
+              <label className="afrah-app-label">Total Amount (₹)</label>
               <input
                 type="number"
-                step="any"
                 required
-                placeholder="e.g. 5000"
+                min="0"
                 value={addTotalAmount}
                 onChange={(e) => setAddTotalAmount(e.target.value)}
-                className="aftrah-app-input"
+                className="afrah-app-input"
               />
+              <span style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '3px', display: 'block' }}>
+                Auto-calculated: {addDays} × ₹{addSalaryPerDay}
+              </span>
             </div>
 
-            <div className="aftrah-app-form-group">
-              <label className="aftrah-app-label">NOTE / WORK PARTICULARS</label>
-              <input
-                type="text"
-                placeholder="e.g. Kitchen bottom cabinet assembly"
+            <div className="afrah-app-form-group">
+              <label className="afrah-app-label">Note / Scope</label>
+              <textarea
+                rows={2}
+                placeholder="e.g. Column formwork, Beam tying, 9-inch wall..."
                 value={addNote}
                 onChange={(e) => setAddNote(e.target.value)}
-                className="aftrah-app-input"
+                className="afrah-app-input afrah-app-textarea"
               />
             </div>
 
-            <button type="submit" className="btn-theme-primary aftrah-app-submit-btn">
+            {!isAddFormValid && (
+              <div className="afrah-app-validation-notice">
+                * Please fill all required fields.
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={!isAddFormValid}
+              className="btn-theme-primary afrah-app-submit-btn"
+            >
               <Plus size={16} strokeWidth={2.5} />
-              <span>Add Details</span>
+              <span>Add Entry</span>
             </button>
           </form>
         </aside>
       </div>
 
-      {/* Edit Labour Charge Modal */}
-      {isEditChargeOpen && (
-        <div className="aftrah-app-modal-overlay" onClick={() => setIsEditChargeOpen(false)}>
-          <div className="aftrah-app-modal-container" style={{ maxWidth: '380px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="aftrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Pencil size={16} color="var(--primary)" />
-                <h3 className="aftrah-app-modal-title">Edit Labour Charge</h3>
-              </div>
-              <button onClick={() => setIsEditChargeOpen(false)} className="aftrah-app-modal-close-btn">
-                <X size={18} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSaveCharge}>
-              <div className="aftrah-app-modal-body">
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Total Agreed Labour Charge (₹) *</label>
-                  <input
-                    type="number"
-                    step="any"
-                    required
-                    placeholder="e.g. 45000"
-                    value={chargeInput}
-                    onChange={(e) => setChargeInput(e.target.value)}
-                    className="aftrah-app-input"
-                  />
-                </div>
-              </div>
-
-              <div className="aftrah-app-modal-footer">
-                <button type="button" onClick={() => setIsEditChargeOpen(false)} className="aftrah-app-back-btn">
-                  Cancel
-                </button>
-                <button type="submit" className="btn-theme-primary">
-                  Save Charge
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Entry Modal */}
+      {/* EDIT ENTRY MODAL */}
       {editingEntry && (
-        <div className="aftrah-app-modal-overlay" onClick={() => setEditingEntry(null)}>
-          <div className="aftrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="aftrah-app-modal-header">
+        <div className="afrah-app-modal-overlay" onClick={() => setEditingEntry(null)}>
+          <div
+            className="afrah-app-modal-container"
+            style={{ maxWidth: '480px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="afrah-app-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Pencil size={16} color="var(--primary)" />
-                <h3 className="aftrah-app-modal-title">Edit Work Entry</h3>
+                <Pencil size={17} color="#f59e0b" />
+                <h3 className="afrah-app-modal-title">Edit Work Entry</h3>
               </div>
-              <button onClick={() => setEditingEntry(null)} className="aftrah-app-modal-close-btn">
+              <button
+                onClick={() => setEditingEntry(null)}
+                className="afrah-app-modal-close-btn"
+                aria-label="Close"
+              >
                 <X size={18} />
               </button>
             </div>
 
             <form onSubmit={handleSaveEdit}>
-              <div className="aftrah-app-modal-body">
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Date *</label>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Date *</label>
                   <input
                     type="date"
                     required
                     value={editDate}
                     onChange={(e) => setEditDate(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Work Type *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Work Type *</label>
                   <SearchableExpenseSelect
+                    options={PREDEFINED_CONSTRUCTION_WORK_TYPES}
                     value={editWorkType}
-                    onChange={setEditWorkType}
-                    options={PRESET_WORK_TYPES}
-                    placeholder="Search or select work type..."
-                    searchPlaceholder="Type to filter or enter work type..."
-                    required
+                    onChange={(val) => setEditWorkType(val)}
                   />
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Days *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Days *</label>
                     <input
                       type="number"
-                      step="any"
-                      min="0.5"
                       required
+                      min="0.5"
+                      step="0.5"
                       value={editDays}
                       onChange={(e) => {
                         setEditDays(e.target.value);
                         handleEditDaysOrSalaryChange(e.target.value, editSalaryPerDay);
                       }}
-                      className="aftrah-app-input"
+                      className="afrah-app-input"
                     />
                   </div>
 
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Salary / Day *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Salary / Day (₹) *</label>
                     <input
                       type="number"
-                      step="any"
                       required
+                      min="0"
+                      step="50"
                       value={editSalaryPerDay}
                       onChange={(e) => {
                         setEditSalaryPerDay(e.target.value);
                         handleEditDaysOrSalaryChange(editDays, e.target.value);
                       }}
-                      className="aftrah-app-input"
+                      className="afrah-app-input"
                     />
                   </div>
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Total Amount (₹) *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Total Amount (₹) *</label>
                   <input
                     type="number"
-                    step="any"
                     required
+                    min="0"
                     value={editTotalAmount}
                     onChange={(e) => setEditTotalAmount(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Note / Particulars</label>
-                  <input
-                    type="text"
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Note / Particulars</label>
+                  <textarea
+                    rows={2}
                     value={editNote}
                     onChange={(e) => setEditNote(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input afrah-app-textarea"
                   />
                 </div>
               </div>
 
-              <div className="aftrah-app-modal-footer">
-                <button type="button" onClick={() => setEditingEntry(null)} className="aftrah-app-back-btn">
+              <div className="afrah-app-modal-footer">
+                <button
+                  type="button"
+                  onClick={() => setEditingEntry(null)}
+                  className="afrah-app-back-btn"
+                >
                   Cancel
                 </button>
-                <button type="submit" className="btn-theme-primary">
+                <button
+                  type="submit"
+                  disabled={!isEditFormValid}
+                  className="btn-theme-primary"
+                  style={{ minWidth: '120px', height: '40px', fontSize: '13px' }}
+                >
                   Save Changes
                 </button>
               </div>
@@ -744,24 +774,77 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
         </div>
       )}
 
-      {/* Delete Entry Confirmation Modal */}
+      {/* EDIT AGREED LABOUR CHARGE MODAL */}
+      {isEditChargeOpen && (
+        <div className="afrah-app-modal-overlay" onClick={() => setIsEditChargeOpen(false)}>
+          <div
+            className="afrah-app-modal-container"
+            style={{ maxWidth: '420px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="afrah-app-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Scale size={17} color="#f59e0b" />
+                <h3 className="afrah-app-modal-title">Edit Agreed Labour Charge</h3>
+              </div>
+              <button
+                onClick={() => setIsEditChargeOpen(false)}
+                className="afrah-app-modal-close-btn"
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveCharge}>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Total Agreed Charge (₹)</label>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    step="500"
+                    value={chargeInput}
+                    onChange={(e) => setChargeInput(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                  <span style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '4px', display: 'block' }}>
+                    Adjusting this value will automatically recalculate the remaining balance payable.
+                  </span>
+                </div>
+              </div>
+
+              <div className="afrah-app-modal-footer">
+                <button
+                  type="button"
+                  onClick={() => setIsEditChargeOpen(false)}
+                  className="afrah-app-back-btn"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-theme-primary"
+                  style={{ minWidth: '120px', height: '40px', fontSize: '13px' }}
+                >
+                  Update Charge
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* CONFIRM DELETE ENTRY MODAL */}
       <ConfirmDeleteModal
         isOpen={Boolean(deleteTarget)}
-        title="Delete Work Entry"
-        message="Are you sure you want to delete this work & attendance entry?"
-        itemName={deleteTarget ? `${deleteTarget.workType} (${deleteTarget.date}) - ${formatINR(deleteTarget.totalAmount)}` : undefined}
+        title="Delete Work Muster Entry"
+        message="Are you sure you want to delete this work entry? The paid amount and balance payable will be recalculated."
+        itemName={deleteTarget ? `${deleteTarget.date} · ${deleteTarget.workType} (${formatINR(deleteTarget.totalAmount)})` : undefined}
         confirmText="Delete Entry"
         isDeleting={isDeleting}
-        onConfirm={async () => {
-          if (!deleteTarget) return;
-          setIsDeleting(true);
-          try {
-            await onDeleteEntry(contract.id, deleteTarget.id);
-            setDeleteTarget(null);
-          } finally {
-            setIsDeleting(false);
-          }
-        }}
+        onConfirm={handleConfirmDeleteEntry}
         onClose={() => setDeleteTarget(null)}
       />
     </div>

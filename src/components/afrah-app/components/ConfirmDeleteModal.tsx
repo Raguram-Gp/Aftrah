@@ -39,9 +39,9 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="aftrah-app-modal-overlay" onClick={() => !isDeleting && onClose()}>
+    <div className="afrah-app-modal-overlay" onClick={() => !isDeleting && onClose()}>
       <div
-        className="aftrah-app-modal-container"
+        className="afrah-app-modal-container"
         style={{
           maxWidth: '420px',
           padding: '0',
@@ -86,7 +86,7 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
           <button
             onClick={onClose}
             disabled={isDeleting}
-            className="aftrah-app-modal-close-btn"
+            className="afrah-app-modal-close-btn"
             aria-label="Close"
           >
             <X size={16} />
@@ -171,7 +171,7 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
             type="button"
             onClick={onClose}
             disabled={isDeleting}
-            className="aftrah-app-back-btn"
+            className="afrah-app-back-btn"
             style={{
               width: '100%',
               height: '40px',

@@ -162,7 +162,7 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* Top Breadcrumb / Back Bar */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-        <button onClick={onBack} className="aftrah-app-back-btn">
+        <button onClick={onBack} className="afrah-app-back-btn">
           <ArrowLeft size={16} />
           <span>Back to All Vendor Categories</span>
         </button>
@@ -175,19 +175,19 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
         </div>
       </div>
 
-      <div className="aftrah-app-wireframe-layout">
+      <div className="afrah-app-wireframe-layout">
         {/* LEFT COLUMN: VENDOR SHOPS LIST */}
-        <section className="aftrah-app-table-section">
-          <div className="aftrah-app-section-header">
+        <section className="afrah-app-table-section">
+          <div className="afrah-app-section-header">
             <div>
-              <h1 className="aftrah-app-section-title">{vendor.type.toUpperCase()} · SHOPS LIST</h1>
-              <span className="aftrah-app-section-subtitle">
+              <h1 className="afrah-app-section-title">{vendor.type.toUpperCase()} · SHOPS LIST</h1>
+              <span className="afrah-app-section-subtitle">
                 {filteredShops.length} {filteredShops.length === 1 ? 'shop' : 'shops'} · Click a shop to view line-item transaction ledger
               </span>
             </div>
 
-            <div className="aftrah-app-search-wrapper">
-              <Search size={14} className="aftrah-app-search-icon" />
+            <div className="afrah-app-search-wrapper">
+              <Search size={14} className="afrah-app-search-icon" />
               <input
                 type="text"
                 placeholder="Search shop name, phone, address..."
@@ -196,14 +196,14 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="aftrah-app-search-input"
+                className="afrah-app-search-input"
               />
             </div>
           </div>
 
           {/* Table matching handwritten sketch: S.NO, NAME, PHONE, ADDRESS + Pending Balance + Actions */}
-          <div className="aftrah-app-table-container">
-            <table className="aftrah-app-table">
+          <div className="afrah-app-table-container">
+            <table className="afrah-app-table">
               <thead>
                 <tr>
                   <th style={{ width: '50px', textAlign: 'center' }}>S.NO</th>
@@ -235,7 +235,7 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
                         </td>
                         <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <div className="aftrah-app-user-avatar" style={{ background: 'rgba(226, 195, 153, 0.15)', color: 'var(--primary)' }}>
+                            <div className="afrah-app-user-avatar" style={{ background: 'rgba(226, 195, 153, 0.15)', color: 'var(--primary)' }}>
                               <Store size={14} />
                             </div>
                             <span style={{ color: 'var(--text-primary)', fontSize: '13.5px', fontWeight: 600 }}>
@@ -271,7 +271,7 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
                           <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
                             <button
                               onClick={(e) => handleOpenEdit(shop, e)}
-                              className="aftrah-app-action-btn aftrah-app-edit-btn"
+                              className="afrah-app-action-btn afrah-app-edit-btn"
                               title="Edit Shop"
                             >
                               <Pencil size={13} />
@@ -281,7 +281,7 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
                                 e.stopPropagation();
                                 setDeleteShopTarget(shop);
                               }}
-                              className="aftrah-app-action-btn aftrah-app-delete-btn"
+                              className="afrah-app-action-btn afrah-app-delete-btn"
                               title="Delete Shop"
                             >
                               <Trash2 size={13} />
@@ -298,21 +298,21 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
 
           {/* Pagination Bar */}
           {filteredShops.length > 0 && (
-            <div className="aftrah-app-pagination-bar">
-              <div className="aftrah-app-pagination-left">
-                <span className="aftrah-app-pagination-info">
+            <div className="afrah-app-pagination-bar">
+              <div className="afrah-app-pagination-left">
+                <span className="afrah-app-pagination-info">
                   Showing <strong>{startIndex + 1}</strong>–<strong>{endIndex}</strong> of <strong>{filteredShops.length}</strong>
                 </span>
 
-                <div className="aftrah-app-rows-selector">
-                  <label className="aftrah-app-rows-label">Rows per page:</label>
+                <div className="afrah-app-rows-selector">
+                  <label className="afrah-app-rows-label">Rows per page:</label>
                   <select
                     value={itemsPerPage}
                     onChange={(e) => {
                       setItemsPerPage(Number(e.target.value));
                       setCurrentPage(1);
                     }}
-                    className="aftrah-app-select-sm"
+                    className="afrah-app-select-sm"
                   >
                     <option value={5}>5</option>
                     <option value={10}>10</option>
@@ -321,22 +321,22 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
                 </div>
               </div>
 
-              <div className="aftrah-app-pagination-controls">
+              <div className="afrah-app-pagination-controls">
                 <button
                   onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
-                  className="aftrah-app-page-nav-btn"
+                  className="afrah-app-page-nav-btn"
                   title="Previous Page"
                 >
                   <ChevronLeft size={16} />
                 </button>
 
-                <div className="aftrah-app-page-numbers-wrap">
+                <div className="afrah-app-page-numbers-wrap">
                   {pageNumbers.map((p) => (
                     <button
                       key={p}
                       onClick={() => setCurrentPage(p)}
-                      className={`aftrah-app-page-num-btn ${currentPage === p ? 'active' : ''}`}
+                      className={`afrah-app-page-num-btn ${currentPage === p ? 'active' : ''}`}
                     >
                       {p}
                     </button>
@@ -346,7 +346,7 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
                 <button
                   onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
-                  className="aftrah-app-page-nav-btn"
+                  className="afrah-app-page-nav-btn"
                   title="Next Page"
                 >
                   <ChevronRight size={16} />
@@ -357,50 +357,50 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
         </section>
 
         {/* RIGHT COLUMN: ADD DETAILS CARD (Matches handwritten sketch) */}
-        <aside className="aftrah-app-form-card">
-          <div className="aftrah-app-form-card-header">
-            <h2 className="aftrah-app-form-card-title">Add Details</h2>
+        <aside className="afrah-app-form-card">
+          <div className="afrah-app-form-card-header">
+            <h2 className="afrah-app-form-card-title">Add Details</h2>
           </div>
 
-          <form onSubmit={handleAddSubmit} className="aftrah-app-add-form">
-            <div className="aftrah-app-form-group">
-              <label className="aftrah-app-label">Name (Shop / Supplier) *</label>
+          <form onSubmit={handleAddSubmit} className="afrah-app-add-form">
+            <div className="afrah-app-form-group">
+              <label className="afrah-app-label">Name (Shop / Supplier) *</label>
               <input
                 type="text"
                 required
                 placeholder="e.g. Ramesh Bricks"
                 value={addName}
                 onChange={(e) => setAddName(e.target.value)}
-                className="aftrah-app-input"
+                className="afrah-app-input"
               />
             </div>
 
-            <div className="aftrah-app-form-group">
-              <label className="aftrah-app-label">Phone *</label>
+            <div className="afrah-app-form-group">
+              <label className="afrah-app-label">Phone *</label>
               <input
                 type="tel"
                 required
                 placeholder="+91 98451 22334"
                 value={addPhone}
                 onChange={(e) => setAddPhone(e.target.value)}
-                className="aftrah-app-input"
+                className="afrah-app-input"
               />
             </div>
 
-            <div className="aftrah-app-form-group">
-              <label className="aftrah-app-label">Address *</label>
+            <div className="afrah-app-form-group">
+              <label className="afrah-app-label">Address *</label>
               <textarea
                 rows={3}
                 required
                 placeholder="Yard location, Industrial zone, City..."
                 value={addAddress}
                 onChange={(e) => setAddAddress(e.target.value)}
-                className="aftrah-app-input aftrah-app-textarea"
+                className="afrah-app-input afrah-app-textarea"
               />
             </div>
 
             {!isAddFormValid && (
-              <div className="aftrah-app-validation-notice">
+              <div className="afrah-app-validation-notice">
                 * All 3 fields are required to register this supplier.
               </div>
             )}
@@ -408,7 +408,7 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
             <button
               type="submit"
               disabled={!isAddFormValid}
-              className="btn-theme-primary aftrah-app-submit-btn"
+              className="btn-theme-primary afrah-app-submit-btn"
             >
               <Plus size={16} strokeWidth={2.5} />
               <span>Add Details</span>
@@ -418,66 +418,66 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
 
         {/* Edit Shop Modal */}
         {isEditModalOpen && (
-          <div className="aftrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
+          <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
             <div
-              className="aftrah-app-modal-container"
+              className="afrah-app-modal-container"
               style={{ maxWidth: '460px' }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="aftrah-app-modal-header">
+              <div className="afrah-app-modal-header">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Pencil size={17} color="var(--primary)" />
-                  <h3 className="aftrah-app-modal-title">Edit Shop Information</h3>
+                  <h3 className="afrah-app-modal-title">Edit Shop Information</h3>
                 </div>
                 <button
                   onClick={() => setIsEditModalOpen(false)}
-                  className="aftrah-app-modal-close-btn"
+                  className="afrah-app-modal-close-btn"
                 >
                   <X size={18} />
                 </button>
               </div>
 
               <form onSubmit={handleSaveEdit}>
-                <div className="aftrah-app-modal-body">
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Name *</label>
+                <div className="afrah-app-modal-body">
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Name *</label>
                     <input
                       type="text"
                       required
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
-                      className="aftrah-app-input"
+                      className="afrah-app-input"
                     />
                   </div>
 
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Phone *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Phone *</label>
                     <input
                       type="tel"
                       required
                       value={editPhone}
                       onChange={(e) => setEditPhone(e.target.value)}
-                      className="aftrah-app-input"
+                      className="afrah-app-input"
                     />
                   </div>
 
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Address *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Address *</label>
                     <textarea
                       rows={3}
                       required
                       value={editAddress}
                       onChange={(e) => setEditAddress(e.target.value)}
-                      className="aftrah-app-input aftrah-app-textarea"
+                      className="afrah-app-input afrah-app-textarea"
                     />
                   </div>
                 </div>
 
-                <div className="aftrah-app-modal-footer">
+                <div className="afrah-app-modal-footer">
                   <button
                     type="button"
                     onClick={() => setIsEditModalOpen(false)}
-                    className="aftrah-app-back-btn"
+                    className="afrah-app-back-btn"
                   >
                     Cancel
                   </button>

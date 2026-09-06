@@ -21,9 +21,9 @@ import type {
   InteriorSubTab,
   LabourContract
 } from '../types';
-import type { TabType } from './AftrahAppSidebar';
+import type { TabType } from './AfrahAppSidebar';
 
-interface AftrahAppTopBarProps {
+interface AfrahAppTopBarProps {
   activeTab: TabType;
   activeInteriorSubTab?: InteriorSubTab;
   activeBricksSubTab?: BricksSubTab;
@@ -59,7 +59,7 @@ interface AftrahAppTopBarProps {
   isLiveDb: boolean;
 }
 
-export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
+export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
   activeTab,
   activeInteriorSubTab = 'directory',
   activeBricksSubTab = 'directory',
@@ -95,22 +95,22 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
   isLiveDb
 }) => {
   return (
-    <header className="aftrah-app-topbar">
-      <div className="aftrah-app-topbar-left">
+    <header className="afrah-app-topbar">
+      <div className="afrah-app-topbar-left">
         <button
           onClick={onToggleMobileMenu}
-          className="aftrah-app-topbar-menu-btn"
+          className="afrah-app-topbar-menu-btn"
           aria-label="Toggle menu"
         >
           <Menu size={18} />
         </button>
 
-        <div className="aftrah-app-breadcrumbs">
+        <div className="afrah-app-breadcrumbs">
           {activeTab === 'clients' ? (
             <>
               <button
                 onClick={onNavigateHome}
-                className="aftrah-app-breadcrumb-link"
+                className="afrah-app-breadcrumb-link"
                 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
               >
                 <Users size={16} color="var(--primary)" />
@@ -120,7 +120,7 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
               {selectedClient && (
                 <>
                   <ChevronRight size={14} color="var(--text-secondary)" />
-                  <span className="aftrah-app-breadcrumb-active">
+                  <span className="afrah-app-breadcrumb-active">
                     {selectedClient.name}
                   </span>
                 </>
@@ -130,7 +130,7 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
             <>
               <button
                 onClick={() => onNavigateConstructionLabourRoot && onNavigateConstructionLabourRoot()}
-                className="aftrah-app-breadcrumb-link"
+                className="afrah-app-breadcrumb-link"
                 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
               >
                 <HardHat size={16} color="#f59e0b" />
@@ -140,7 +140,7 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
               {selectedConstructionLabourContract && (
                 <>
                   <ChevronRight size={14} color="var(--text-secondary)" />
-                  <span className="aftrah-app-breadcrumb-active">
+                  <span className="afrah-app-breadcrumb-active">
                     {selectedConstructionLabourContract.labourName}
                   </span>
                 </>
@@ -150,7 +150,7 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
             <>
               <button
                 onClick={() => onNavigateInteriorRoot && onNavigateInteriorRoot(activeInteriorSubTab)}
-                className="aftrah-app-breadcrumb-link"
+                className="afrah-app-breadcrumb-link"
                 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
               >
                 <Paintbrush size={16} color="var(--primary)" />
@@ -159,7 +159,7 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
 
               <ChevronRight size={14} color="var(--text-secondary)" />
               <span
-                className={selectedInteriorClient || selectedInteriorVendor || selectedInteriorLabourContract ? 'aftrah-app-breadcrumb-link' : 'aftrah-app-breadcrumb-active'}
+                className={selectedInteriorClient || selectedInteriorVendor || selectedInteriorLabourContract ? 'afrah-app-breadcrumb-link' : 'afrah-app-breadcrumb-active'}
                 onClick={() => {
                   if (activeInteriorSubTab === 'vendor' && onNavigateInteriorVendorRoot) {
                     onNavigateInteriorVendorRoot();
@@ -197,7 +197,7 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
               {activeInteriorSubTab === 'directory' && selectedInteriorClient && (
                 <>
                   <ChevronRight size={14} color="var(--text-secondary)" />
-                  <span className="aftrah-app-breadcrumb-active">
+                  <span className="afrah-app-breadcrumb-active">
                     {selectedInteriorClient.name}
                   </span>
                 </>
@@ -208,7 +208,7 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
                   <ChevronRight size={14} color="var(--text-secondary)" />
                   <button
                     onClick={onNavigateInteriorVendorRoot}
-                    className={selectedInteriorShop ? 'aftrah-app-breadcrumb-link' : 'aftrah-app-breadcrumb-active'}
+                    className={selectedInteriorShop ? 'afrah-app-breadcrumb-link' : 'afrah-app-breadcrumb-active'}
                   >
                     {selectedInteriorVendor.type}
                   </button>
@@ -218,7 +218,7 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
               {activeInteriorSubTab === 'vendor' && selectedInteriorShop && (
                 <>
                   <ChevronRight size={14} color="var(--text-secondary)" />
-                  <span className="aftrah-app-breadcrumb-active">
+                  <span className="afrah-app-breadcrumb-active">
                     {selectedInteriorShop.name}
                   </span>
                 </>
@@ -227,7 +227,7 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
               {activeInteriorSubTab === 'labour_contract' && selectedInteriorLabourContract && (
                 <>
                   <ChevronRight size={14} color="var(--text-secondary)" />
-                  <span className="aftrah-app-breadcrumb-active">
+                  <span className="afrah-app-breadcrumb-active">
                     {selectedInteriorLabourContract.labourName}
                   </span>
                 </>
@@ -237,7 +237,7 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
             <>
               <button
                 onClick={onNavigateVendorRoot}
-                className="aftrah-app-breadcrumb-link"
+                className="afrah-app-breadcrumb-link"
                 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
               >
                 <Truck size={16} color="var(--primary)" />
@@ -249,7 +249,7 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
                   <ChevronRight size={14} color="var(--text-secondary)" />
                   <button
                     onClick={onNavigateVendorRoot}
-                    className={selectedShop ? 'aftrah-app-breadcrumb-link' : 'aftrah-app-breadcrumb-active'}
+                    className={selectedShop ? 'afrah-app-breadcrumb-link' : 'afrah-app-breadcrumb-active'}
                   >
                     {selectedVendor.type}
                   </button>
@@ -259,7 +259,7 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
               {selectedShop && (
                 <>
                   <ChevronRight size={14} color="var(--text-secondary)" />
-                  <span className="aftrah-app-breadcrumb-active">
+                  <span className="afrah-app-breadcrumb-active">
                     {selectedShop.name}
                   </span>
                 </>
@@ -268,13 +268,13 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
           ) : activeTab === 'banks' ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Landmark size={16} color="var(--primary)" />
-              <span className="aftrah-app-breadcrumb-active">Bank Details</span>
+              <span className="afrah-app-breadcrumb-active">Bank Details</span>
             </div>
           ) : (
             <>
               <button
                 onClick={() => onNavigateBricksRoot && onNavigateBricksRoot(activeBricksSubTab)}
-                className="aftrah-app-breadcrumb-link"
+                className="afrah-app-breadcrumb-link"
                 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
               >
                 <BrickWall size={16} color="var(--primary)" />
@@ -283,7 +283,7 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
 
               <ChevronRight size={14} color="var(--text-secondary)" />
               <span
-                className={selectedBrickCustomer || selectedStockItemName ? 'aftrah-app-breadcrumb-link' : 'aftrah-app-breadcrumb-active'}
+                className={selectedBrickCustomer || selectedStockItemName ? 'afrah-app-breadcrumb-link' : 'afrah-app-breadcrumb-active'}
                 onClick={() => onNavigateBricksRoot && onNavigateBricksRoot(activeBricksSubTab)}
                 style={{
                   cursor: selectedBrickCustomer || selectedStockItemName ? 'pointer' : 'default',
@@ -313,7 +313,7 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
               {selectedBrickCustomer && (
                 <>
                   <ChevronRight size={14} color="var(--text-secondary)" />
-                  <span className="aftrah-app-breadcrumb-active">
+                  <span className="afrah-app-breadcrumb-active">
                     {selectedBrickCustomer.name}
                   </span>
                 </>
@@ -322,7 +322,7 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
               {selectedStockItemName && (
                 <>
                   <ChevronRight size={14} color="var(--text-secondary)" />
-                  <span className="aftrah-app-breadcrumb-active">
+                  <span className="afrah-app-breadcrumb-active">
                     {selectedStockItemName}
                   </span>
                 </>
@@ -332,7 +332,7 @@ export const AftrahAppTopBar: React.FC<AftrahAppTopBarProps> = ({
         </div>
       </div>
 
-      <div className="aftrah-app-topbar-right">
+      <div className="afrah-app-topbar-right">
         {/* Database Status Indicator */}
         <div className={`db-status-badge ${isLiveDb ? 'live' : 'local'}`}>
           <span className={`db-dot ${isLiveDb ? 'live' : 'local'}`} />

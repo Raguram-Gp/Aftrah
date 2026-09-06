@@ -1,12 +1,17 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import '../styles/global.css';
-import AftrahAppPortal from '../components/aftrah-app/AftrahAppPortal';
+// Automatic redirect from legacy /aftrah-app to /afrah-app
 ---
-
-<Layout 
-  title="Aftrah Constructions | Operations, Procurement & Banking ERP"
-  description="Manage enterprise client accounts, milestone billing schedules, vendor procurement ledgers, and multi-bank corporate finances for Aftrah Constructions."
->
-  <AftrahAppPortal client:only="react" />
-</Layout>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content="0;url=/afrah-app" />
+    <title>Redirecting to Afrah App...</title>
+    <script>
+      window.location.replace('/afrah-app');
+    </script>
+  </head>
+  <body style="background: #111317; color: #e2c399; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0;">
+    <p>Redirecting to <a href="/afrah-app" style="color: #e2c399; text-decoration: underline;">Afrah App</a>...</p>
+  </body>
+</html>

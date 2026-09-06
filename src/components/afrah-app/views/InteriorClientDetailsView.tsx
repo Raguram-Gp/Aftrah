@@ -482,7 +482,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
             </p>
           </div>
           <div className="print-badge-statement">
-            <span>KAAB INTERIOR · AFTRAH</span>
+            <span>KAAB INTERIOR · AFRAH</span>
           </div>
         </div>
 
@@ -518,14 +518,14 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
       {/* Screen Header Bar */}
       <div className="client-details-header no-print">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '12px' }}>
-          <button onClick={onBack} className="aftrah-app-back-btn">
+          <button onClick={onBack} className="afrah-app-back-btn">
             <ArrowLeft size={16} />
             <span>Back to KAAB INTERIOR</span>
           </button>
 
           <button
             onClick={handlePrint}
-            className="aftrah-app-back-btn"
+            className="afrah-app-back-btn"
             title="Print or Export Interior Estimate Statement"
           >
             <Printer size={15} />
@@ -606,11 +606,11 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
             onBulkDelete={() => setIsBulkDeleteAdvOpen(true)}
           />
 
-          <section className="aftrah-app-table-section">
-            <div className="aftrah-app-section-header no-print">
+          <section className="afrah-app-table-section">
+            <div className="afrah-app-section-header no-print">
               <div>
-                <h2 className="aftrah-app-section-title">ADVANCE PAYMENT RECEIPTS</h2>
-                <span className="aftrah-app-section-subtitle">
+                <h2 className="afrah-app-section-title">ADVANCE PAYMENT RECEIPTS</h2>
+                <span className="afrah-app-section-subtitle">
                   {filteredAdvance.length} {filteredAdvance.length === 1 ? 'receipt' : 'receipts'} · Total: <strong style={{ color: '#4ade80' }}>{formatINR(totalAdvanceAmount)}</strong>
                 </span>
               </div>
@@ -631,8 +631,8 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
               </button>
             </div>
 
-            <div className="aftrah-app-table-container">
-              <table className="aftrah-app-table">
+            <div className="afrah-app-table-container">
+              <table className="afrah-app-table">
                 <thead>
                   <tr>
                     <th style={{ width: '45px', textAlign: 'center' }}>S.NO</th>
@@ -703,14 +703,14 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                               <button
                                 onClick={(e) => handleOpenEditAdv(item, e)}
-                                className="aftrah-app-action-btn aftrah-app-edit-btn"
+                                className="afrah-app-action-btn afrah-app-edit-btn"
                                 title="Edit Advance"
                               >
                                 <Pencil size={13} />
                               </button>
                               <button
                                 onClick={() => setDeleteAdvTarget(item)}
-                                className="aftrah-app-action-btn aftrah-app-delete-btn"
+                                className="afrah-app-action-btn afrah-app-delete-btn"
                                 title="Delete Advance"
                               >
                                 <Trash2 size={13} />
@@ -742,11 +742,11 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
             onBulkDelete={() => setIsBulkDeleteExpOpen(true)}
           />
 
-          <section className="aftrah-app-table-section">
-            <div className="aftrah-app-section-header no-print">
+          <section className="afrah-app-table-section">
+            <div className="afrah-app-section-header no-print">
               <div>
-                <h2 className="aftrah-app-section-title">ESTIMATE FOR INTERIOR WORKS</h2>
-                <span className="aftrah-app-section-subtitle">
+                <h2 className="afrah-app-section-title">ESTIMATE FOR INTERIOR WORKS</h2>
+                <span className="afrah-app-section-subtitle">
                   {filteredExpenses.length} items across {groupedExpenses.length} sections · Total: <strong style={{ color: 'var(--primary)' }}>{formatINR(totalExpensesAmount)}</strong>
                 </span>
               </div>
@@ -770,8 +770,8 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
             </div>
 
             {/* SEGREGATED TABLE MATCHING PDF COLUMNS: SI.No | Particulars | Qty | Per | Rate | Amount */}
-            <div className="aftrah-app-table-container">
-              <table className="aftrah-app-table">
+            <div className="afrah-app-table-container">
+              <table className="afrah-app-table">
                 <thead>
                   <tr>
                     <th style={{ width: '50px', textAlign: 'center' }}>SI.No</th>
@@ -896,14 +896,14 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                                   <button
                                     onClick={(e) => handleOpenEditExp(exp, e)}
-                                    className="aftrah-app-action-btn aftrah-app-edit-btn"
+                                    className="afrah-app-action-btn afrah-app-edit-btn"
                                     title="Edit Item"
                                   >
                                     <Pencil size={13} />
                                   </button>
                                   <button
                                     onClick={() => setDeleteExpTarget(exp)}
-                                    className="aftrah-app-action-btn aftrah-app-delete-btn"
+                                    className="afrah-app-action-btn afrah-app-delete-btn"
                                     title="Delete Item"
                                   >
                                     <Trash2 size={13} />
@@ -981,33 +981,33 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
 
       {/* ================= MODALS: ADD & EDIT ADVANCE ================= */}
       {isAddAdvModalOpen && (
-        <div className="aftrah-app-modal-overlay" onClick={() => setIsAddAdvModalOpen(false)}>
-          <div className="aftrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="aftrah-app-modal-header">
+        <div className="afrah-app-modal-overlay" onClick={() => setIsAddAdvModalOpen(false)}>
+          <div className="afrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="afrah-app-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Plus size={18} color="var(--primary)" />
-                <h3 className="aftrah-app-modal-title">Record Advance Receipt</h3>
+                <h3 className="afrah-app-modal-title">Record Advance Receipt</h3>
               </div>
-              <button onClick={() => setIsAddAdvModalOpen(false)} className="aftrah-app-modal-close-btn">
+              <button onClick={() => setIsAddAdvModalOpen(false)} className="afrah-app-modal-close-btn">
                 <X size={18} />
               </button>
             </div>
 
             <form onSubmit={handleAddAdvSubmit}>
-              <div className="aftrah-app-modal-body">
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Date *</label>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Date *</label>
                   <input
                     type="date"
                     required
                     value={newAdvDate}
                     onChange={(e) => setNewAdvDate(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Amount (₹) *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Amount (₹) *</label>
                   <input
                     type="number"
                     step="any"
@@ -1016,17 +1016,17 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                     placeholder="e.g. 163845"
                     value={newAdvAmount}
                     onChange={(e) => setNewAdvAmount(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                     style={{ fontSize: '15px', fontWeight: 700, color: '#4ade80' }}
                   />
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Payment Mode *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Payment Mode *</label>
                   <select
                     value={newAdvMode}
                     onChange={(e) => setNewAdvMode(e.target.value)}
-                    className="aftrah-app-select"
+                    className="afrah-app-select"
                   >
                     {PAYMENT_MODES.map((mode) => (
                       <option key={mode} value={mode}>
@@ -1036,20 +1036,20 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                   </select>
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Note / Milestone Description</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Note / Milestone Description</label>
                   <input
                     type="text"
                     placeholder="e.g. 50% Advance on confirmation & PO"
                     value={newAdvNote}
                     onChange={(e) => setNewAdvNote(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
               </div>
 
-              <div className="aftrah-app-modal-footer">
-                <button type="button" onClick={() => setIsAddAdvModalOpen(false)} className="aftrah-app-back-btn">
+              <div className="afrah-app-modal-footer">
+                <button type="button" onClick={() => setIsAddAdvModalOpen(false)} className="afrah-app-back-btn">
                   Cancel
                 </button>
                 <button type="submit" disabled={!isAddAdvValid} className="btn-theme-primary">
@@ -1062,33 +1062,33 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
       )}
 
       {isEditAdvModalOpen && (
-        <div className="aftrah-app-modal-overlay" onClick={() => setIsEditAdvModalOpen(false)}>
-          <div className="aftrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="aftrah-app-modal-header">
+        <div className="afrah-app-modal-overlay" onClick={() => setIsEditAdvModalOpen(false)}>
+          <div className="afrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="afrah-app-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Pencil size={18} color="var(--primary)" />
-                <h3 className="aftrah-app-modal-title">Edit Advance Receipt</h3>
+                <h3 className="afrah-app-modal-title">Edit Advance Receipt</h3>
               </div>
-              <button onClick={() => setIsEditAdvModalOpen(false)} className="aftrah-app-modal-close-btn">
+              <button onClick={() => setIsEditAdvModalOpen(false)} className="afrah-app-modal-close-btn">
                 <X size={18} />
               </button>
             </div>
 
             <form onSubmit={handleSaveEditAdv}>
-              <div className="aftrah-app-modal-body">
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Date *</label>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Date *</label>
                   <input
                     type="date"
                     required
                     value={editAdvDate}
                     onChange={(e) => setEditAdvDate(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Amount (₹) *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Amount (₹) *</label>
                   <input
                     type="number"
                     step="any"
@@ -1096,16 +1096,16 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                     required
                     value={editAdvAmount}
                     onChange={(e) => setEditAdvAmount(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Payment Mode *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Payment Mode *</label>
                   <select
                     value={editAdvMode}
                     onChange={(e) => setEditAdvMode(e.target.value)}
-                    className="aftrah-app-select"
+                    className="afrah-app-select"
                   >
                     {PAYMENT_MODES.map((mode) => (
                       <option key={mode} value={mode}>
@@ -1115,19 +1115,19 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                   </select>
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Note / Milestone</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Note / Milestone</label>
                   <input
                     type="text"
                     value={editAdvNote}
                     onChange={(e) => setEditAdvNote(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
               </div>
 
-              <div className="aftrah-app-modal-footer">
-                <button type="button" onClick={() => setIsEditAdvModalOpen(false)} className="aftrah-app-back-btn">
+              <div className="afrah-app-modal-footer">
+                <button type="button" onClick={() => setIsEditAdvModalOpen(false)} className="afrah-app-back-btn">
                   Cancel
                 </button>
                 <button type="submit" disabled={!editAdvAmount || parseFloat(editAdvAmount) <= 0} className="btn-theme-primary">
@@ -1141,34 +1141,34 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
 
       {/* ================= MODALS: ADD & EDIT EXPENSE / ESTIMATE ITEM ================= */}
       {isAddExpModalOpen && (
-        <div className="aftrah-app-modal-overlay" onClick={() => setIsAddExpModalOpen(false)}>
-          <div className="aftrah-app-modal-container" style={{ maxWidth: '520px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="aftrah-app-modal-header">
+        <div className="afrah-app-modal-overlay" onClick={() => setIsAddExpModalOpen(false)}>
+          <div className="afrah-app-modal-container" style={{ maxWidth: '520px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="afrah-app-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Plus size={18} color="var(--primary)" />
-                <h3 className="aftrah-app-modal-title">Add Interior Estimate Item</h3>
+                <h3 className="afrah-app-modal-title">Add Interior Estimate Item</h3>
               </div>
-              <button onClick={() => setIsAddExpModalOpen(false)} className="aftrah-app-modal-close-btn">
+              <button onClick={() => setIsAddExpModalOpen(false)} className="afrah-app-modal-close-btn">
                 <X size={18} />
               </button>
             </div>
 
             <form onSubmit={handleAddExpSubmit}>
-              <div className="aftrah-app-modal-body">
+              <div className="afrah-app-modal-body">
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Date *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Date *</label>
                     <input
                       type="date"
                       required
                       value={newExpDate}
                       onChange={(e) => setNewExpDate(e.target.value)}
-                      className="aftrah-app-input"
+                      className="afrah-app-input"
                     />
                   </div>
 
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Category / Room Section *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Category / Room Section *</label>
                     <SearchableExpenseSelect
                       value={newExpCategory}
                       onChange={(val) => setNewExpCategory(val)}
@@ -1179,8 +1179,8 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                   </div>
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Particulars (Item Description) *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Particulars (Item Description) *</label>
                   <SearchableExpenseSelect
                     value={newExpParticulars}
                     onChange={(val) => {
@@ -1201,8 +1201,8 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Qty *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Qty *</label>
                     <input
                       type="number"
                       step="any"
@@ -1210,16 +1210,16 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                       required
                       value={newExpQuantity}
                       onChange={(e) => setNewExpQuantity(e.target.value)}
-                      className="aftrah-app-input"
+                      className="afrah-app-input"
                     />
                   </div>
 
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Per (Unit) *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Per (Unit) *</label>
                     <select
                       value={newExpUnit}
                       onChange={(e) => setNewExpUnit(e.target.value)}
-                      className="aftrah-app-select"
+                      className="afrah-app-select"
                     >
                       {INTERIOR_UNITS.map((unit) => (
                         <option key={unit} value={unit}>
@@ -1229,8 +1229,8 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                     </select>
                   </div>
 
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Rate (₹) *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Rate (₹) *</label>
                     <input
                       type="number"
                       step="any"
@@ -1239,21 +1239,21 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                       placeholder="e.g. 1350"
                       value={newExpRate}
                       onChange={(e) => setNewExpRate(e.target.value)}
-                      className="aftrah-app-input"
+                      className="afrah-app-input"
                     />
                   </div>
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Amount (Total)</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Amount (Total)</label>
                   <div className="total-amount-display">
                     {formatINR(calculatedNewExpTotal)}
                   </div>
                 </div>
               </div>
 
-              <div className="aftrah-app-modal-footer">
-                <button type="button" onClick={() => setIsAddExpModalOpen(false)} className="aftrah-app-back-btn">
+              <div className="afrah-app-modal-footer">
+                <button type="button" onClick={() => setIsAddExpModalOpen(false)} className="afrah-app-back-btn">
                   Cancel
                 </button>
                 <button type="submit" disabled={!isAddExpValid} className="btn-theme-primary">
@@ -1266,34 +1266,34 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
       )}
 
       {isEditExpModalOpen && (
-        <div className="aftrah-app-modal-overlay" onClick={() => setIsEditExpModalOpen(false)}>
-          <div className="aftrah-app-modal-container" style={{ maxWidth: '520px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="aftrah-app-modal-header">
+        <div className="afrah-app-modal-overlay" onClick={() => setIsEditExpModalOpen(false)}>
+          <div className="afrah-app-modal-container" style={{ maxWidth: '520px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="afrah-app-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Pencil size={18} color="var(--primary)" />
-                <h3 className="aftrah-app-modal-title">Edit Interior Estimate Item</h3>
+                <h3 className="afrah-app-modal-title">Edit Interior Estimate Item</h3>
               </div>
-              <button onClick={() => setIsEditExpModalOpen(false)} className="aftrah-app-modal-close-btn">
+              <button onClick={() => setIsEditExpModalOpen(false)} className="afrah-app-modal-close-btn">
                 <X size={18} />
               </button>
             </div>
 
             <form onSubmit={handleSaveEditExp}>
-              <div className="aftrah-app-modal-body">
+              <div className="afrah-app-modal-body">
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Date *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Date *</label>
                     <input
                       type="date"
                       required
                       value={editExpDate}
                       onChange={(e) => setEditExpDate(e.target.value)}
-                      className="aftrah-app-input"
+                      className="afrah-app-input"
                     />
                   </div>
 
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Category / Room Section *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Category / Room Section *</label>
                     <SearchableExpenseSelect
                       value={editExpCategory}
                       onChange={(val) => setEditExpCategory(val)}
@@ -1304,8 +1304,8 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                   </div>
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Particulars (Item Description) *</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Particulars (Item Description) *</label>
                   <SearchableExpenseSelect
                     value={editExpParticulars}
                     onChange={(val) => {
@@ -1326,8 +1326,8 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Qty *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Qty *</label>
                     <input
                       type="number"
                       step="any"
@@ -1335,16 +1335,16 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                       required
                       value={editExpQuantity}
                       onChange={(e) => setEditExpQuantity(e.target.value)}
-                      className="aftrah-app-input"
+                      className="afrah-app-input"
                     />
                   </div>
 
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Per (Unit) *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Per (Unit) *</label>
                     <select
                       value={editExpUnit}
                       onChange={(e) => setEditExpUnit(e.target.value)}
-                      className="aftrah-app-select"
+                      className="afrah-app-select"
                     >
                       {INTERIOR_UNITS.map((unit) => (
                         <option key={unit} value={unit}>
@@ -1354,8 +1354,8 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                     </select>
                   </div>
 
-                  <div className="aftrah-app-form-group">
-                    <label className="aftrah-app-label">Rate (₹) *</label>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Rate (₹) *</label>
                     <input
                       type="number"
                       step="any"
@@ -1363,21 +1363,21 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                       required
                       value={editExpRate}
                       onChange={(e) => setEditExpRate(e.target.value)}
-                      className="aftrah-app-input"
+                      className="afrah-app-input"
                     />
                   </div>
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Amount (Total)</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Amount (Total)</label>
                   <div className="total-amount-display">
                     {formatINR(calculatedEditExpTotal)}
                   </div>
                 </div>
               </div>
 
-              <div className="aftrah-app-modal-footer">
-                <button type="button" onClick={() => setIsEditExpModalOpen(false)} className="aftrah-app-back-btn">
+              <div className="afrah-app-modal-footer">
+                <button type="button" onClick={() => setIsEditExpModalOpen(false)} className="afrah-app-back-btn">
                   Cancel
                 </button>
                 <button type="submit" disabled={!editExpParticulars || parseFloat(editExpRate) < 0} className="btn-theme-primary">

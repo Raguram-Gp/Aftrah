@@ -95,8 +95,8 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
       </div>
 
       {/* MAIN OVERVIEW TABLE SECTION (Full Width, Add Details Panel Removed) */}
-      <section className="aftrah-app-table-section" style={{ width: '100%' }}>
-        <div className="aftrah-app-section-header no-print">
+      <section className="afrah-app-table-section" style={{ width: '100%' }}>
+        <div className="afrah-app-section-header no-print">
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div
@@ -113,11 +113,11 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
               >
                 <Boxes size={18} color="var(--primary)" />
               </div>
-              <h1 className="aftrah-app-section-title" style={{ letterSpacing: '0.04em' }}>
+              <h1 className="afrah-app-section-title" style={{ letterSpacing: '0.04em' }}>
                 STOCK REGISTER
               </h1>
             </div>
-            <span className="aftrah-app-section-subtitle">
+            <span className="afrah-app-section-subtitle">
               {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'} · Total Outflow / Sales:{' '}
               <strong style={{ color: '#f87171' }}>{Number(totalSales).toLocaleString('en-IN')}</strong> · Total Pending Stock:{' '}
               <strong style={{ color: 'var(--primary)' }}>{Number(totalPendingStock).toLocaleString('en-IN')} Units</strong> · Click any row to open its detailed ledger
@@ -126,8 +126,8 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
 
           {/* Search & Print Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            <div className="aftrah-app-search-wrapper">
-              <Search size={14} className="aftrah-app-search-icon" />
+            <div className="afrah-app-search-wrapper">
+              <Search size={14} className="afrah-app-search-icon" />
               <input
                 type="text"
                 placeholder="Search item, sales, stock..."
@@ -136,13 +136,13 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="aftrah-app-search-input"
+                className="afrah-app-search-input"
               />
             </div>
 
             <button
               onClick={handlePrint}
-              className="aftrah-app-back-btn"
+              className="afrah-app-back-btn"
               title="Print Stock Register"
             >
               <Printer size={15} />
@@ -152,8 +152,8 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
         </div>
 
         {/* Table: S NO | ITEM | TOTAL SALES / USAGE | PENDING STOCK */}
-        <div className="aftrah-app-table-container">
-          <table className="aftrah-app-table" style={{ tableLayout: 'fixed', width: '100%' }}>
+        <div className="afrah-app-table-container">
+          <table className="afrah-app-table" style={{ tableLayout: 'fixed', width: '100%' }}>
             <thead>
               <tr>
                 <th style={{ width: '70px', textAlign: 'center' }}>S NO</th>
@@ -165,7 +165,7 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
             <tbody>
               {paginatedItems.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="aftrah-app-empty-cell">
+                  <td colSpan={4} className="afrah-app-empty-cell">
                     <div className="empty-state-wrap">
                       <Boxes size={28} className="empty-icon" color="var(--text-secondary)" style={{ opacity: 0.5 }} />
                       <span className="empty-text">No stock items found</span>
@@ -246,22 +246,22 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
 
         {/* Pagination Controls */}
         {filteredItems.length > 0 && (
-          <div className="aftrah-app-pagination-bar">
-            <div className="aftrah-app-pagination-left">
-              <span className="aftrah-app-pagination-info">
+          <div className="afrah-app-pagination-bar">
+            <div className="afrah-app-pagination-left">
+              <span className="afrah-app-pagination-info">
                 Showing <strong>{startIndex + 1}</strong>–<strong>{endIndex}</strong> of{' '}
                 <strong>{filteredItems.length}</strong> | Sales: <strong style={{ color: '#f87171' }}>{Number(totalSales).toLocaleString('en-IN')}</strong> · Pending Stock: <strong style={{ color: 'var(--primary)' }}>{Number(totalPendingStock).toLocaleString('en-IN')}</strong>
               </span>
 
-              <div className="aftrah-app-rows-selector">
-                <label className="aftrah-app-rows-label">Rows per page:</label>
+              <div className="afrah-app-rows-selector">
+                <label className="afrah-app-rows-label">Rows per page:</label>
                 <select
                   value={itemsPerPage}
                   onChange={(e) => {
                     setItemsPerPage(Number(e.target.value));
                     setCurrentPage(1);
                   }}
-                  className="aftrah-app-select-sm"
+                  className="afrah-app-select-sm"
                 >
                   <option value={5}>5</option>
                   <option value={10}>10</option>
@@ -271,23 +271,23 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
               </div>
             </div>
 
-            <div className="aftrah-app-pagination-controls">
+            <div className="afrah-app-pagination-controls">
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="aftrah-app-page-nav-btn"
+                className="afrah-app-page-nav-btn"
                 title="Previous Page"
                 aria-label="Previous Page"
               >
                 <ChevronLeft size={16} />
               </button>
 
-              <div className="aftrah-app-page-numbers-wrap">
+              <div className="afrah-app-page-numbers-wrap">
                 {pageNumbers.map((p) => (
                   <button
                     key={p}
                     onClick={() => setCurrentPage(p)}
-                    className={`aftrah-app-page-num-btn ${currentPage === p ? 'active' : ''}`}
+                    className={`afrah-app-page-num-btn ${currentPage === p ? 'active' : ''}`}
                   >
                     {p}
                   </button>
@@ -297,7 +297,7 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
               <button
                 onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                 disabled={currentPage === totalPages}
-                className="aftrah-app-page-nav-btn"
+                className="afrah-app-page-nav-btn"
                 title="Next Page"
                 aria-label="Next Page"
               >

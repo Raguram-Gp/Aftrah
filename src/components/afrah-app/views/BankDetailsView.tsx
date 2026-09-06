@@ -343,14 +343,14 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
 
       {/* Search & Filter Bar */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
-        <div className="aftrah-app-search-wrapper" style={{ minWidth: '280px' }}>
-          <Search size={14} className="aftrah-app-search-icon" />
+        <div className="afrah-app-search-wrapper" style={{ minWidth: '280px' }}>
+          <Search size={14} className="afrah-app-search-icon" />
           <input
             type="text"
             placeholder="Search bank name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="aftrah-app-search-input"
+            className="afrah-app-search-input"
           />
         </div>
 
@@ -436,7 +436,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <button
                       onClick={() => setActiveLedgerBankId(bank.id)}
-                      className="aftrah-app-action-btn"
+                      className="afrah-app-action-btn"
                       title="View Audit Ledger / Transaction History"
                       style={{
                         padding: '6px 10px',
@@ -455,7 +455,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
 
                     <button
                       onClick={() => setDeleteBankTarget(bank)}
-                      className="aftrah-app-action-btn aftrah-app-delete-btn"
+                      className="afrah-app-action-btn afrah-app-delete-btn"
                       title="Delete Bank Account"
                       aria-label="Delete Bank Account"
                     >
@@ -565,7 +565,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                       onChange={(e) =>
                         setInputAmounts((prev) => ({ ...prev, [bank.id]: e.target.value }))
                       }
-                      className="aftrah-app-input"
+                      className="afrah-app-input"
                       style={{ height: '36px', flex: 1, fontSize: '13px' }}
                     />
 
@@ -594,34 +594,34 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
 
       {/* MODAL 1: NEW BANK ACCOUNT */}
       {isAddAccountModalOpen && (
-        <div className="aftrah-app-modal-overlay" onClick={() => setIsAddAccountModalOpen(false)}>
-          <div className="aftrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="aftrah-app-modal-header">
+        <div className="afrah-app-modal-overlay" onClick={() => setIsAddAccountModalOpen(false)}>
+          <div className="afrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="afrah-app-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Landmark size={18} color="var(--primary)" />
-                <h3 className="aftrah-app-modal-title">Add Bank Account</h3>
+                <h3 className="afrah-app-modal-title">Add Bank Account</h3>
               </div>
-              <button onClick={() => setIsAddAccountModalOpen(false)} className="aftrah-app-modal-close-btn">
+              <button onClick={() => setIsAddAccountModalOpen(false)} className="afrah-app-modal-close-btn">
                 <X size={18} />
               </button>
             </div>
 
             <form onSubmit={handleCreateAccount}>
-              <div className="aftrah-app-modal-body">
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Bank Name *</label>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Bank Name *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Canara Bank, HDFC, SBI..."
                     value={newBankName}
                     onChange={(e) => setNewBankName(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
 
-                <div className="aftrah-app-form-group">
-                  <label className="aftrah-app-label">Initial Opening Balance (₹)</label>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Initial Opening Balance (₹)</label>
                   <input
                     type="number"
                     step="any"
@@ -629,13 +629,13 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                     placeholder="e.g. 1500000 (optional)"
                     value={newInitialBalance}
                     onChange={(e) => setNewInitialBalance(e.target.value)}
-                    className="aftrah-app-input"
+                    className="afrah-app-input"
                   />
                 </div>
               </div>
 
-              <div className="aftrah-app-modal-footer">
-                <button type="button" onClick={() => setIsAddAccountModalOpen(false)} className="aftrah-app-back-btn">
+              <div className="afrah-app-modal-footer">
+                <button type="button" onClick={() => setIsAddAccountModalOpen(false)} className="afrah-app-back-btn">
                   Cancel
                 </button>
                 <button type="submit" disabled={!newBankName.trim()} className="btn-theme-primary">
@@ -650,24 +650,24 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
 
       {/* MODAL 2: AUDIT LEDGER / PASSBOOK MODAL WITH DATE FILTER & BULK ACTIONS */}
       {activeLedgerBank && (
-        <div className="aftrah-app-modal-overlay" onClick={() => setActiveLedgerBankId(null)}>
-          <div className="aftrah-app-modal-container" style={{ maxWidth: '780px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="aftrah-app-modal-header">
+        <div className="afrah-app-modal-overlay" onClick={() => setActiveLedgerBankId(null)}>
+          <div className="afrah-app-modal-container" style={{ maxWidth: '780px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="afrah-app-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <BankLogo bankName={activeLedgerBank.bankName} size={36} />
                 <div>
-                  <h3 className="aftrah-app-modal-title">{activeLedgerBank.bankName}</h3>
+                  <h3 className="afrah-app-modal-title">{activeLedgerBank.bankName}</h3>
                   <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
                     Passbook Ledger & Audit History · Current Balance: <strong style={{ color: 'var(--primary)' }}>{formatINR(activeLedgerBank.balance)}</strong>
                   </span>
                 </div>
               </div>
-              <button onClick={() => setActiveLedgerBankId(null)} className="aftrah-app-modal-close-btn">
+              <button onClick={() => setActiveLedgerBankId(null)} className="afrah-app-modal-close-btn">
                 <X size={18} />
               </button>
             </div>
 
-            <div className="aftrah-app-modal-body" style={{ padding: '16px 20px' }}>
+            <div className="afrah-app-modal-body" style={{ padding: '16px 20px' }}>
               {/* Date Filter Bar inside Passbook Ledger */}
               <DateFilterBar
                 fromDate={ledgerFromDate}
@@ -684,8 +684,8 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                 printLabel="Print Passbook"
               />
 
-              <div className="aftrah-app-table-container" style={{ marginTop: '12px' }}>
-                <table className="aftrah-app-table">
+              <div className="afrah-app-table-container" style={{ marginTop: '12px' }}>
+                <table className="afrah-app-table">
                   <thead>
                     <tr>
                       <th style={{ width: '45px', textAlign: 'center' }}>#</th>
@@ -757,7 +757,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                             <td className="no-print" style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                               <button
                                 onClick={() => setDeleteBankTxTarget({ bank: activeLedgerBank, tx })}
-                                className="aftrah-app-action-btn aftrah-app-delete-btn"
+                                className="afrah-app-action-btn afrah-app-delete-btn"
                                 title="Delete & Revert Transaction"
                               >
                                 <Trash2 size={13} />
@@ -772,8 +772,8 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
               </div>
             </div>
 
-            <div className="aftrah-app-modal-footer">
-              <button onClick={() => setActiveLedgerBankId(null)} className="aftrah-app-back-btn">
+            <div className="afrah-app-modal-footer">
+              <button onClick={() => setActiveLedgerBankId(null)} className="afrah-app-back-btn">
                 Close Ledger
               </button>
             </div>

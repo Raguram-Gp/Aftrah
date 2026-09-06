@@ -271,7 +271,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
   };
 
   return (
-    <div className="aftrah-app-wireframe-layout">
+    <div className="afrah-app-wireframe-layout">
       {/* PRINT-ONLY HEADER */}
       <div className="print-only-statement-header">
         <div className="print-brand-row">
@@ -298,8 +298,8 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
       </div>
 
       {/* LEFT COLUMN: PRODUCTION EXPENSES TABLE (Matching sketch: S NO | DATE | EXPENSES | Quality | Rate | Total) */}
-      <section className="aftrah-app-table-section">
-        <div className="aftrah-app-section-header no-print">
+      <section className="afrah-app-table-section">
+        <div className="afrah-app-section-header no-print">
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div
@@ -316,11 +316,11 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
               >
                 <Flame size={18} color="#f87171" />
               </div>
-              <h1 className="aftrah-app-section-title" style={{ letterSpacing: '0.04em' }}>
+              <h1 className="afrah-app-section-title" style={{ letterSpacing: '0.04em' }}>
                 PRODUCTION EXPENSES
               </h1>
             </div>
-            <span className="aftrah-app-section-subtitle">
+            <span className="afrah-app-section-subtitle">
               {filteredExpenses.length} {filteredExpenses.length === 1 ? 'expense entry' : 'expense entries'} · Total Production Spend:{' '}
               <strong style={{ color: '#f87171' }}>{formatINR(totalProductionExpenses)}</strong>
             </span>
@@ -328,8 +328,8 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
 
           {/* Search, Bulk Delete, & Print Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            <div className="aftrah-app-search-wrapper">
-              <Search size={14} className="aftrah-app-search-icon" />
+            <div className="afrah-app-search-wrapper">
+              <Search size={14} className="afrah-app-search-icon" />
               <input
                 type="text"
                 placeholder="Search expense, date, rate..."
@@ -338,13 +338,13 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="aftrah-app-search-input"
+                className="afrah-app-search-input"
               />
             </div>
 
             <button
               onClick={handlePrint}
-              className="aftrah-app-back-btn"
+              className="afrah-app-back-btn"
               title="Print Production Expenses"
             >
               <Printer size={15} />
@@ -354,8 +354,8 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
         </div>
 
         {/* Table matching the sketch: S NO | DATE | EXPENSES | Quality | Rate | Total */}
-        <div className="aftrah-app-table-container">
-          <table className="aftrah-app-table">
+        <div className="afrah-app-table-container">
+          <table className="afrah-app-table">
             <thead>
               <tr>
                 <th style={{ width: '60px', textAlign: 'center' }}>S NO</th>
@@ -370,7 +370,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
             <tbody>
               {paginatedExpenses.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="aftrah-app-empty-cell">
+                  <td colSpan={7} className="afrah-app-empty-cell">
                     <div className="empty-state-wrap">
                       <Flame size={28} className="empty-icon" color="var(--text-secondary)" style={{ opacity: 0.5 }} />
                       <span className="empty-text">No production expense records found</span>
@@ -462,7 +462,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                         >
                           <button
                             onClick={(e) => handleOpenEdit(expense, e)}
-                            className="aftrah-app-action-btn aftrah-app-edit-btn"
+                            className="afrah-app-action-btn afrah-app-edit-btn"
                             title="Edit Expense"
                             aria-label="Edit Expense"
                           >
@@ -473,7 +473,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                               e.stopPropagation();
                               setDeleteTarget(expense);
                             }}
-                            className="aftrah-app-action-btn aftrah-app-delete-btn"
+                            className="afrah-app-action-btn afrah-app-delete-btn"
                             title="Delete Expense"
                             aria-label="Delete Expense"
                           >
@@ -491,22 +491,22 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
 
         {/* Pagination Controls */}
         {filteredExpenses.length > 0 && (
-          <div className="aftrah-app-pagination-bar">
-            <div className="aftrah-app-pagination-left">
-              <span className="aftrah-app-pagination-info">
+          <div className="afrah-app-pagination-bar">
+            <div className="afrah-app-pagination-left">
+              <span className="afrah-app-pagination-info">
                 Showing <strong>{startIndex + 1}</strong>–<strong>{endIndex}</strong> of{' '}
                 <strong>{filteredExpenses.length}</strong> | Total: <strong style={{ color: '#f87171' }}>{formatINR(filteredTotalProductionExpenses)}</strong>
               </span>
 
-              <div className="aftrah-app-rows-selector">
-                <label className="aftrah-app-rows-label">Rows per page:</label>
+              <div className="afrah-app-rows-selector">
+                <label className="afrah-app-rows-label">Rows per page:</label>
                 <select
                   value={itemsPerPage}
                   onChange={(e) => {
                     setItemsPerPage(Number(e.target.value));
                     setCurrentPage(1);
                   }}
-                  className="aftrah-app-select-sm"
+                  className="afrah-app-select-sm"
                 >
                   <option value={5}>5</option>
                   <option value={10}>10</option>
@@ -516,23 +516,23 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
               </div>
             </div>
 
-            <div className="aftrah-app-pagination-controls">
+            <div className="afrah-app-pagination-controls">
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="aftrah-app-page-nav-btn"
+                className="afrah-app-page-nav-btn"
                 title="Previous Page"
                 aria-label="Previous Page"
               >
                 <ChevronLeft size={16} />
               </button>
 
-              <div className="aftrah-app-page-numbers-wrap">
+              <div className="afrah-app-page-numbers-wrap">
                 {pageNumbers.map((p) => (
                   <button
                     key={p}
                     onClick={() => setCurrentPage(p)}
-                    className={`aftrah-app-page-num-btn ${currentPage === p ? 'active' : ''}`}
+                    className={`afrah-app-page-num-btn ${currentPage === p ? 'active' : ''}`}
                   >
                     {p}
                   </button>
@@ -542,7 +542,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
               <button
                 onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                 disabled={currentPage === totalPages}
-                className="aftrah-app-page-nav-btn"
+                className="afrah-app-page-nav-btn"
                 title="Next Page"
                 aria-label="Next Page"
               >
@@ -554,19 +554,19 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
       </section>
 
       {/* RIGHT COLUMN: "Add details" PANEL (Matching handwritten sketch: Date, Expenses [v], Quality, Rate) */}
-      <aside className="aftrah-app-form-card">
+      <aside className="afrah-app-form-card">
         {/* Header matching box: [ Add details ] */}
-        <div className="aftrah-app-form-card-header">
+        <div className="afrah-app-form-card-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Plus size={16} color="var(--primary)" />
-            <h2 className="aftrah-app-form-card-title">Add details</h2>
+            <h2 className="afrah-app-form-card-title">Add details</h2>
           </div>
         </div>
 
-        <form onSubmit={handleAddSubmit} className="aftrah-app-add-form">
+        <form onSubmit={handleAddSubmit} className="afrah-app-add-form">
           {/* 1. Date */}
-          <div className="aftrah-app-form-group">
-            <label className="aftrah-app-label">
+          <div className="afrah-app-form-group">
+            <label className="afrah-app-label">
               Date <span className="required-star">*</span>
             </label>
             <input
@@ -574,13 +574,13 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
               required
               value={addDate}
               onChange={(e) => setAddDate(e.target.value)}
-              className="aftrah-app-input"
+              className="afrah-app-input"
             />
           </div>
 
           {/* 2. Expenses Searchable Dropdown matching Photo 2: Soil, Wood, Msand Tust, Disel, Oil, Jcb - rent, Tractor - rent, Machine expense */}
-          <div className="aftrah-app-form-group">
-            <label className="aftrah-app-label">
+          <div className="afrah-app-form-group">
+            <label className="afrah-app-label">
               Expenses <span className="required-star">*</span>
             </label>
             <SearchableExpenseSelect
@@ -593,8 +593,8 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
           </div>
 
           {/* 3. Quality (Quantity / Qty) */}
-          <div className="aftrah-app-form-group">
-            <label className="aftrah-app-label">
+          <div className="afrah-app-form-group">
+            <label className="afrah-app-label">
               Quality / Quantity <span className="required-star">*</span>
             </label>
             <input
@@ -605,13 +605,13 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
               placeholder="Enter quality / quantity..."
               value={addQuality}
               onChange={(e) => setAddQuality(e.target.value)}
-              className="aftrah-app-input"
+              className="afrah-app-input"
             />
           </div>
 
           {/* 4. Rate */}
-          <div className="aftrah-app-form-group">
-            <label className="aftrah-app-label">
+          <div className="afrah-app-form-group">
+            <label className="afrah-app-label">
               Rate (₹) <span className="required-star">*</span>
             </label>
             <input
@@ -622,7 +622,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
               placeholder="Enter rate per unit..."
               value={addRate}
               onChange={(e) => setAddRate(e.target.value)}
-              className="aftrah-app-input"
+              className="afrah-app-input"
             />
           </div>
 
@@ -649,7 +649,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
 
           {/* Validation Notice */}
           {!isAddValid && (
-            <div className="aftrah-app-validation-notice">
+            <div className="afrah-app-validation-notice">
               * Date, Expenses, Quality and Rate are required to submit.
             </div>
           )}
@@ -659,7 +659,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
             <button
               type="submit"
               disabled={!isAddValid}
-              className="btn-theme-primary aftrah-app-submit-btn"
+              className="btn-theme-primary afrah-app-submit-btn"
               style={{ flex: 1 }}
             >
               <Plus size={16} strokeWidth={2.5} />
@@ -670,7 +670,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
               <button
                 type="button"
                 onClick={handleClearAddForm}
-                className="aftrah-app-back-btn"
+                className="afrah-app-back-btn"
                 style={{ height: '44px', padding: '0 14px', marginTop: '4px' }}
                 title="Clear Form"
               >
@@ -684,27 +684,27 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
 
       {/* EDIT MODAL */}
       {isEditModalOpen && (
-        <div className="aftrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
-          <div className="aftrah-app-modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '440px' }}>
-            <div className="aftrah-app-modal-header">
+        <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
+          <div className="afrah-app-modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '440px' }}>
+            <div className="afrah-app-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Pencil size={16} color="var(--primary)" />
-                <h3 className="aftrah-app-modal-title">Edit Production Expense</h3>
+                <h3 className="afrah-app-modal-title">Edit Production Expense</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsEditModalOpen(false)}
-                className="aftrah-app-modal-close"
+                className="afrah-app-modal-close"
                 aria-label="Close modal"
               >
                 <X size={18} />
               </button>
             </div>
 
-            <form onSubmit={handleSaveEdit} className="aftrah-app-add-form" style={{ padding: '16px' }}>
+            <form onSubmit={handleSaveEdit} className="afrah-app-add-form" style={{ padding: '16px' }}>
               {/* Date */}
-              <div className="aftrah-app-form-group">
-                <label className="aftrah-app-label">
+              <div className="afrah-app-form-group">
+                <label className="afrah-app-label">
                   Date <span className="required-star">*</span>
                 </label>
                 <input
@@ -712,13 +712,13 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                   required
                   value={editDate}
                   onChange={(e) => setEditDate(e.target.value)}
-                  className="aftrah-app-input"
+                  className="afrah-app-input"
                 />
               </div>
 
               {/* Expenses Searchable Dropdown */}
-              <div className="aftrah-app-form-group">
-                <label className="aftrah-app-label">
+              <div className="afrah-app-form-group">
+                <label className="afrah-app-label">
                   Expenses <span className="required-star">*</span>
                 </label>
                 <SearchableExpenseSelect
@@ -731,8 +731,8 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
               </div>
 
               {/* Quality / Quantity */}
-              <div className="aftrah-app-form-group">
-                <label className="aftrah-app-label">
+              <div className="afrah-app-form-group">
+                <label className="afrah-app-label">
                   Quality / Quantity <span className="required-star">*</span>
                 </label>
                 <input
@@ -742,13 +742,13 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                   required
                   value={editQuality}
                   onChange={(e) => setEditQuality(e.target.value)}
-                  className="aftrah-app-input"
+                  className="afrah-app-input"
                 />
               </div>
 
               {/* Rate */}
-              <div className="aftrah-app-form-group">
-                <label className="aftrah-app-label">
+              <div className="afrah-app-form-group">
+                <label className="afrah-app-label">
                   Rate (₹) <span className="required-star">*</span>
                 </label>
                 <input
@@ -758,7 +758,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                   required
                   value={editRate}
                   onChange={(e) => setEditRate(e.target.value)}
-                  className="aftrah-app-input"
+                  className="afrah-app-input"
                 />
               </div>
 
@@ -785,7 +785,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
-                  className="aftrah-app-back-btn"
+                  className="afrah-app-back-btn"
                   style={{ flex: 1, height: '42px' }}
                 >
                   Cancel
