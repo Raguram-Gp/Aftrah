@@ -4,6 +4,7 @@ import { PAYMENT_MODES } from '../types';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { DateFilterBar } from '../components/DateFilterBar';
+import { showToast } from '../layout/ToastContainer';
 import {
   ArrowLeft,
   Phone,
@@ -198,6 +199,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       }
       setSelectedAdvIds(new Set());
       setIsBulkDeleteAdvOpen(false);
+      showToast('Selected advance payments deleted!', 'success');
+    } catch (err) {
+      showToast('Failed to delete advance payments', 'error');
     } finally {
       setIsBulkDeletingAdv(false);
     }
@@ -241,6 +245,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       }
       setSelectedExpIds(new Set());
       setIsBulkDeleteExpOpen(false);
+      showToast('Selected expenses deleted!', 'success');
+    } catch (err) {
+      showToast('Failed to delete expenses', 'error');
     } finally {
       setIsBulkDeletingExp(false);
     }
@@ -279,29 +286,34 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
     e.preventDefault();
     if (!isAdvValid) return;
 
-    if (onAddAdvance) {
-      await onAddAdvance(client.id, {
-        date: advDate,
-        amount: parseFloat(advAmount),
-        mode: advMode,
-      });
-    } else {
-      const newPayment: AdvancePayment = {
-        id: `adv-${Date.now()}`,
-        sNo: advancePayments.length + 1,
-        date: advDate,
-        amount: parseFloat(advAmount),
-        mode: advMode
-      };
-      onUpdateClient({
-        ...client,
-        advancePayments: [...advancePayments, newPayment]
-      });
-    }
+    try {
+      if (onAddAdvance) {
+        await onAddAdvance(client.id, {
+          date: advDate,
+          amount: parseFloat(advAmount),
+          mode: advMode,
+        });
+      } else {
+        const newPayment: AdvancePayment = {
+          id: `adv-${Date.now()}`,
+          sNo: advancePayments.length + 1,
+          date: advDate,
+          amount: parseFloat(advAmount),
+          mode: advMode
+        };
+        onUpdateClient({
+          ...client,
+          advancePayments: [...advancePayments, newPayment]
+        });
+      }
 
-    setAdvAmount('');
-    setIsAddAdvModalOpen(false);
-    setAdvCurrentPage(1);
+      setAdvAmount('');
+      setIsAddAdvModalOpen(false);
+      setAdvCurrentPage(1);
+      showToast('Advance payment recorded successfully!', 'success');
+    } catch (err) {
+      showToast('Failed to record advance payment', 'error');
+    }
   };
 
   // Open Edit Advance Modal
@@ -318,28 +330,33 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
     e.preventDefault();
     if (!isEditAdvValid || !editingAdvId) return;
 
-    const updatedPayment: AdvancePayment = {
-      id: editingAdvId,
-      sNo: advancePayments.find((p) => p.id === editingAdvId)?.sNo || 1,
-      date: editAdvDate,
-      amount: parseFloat(editAdvAmount),
-      mode: editAdvMode
-    };
+    try {
+      const updatedPayment: AdvancePayment = {
+        id: editingAdvId,
+        sNo: advancePayments.find((p) => p.id === editingAdvId)?.sNo || 1,
+        date: editAdvDate,
+        amount: parseFloat(editAdvAmount),
+        mode: editAdvMode
+      };
 
-    if (onUpdateAdvance) {
-      await onUpdateAdvance(client.id, updatedPayment);
-    } else {
-      const updated = advancePayments.map((p) =>
-        p.id === editingAdvId ? updatedPayment : p
-      );
-      onUpdateClient({
-        ...client,
-        advancePayments: updated
-      });
+      if (onUpdateAdvance) {
+        await onUpdateAdvance(client.id, updatedPayment);
+      } else {
+        const updated = advancePayments.map((p) =>
+          p.id === editingAdvId ? updatedPayment : p
+        );
+        onUpdateClient({
+          ...client,
+          advancePayments: updated
+        });
+      }
+
+      setIsEditAdvModalOpen(false);
+      setEditingAdvId(null);
+      showToast('Advance payment updated!', 'success');
+    } catch (err) {
+      showToast('Failed to update advance payment', 'error');
     }
-
-    setIsEditAdvModalOpen(false);
-    setEditingAdvId(null);
   };
 
   // Handle Confirm Delete Advance Payment
@@ -358,6 +375,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
           advancePayments: updated
         });
       }
+      showToast('Advance payment deleted!', 'success');
+    } catch (err) {
+      showToast('Failed to delete advance payment', 'error');
     } finally {
       setIsDeletingAdv(false);
       setDeleteAdvTarget(null);
@@ -369,35 +389,40 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
     e.preventDefault();
     if (!isExpValid) return;
 
-    if (onAddExpense) {
-      await onAddExpense(client.id, {
-        date: expDate,
-        expenseName: expName.trim(),
-        quantity: parseFloat(expQuantity),
-        rate: parseFloat(expRate),
-        totalAmount: expTotalAmount,
-      });
-    } else {
-      const newExpense: ExpenseItem = {
-        id: `exp-${Date.now()}`,
-        sNo: expenses.length + 1,
-        date: expDate,
-        expenseName: expName.trim(),
-        quantity: parseFloat(expQuantity),
-        rate: parseFloat(expRate),
-        totalAmount: expTotalAmount
-      };
-      onUpdateClient({
-        ...client,
-        expenses: [...expenses, newExpense]
-      });
-    }
+    try {
+      if (onAddExpense) {
+        await onAddExpense(client.id, {
+          date: expDate,
+          expenseName: expName.trim(),
+          quantity: parseFloat(expQuantity),
+          rate: parseFloat(expRate),
+          totalAmount: expTotalAmount,
+        });
+      } else {
+        const newExpense: ExpenseItem = {
+          id: `exp-${Date.now()}`,
+          sNo: expenses.length + 1,
+          date: expDate,
+          expenseName: expName.trim(),
+          quantity: parseFloat(expQuantity),
+          rate: parseFloat(expRate),
+          totalAmount: expTotalAmount
+        };
+        onUpdateClient({
+          ...client,
+          expenses: [...expenses, newExpense]
+        });
+      }
 
-    setExpName('');
-    setExpQuantity('');
-    setExpRate('');
-    setIsAddExpModalOpen(false);
-    setExpCurrentPage(1);
+      setExpName('');
+      setExpQuantity('');
+      setExpRate('');
+      setIsAddExpModalOpen(false);
+      setExpCurrentPage(1);
+      showToast('Site expense recorded successfully!', 'success');
+    } catch (err) {
+      showToast('Failed to record site expense', 'error');
+    }
   };
 
   // Open Edit Expense Modal
@@ -415,30 +440,35 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
     e.preventDefault();
     if (!isEditExpValid || !editingExpId) return;
 
-    const updatedExpense: ExpenseItem = {
-      id: editingExpId,
-      sNo: expenses.find((exp) => exp.id === editingExpId)?.sNo || 1,
-      date: editExpDate,
-      expenseName: editExpName.trim(),
-      quantity: parseFloat(editExpQuantity),
-      rate: parseFloat(editExpRate),
-      totalAmount: editExpTotalAmount
-    };
+    try {
+      const updatedExpense: ExpenseItem = {
+        id: editingExpId,
+        sNo: expenses.find((exp) => exp.id === editingExpId)?.sNo || 1,
+        date: editExpDate,
+        expenseName: editExpName.trim(),
+        quantity: parseFloat(editExpQuantity),
+        rate: parseFloat(editExpRate),
+        totalAmount: editExpTotalAmount
+      };
 
-    if (onUpdateExpense) {
-      await onUpdateExpense(client.id, updatedExpense);
-    } else {
-      const updated = expenses.map((exp) =>
-        exp.id === editingExpId ? updatedExpense : exp
-      );
-      onUpdateClient({
-        ...client,
-        expenses: updated
-      });
+      if (onUpdateExpense) {
+        await onUpdateExpense(client.id, updatedExpense);
+      } else {
+        const updated = expenses.map((exp) =>
+          exp.id === editingExpId ? updatedExpense : exp
+        );
+        onUpdateClient({
+          ...client,
+          expenses: updated
+        });
+      }
+
+      setIsEditExpModalOpen(false);
+      setEditingExpId(null);
+      showToast('Site expense updated!', 'success');
+    } catch (err) {
+      showToast('Failed to update site expense', 'error');
     }
-
-    setIsEditExpModalOpen(false);
-    setEditingExpId(null);
   };
 
   // Handle Confirm Delete Expense
@@ -457,6 +487,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
           expenses: updated
         });
       }
+      showToast('Site expense deleted!', 'success');
+    } catch (err) {
+      showToast('Failed to delete site expense', 'error');
     } finally {
       setIsDeletingExp(false);
       setDeleteExpTarget(null);

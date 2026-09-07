@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { AfrahAppSidebar, type TabType } from './layout/AfrahAppSidebar';
 import { AfrahAppTopBar } from './layout/AfrahAppTopBar';
-import { ToastContainer } from './layout/ToastContainer';
+import { ToastContainer, showToast } from './layout/ToastContainer';
 import { ConfirmDeleteModal } from './components/ConfirmDeleteModal';
 import { useClients } from './hooks/useClients';
 import { useInteriorClients } from './hooks/useInteriorClients';
@@ -301,6 +301,7 @@ export const AfrahAppPortal: React.FC = () => {
     setAddPhone('');
     setAddAddress('');
     setCurrentPage(1);
+    showToast('Client added successfully!', 'success');
   };
 
   // Open Edit Client Modal
@@ -326,6 +327,7 @@ export const AfrahAppPortal: React.FC = () => {
         phone: editPhone.trim(),
         address: editAddress.trim(),
       });
+      showToast('Client details updated!', 'success');
     }
 
     setIsEditModalOpen(false);
@@ -341,6 +343,9 @@ export const AfrahAppPortal: React.FC = () => {
       if (selectedClientId === deleteClientTarget.id) {
         setSelectedClientId(null);
       }
+      showToast('Client deleted successfully!', 'success');
+    } catch (err) {
+      showToast('Failed to delete client', 'error');
     } finally {
       setIsDeletingClient(false);
       setDeleteClientTarget(null);

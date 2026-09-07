@@ -3,6 +3,7 @@ import type { BankAccount, BankTransaction } from '../types';
 import { BankLogo } from '../components/BankLogo';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { DateFilterBar } from '../components/DateFilterBar';
+import { showToast } from '../layout/ToastContainer';
 import {
   Landmark,
   Plus,
@@ -121,37 +122,42 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
 
     const txType = inputTypes[bank.id] || 'credit';
 
-    if (onAddTransaction) {
-      await onAddTransaction(bank.id, {
-        date: new Date().toISOString().slice(0, 10),
-        type: txType,
-        amount: amountNum,
-        note: `Quick ${txType} entry`
-      });
-    } else {
-      const newTx: BankTransaction = {
-        id: `tx-${Date.now()}`,
-        date: new Date().toISOString().slice(0, 10),
-        type: txType,
-        amount: amountNum,
-        note: `Quick ${txType} entry`
-      };
+    try {
+      if (onAddTransaction) {
+        await onAddTransaction(bank.id, {
+          date: new Date().toISOString().slice(0, 10),
+          type: txType,
+          amount: amountNum,
+          note: `Quick ${txType} entry`
+        });
+      } else {
+        const newTx: BankTransaction = {
+          id: `tx-${Date.now()}`,
+          date: new Date().toISOString().slice(0, 10),
+          type: txType,
+          amount: amountNum,
+          note: `Quick ${txType} entry`
+        };
 
-      const newBalance = txType === 'credit'
-        ? (bank.balance || 0) + amountNum
-        : (bank.balance || 0) - amountNum;
+        const newBalance = txType === 'credit'
+          ? (bank.balance || 0) + amountNum
+          : (bank.balance || 0) - amountNum;
 
-      const updatedAccount: BankAccount = {
-        ...bank,
-        balance: newBalance,
-        updatedAt: new Date().toISOString().slice(0, 10),
-        transactions: [newTx, ...(bank.transactions || [])]
-      };
+        const updatedAccount: BankAccount = {
+          ...bank,
+          balance: newBalance,
+          updatedAt: new Date().toISOString().slice(0, 10),
+          transactions: [newTx, ...(bank.transactions || [])]
+        };
 
-      onUpdateAccount(updatedAccount);
+        onUpdateAccount(updatedAccount);
+      }
+
+      setInputAmounts((prev) => ({ ...prev, [bank.id]: '' }));
+      showToast(`Balance updated: ₹${amountNum.toLocaleString('en-IN')} ${txType === 'credit' ? 'credited' : 'debited'}!`, 'success');
+    } catch (err) {
+      showToast('Failed to update bank balance', 'error');
     }
-
-    setInputAmounts((prev) => ({ ...prev, [bank.id]: '' }));
   };
 
   // Handle Confirm Delete Bank Account
@@ -163,6 +169,9 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
       if (activeLedgerBankId === deleteBankTarget.id) {
         setActiveLedgerBankId(null);
       }
+      showToast('Bank account removed successfully!', 'success');
+    } catch (err) {
+      showToast('Failed to delete bank account', 'error');
     } finally {
       setIsDeletingBank(false);
       setDeleteBankTarget(null);
@@ -216,17 +225,22 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
           ]
         : [];
 
-    await onAddAccount({
-      bankName: newBankName.trim().toUpperCase(),
-      balance: initBal,
-      status: 'ACTIVE',
-      transactions: initialTx,
-      updatedAt: new Date().toISOString().slice(0, 10)
-    });
+    try {
+      await onAddAccount({
+        bankName: newBankName.trim().toUpperCase(),
+        balance: initBal,
+        status: 'ACTIVE',
+        transactions: initialTx,
+        updatedAt: new Date().toISOString().slice(0, 10)
+      });
 
-    setNewBankName('');
-    setNewInitialBalance('');
-    setIsAddAccountModalOpen(false);
+      setNewBankName('');
+      setNewInitialBalance('');
+      setIsAddAccountModalOpen(false);
+      showToast('Bank account created successfully!', 'success');
+    } catch (err) {
+      showToast('Failed to create bank account', 'error');
+    }
   };
 
   // Active bank for ledger modal
@@ -467,16 +481,18 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                 {/* Balance Display */}
                 <div
                   style={{
+                    marginBottom: '16px',
                     background: 'var(--surface-container, #1e2126)',
                     border: '1px solid var(--border-stroke, #2c303a)',
                     borderRadius: '10px',
                     padding: '14px 16px',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'space-between'
+                    justifyContent: 'space-between',
+                    gap: '12px'
                   }}
                 >
-                  <div>
+                  <div style={{ minWidth: 0 }}>
                     <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>
                       CURRENT BALANCE
                     </span>
@@ -486,7 +502,8 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                         fontWeight: 800,
                         fontFamily: 'JetBrains Mono, monospace',
                         color: 'var(--primary)',
-                        marginTop: '2px'
+                        marginTop: '2px',
+                        lineHeight: 1.2
                       }}
                     >
                       {formatINR(bank.balance)}
@@ -494,7 +511,15 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                   </div>
 
                   {bank.updatedAt && (
-                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                    <span
+                      style={{
+                        fontSize: '11px',
+                        color: 'var(--text-secondary)',
+                        whiteSpace: 'nowrap',
+                        textAlign: 'right',
+                        flexShrink: 0
+                      }}
+                    >
                       {formatUpdatedAt(bank.updatedAt)}
                     </span>
                   )}

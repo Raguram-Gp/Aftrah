@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle2, AlertCircle, X } from 'lucide-react';
+export { showToast, type ToastType } from '../utils/toast';
 
 export interface ToastMessage {
   id: string;
