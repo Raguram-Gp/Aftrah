@@ -3,6 +3,7 @@ import type { BankAccount, BankTransaction } from '../types';
 import { BankLogo } from '../components/BankLogo';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { DateFilterBar } from '../components/DateFilterBar';
+import { formatToDDMMYYYY, formatToYYYYMMDD } from '../components/DateInput';
 import { showToast } from '../layout/ToastContainer';
 import {
   Landmark,
@@ -251,10 +252,12 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
     if (!activeLedgerBank) return [];
     let list = activeLedgerBank.transactions || [];
     if (ledgerFromDate) {
-      list = list.filter((t) => t.date >= ledgerFromDate);
+      const fromISO = formatToYYYYMMDD(ledgerFromDate);
+      list = list.filter((t) => formatToYYYYMMDD(t.date) >= fromISO);
     }
     if (ledgerToDate) {
-      list = list.filter((t) => t.date <= ledgerToDate);
+      const toISO = formatToYYYYMMDD(ledgerToDate);
+      list = list.filter((t) => formatToYYYYMMDD(t.date) <= toISO);
     }
     return list;
   }, [activeLedgerBank, ledgerFromDate, ledgerToDate]);
@@ -744,7 +747,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                             <td>
                               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                                 <Calendar size={12} color="var(--primary)" />
-                                <span>{tx.date}</span>
+                                <span>{formatToDDMMYYYY(tx.date)}</span>
                               </div>
                             </td>
                             <td>

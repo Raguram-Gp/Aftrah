@@ -3,6 +3,7 @@ import type { BrickProductionExpense } from '../types';
 import { BRICK_PRODUCTION_EXPENSE_OPTIONS } from '../types';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
+import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD } from '../components/DateInput';
 import {
   Flame,
   Plus,
@@ -47,7 +48,8 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
   const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
-  // Right Side "Add details" Form State (Matching handwritten sketch)
+  // Add Details Modal State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [addDate, setAddDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [addExpenseName, setAddExpenseName] = useState(BRICK_PRODUCTION_EXPENSE_OPTIONS[0]);
   const [addQuality, setAddQuality] = useState('');
@@ -78,13 +80,13 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
 
   // Validation
   const isAddValid =
-    addDate.trim().length > 0 &&
+    isValidDate(addDate) &&
     addExpenseName.trim().length > 0 &&
     (parseFloat(addQuality) || 0) > 0 &&
     (parseFloat(addRate) || 0) >= 0;
 
   const isEditValid =
-    editDate.trim().length > 0 &&
+    isValidDate(editDate) &&
     editExpenseName.trim().length > 0 &&
     (parseFloat(editQuality) || 0) > 0 &&
     (parseFloat(editRate) || 0) >= 0;
@@ -110,9 +112,10 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
       paymentMode: 'Cash'
     });
 
-    // Reset Form (keep date & first expense, reset numeric fields)
+    // Reset Form
     setAddQuality('');
     setAddRate('');
+    setIsAddModalOpen(false);
     setCurrentPage(1);
   };
 
@@ -271,7 +274,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
   };
 
   return (
-    <div className="afrah-app-wireframe-layout">
+    <div style={{ width: '100%', maxWidth: '100%' }}>
       {/* PRINT-ONLY HEADER */}
       <div className="print-only-statement-header">
         <div className="print-brand-row">
@@ -297,8 +300,8 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
         </div>
       </div>
 
-      {/* LEFT COLUMN: PRODUCTION EXPENSES TABLE (Matching sketch: S NO | DATE | EXPENSES | Quality | Rate | Total) */}
-      <section className="afrah-app-table-section">
+      {/* PRODUCTION EXPENSES TABLE (Matching sketch: S NO | DATE | EXPENSES | Quality | Rate | Total) */}
+      <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
         <div className="afrah-app-section-header no-print">
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -350,6 +353,16 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
               <Printer size={15} />
               <span>Print</span>
             </button>
+
+            <button
+              type="button"
+              onClick={() => setIsAddModalOpen(true)}
+              className="btn-theme-primary"
+              style={{ height: '36px', padding: '0 16px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+            >
+              <Plus size={15} strokeWidth={2.5} />
+              <span>Add Details</span>
+            </button>
           </div>
         </div>
 
@@ -400,7 +413,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
 
                       {/* DATE */}
                       <td style={{ whiteSpace: 'nowrap', color: 'var(--text-secondary)', fontWeight: 500 }}>
-                        {expense.date}
+                        {formatToDDMMYYYY(expense.date)}
                       </td>
 
                       {/* EXPENSES */}
@@ -553,134 +566,142 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
         )}
       </section>
 
-      {/* RIGHT COLUMN: "Add details" PANEL (Matching handwritten sketch: Date, Expenses [v], Quality, Rate) */}
-      <aside className="afrah-app-form-card">
-        {/* Header matching box: [ Add details ] */}
-        <div className="afrah-app-form-card-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Plus size={16} color="var(--primary)" />
-            <h2 className="afrah-app-form-card-title">Add details</h2>
+      {/* Add Details Modal */}
+      {isAddModalOpen && (
+        <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
+          <div
+            className="afrah-app-modal-container"
+            style={{ maxWidth: '460px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="afrah-app-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Plus size={17} color="var(--primary)" />
+                <h3 className="afrah-app-modal-title">Add Details</h3>
+              </div>
+              <button
+                onClick={() => setIsAddModalOpen(false)}
+                className="afrah-app-modal-close-btn"
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddSubmit}>
+              <div className="afrah-app-modal-body">
+                {/* 1. Date */}
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Date <span className="required-star">*</span>
+                  </label>
+                  <DateInput
+                    required
+                    value={addDate}
+                    onChange={setAddDate}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                {/* 2. Expenses Searchable Dropdown */}
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Expenses <span className="required-star">*</span>
+                  </label>
+                  <SearchableExpenseSelect
+                    value={addExpenseName}
+                    onChange={(val) => setAddExpenseName(val)}
+                    options={BRICK_PRODUCTION_EXPENSE_OPTIONS}
+                    placeholder="Search or select expense..."
+                    searchPlaceholder="Filter (Soil, Wood, Disel...)"
+                  />
+                </div>
+
+                {/* 3. Quality (Quantity / Qty) */}
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Quality / Quantity <span className="required-star">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0.01"
+                    required
+                    placeholder="Enter quality / quantity..."
+                    value={addQuality}
+                    onChange={(e) => setAddQuality(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                {/* 4. Rate */}
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Rate (₹) <span className="required-star">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0"
+                    required
+                    placeholder="Enter rate per unit..."
+                    value={addRate}
+                    onChange={(e) => setAddRate(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                {/* Live Computed Total Display */}
+                <div
+                  style={{
+                    padding: '12px 14px',
+                    borderRadius: '8px',
+                    background: 'var(--surface-container, #1e2126)',
+                    border: '1px solid var(--border-stroke, #2c303a)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    margin: '4px 0 6px 0'
+                  }}
+                >
+                  <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                    Total Amount:
+                  </span>
+                  <span style={{ fontSize: '17px', fontWeight: 800, color: '#f87171', fontFamily: 'Cinzel, serif' }}>
+                    {formatINR(calculatedAddTotal)}
+                  </span>
+                </div>
+
+                {/* Validation Notice */}
+                {!isAddValid && (
+                  <div className="afrah-app-validation-notice">
+                    * Date, Expenses, Quality and Rate are required to submit.
+                  </div>
+                )}
+              </div>
+
+              <div className="afrah-app-modal-footer">
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="afrah-app-back-btn"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!isAddValid}
+                  className="btn-theme-primary"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <Plus size={15} strokeWidth={2.5} />
+                  <span>Add Details</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-
-        <form onSubmit={handleAddSubmit} className="afrah-app-add-form">
-          {/* 1. Date */}
-          <div className="afrah-app-form-group">
-            <label className="afrah-app-label">
-              Date <span className="required-star">*</span>
-            </label>
-            <input
-              type="date"
-              required
-              value={addDate}
-              onChange={(e) => setAddDate(e.target.value)}
-              className="afrah-app-input"
-            />
-          </div>
-
-          {/* 2. Expenses Searchable Dropdown matching Photo 2: Soil, Wood, Msand Tust, Disel, Oil, Jcb - rent, Tractor - rent, Machine expense */}
-          <div className="afrah-app-form-group">
-            <label className="afrah-app-label">
-              Expenses <span className="required-star">*</span>
-            </label>
-            <SearchableExpenseSelect
-              value={addExpenseName}
-              onChange={(val) => setAddExpenseName(val)}
-              options={BRICK_PRODUCTION_EXPENSE_OPTIONS}
-              placeholder="Search or select expense..."
-              searchPlaceholder="Filter (Soil, Wood, Disel...)"
-            />
-          </div>
-
-          {/* 3. Quality (Quantity / Qty) */}
-          <div className="afrah-app-form-group">
-            <label className="afrah-app-label">
-              Quality / Quantity <span className="required-star">*</span>
-            </label>
-            <input
-              type="number"
-              step="any"
-              min="0.01"
-              required
-              placeholder="Enter quality / quantity..."
-              value={addQuality}
-              onChange={(e) => setAddQuality(e.target.value)}
-              className="afrah-app-input"
-            />
-          </div>
-
-          {/* 4. Rate */}
-          <div className="afrah-app-form-group">
-            <label className="afrah-app-label">
-              Rate (₹) <span className="required-star">*</span>
-            </label>
-            <input
-              type="number"
-              step="any"
-              min="0"
-              required
-              placeholder="Enter rate per unit..."
-              value={addRate}
-              onChange={(e) => setAddRate(e.target.value)}
-              className="afrah-app-input"
-            />
-          </div>
-
-          {/* Live Computed Total Display */}
-          <div
-            style={{
-              padding: '12px 14px',
-              borderRadius: '8px',
-              background: 'var(--surface-container, #1e2126)',
-              border: '1px solid var(--border-stroke, #2c303a)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              margin: '4px 0 6px 0'
-            }}
-          >
-            <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 600 }}>
-              Total Amount:
-            </span>
-            <span style={{ fontSize: '17px', fontWeight: 800, color: '#f87171', fontFamily: 'Cinzel, serif' }}>
-              {formatINR(calculatedAddTotal)}
-            </span>
-          </div>
-
-          {/* Validation Notice */}
-          {!isAddValid && (
-            <div className="afrah-app-validation-notice">
-              * Date, Expenses, Quality and Rate are required to submit.
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
-            <button
-              type="submit"
-              disabled={!isAddValid}
-              className="btn-theme-primary afrah-app-submit-btn"
-              style={{ flex: 1 }}
-            >
-              <Plus size={16} strokeWidth={2.5} />
-              <span>Add Expense</span>
-            </button>
-
-            {(addQuality || addRate) && (
-              <button
-                type="button"
-                onClick={handleClearAddForm}
-                className="afrah-app-back-btn"
-                style={{ height: '44px', padding: '0 14px', marginTop: '4px' }}
-                title="Clear Form"
-              >
-                <RotateCcw size={14} />
-                <span>Clear</span>
-              </button>
-            )}
-          </div>
-        </form>
-      </aside>
+      )}
 
       {/* EDIT MODAL */}
       {isEditModalOpen && (
@@ -707,11 +728,10 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                 <label className="afrah-app-label">
                   Date <span className="required-star">*</span>
                 </label>
-                <input
-                  type="date"
+                <DateInput
                   required
                   value={editDate}
-                  onChange={(e) => setEditDate(e.target.value)}
+                  onChange={setEditDate}
                   className="afrah-app-input"
                 />
               </div>

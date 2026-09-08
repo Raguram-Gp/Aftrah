@@ -77,7 +77,8 @@ export const AfrahAppPortal: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  // Add Client Form State (Right Panel)
+  // Add Client Form State (Modal)
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [addName, setAddName] = useState('');
   const [addPhone, setAddPhone] = useState('');
   const [addAddress, setAddAddress] = useState('');
@@ -300,8 +301,16 @@ export const AfrahAppPortal: React.FC = () => {
     setAddName('');
     setAddPhone('');
     setAddAddress('');
+    setIsAddModalOpen(false);
     setCurrentPage(1);
     showToast('Client added successfully!', 'success');
+  };
+
+  const handleOpenAddModal = () => {
+    setAddName('');
+    setAddPhone('');
+    setAddAddress('');
+    setIsAddModalOpen(true);
   };
 
   // Open Edit Client Modal
@@ -767,18 +776,17 @@ export const AfrahAppPortal: React.FC = () => {
               onDeleteMultipleExpenses={deleteMultipleExpenses}
             />
           ) : (
-            /* CLIENT LIST 2-COLUMN VIEW */
-            <div className="afrah-app-wireframe-layout">
-              {/* LEFT COLUMN: CLIENT NAME LIST */}
-              <section className="afrah-app-table-section">
-                <div className="afrah-app-section-header">
-                  <div>
-                    <h1 className="afrah-app-section-title">CLIENT NAME LIST</h1>
-                    <span className="afrah-app-section-subtitle">
-                      {filteredClients.length} {filteredClients.length === 1 ? 'record' : 'records'} · Click row to view details
-                    </span>
-                  </div>
+            /* CLIENT LIST FULL-PAGE VIEW */
+            <section className="afrah-app-table-section" style={{ width: '100%' }}>
+              <div className="afrah-app-section-header">
+                <div>
+                  <h1 className="afrah-app-section-title">CLIENT NAME LIST</h1>
+                  <span className="afrah-app-section-subtitle">
+                    {filteredClients.length} {filteredClients.length === 1 ? 'record' : 'records'} · Click row to view details
+                  </span>
+                </div>
 
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                   {/* Quick Search */}
                   <div className="afrah-app-search-wrapper">
                     <Search size={14} className="afrah-app-search-icon" />
@@ -790,215 +798,257 @@ export const AfrahAppPortal: React.FC = () => {
                       className="afrah-app-search-input"
                     />
                   </div>
-                </div>
 
-                {/* Table with NAME, PHONE, ADDRESS + Actions (Edit & Delete) */}
-                <div className="afrah-app-table-container">
-                  <table className="afrah-app-table">
-                    <thead>
-                      <tr>
-                        <th style={{ width: '48px', textAlign: 'center' }}>S.NO</th>
-                        <th>NAME</th>
-                        <th style={{ width: '155px' }}>PHONE</th>
-                        <th>ADDRESS</th>
-                        <th style={{ width: '75px', textAlign: 'center' }}>ACTIONS</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {paginatedClients.length === 0 ? (
-                        <tr>
-                          <td colSpan={5} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
-                            {searchQuery ? 'No matching clients found.' : 'No clients added yet. Use the form on the right to add one.'}
-                          </td>
-                        </tr>
-                      ) : (
-                        paginatedClients.map((client, index) => (
-                          <tr
-                            key={client.id}
-                            onClick={() => setSelectedClientId(client.id)}
-                            className="clickable-client-row"
-                          >
-                            <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
-                              #{startIndex + index + 1}
-                            </td>
-                            <td>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <div className="afrah-app-user-avatar">
-                                  {client.name.charAt(0).toUpperCase()}
-                                </div>
-                                <span style={{ color: 'var(--text-primary)', fontSize: '13.5px', fontWeight: 500 }}>
-                                  {client.name}
-                                </span>
-                              </div>
-                            </td>
-                            <td style={{ whiteSpace: 'nowrap' }}>
-                              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                                <Phone size={13} color="var(--primary)" />
-                                <span style={{ fontFamily: 'monospace', fontSize: '12px' }}>{client.phone}</span>
-                              </div>
-                            </td>
-                            <td>
-                              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)' }}>
-                                <MapPin size={13} color="var(--primary)" />
-                                <span style={{ fontSize: '12.5px' }}>{client.address}</span>
-                              </div>
-                            </td>
-                            <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                              <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                                <button
-                                  onClick={(e) => handleOpenEditModal(client, e)}
-                                  className="afrah-app-action-btn afrah-app-edit-btn"
-                                  title="Edit Client"
-                                  aria-label="Edit Client"
-                                >
-                                  <Pencil size={13} />
-                                </button>
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setDeleteClientTarget(client);
-                                  }}
-                                  className="afrah-app-action-btn afrah-app-delete-btn"
-                                  title="Delete Client"
-                                  aria-label="Delete Client"
-                                >
-                                  <Trash2 size={13} />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Pagination Controls */}
-                {filteredClients.length > 0 && (
-                  <div className="afrah-app-pagination-bar">
-                    <div className="afrah-app-pagination-left">
-                      <span className="afrah-app-pagination-info">
-                        Showing <strong>{startIndex + 1}</strong>–<strong>{endIndex}</strong> of <strong>{filteredClients.length}</strong>
-                      </span>
-
-                      <div className="afrah-app-rows-selector">
-                        <label className="afrah-app-rows-label">Rows per page:</label>
-                        <select
-                          value={itemsPerPage}
-                          onChange={(e) => {
-                            setItemsPerPage(Number(e.target.value));
-                            setCurrentPage(1);
-                          }}
-                          className="afrah-app-select-sm"
-                        >
-                          <option value={5}>5</option>
-                          <option value={10}>10</option>
-                          <option value={20}>20</option>
-                          <option value={50}>50</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="afrah-app-pagination-controls">
-                      <button
-                        onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                        disabled={currentPage === 1}
-                        className="afrah-app-page-nav-btn"
-                        title="Previous Page"
-                        aria-label="Previous Page"
-                      >
-                        <ChevronLeft size={16} />
-                      </button>
-
-                      <div className="afrah-app-page-numbers-wrap">
-                        {pageNumbers.map((p) => (
-                          <button
-                            key={p}
-                            onClick={() => setCurrentPage(p)}
-                            className={`afrah-app-page-num-btn ${currentPage === p ? 'active' : ''}`}
-                          >
-                            {p}
-                          </button>
-                        ))}
-                      </div>
-
-                      <button
-                        onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                        disabled={currentPage === totalPages}
-                        className="afrah-app-page-nav-btn"
-                        title="Next Page"
-                        aria-label="Next Page"
-                      >
-                        <ChevronRight size={16} />
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </section>
-
-              {/* RIGHT COLUMN: ADD DETAILS CARD */}
-              <aside className="afrah-app-form-card">
-                <div className="afrah-app-form-card-header">
-                  <h2 className="afrah-app-form-card-title">Add Details</h2>
-                </div>
-
-                <form onSubmit={handleAddClientSubmit} className="afrah-app-add-form">
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Name *</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Ramesh Patel"
-                      value={addName}
-                      onChange={(e) => setAddName(e.target.value)}
-                      className="afrah-app-input"
-                    />
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Phone *</label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="+91 98765 43210"
-                      value={addPhone}
-                      onChange={(e) => setAddPhone(e.target.value)}
-                      className="afrah-app-input"
-                    />
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Address *</label>
-                    <textarea
-                      rows={3}
-                      required
-                      placeholder="Street, City, Postal Code..."
-                      value={addAddress}
-                      onChange={(e) => setAddAddress(e.target.value)}
-                      className="afrah-app-input afrah-app-textarea"
-                    />
-                  </div>
-
-                  {!isAddClientValid && (
-                    <div className="afrah-app-validation-notice">
-                      * All 3 fields are required to enable submission.
-                    </div>
-                  )}
-
+                  {/* Add Details Modal Trigger */}
                   <button
-                    type="submit"
-                    disabled={!isAddClientValid}
-                    className="btn-theme-primary afrah-app-submit-btn"
+                    type="button"
+                    onClick={handleOpenAddModal}
+                    className="btn-theme-primary"
+                    style={{ height: '36px', padding: '0 16px', fontSize: '13px' }}
                   >
-                    <UserPlus size={16} strokeWidth={2.5} />
+                    <UserPlus size={15} strokeWidth={2.5} />
                     <span>Add Details</span>
                   </button>
-                </form>
-              </aside>
-            </div>
+                </div>
+              </div>
+
+              {/* Table with NAME, PHONE, ADDRESS + Actions (Edit & Delete) */}
+              <div className="afrah-app-table-container">
+                <table className="afrah-app-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '56px', textAlign: 'center' }}>S.NO</th>
+                      <th style={{ width: '260px' }}>NAME</th>
+                      <th style={{ width: '180px' }}>PHONE</th>
+                      <th>ADDRESS</th>
+                      <th style={{ width: '80px', textAlign: 'center' }}>ACTIONS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedClients.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
+                          {searchQuery ? 'No matching clients found.' : 'No clients added yet. Click "Add Details" above to add one.'}
+                        </td>
+                      </tr>
+                    ) : (
+                      paginatedClients.map((client, index) => (
+                        <tr
+                          key={client.id}
+                          onClick={() => setSelectedClientId(client.id)}
+                          className="clickable-client-row"
+                        >
+                          <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
+                            #{startIndex + index + 1}
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <div className="afrah-app-user-avatar">
+                                {client.name.charAt(0).toUpperCase()}
+                              </div>
+                              <span style={{ color: 'var(--text-primary)', fontSize: '13.5px', fontWeight: 500 }}>
+                                {client.name}
+                              </span>
+                            </div>
+                          </td>
+                          <td style={{ whiteSpace: 'nowrap' }}>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                              <Phone size={13} color="var(--primary)" />
+                              <span style={{ fontFamily: 'monospace', fontSize: '12px' }}>{client.phone}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)' }}>
+                              <MapPin size={13} color="var(--primary)" />
+                              <span style={{ fontSize: '12.5px' }}>{client.address}</span>
+                            </div>
+                          </td>
+                          <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                              <button
+                                onClick={(e) => handleOpenEditModal(client, e)}
+                                className="afrah-app-action-btn afrah-app-edit-btn"
+                                title="Edit Client"
+                                aria-label="Edit Client"
+                              >
+                                <Pencil size={13} />
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDeleteClientTarget(client);
+                                }}
+                                className="afrah-app-action-btn afrah-app-delete-btn"
+                                title="Delete Client"
+                                aria-label="Delete Client"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Pagination Controls */}
+              {filteredClients.length > 0 && (
+                <div className="afrah-app-pagination-bar">
+                  <div className="afrah-app-pagination-left">
+                    <span className="afrah-app-pagination-info">
+                      Showing <strong>{startIndex + 1}</strong>–<strong>{endIndex}</strong> of <strong>{filteredClients.length}</strong>
+                    </span>
+
+                    <div className="afrah-app-rows-selector">
+                      <label className="afrah-app-rows-label">Rows per page:</label>
+                      <select
+                        value={itemsPerPage}
+                        onChange={(e) => {
+                          setItemsPerPage(Number(e.target.value));
+                          setCurrentPage(1);
+                        }}
+                        className="afrah-app-select-sm"
+                      >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="afrah-app-pagination-controls">
+                    <button
+                      onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                      disabled={currentPage === 1}
+                      className="afrah-app-page-nav-btn"
+                      title="Previous Page"
+                      aria-label="Previous Page"
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+
+                    <div className="afrah-app-page-numbers-wrap">
+                      {pageNumbers.map((p) => (
+                        <button
+                          key={p}
+                          onClick={() => setCurrentPage(p)}
+                          className={`afrah-app-page-num-btn ${currentPage === p ? 'active' : ''}`}
+                        >
+                          {p}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                      disabled={currentPage === totalPages}
+                      className="afrah-app-page-nav-btn"
+                      title="Next Page"
+                      aria-label="Next Page"
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </section>
           )}
         </main>
       </div>
+
+      {/* Add Client Modal */}
+      {isAddModalOpen && (
+        <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
+          <div
+            className="afrah-app-modal-container"
+            style={{ maxWidth: '460px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="afrah-app-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <UserPlus size={17} color="var(--primary)" />
+                <h3 className="afrah-app-modal-title">Add Details</h3>
+              </div>
+              <button
+                onClick={() => setIsAddModalOpen(false)}
+                className="afrah-app-modal-close-btn"
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddClientSubmit}>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Ramesh Patel"
+                    value={addName}
+                    onChange={(e) => setAddName(e.target.value)}
+                    className="afrah-app-input"
+                    autoFocus
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Phone *</label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="+91 98765 43210"
+                    value={addPhone}
+                    onChange={(e) => setAddPhone(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Address *</label>
+                  <textarea
+                    rows={3}
+                    required
+                    placeholder="Street, City, Postal Code..."
+                    value={addAddress}
+                    onChange={(e) => setAddAddress(e.target.value)}
+                    className="afrah-app-input afrah-app-textarea"
+                  />
+                </div>
+
+                {!isAddClientValid && (
+                  <div className="afrah-app-validation-notice">
+                    * All 3 fields are required to enable submission.
+                  </div>
+                )}
+              </div>
+
+              <div className="afrah-app-modal-footer">
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="afrah-app-back-btn"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!isAddClientValid}
+                  className="btn-theme-primary"
+                  style={{ minWidth: '120px', height: '40px', fontSize: '13px' }}
+                >
+                  <UserPlus size={16} strokeWidth={2.5} />
+                  <span>Add Details</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Edit Client Modal */}
       {isEditModalOpen && (

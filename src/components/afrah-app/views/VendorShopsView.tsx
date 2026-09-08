@@ -38,7 +38,8 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  // Add Form State (Right Column Card)
+  // Add Modal State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [addName, setAddName] = useState('');
   const [addPhone, setAddPhone] = useState('');
   const [addAddress, setAddAddress] = useState('');
@@ -115,6 +116,7 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
     setAddName('');
     setAddPhone('');
     setAddAddress('');
+    setIsAddModalOpen(false);
   };
 
   // Open Edit Modal
@@ -175,9 +177,9 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
         </div>
       </div>
 
-      <div className="afrah-app-wireframe-layout">
-        {/* LEFT COLUMN: VENDOR SHOPS LIST */}
-        <section className="afrah-app-table-section">
+      <div style={{ width: '100%', maxWidth: '100%' }}>
+        {/* VENDOR SHOPS LIST */}
+        <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
           <div className="afrah-app-section-header">
             <div>
               <h1 className="afrah-app-section-title">{vendor.type.toUpperCase()} · SHOPS LIST</h1>
@@ -186,18 +188,30 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
               </span>
             </div>
 
-            <div className="afrah-app-search-wrapper">
-              <Search size={14} className="afrah-app-search-icon" />
-              <input
-                type="text"
-                placeholder="Search shop name, phone, address..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="afrah-app-search-input"
-              />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div className="afrah-app-search-wrapper">
+                <Search size={14} className="afrah-app-search-icon" />
+                <input
+                  type="text"
+                  placeholder="Search shop name, phone, address..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="afrah-app-search-input"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsAddModalOpen(true)}
+                className="btn-theme-primary"
+                style={{ height: '36px', padding: '0 16px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              >
+                <Plus size={15} strokeWidth={2.5} />
+                <span>Add Details</span>
+              </button>
             </div>
           </div>
 
@@ -218,7 +232,7 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
                 {paginatedShops.length === 0 ? (
                   <tr>
                     <td colSpan={6} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
-                      {searchQuery ? 'No matching shops found.' : `No shops registered under ${vendor.type} yet. Add one on the right.`}
+                      {searchQuery ? 'No matching shops found.' : `No shops registered under ${vendor.type} yet. Click "+ Add Details" to register one.`}
                     </td>
                   </tr>
                 ) : (
@@ -356,65 +370,94 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
           )}
         </section>
 
-        {/* RIGHT COLUMN: ADD DETAILS CARD (Matches handwritten sketch) */}
-        <aside className="afrah-app-form-card">
-          <div className="afrah-app-form-card-header">
-            <h2 className="afrah-app-form-card-title">Add Details</h2>
-          </div>
-
-          <form onSubmit={handleAddSubmit} className="afrah-app-add-form">
-            <div className="afrah-app-form-group">
-              <label className="afrah-app-label">Name (Shop / Supplier) *</label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. Ramesh Bricks"
-                value={addName}
-                onChange={(e) => setAddName(e.target.value)}
-                className="afrah-app-input"
-              />
-            </div>
-
-            <div className="afrah-app-form-group">
-              <label className="afrah-app-label">Phone *</label>
-              <input
-                type="tel"
-                required
-                placeholder="+91 98451 22334"
-                value={addPhone}
-                onChange={(e) => setAddPhone(e.target.value)}
-                className="afrah-app-input"
-              />
-            </div>
-
-            <div className="afrah-app-form-group">
-              <label className="afrah-app-label">Address *</label>
-              <textarea
-                rows={3}
-                required
-                placeholder="Yard location, Industrial zone, City..."
-                value={addAddress}
-                onChange={(e) => setAddAddress(e.target.value)}
-                className="afrah-app-input afrah-app-textarea"
-              />
-            </div>
-
-            {!isAddFormValid && (
-              <div className="afrah-app-validation-notice">
-                * All 3 fields are required to register this supplier.
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={!isAddFormValid}
-              className="btn-theme-primary afrah-app-submit-btn"
+        {/* Add Details Modal */}
+        {isAddModalOpen && (
+          <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
+            <div
+              className="afrah-app-modal-container"
+              style={{ maxWidth: '460px' }}
+              onClick={(e) => e.stopPropagation()}
             >
-              <Plus size={16} strokeWidth={2.5} />
-              <span>Add Details</span>
-            </button>
-          </form>
-        </aside>
+              <div className="afrah-app-modal-header">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Plus size={17} color="var(--primary)" />
+                  <h3 className="afrah-app-modal-title">Add Details</h3>
+                </div>
+                <button
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="afrah-app-modal-close-btn"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <form onSubmit={handleAddSubmit}>
+                <div className="afrah-app-modal-body">
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Name (Shop / Supplier) *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Ramesh Bricks"
+                      value={addName}
+                      onChange={(e) => setAddName(e.target.value)}
+                      className="afrah-app-input"
+                    />
+                  </div>
+
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Phone *</label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="+91 98451 22334"
+                      value={addPhone}
+                      onChange={(e) => setAddPhone(e.target.value)}
+                      className="afrah-app-input"
+                    />
+                  </div>
+
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Address *</label>
+                    <textarea
+                      rows={3}
+                      required
+                      placeholder="Yard location, Industrial zone, City..."
+                      value={addAddress}
+                      onChange={(e) => setAddAddress(e.target.value)}
+                      className="afrah-app-input afrah-app-textarea"
+                    />
+                  </div>
+
+                  {!isAddFormValid && (
+                    <div className="afrah-app-validation-notice">
+                      * All 3 fields are required to register this supplier.
+                    </div>
+                  )}
+                </div>
+
+                <div className="afrah-app-modal-footer">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddModalOpen(false)}
+                    className="afrah-app-back-btn"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!isAddFormValid}
+                    className="btn-theme-primary"
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <Plus size={15} strokeWidth={2.5} />
+                    <span>Add Details</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
         {/* Edit Shop Modal */}
         {isEditModalOpen && (

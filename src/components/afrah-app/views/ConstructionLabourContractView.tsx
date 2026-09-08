@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import type { LabourContract } from '../types';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
+import { DateInput, isValidDate, formatToDDMMYYYY } from '../components/DateInput';
 import {
   HardHat,
   Search,
@@ -40,7 +41,8 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  // Add Form State (Right Column Card)
+  // Add Modal State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const todayStr = new Date().toISOString().split('T')[0];
   const [addDate, setAddDate] = useState(todayStr);
   const [addLabourName, setAddLabourName] = useState('');
@@ -75,14 +77,14 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
 
   // Form Validations
   const isAddFormValid =
-    addDate.trim().length > 0 &&
+    isValidDate(addDate) &&
     addLabourName.trim().length > 0 &&
     addSiteName.trim().length > 0 &&
     parseFloat(addLabourCharge) > 0 &&
     addPhone.trim().length > 0;
 
   const isEditFormValid =
-    editDate.trim().length > 0 &&
+    isValidDate(editDate) &&
     editLabourName.trim().length > 0 &&
     editSiteName.trim().length > 0 &&
     parseFloat(editLabourCharge) > 0 &&
@@ -147,6 +149,7 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
     setAddSiteName('');
     setAddLabourCharge('50000');
     setAddPhone('');
+    setIsAddModalOpen(false);
     setCurrentPage(1);
   };
 
@@ -196,9 +199,9 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
   };
 
   return (
-    <div className="afrah-app-wireframe-layout">
-      {/* LEFT COLUMN: LABOUR CONTRACTS LIST */}
-      <section className="afrah-app-table-section">
+    <div style={{ width: '100%', maxWidth: '100%' }}>
+      {/* LABOUR CONTRACTS LIST */}
+      <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
         <div className="afrah-app-section-header">
           <div>
             <h1 className="afrah-app-section-title">CONSTRUCTION LABOUR CONTRACTS</h1>
@@ -221,6 +224,16 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
                 className="afrah-app-search-input"
               />
             </div>
+
+            <button
+              type="button"
+              onClick={() => setIsAddModalOpen(true)}
+              className="btn-theme-primary"
+              style={{ height: '36px', padding: '0 16px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+            >
+              <Plus size={15} strokeWidth={2.5} />
+              <span>Add Details</span>
+            </button>
           </div>
         </div>
 
@@ -243,7 +256,7 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
               {paginatedContracts.length === 0 ? (
                 <tr>
                   <td colSpan={8} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
-                    {searchQuery ? 'No matching construction labour contracts found.' : 'No construction labour contracts added yet. Use the form on the right to add one.'}
+                    {searchQuery ? 'No matching construction labour contracts found.' : 'No construction labour contracts added yet. Click "+ Add Details" to create one.'}
                   </td>
                 </tr>
               ) : (
@@ -262,7 +275,7 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
                       <td style={{ whiteSpace: 'nowrap', fontSize: '12px', color: 'var(--text-secondary)' }}>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
                           <Calendar size={12} color="var(--primary)" />
-                          <span>{contract.date}</span>
+                          <span>{formatToDDMMYYYY(contract.date)}</span>
                         </div>
                       </td>
                       <td>
@@ -406,91 +419,117 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
         )}
       </section>
 
-      {/* RIGHT COLUMN: ADD DETAILS CARD (Matching handwritten sketch) */}
-      <aside className="afrah-app-form-card">
-        <div className="afrah-app-form-card-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <HardHat size={18} color="#f59e0b" />
-            <h2 className="afrah-app-form-card-title">Add Contract</h2>
+      {/* Add Details Modal */}
+      {isAddModalOpen && (
+        <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
+          <div
+            className="afrah-app-modal-container"
+            style={{ maxWidth: '480px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="afrah-app-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Plus size={17} color="var(--primary)" />
+                <h3 className="afrah-app-modal-title">Add Details</h3>
+              </div>
+              <button
+                onClick={() => setIsAddModalOpen(false)}
+                className="afrah-app-modal-close-btn"
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddSubmit}>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Date *</label>
+                  <DateInput
+                    required
+                    value={addDate}
+                    onChange={setAddDate}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Contractor / Labour Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Arumugam (Bar Bending)"
+                    value={addLabourName}
+                    onChange={(e) => setAddLabourName(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Construction Site Name *</label>
+                  <SearchableExpenseSelect
+                    options={siteOptions}
+                    value={addSiteName}
+                    onChange={(val) => setAddSiteName(val)}
+                    placeholder="Select or type site location..."
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Total Labour Charge (₹) *</label>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    step="100"
+                    placeholder="e.g. 50000"
+                    value={addLabourCharge}
+                    onChange={(e) => setAddLabourCharge(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Phone *</label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="+91 94432 18920"
+                    value={addPhone}
+                    onChange={(e) => setAddPhone(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                {!isAddFormValid && (
+                  <div className="afrah-app-validation-notice">
+                    * All fields are required to register a construction contract.
+                  </div>
+                )}
+              </div>
+
+              <div className="afrah-app-modal-footer">
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="afrah-app-back-btn"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!isAddFormValid}
+                  className="btn-theme-primary"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <Plus size={15} strokeWidth={2.5} />
+                  <span>Add Details</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-
-        <form onSubmit={handleAddSubmit} className="afrah-app-add-form">
-          <div className="afrah-app-form-group">
-            <label className="afrah-app-label">Date *</label>
-            <input
-              type="date"
-              required
-              value={addDate}
-              onChange={(e) => setAddDate(e.target.value)}
-              className="afrah-app-input"
-            />
-          </div>
-
-          <div className="afrah-app-form-group">
-            <label className="afrah-app-label">Contractor / Labour Name *</label>
-            <input
-              type="text"
-              required
-              placeholder="e.g. Arumugam (Bar Bending)"
-              value={addLabourName}
-              onChange={(e) => setAddLabourName(e.target.value)}
-              className="afrah-app-input"
-            />
-          </div>
-
-          <div className="afrah-app-form-group">
-            <label className="afrah-app-label">Construction Site Name *</label>
-            <SearchableExpenseSelect
-              options={siteOptions}
-              value={addSiteName}
-              onChange={(val) => setAddSiteName(val)}
-              placeholder="Select or type site location..."
-            />
-          </div>
-
-          <div className="afrah-app-form-group">
-            <label className="afrah-app-label">Total Labour Charge (₹) *</label>
-            <input
-              type="number"
-              required
-              min="0"
-              step="100"
-              placeholder="e.g. 50000"
-              value={addLabourCharge}
-              onChange={(e) => setAddLabourCharge(e.target.value)}
-              className="afrah-app-input"
-            />
-          </div>
-
-          <div className="afrah-app-form-group">
-            <label className="afrah-app-label">Phone *</label>
-            <input
-              type="tel"
-              required
-              placeholder="+91 94432 18920"
-              value={addPhone}
-              onChange={(e) => setAddPhone(e.target.value)}
-              className="afrah-app-input"
-            />
-          </div>
-
-          {!isAddFormValid && (
-            <div className="afrah-app-validation-notice">
-              * All fields are required to register a construction contract.
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={!isAddFormValid}
-            className="btn-theme-primary afrah-app-submit-btn"
-          >
-            <Plus size={16} strokeWidth={2.5} />
-            <span>Add Contract</span>
-          </button>
-        </form>
-      </aside>
+      )}
 
       {/* EDIT CONTRACT MODAL */}
       {isEditModalOpen && (
@@ -518,11 +557,10 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
               <div className="afrah-app-modal-body">
                 <div className="afrah-app-form-group">
                   <label className="afrah-app-label">Date *</label>
-                  <input
-                    type="date"
+                  <DateInput
                     required
                     value={editDate}
-                    onChange={(e) => setEditDate(e.target.value)}
+                    onChange={setEditDate}
                     className="afrah-app-input"
                   />
                 </div>

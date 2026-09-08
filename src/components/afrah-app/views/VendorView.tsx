@@ -33,7 +33,8 @@ export const VendorView: React.FC<VendorViewProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  // Add Form State (Right Column Card)
+  // Add Form Modal State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [addType, setAddType] = useState('');
 
   // Edit Modal State
@@ -85,6 +86,7 @@ export const VendorView: React.FC<VendorViewProps> = ({
     });
 
     setAddType('');
+    setIsAddModalOpen(false);
   };
 
   // Open Edit Modal
@@ -125,9 +127,9 @@ export const VendorView: React.FC<VendorViewProps> = ({
   };
 
   return (
-    <div className="afrah-app-wireframe-layout">
-      {/* LEFT COLUMN: VENDOR CATEGORIES LIST */}
-      <section className="afrah-app-table-section">
+    <div style={{ width: '100%', maxWidth: '100%' }}>
+      {/* VENDOR CATEGORIES LIST (Full Width) */}
+      <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
         <div className="afrah-app-section-header">
           <div>
             <h1 className="afrah-app-section-title">Vendor Categories</h1>
@@ -136,18 +138,30 @@ export const VendorView: React.FC<VendorViewProps> = ({
             </span>
           </div>
 
-          <div className="afrah-app-search-wrapper">
-            <Search size={14} className="afrah-app-search-icon" />
-            <input
-              type="text"
-              placeholder="Search vendor category..."
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="afrah-app-search-input"
-            />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div className="afrah-app-search-wrapper" style={{ margin: 0 }}>
+              <Search size={14} className="afrah-app-search-icon" />
+              <input
+                type="text"
+                placeholder="Search vendor category..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="afrah-app-search-input"
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsAddModalOpen(true)}
+              className="btn-theme-primary"
+              style={{ height: '36px', padding: '0 16px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+            >
+              <Plus size={15} strokeWidth={2.5} />
+              <span>Add Details</span>
+            </button>
           </div>
         </div>
 
@@ -287,40 +301,65 @@ export const VendorView: React.FC<VendorViewProps> = ({
         )}
       </section>
 
-      {/* RIGHT COLUMN: ADD DETAILS CARD */}
-      <aside className="afrah-app-form-card">
-        <div className="afrah-app-form-card-header">
-          <h2 className="afrah-app-form-card-title">Add Details</h2>
-        </div>
-
-        <form onSubmit={handleAddSubmit} className="afrah-app-add-form">
-          <div className="afrah-app-form-group">
-            <label className="afrah-app-label">Type (Vendor / Material Category) *</label>
-            <SearchableExpenseSelect
-              value={addType}
-              onChange={(val) => setAddType(val)}
-              options={PREDEFINED_VENDOR_TYPES}
-              placeholder="Select or enter vendor trade..."
-              searchPlaceholder="Filter or type custom trade..."
-            />
-          </div>
-
-          {!isAddFormValid && (
-            <div className="afrah-app-validation-notice">
-              * Enter or select a trade type to enable submission.
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={!isAddFormValid}
-            className="btn-theme-primary afrah-app-submit-btn"
+      {/* Add Details Modal */}
+      {isAddModalOpen && (
+        <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
+          <div
+            className="afrah-app-modal-container"
+            style={{ maxWidth: '460px' }}
+            onClick={(e) => e.stopPropagation()}
           >
-            <Plus size={16} strokeWidth={2.5} />
-            <span>Add Details</span>
-          </button>
-        </form>
-      </aside>
+            <div className="afrah-app-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Plus size={17} color="var(--primary)" />
+                <h3 className="afrah-app-modal-title">Add Details</h3>
+              </div>
+              <button onClick={() => setIsAddModalOpen(false)} className="afrah-app-modal-close-btn">
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddSubmit}>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Type (Vendor / Material Category) *</label>
+                  <SearchableExpenseSelect
+                    value={addType}
+                    onChange={(val) => setAddType(val)}
+                    options={PREDEFINED_VENDOR_TYPES}
+                    placeholder="Select or enter vendor trade..."
+                    searchPlaceholder="Filter or type custom trade..."
+                  />
+                </div>
+
+                {!isAddFormValid && (
+                  <div className="afrah-app-validation-notice" style={{ marginTop: '6px' }}>
+                    * Enter or select a trade type to enable submission.
+                  </div>
+                )}
+              </div>
+
+              <div className="afrah-app-modal-footer">
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="afrah-app-modal-cancel-btn"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!isAddFormValid}
+                  className="btn-theme-primary afrah-app-submit-btn"
+                >
+                  <Plus size={15} strokeWidth={2.5} />
+                  <span>Add Details</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Edit Vendor Modal */}
       {isEditModalOpen && (

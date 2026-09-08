@@ -3,6 +3,7 @@ import type { BrickCustomer, BrickTransaction } from '../types';
 import { PREDEFINED_BRICK_TYPES } from '../types';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { DateFilterBar } from '../components/DateFilterBar';
+import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD } from '../components/DateInput';
 import {
   ArrowLeft,
   Phone,
@@ -102,14 +103,14 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
 
   // Validations
   const isAddValid =
-    txDate.trim().length > 0 &&
+    isValidDate(txDate) &&
     (txBrickType !== 'Custom / Other' || customBrickType.trim().length > 0) &&
     parseFloat(txQuantity) > 0 &&
     parseFloat(txRate) > 0 &&
     txPaid !== '';
 
   const isEditValid =
-    editTxDate.trim().length > 0 &&
+    isValidDate(editTxDate) &&
     (editTxBrickType !== 'Custom / Other' || editCustomBrickType.trim().length > 0) &&
     parseFloat(editTxQuantity) > 0 &&
     parseFloat(editTxRate) > 0 &&
@@ -126,10 +127,12 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
 
     // Date range filter
     if (fromDate) {
-      list = list.filter((tx) => tx.date >= fromDate);
+      const fromISO = formatToYYYYMMDD(fromDate);
+      list = list.filter((tx) => formatToYYYYMMDD(tx.date) >= fromISO);
     }
     if (toDate) {
-      list = list.filter((tx) => tx.date <= toDate);
+      const toISO = formatToYYYYMMDD(toDate);
+      list = list.filter((tx) => formatToYYYYMMDD(tx.date) <= toISO);
     }
 
     // Search query filter
@@ -141,6 +144,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
           (tx.siteLocation && tx.siteLocation.toLowerCase().includes(q)) ||
           (tx.vehicleNumber && tx.vehicleNumber.toLowerCase().includes(q)) ||
           (tx.date && tx.date.includes(q)) ||
+          (tx.date && formatToDDMMYYYY(tx.date).includes(q)) ||
           (tx.notes && tx.notes.toLowerCase().includes(q)) ||
           String(tx.quantity).includes(q) ||
           String(tx.totalAmount).includes(q) ||
@@ -595,7 +599,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                       <td style={{ whiteSpace: 'nowrap' }}>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
                           <Calendar size={13} color="var(--primary)" />
-                          <span style={{ fontFamily: 'monospace', fontSize: '12px' }}>{tx.date}</span>
+                          <span style={{ fontFamily: 'monospace', fontSize: '12px' }}>{formatToDDMMYYYY(tx.date)}</span>
                         </div>
                       </td>
                       <td>
@@ -780,11 +784,10 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Date *</label>
-                    <input
-                      type="date"
+                    <DateInput
                       required
                       value={txDate}
-                      onChange={(e) => setTxDate(e.target.value)}
+                      onChange={setTxDate}
                       className="afrah-app-input"
                     />
                   </div>
@@ -992,11 +995,10 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Date *</label>
-                    <input
-                      type="date"
+                    <DateInput
                       required
                       value={editTxDate}
-                      onChange={(e) => setEditTxDate(e.target.value)}
+                      onChange={setEditTxDate}
                       className="afrah-app-input"
                     />
                   </div>

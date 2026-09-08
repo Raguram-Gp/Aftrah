@@ -3,6 +3,7 @@ import type { Vendor, VendorShop, ShopTransaction } from '../types';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { DateFilterBar } from '../components/DateFilterBar';
+import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD } from '../components/DateInput';
 import {
   ArrowLeft,
   Phone,
@@ -102,35 +103,37 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
 
   // Validations
   const isPurchaseValid =
-    txDate.trim().length > 0 &&
+    isValidDate(txDate) &&
     txItemType.trim().length > 0 &&
     parseFloat(txQuantity) > 0 &&
     parseFloat(txRate) > 0 &&
     txReceived !== '';
 
   const isSettlementValid =
-    txDate.trim().length > 0 &&
+    isValidDate(txDate) &&
     parseFloat(settlementAmount) > 0;
 
   const isAddValid = modalMode === 'purchase' ? isPurchaseValid : isSettlementValid;
 
   const isEditValid =
     editModalMode === 'purchase'
-      ? editTxDate.trim().length > 0 &&
+      ? isValidDate(editTxDate) &&
         editTxItemType.trim().length > 0 &&
         parseFloat(editTxQuantity) > 0 &&
         parseFloat(editTxRate) > 0 &&
         editTxReceived !== ''
-      : editTxDate.trim().length > 0 && parseFloat(editTxReceived) > 0;
+      : isValidDate(editTxDate) && parseFloat(editTxReceived) > 0;
 
   // Filter transactions by search query AND date range
   const filteredTransactions = useMemo(() => {
     let list = transactions;
     if (fromDate) {
-      list = list.filter((tx) => tx.date >= fromDate);
+      const fromISO = formatToYYYYMMDD(fromDate);
+      list = list.filter((tx) => formatToYYYYMMDD(tx.date) >= fromISO);
     }
     if (toDate) {
-      list = list.filter((tx) => tx.date <= toDate);
+      const toISO = formatToYYYYMMDD(toDate);
+      list = list.filter((tx) => formatToYYYYMMDD(tx.date) <= toISO);
     }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
@@ -139,6 +142,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
           tx.itemType.toLowerCase().includes(q) ||
           (tx.clientName && tx.clientName.toLowerCase().includes(q)) ||
           tx.date.includes(q) ||
+          formatToDDMMYYYY(tx.date).includes(q) ||
           String(tx.quantity).includes(q) ||
           String(tx.rate).includes(q) ||
           String(tx.totalAmount).includes(q) ||
@@ -680,7 +684,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                       <td>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                           <Calendar size={12} color="var(--primary)" />
-                          <span>{tx.date}</span>
+                          <span>{formatToDDMMYYYY(tx.date)}</span>
                         </div>
                       </td>
                       <td>
@@ -953,11 +957,10 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                       <div className="afrah-app-form-group">
                         <label className="afrah-app-label">Date *</label>
-                        <input
-                          type="date"
+                        <DateInput
                           required
                           value={txDate}
-                          onChange={(e) => setTxDate(e.target.value)}
+                          onChange={setTxDate}
                           className="afrah-app-input"
                         />
                       </div>
@@ -1006,11 +1009,10 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                       <div className="afrah-app-form-group">
                         <label className="afrah-app-label">Date *</label>
-                        <input
-                          type="date"
+                        <DateInput
                           required
                           value={txDate}
-                          onChange={(e) => setTxDate(e.target.value)}
+                          onChange={setTxDate}
                           className="afrah-app-input"
                         />
                       </div>
@@ -1153,11 +1155,10 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                       <div className="afrah-app-form-group">
                         <label className="afrah-app-label">Date *</label>
-                        <input
-                          type="date"
+                        <DateInput
                           required
                           value={editTxDate}
-                          onChange={(e) => setEditTxDate(e.target.value)}
+                          onChange={setEditTxDate}
                           className="afrah-app-input"
                         />
                       </div>
@@ -1203,11 +1204,10 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                       <div className="afrah-app-form-group">
                         <label className="afrah-app-label">Date *</label>
-                        <input
-                          type="date"
+                        <DateInput
                           required
                           value={editTxDate}
-                          onChange={(e) => setEditTxDate(e.target.value)}
+                          onChange={setEditTxDate}
                           className="afrah-app-input"
                         />
                       </div>

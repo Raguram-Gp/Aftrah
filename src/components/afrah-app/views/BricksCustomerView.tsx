@@ -17,7 +17,8 @@ import {
   Wallet,
   IndianRupee,
   RotateCcw,
-  Printer
+  Printer,
+  Plus
 } from 'lucide-react';
 
 interface BricksCustomerViewProps {
@@ -46,7 +47,8 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
   const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
-  // Add Customer Form State (Right Panel)
+  // Add Customer Modal State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [addName, setAddName] = useState('');
   const [addPhone, setAddPhone] = useState('');
   const [addAddress, setAddAddress] = useState('');
@@ -92,6 +94,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
     setAddName('');
     setAddPhone('');
     setAddAddress('');
+    setIsAddModalOpen(false);
     setCurrentPage(1);
   };
 
@@ -227,7 +230,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
   };
 
   return (
-    <div className="afrah-app-wireframe-layout">
+    <div style={{ width: '100%', maxWidth: '100%' }}>
       {/* PRINT-ONLY HEADER */}
       <div className="print-only-statement-header">
         <div className="print-brand-row">
@@ -253,8 +256,8 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
         </div>
       </div>
 
-      {/* LEFT COLUMN: VIEW BRICKS CUSTOMER TABLE */}
-      <section className="afrah-app-table-section">
+      {/* VIEW BRICKS CUSTOMER TABLE */}
+      <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
         <div className="afrah-app-section-header no-print">
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -281,7 +284,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
             </span>
           </div>
 
-          {/* Quick Search & Print / Bulk Delete Actions */}
+          {/* Quick Search & Print / Add Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
             <div className="afrah-app-search-wrapper">
               <Search size={14} className="afrah-app-search-icon" />
@@ -304,6 +307,16 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
             >
               <Printer size={15} />
               <span>Print</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsAddModalOpen(true)}
+              className="btn-theme-primary"
+              style={{ height: '36px', padding: '0 16px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+            >
+              <Plus size={15} strokeWidth={2.5} />
+              <span>Add Details</span>
             </button>
           </div>
         </div>
@@ -542,84 +555,95 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
         )}
       </section>
 
-      {/* RIGHT COLUMN: ADD BRICKS CUSTOMER CARD */}
-      <aside className="afrah-app-form-card">
-        <div className="afrah-app-form-card-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <BrickWall size={17} color="var(--primary)" />
-            <h2 className="afrah-app-form-card-title">Add Bricks Customer</h2>
+      {/* Add Details Modal */}
+      {isAddModalOpen && (
+        <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
+          <div
+            className="afrah-app-modal-container"
+            style={{ maxWidth: '460px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="afrah-app-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Plus size={17} color="var(--primary)" />
+                <h3 className="afrah-app-modal-title">Add Details</h3>
+              </div>
+              <button
+                onClick={() => setIsAddModalOpen(false)}
+                className="afrah-app-modal-close-btn"
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddSubmit}>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">NAME *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Kabibullah Rahman"
+                    value={addName}
+                    onChange={(e) => setAddName(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">PHONE *</label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="+91 98410 23456"
+                    value={addPhone}
+                    onChange={(e) => setAddPhone(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Address *</label>
+                  <textarea
+                    rows={3}
+                    required
+                    placeholder="Site location, Street, Area, City..."
+                    value={addAddress}
+                    onChange={(e) => setAddAddress(e.target.value)}
+                    className="afrah-app-input afrah-app-textarea"
+                  />
+                </div>
+
+                {!isAddValid && (
+                  <div className="afrah-app-validation-notice">
+                    * Name, Phone and Address are required to submit.
+                  </div>
+                )}
+              </div>
+
+              <div className="afrah-app-modal-footer">
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="afrah-app-back-btn"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!isAddValid}
+                  className="btn-theme-primary"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <Plus size={15} strokeWidth={2.5} />
+                  <span>Add Details</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-
-        <form onSubmit={handleAddSubmit} className="afrah-app-add-form">
-          <div className="afrah-app-form-group">
-            <label className="afrah-app-label">NAME *</label>
-            <input
-              type="text"
-              required
-              placeholder="e.g. Kabibullah Rahman"
-              value={addName}
-              onChange={(e) => setAddName(e.target.value)}
-              className="afrah-app-input"
-            />
-          </div>
-
-          <div className="afrah-app-form-group">
-            <label className="afrah-app-label">PHONE *</label>
-            <input
-              type="tel"
-              required
-              placeholder="+91 98410 23456"
-              value={addPhone}
-              onChange={(e) => setAddPhone(e.target.value)}
-              className="afrah-app-input"
-            />
-          </div>
-
-          <div className="afrah-app-form-group">
-            <label className="afrah-app-label">Address *</label>
-            <textarea
-              rows={3}
-              required
-              placeholder="Site location, Street, Area, City..."
-              value={addAddress}
-              onChange={(e) => setAddAddress(e.target.value)}
-              className="afrah-app-input afrah-app-textarea"
-            />
-          </div>
-
-          {!isAddValid && (
-            <div className="afrah-app-validation-notice">
-              * Name, Phone and Address are required to submit.
-            </div>
-          )}
-
-          <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
-            <button
-              type="submit"
-              disabled={!isAddValid}
-              className="btn-theme-primary afrah-app-submit-btn"
-              style={{ flex: 1 }}
-            >
-              <UserPlus size={16} strokeWidth={2.5} />
-              <span>Submit</span>
-            </button>
-
-            {(addName || addPhone || addAddress) && (
-              <button
-                type="button"
-                onClick={handleClearAddForm}
-                className="afrah-app-back-btn"
-                style={{ height: '42px', padding: '0 14px' }}
-                title="Close / Clear Form"
-              >
-                <RotateCcw size={14} />
-                <span>Close</span>
-              </button>
-            )}
-          </div>
-        </form>
-      </aside>
+      )}
 
       {/* EDIT CUSTOMER MODAL */}
       {isEditModalOpen && (

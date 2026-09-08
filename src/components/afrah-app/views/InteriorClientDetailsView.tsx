@@ -10,6 +10,7 @@ import {
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { DateFilterBar } from '../components/DateFilterBar';
+import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD } from '../components/DateInput';
 import {
   ArrowLeft,
   Phone,
@@ -146,8 +147,14 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
   // ===================== ADVANCE FILTERING & COMPUTATIONS =====================
   const filteredAdvance = useMemo(() => {
     let list = advancePayments;
-    if (advFromDate) list = list.filter((a) => a.date >= advFromDate);
-    if (advToDate) list = list.filter((a) => a.date <= advToDate);
+    if (advFromDate) {
+      const fromISO = formatToYYYYMMDD(advFromDate);
+      list = list.filter((a) => formatToYYYYMMDD(a.date) >= fromISO);
+    }
+    if (advToDate) {
+      const toISO = formatToYYYYMMDD(advToDate);
+      list = list.filter((a) => formatToYYYYMMDD(a.date) <= toISO);
+    }
     if (advSearch.trim()) {
       const q = advSearch.toLowerCase().trim();
       list = list.filter(
@@ -155,6 +162,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
           a.mode.toLowerCase().includes(q) ||
           (a.note && a.note.toLowerCase().includes(q)) ||
           a.date.includes(q) ||
+          formatToDDMMYYYY(a.date).includes(q) ||
           String(a.amount).includes(q)
       );
     }
@@ -195,8 +203,14 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
   // ===================== EXPENSES FILTERING & SEGREGATION =====================
   const filteredExpenses = useMemo(() => {
     let list = expenses;
-    if (expFromDate) list = list.filter((e) => e.date >= expFromDate);
-    if (expToDate) list = list.filter((e) => e.date <= expToDate);
+    if (expFromDate) {
+      const fromISO = formatToYYYYMMDD(expFromDate);
+      list = list.filter((e) => formatToYYYYMMDD(e.date) >= fromISO);
+    }
+    if (expToDate) {
+      const toISO = formatToYYYYMMDD(expToDate);
+      list = list.filter((e) => formatToYYYYMMDD(e.date) <= toISO);
+    }
     if (expSearch.trim()) {
       const q = expSearch.toLowerCase().trim();
       list = list.filter(
@@ -205,6 +219,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
           e.expenseName.toLowerCase().includes(q) ||
           (e.unit && e.unit.toLowerCase().includes(q)) ||
           e.date.includes(q) ||
+          formatToDDMMYYYY(e.date).includes(q) ||
           String(e.quantity).includes(q) ||
           String(e.rate).includes(q) ||
           String(e.totalAmount).includes(q)
@@ -275,7 +290,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
   const netBalance = totalAdvanceAmount - totalExpensesAmount;
 
   // ===================== ADVANCE HANDLERS =====================
-  const isAddAdvValid = newAdvDate.trim().length > 0 && parseFloat(newAdvAmount) > 0;
+  const isAddAdvValid = isValidDate(newAdvDate) && parseFloat(newAdvAmount) > 0;
   const handleAddAdvSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isAddAdvValid) return;
@@ -359,7 +374,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
   // ===================== EXPENSE HANDLERS =====================
   const calculatedNewExpTotal = (parseFloat(newExpQuantity) || 0) * (parseFloat(newExpRate) || 0);
   const isAddExpValid =
-    newExpDate.trim().length > 0 &&
+    isValidDate(newExpDate) &&
     newExpParticulars.trim().length > 0 &&
     parseFloat(newExpQuantity) > 0 &&
     parseFloat(newExpRate) >= 0;
@@ -665,7 +680,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                           <td>
                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                               <Calendar size={12} color="var(--primary)" />
-                              <span>{item.date}</span>
+                              <span>{formatToDDMMYYYY(item.date)}</span>
                             </div>
                           </td>
                           <td>
@@ -997,11 +1012,10 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
               <div className="afrah-app-modal-body">
                 <div className="afrah-app-form-group">
                   <label className="afrah-app-label">Date *</label>
-                  <input
-                    type="date"
+                  <DateInput
                     required
                     value={newAdvDate}
-                    onChange={(e) => setNewAdvDate(e.target.value)}
+                    onChange={setNewAdvDate}
                     className="afrah-app-input"
                   />
                 </div>
@@ -1078,11 +1092,10 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
               <div className="afrah-app-modal-body">
                 <div className="afrah-app-form-group">
                   <label className="afrah-app-label">Date *</label>
-                  <input
-                    type="date"
+                  <DateInput
                     required
                     value={editAdvDate}
-                    onChange={(e) => setEditAdvDate(e.target.value)}
+                    onChange={setEditAdvDate}
                     className="afrah-app-input"
                   />
                 </div>
@@ -1158,11 +1171,10 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Date *</label>
-                    <input
-                      type="date"
+                    <DateInput
                       required
                       value={newExpDate}
-                      onChange={(e) => setNewExpDate(e.target.value)}
+                      onChange={setNewExpDate}
                       className="afrah-app-input"
                     />
                   </div>
@@ -1283,11 +1295,10 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Date *</label>
-                    <input
-                      type="date"
+                    <DateInput
                       required
                       value={editExpDate}
-                      onChange={(e) => setEditExpDate(e.target.value)}
+                      onChange={setEditExpDate}
                       className="afrah-app-input"
                     />
                   </div>

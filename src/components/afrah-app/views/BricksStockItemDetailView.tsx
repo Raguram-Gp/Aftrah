@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import type { BrickStockItem, BrickStockItemEntry } from '../types';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
+import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD } from '../components/DateInput';
 import {
   Boxes,
   Plus,
@@ -52,7 +53,8 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  // Form State (Date, Production/Sales for Bricks, Material Usage for Raw Materials)
+  // Add Details Modal State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [entryDate, setEntryDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [entryProduction, setEntryProduction] = useState('');
   const [entrySales, setEntrySales] = useState('');
@@ -94,13 +96,13 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
 
   // Validations
   const isAddValid =
-    entryDate.trim().length > 0 &&
+    isValidDate(entryDate) &&
     (isBricks
       ? entryProduction !== '' || entrySales !== ''
       : entryUsage !== '');
 
   const isEditValid =
-    editDate.trim().length > 0 &&
+    isValidDate(editDate) &&
     (isBricks
       ? editProduction !== '' || editSales !== ''
       : editUsage !== '');
@@ -129,6 +131,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
     setEntryProduction('');
     setEntrySales('');
     setEntryUsage('');
+    setIsAddModalOpen(false);
     setCurrentPage(1);
   };
 
@@ -209,10 +212,12 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
     let list = entries;
 
     if (fromDate) {
-      list = list.filter((e) => e.date >= fromDate);
+      const fromISO = formatToYYYYMMDD(fromDate);
+      list = list.filter((e) => formatToYYYYMMDD(e.date) >= fromISO);
     }
     if (toDate) {
-      list = list.filter((e) => e.date <= toDate);
+      const toISO = formatToYYYYMMDD(toDate);
+      list = list.filter((e) => formatToYYYYMMDD(e.date) <= toISO);
     }
 
     if (searchQuery.trim()) {
@@ -220,6 +225,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
       list = list.filter(
         (e) =>
           e.date.includes(q) ||
+          formatToDDMMYYYY(e.date).includes(q) ||
           (e.item && e.item.toLowerCase().includes(q)) ||
           String(e.stockOpening).includes(q) ||
           String(e.currentProduction).includes(q) ||
@@ -389,10 +395,10 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
         </div>
       </div>
 
-      {/* SIDE-BY-SIDE WIREFRAME LAYOUT */}
-      <div className="afrah-app-wireframe-layout">
-        {/* LEFT COLUMN: STOCK REGISTER TABLE */}
-        <section className="afrah-app-table-section">
+      {/* STOCK REGISTER SECTION */}
+      <div style={{ width: '100%', maxWidth: '100%' }}>
+        {/* STOCK REGISTER TABLE */}
+        <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
           <div className="afrah-app-section-header no-print">
             <div>
               <h2 className="afrah-app-section-title" style={{ fontSize: '15px' }}>
@@ -403,7 +409,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
               </span>
             </div>
 
-            {/* Search */}
+            {/* Search & Add Button */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
               <div className="afrah-app-search-wrapper" style={{ minWidth: '220px' }}>
                 <Search size={14} className="afrah-app-search-icon" />
@@ -418,6 +424,16 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                   className="afrah-app-search-input"
                 />
               </div>
+
+              <button
+                type="button"
+                onClick={() => setIsAddModalOpen(true)}
+                className="btn-theme-primary"
+                style={{ height: '36px', padding: '0 16px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              >
+                <Plus size={15} strokeWidth={2.5} />
+                <span>Add Details</span>
+              </button>
             </div>
           </div>
 
@@ -487,7 +503,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
 
                         {/* DATE */}
                         <td style={{ whiteSpace: 'nowrap', color: 'var(--text-secondary)', fontWeight: 500 }}>
-                          {entry.date}
+                          {formatToDDMMYYYY(entry.date)}
                         </td>
 
                         {/* For Raw Materials: ITEM Column matching handwritten sheet */}
@@ -665,174 +681,183 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
           )}
         </section>
 
-        {/* RIGHT COLUMN: "Add details" PANEL */}
-        <aside className="afrah-app-form-card">
-          <div className="afrah-app-form-card-header">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Plus size={16} color="var(--primary)" />
-              <h2 className="afrah-app-form-card-title">Add details</h2>
+        {/* Add Details Modal */}
+        {isAddModalOpen && (
+          <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
+            <div
+              className="afrah-app-modal-container"
+              style={{ maxWidth: '460px' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="afrah-app-modal-header">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Plus size={17} color="var(--primary)" />
+                  <h3 className="afrah-app-modal-title">Add Details</h3>
+                </div>
+                <button
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="afrah-app-modal-close-btn"
+                  aria-label="Close"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <form onSubmit={handleAddSubmit}>
+                <div className="afrah-app-modal-body">
+                  {/* Auto-Carried Forward Opening Banner */}
+                  <div
+                    style={{
+                      padding: '10px 14px',
+                      borderRadius: '8px',
+                      background: 'rgba(226, 195, 153, 0.08)',
+                      border: '1px solid rgba(226, 195, 153, 0.25)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginBottom: '10px'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <ArrowRightLeft size={13} color="var(--primary)" />
+                      <span style={{ fontSize: '11.5px', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                        Carried Opening:
+                      </span>
+                    </div>
+                    <span
+                      style={{
+                        fontSize: '14px',
+                        fontWeight: 800,
+                        color: 'var(--primary)',
+                        fontFamily: 'Cinzel, serif'
+                      }}
+                    >
+                      {Number(carriedOpening).toLocaleString('en-IN')} Units
+                    </span>
+                  </div>
+
+                  {/* Date Field */}
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">
+                      DATE <span className="required-star">*</span>
+                    </label>
+                    <DateInput
+                      required
+                      value={entryDate}
+                      onChange={setEntryDate}
+                      className="afrah-app-input"
+                    />
+                  </div>
+
+                  {isBricks ? (
+                    <>
+                      {/* Current Production (Bricks) */}
+                      <div className="afrah-app-form-group">
+                        <label className="afrah-app-label">CURRENT PRODUCTION</label>
+                        <input
+                          type="number"
+                          step="any"
+                          min="0"
+                          placeholder="e.g. 50000"
+                          value={entryProduction}
+                          onChange={(e) => setEntryProduction(e.target.value)}
+                          className="afrah-app-input"
+                        />
+                      </div>
+
+                      {/* Sales (Bricks) */}
+                      <div className="afrah-app-form-group">
+                        <label className="afrah-app-label">SALES</label>
+                        <input
+                          type="number"
+                          step="any"
+                          min="0"
+                          placeholder="e.g. 35000"
+                          value={entrySales}
+                          onChange={(e) => setEntrySales(e.target.value)}
+                          className="afrah-app-input"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    /* Material Usage (Soil, Msand, Wood, Diesel) */
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">
+                        MATERIAL USAGE ({unitLabel}) <span className="required-star">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        min="0"
+                        required
+                        placeholder="e.g. 5"
+                        value={entryUsage}
+                        onChange={(e) => setEntryUsage(e.target.value)}
+                        className="afrah-app-input"
+                      />
+                    </div>
+                  )}
+
+                  {/* Live Computed Projected Pending Stock */}
+                  <div
+                    style={{
+                      padding: '12px 14px',
+                      borderRadius: '8px',
+                      background: 'var(--surface-container, #1e2126)',
+                      border: '1px solid var(--border-stroke, #2c303a)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      margin: '4px 0 6px 0'
+                    }}
+                  >
+                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                      Projected Balance:
+                    </span>
+                    <span
+                      style={{
+                        fontSize: '17px',
+                        fontWeight: 800,
+                        color: previewNewPending >= 0 ? 'var(--primary)' : '#f87171',
+                        fontFamily: 'Cinzel, serif'
+                      }}
+                    >
+                      {Number(previewNewPending || 0).toLocaleString('en-IN')} UNITS
+                    </span>
+                  </div>
+
+                  {/* Validation Notice */}
+                  {!isAddValid && (
+                    <div className="afrah-app-validation-notice">
+                      {isBricks
+                        ? '* Date and either Production or Sales are required to submit.'
+                        : '* Date and Material Usage are required to submit.'}
+                    </div>
+                  )}
+                </div>
+
+                <div className="afrah-app-modal-footer">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddModalOpen(false)}
+                    className="afrah-app-back-btn"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!isAddValid}
+                    className="btn-theme-primary"
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <Plus size={15} strokeWidth={2.5} />
+                    <span>Add Details</span>
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
-
-          <form onSubmit={handleAddSubmit} className="afrah-app-add-form">
-            {/* Auto-Carried Forward Opening Banner */}
-            <div
-              style={{
-                padding: '10px 14px',
-                borderRadius: '8px',
-                background: 'rgba(226, 195, 153, 0.08)',
-                border: '1px solid rgba(226, 195, 153, 0.25)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '4px'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <ArrowRightLeft size={13} color="var(--primary)" />
-                <span style={{ fontSize: '11.5px', color: 'var(--text-secondary)', fontWeight: 600 }}>
-                  Carried Opening:
-                </span>
-              </div>
-              <span
-                style={{
-                  fontSize: '14px',
-                  fontWeight: 800,
-                  color: 'var(--primary)',
-                  fontFamily: 'Cinzel, serif'
-                }}
-              >
-                {Number(carriedOpening).toLocaleString('en-IN')} Units
-              </span>
-            </div>
-
-            {/* Date Field */}
-            <div className="afrah-app-form-group">
-              <label className="afrah-app-label">
-                DATE <span className="required-star">*</span>
-              </label>
-              <input
-                type="date"
-                required
-                value={entryDate}
-                onChange={(e) => setEntryDate(e.target.value)}
-                className="afrah-app-input"
-              />
-            </div>
-
-            {isBricks ? (
-              <>
-                {/* Current Production (Bricks) */}
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">CURRENT PRODUCTION</label>
-                  <input
-                    type="number"
-                    step="any"
-                    min="0"
-                    placeholder="e.g. 50000"
-                    value={entryProduction}
-                    onChange={(e) => setEntryProduction(e.target.value)}
-                    className="afrah-app-input"
-                  />
-                </div>
-
-                {/* Sales (Bricks) */}
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">SALES</label>
-                  <input
-                    type="number"
-                    step="any"
-                    min="0"
-                    placeholder="e.g. 35000"
-                    value={entrySales}
-                    onChange={(e) => setEntrySales(e.target.value)}
-                    className="afrah-app-input"
-                  />
-                </div>
-              </>
-            ) : (
-              /* Material Usage (Soil, Msand, Wood, Diesel) */
-              <div className="afrah-app-form-group">
-                <label className="afrah-app-label">
-                  MATERIAL USAGE ({unitLabel}) <span className="required-star">*</span>
-                </label>
-                <input
-                  type="number"
-                  step="any"
-                  min="0"
-                  required
-                  placeholder="e.g. 5"
-                  value={entryUsage}
-                  onChange={(e) => setEntryUsage(e.target.value)}
-                  className="afrah-app-input"
-                />
-              </div>
-            )}
-
-            {/* Live Computed Projected Pending Stock */}
-            <div
-              style={{
-                padding: '12px 14px',
-                borderRadius: '8px',
-                background: 'var(--surface-container, #1e2126)',
-                border: '1px solid var(--border-stroke, #2c303a)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                margin: '4px 0 6px 0'
-              }}
-            >
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 600 }}>
-                Projected Balance:
-              </span>
-              <span
-                style={{
-                  fontSize: '17px',
-                  fontWeight: 800,
-                  color: previewNewPending >= 0 ? 'var(--primary)' : '#f87171',
-                  fontFamily: 'Cinzel, serif'
-                }}
-              >
-                {Number(previewNewPending || 0).toLocaleString('en-IN')} UNITS
-              </span>
-            </div>
-
-            {/* Validation Notice */}
-            {!isAddValid && (
-              <div className="afrah-app-validation-notice">
-                {isBricks
-                  ? '* Date and either Production or Sales are required to submit.'
-                  : '* Date and Material Usage are required to submit.'}
-              </div>
-            )}
-
-            {/* Action Buttons */}
-            <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
-              <button
-                type="submit"
-                disabled={!isAddValid}
-                className="btn-theme-primary afrah-app-submit-btn"
-                style={{ flex: 1 }}
-              >
-                <Plus size={16} strokeWidth={2.5} />
-                <span>Add Entry</span>
-              </button>
-
-              {(entryProduction || entrySales || entryUsage) && (
-                <button
-                  type="button"
-                  onClick={handleClearAddForm}
-                  className="afrah-app-back-btn"
-                  style={{ height: '44px', padding: '0 14px', marginTop: '4px' }}
-                  title="Clear Form"
-                >
-                  <RotateCcw size={14} />
-                  <span>Clear</span>
-                </button>
-              )}
-            </div>
-          </form>
-        </aside>
+        )}
       </div>
 
       {/* EDIT MODAL */}
@@ -859,11 +884,10 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                 <label className="afrah-app-label">
                   Date <span className="required-star">*</span>
                 </label>
-                <input
-                  type="date"
+                <DateInput
                   required
                   value={editDate}
-                  onChange={(e) => setEditDate(e.target.value)}
+                  onChange={setEditDate}
                   className="afrah-app-input"
                 />
               </div>

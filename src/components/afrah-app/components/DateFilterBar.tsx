@@ -1,5 +1,6 @@
-import React from 'react';
-import { Calendar, Trash2, Printer, X, Filter } from 'lucide-react';
+import React, { useRef } from 'react';
+import { Calendar, Trash2, Printer, X } from 'lucide-react';
+import { formatToDDMMYYYY, formatToYYYYMMDD, isValidDate } from './DateInput';
 
 interface DateFilterBarProps {
   fromDate: string;
@@ -29,6 +30,22 @@ export const DateFilterBar: React.FC<DateFilterBarProps> = ({
   extraActions
 }) => {
   const hasActiveFilter = Boolean(fromDate || toDate);
+  const fromInputRef = useRef<HTMLInputElement>(null);
+  const toInputRef = useRef<HTMLInputElement>(null);
+
+  const triggerPicker = (ref: React.RefObject<HTMLInputElement | null>) => {
+    if (ref.current) {
+      if (typeof ref.current.showPicker === 'function') {
+        try {
+          ref.current.showPicker();
+        } catch {
+          ref.current.focus();
+        }
+      } else {
+        ref.current.focus();
+      }
+    }
+  };
 
   return (
     <div className="table-filter-toolbar no-print">
@@ -36,29 +53,109 @@ export const DateFilterBar: React.FC<DateFilterBarProps> = ({
         {/* Date Filter Inputs */}
         <div className="date-filter-group">
           <div className="date-filter-item">
-            <label className="date-filter-label">From Date</label>
+            <label className="date-filter-label" onClick={() => triggerPicker(fromInputRef)}>
+              From Date
+            </label>
             <div className="date-input-wrap">
-              <Calendar size={13} className="date-input-icon" />
+              <Calendar
+                size={13}
+                className="date-input-icon"
+                onClick={() => triggerPicker(fromInputRef)}
+                title="Click to open calendar picker"
+              />
               <input
-                type="date"
-                value={fromDate}
-                onChange={(e) => onFromDateChange(e.target.value)}
+                type="text"
+                value={formatToDDMMYYYY(fromDate)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (!val.trim()) {
+                    onFromDateChange('');
+                  } else if (isValidDate(val)) {
+                    onFromDateChange(formatToYYYYMMDD(val));
+                  } else {
+                    onFromDateChange(val);
+                  }
+                }}
+                onBlur={(e) => {
+                  const val = e.target.value;
+                  if (isValidDate(val)) {
+                    onFromDateChange(formatToYYYYMMDD(val));
+                  }
+                }}
+                placeholder="DD-MM-YYYY"
                 className="date-input-control"
-                placeholder="From Date"
+                onClick={() => triggerPicker(fromInputRef)}
+              />
+              <input
+                ref={fromInputRef}
+                type="date"
+                value={formatToYYYYMMDD(fromDate)}
+                onChange={(e) => onFromDateChange(e.target.value)}
+                tabIndex={-1}
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  opacity: 0,
+                  width: '1px',
+                  height: '1px',
+                  pointerEvents: 'none',
+                  bottom: 0,
+                  left: '10px'
+                }}
               />
             </div>
           </div>
 
           <div className="date-filter-item">
-            <label className="date-filter-label">To Date</label>
+            <label className="date-filter-label" onClick={() => triggerPicker(toInputRef)}>
+              To Date
+            </label>
             <div className="date-input-wrap">
-              <Calendar size={13} className="date-input-icon" />
+              <Calendar
+                size={13}
+                className="date-input-icon"
+                onClick={() => triggerPicker(toInputRef)}
+                title="Click to open calendar picker"
+              />
               <input
-                type="date"
-                value={toDate}
-                onChange={(e) => onToDateChange(e.target.value)}
+                type="text"
+                value={formatToDDMMYYYY(toDate)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (!val.trim()) {
+                    onToDateChange('');
+                  } else if (isValidDate(val)) {
+                    onToDateChange(formatToYYYYMMDD(val));
+                  } else {
+                    onToDateChange(val);
+                  }
+                }}
+                onBlur={(e) => {
+                  const val = e.target.value;
+                  if (isValidDate(val)) {
+                    onToDateChange(formatToYYYYMMDD(val));
+                  }
+                }}
+                placeholder="DD-MM-YYYY"
                 className="date-input-control"
-                placeholder="To Date"
+                onClick={() => triggerPicker(toInputRef)}
+              />
+              <input
+                ref={toInputRef}
+                type="date"
+                value={formatToYYYYMMDD(toDate)}
+                onChange={(e) => onToDateChange(e.target.value)}
+                tabIndex={-1}
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  opacity: 0,
+                  width: '1px',
+                  height: '1px',
+                  pointerEvents: 'none',
+                  bottom: 0,
+                  left: '10px'
+                }}
               />
             </div>
           </div>
@@ -107,3 +204,5 @@ export const DateFilterBar: React.FC<DateFilterBarProps> = ({
     </div>
   );
 };
+
+export default DateFilterBar;

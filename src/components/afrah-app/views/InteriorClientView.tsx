@@ -41,7 +41,8 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [selectedClientIds, setSelectedClientIds] = useState<Set<string>>(new Set());
 
-  // Add Client Form State (Right Panel)
+  // Add Client Form Modal State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [addName, setAddName] = useState('');
   const [addPhone, setAddPhone] = useState('');
   const [addAddress, setAddAddress] = useState('');
@@ -143,6 +144,7 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
     setAddName('');
     setAddPhone('');
     setAddAddress('');
+    setIsAddModalOpen(false);
     setCurrentPage(1);
   };
 
@@ -217,7 +219,7 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
   };
 
   return (
-    <div className="afrah-app-wireframe-layout">
+    <div style={{ width: '100%', maxWidth: '100%' }}>
       {/* PRINT-ONLY STATEMENT HEADER */}
       <div className="print-only-statement-header">
         <div className="print-brand-row">
@@ -246,8 +248,8 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
         </div>
       </div>
 
-      {/* LEFT COLUMN: CLIENT LIST TABLE */}
-      <section className="afrah-app-table-section">
+      {/* CLIENT LIST TABLE */}
+      <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
         <div className="afrah-app-section-header no-print">
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -289,6 +291,23 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
                 className="afrah-app-search-input"
               />
             </div>
+
+            <button
+              type="button"
+              onClick={() => setIsAddModalOpen(true)}
+              className="btn-theme-primary"
+              style={{
+                height: '36px',
+                padding: '0 16px',
+                fontSize: '13px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <Plus size={15} strokeWidth={2.5} />
+              <span>Add Details</span>
+            </button>
 
             <button
               onClick={handlePrint}
@@ -501,65 +520,80 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
         )}
       </section>
 
-      {/* RIGHT COLUMN: ADD INTERIOR CLIENT FORM */}
-      <aside className="afrah-app-form-card no-print">
-        <div className="afrah-app-form-header">
-          <div className="afrah-app-form-icon-wrap">
-            <Plus size={18} color="var(--primary)" />
-          </div>
-          <div>
-            <h2 className="afrah-app-form-title">Add Interior Client</h2>
-            <p className="afrah-app-form-subtitle">Register new turnkey interior project</p>
+      {/* ADD INTERIOR CLIENT MODAL */}
+      {isAddModalOpen && (
+        <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
+          <div className="afrah-app-modal-container" style={{ maxWidth: '480px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="afrah-app-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Plus size={18} color="var(--primary)" />
+                <h3 className="afrah-app-modal-title">Add Interior Client</h3>
+              </div>
+              <button onClick={() => setIsAddModalOpen(false)} className="afrah-app-modal-close-btn" aria-label="Close">
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddSubmit}>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Client Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Dr. Aravind Swamy"
+                    value={addName}
+                    onChange={(e) => setAddName(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Phone Number *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. 98401 23456"
+                    value={addPhone}
+                    onChange={(e) => setAddPhone(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Address</label>
+                  <textarea
+                    rows={3}
+                    placeholder="e.g. Uthamapalayam, Theni"
+                    value={addAddress}
+                    onChange={(e) => setAddAddress(e.target.value)}
+                    className="afrah-app-textarea"
+                  />
+                </div>
+              </div>
+
+              <div className="afrah-app-modal-footer">
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="afrah-app-back-btn"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!isAddValid}
+                  className="btn-theme-primary"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <Plus size={15} strokeWidth={2.5} />
+                  <span>Add Client</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-
-        <form onSubmit={handleAddSubmit} className="afrah-app-form-body">
-          <div className="afrah-app-form-group">
-            <label className="afrah-app-label">Client Name *</label>
-            <input
-              type="text"
-              required
-              placeholder="e.g. Dr. Aravind Swamy"
-              value={addName}
-              onChange={(e) => setAddName(e.target.value)}
-              className="afrah-app-input"
-            />
-          </div>
-
-          <div className="afrah-app-form-group">
-            <label className="afrah-app-label">Phone Number *</label>
-            <input
-              type="text"
-              required
-              placeholder="e.g. 98401 23456"
-              value={addPhone}
-              onChange={(e) => setAddPhone(e.target.value)}
-              className="afrah-app-input"
-            />
-          </div>
-
-          <div className="afrah-app-form-group">
-            <label className="afrah-app-label">Address</label>
-            <textarea
-              rows={3}
-              placeholder="e.g. Uthamapalayam, Theni"
-              value={addAddress}
-              onChange={(e) => setAddAddress(e.target.value)}
-              className="afrah-app-textarea"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={!isAddValid}
-            className="btn-theme-primary"
-            style={{ width: '100%', height: '42px', marginTop: '6px' }}
-          >
-            <Plus size={16} strokeWidth={2.5} />
-            <span>Add Client</span>
-          </button>
-        </form>
-      </aside>
+      )}
 
       {/* EDIT CLIENT MODAL */}
       {isEditModalOpen && (
