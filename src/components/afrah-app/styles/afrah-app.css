@@ -1092,6 +1092,54 @@ html.light .app2-sidebar {
   margin-top: -4px;
 }
 
+/* Segmented Date Input with Fixed Slashes */
+.afrah-date-segmented-input {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 2px !important;
+  cursor: text;
+  user-select: none;
+}
+
+.afrah-date-segmented-input.is-focused {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px rgba(226, 195, 153, 0.18) !important;
+}
+
+.afrah-date-segmented-input.is-invalid {
+  border-color: #ef4444 !important;
+}
+
+.afrah-date-segment {
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+  padding: 0 1px !important;
+  margin: 0 !important;
+  color: inherit !important;
+  font-size: 13px !important;
+  font-family: inherit !important;
+  text-align: center !important;
+  box-sizing: content-box !important;
+  letter-spacing: 0.5px !important;
+}
+
+.afrah-date-segment::placeholder {
+  color: var(--text-secondary, #64748b) !important;
+  opacity: 0.55 !important;
+  letter-spacing: 1px !important;
+}
+
+.afrah-date-separator {
+  color: var(--text-secondary, #64748b) !important;
+  opacity: 0.65 !important;
+  font-weight: 500 !important;
+  user-select: none !important;
+  pointer-events: none !important;
+  padding: 0 3px !important;
+}
+
 /* THEMED PRIMARY ACTION BUTTON */
 .btn-theme-primary {
   display: inline-flex;

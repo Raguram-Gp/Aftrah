@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Calendar, Trash2, Printer, X } from 'lucide-react';
-import { formatToDDMMYYYY, formatToYYYYMMDD, isValidDate } from './DateInput';
+import { formatToDDMMYYYYDash, formatToYYYYMMDD, isValidDate } from './DateInput';
 
 interface DateFilterBarProps {
   fromDate: string;
@@ -56,16 +56,15 @@ export const DateFilterBar: React.FC<DateFilterBarProps> = ({
             <label className="date-filter-label" onClick={() => triggerPicker(fromInputRef)}>
               From Date
             </label>
-            <div className="date-input-wrap">
+            <div className="date-input-wrap" title="Click to open calendar picker">
               <Calendar
                 size={13}
                 className="date-input-icon"
                 onClick={() => triggerPicker(fromInputRef)}
-                title="Click to open calendar picker"
               />
               <input
                 type="text"
-                value={formatToDDMMYYYY(fromDate)}
+                value={formatToDDMMYYYYDash(fromDate)}
                 onChange={(e) => {
                   const val = e.target.value;
                   if (!val.trim()) {
@@ -110,16 +109,15 @@ export const DateFilterBar: React.FC<DateFilterBarProps> = ({
             <label className="date-filter-label" onClick={() => triggerPicker(toInputRef)}>
               To Date
             </label>
-            <div className="date-input-wrap">
+            <div className="date-input-wrap" title="Click to open calendar picker">
               <Calendar
                 size={13}
                 className="date-input-icon"
                 onClick={() => triggerPicker(toInputRef)}
-                title="Click to open calendar picker"
               />
               <input
                 type="text"
-                value={formatToDDMMYYYY(toDate)}
+                value={formatToDDMMYYYYDash(toDate)}
                 onChange={(e) => {
                   const val = e.target.value;
                   if (!val.trim()) {
