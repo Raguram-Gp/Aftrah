@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import '../styles/global.css';
 import AfrahAppPortal from '../components/afrah-app/AfrahAppPortal';
+import SharedStatementPage from '../components/shared-statement/SharedStatementPage';
 ---
 
 <Layout
@@ -10,6 +11,9 @@ import AfrahAppPortal from '../components/afrah-app/AfrahAppPortal';
 >
   <div id="afrah-app-fallback">
     <AfrahAppPortal client:only="react" />
+  </div>
+  <div id="shared-statement-fallback" hidden>
+    <SharedStatementPage client:only="react" />
   </div>
   <div id="generic-404" hidden style="min-height: 70vh; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 12px; font-family: sans-serif;">
     <h1 style="margin: 0; font-size: 28px;">Page not found</h1>
@@ -20,9 +24,21 @@ import AfrahAppPortal from '../components/afrah-app/AfrahAppPortal';
       var path = window.location.pathname;
       var isApp = path === '/afrah-app' || path.indexOf('/afrah-app/') === 0;
       if (isApp) return;
-      var app = document.getElementById('afrah-app-fallback');
+
+      var isStatement = path === '/s' || path.indexOf('/s/') === 0;
+      if (isStatement) {
+        var app = document.getElementById('afrah-app-fallback');
+        var statement = document.getElementById('shared-statement-fallback');
+        if (app) app.setAttribute('hidden', '');
+        if (statement) statement.removeAttribute('hidden');
+        return;
+      }
+
+      var appFallback = document.getElementById('afrah-app-fallback');
+      var statementFallback = document.getElementById('shared-statement-fallback');
       var missing = document.getElementById('generic-404');
-      if (app) app.setAttribute('hidden', '');
+      if (appFallback) appFallback.setAttribute('hidden', '');
+      if (statementFallback) statementFallback.setAttribute('hidden', '');
       if (missing) {
         missing.removeAttribute('hidden');
         missing.style.display = 'flex';

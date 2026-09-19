@@ -3,6 +3,8 @@ import type { Vendor, VendorShop, ShopTransaction } from '../types';
 import { formatToDDMMYYYY } from './DateInput';
 import { PrintPreviewModal } from './PrintPreviewModal';
 import { Store } from 'lucide-react';
+import type { StatementSnapshot } from '@/lib/statementSnapshot';
+import { defaultStatementBrand } from '@/lib/statementSnapshot';
 
 interface ShopPrintPreviewModalProps {
   isOpen: boolean;
@@ -41,6 +43,69 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
 
   const currentDate = new Date();
   const formattedToday = formatToDDMMYYYY(currentDate.toISOString().slice(0, 10));
+  const dateLabel =
+    fromDate && toDate
+      ? `${formatToDDMMYYYY(fromDate)} to ${formatToDDMMYYYY(toDate)}`
+      : fromDate
+        ? `From ${formatToDDMMYYYY(fromDate)}`
+        : toDate
+          ? `Up to ${formatToDDMMYYYY(toDate)}`
+          : formattedToday;
+
+  const ledgerRows: string[][] =
+    transactions.length === 0
+      ? [['—', '—', '—', 'No transaction records found for this vendor shop.', '', '', '', '', '']]
+      : transactions.map((tx, index) => {
+          let itemDescription = tx.itemType.toUpperCase();
+          if (tx.clientName) itemDescription += ` · Client/Site: ${tx.clientName}`;
+
+          return [
+            String(index + 1),
+            formatToDDMMYYYY(tx.date),
+            '-',
+            itemDescription,
+            tx.quantity ? String(tx.quantity) : '-',
+            tx.rate ? `₹${tx.rate}` : '-',
+            formatInvoiceINR(tx.totalAmount),
+            formatInvoiceINR(tx.receivedAmount),
+            formatInvoiceINR(tx.balanceAmount),
+          ];
+        });
+
+  ledgerRows.push([
+    '',
+    '',
+    '',
+    'TOTAL',
+    '',
+    '',
+    formatInvoiceINR(totalPurchase),
+    formatInvoiceINR(totalReceived),
+    formatInvoiceINR(totalBalance),
+  ]);
+
+  const sharePayload: StatementSnapshot = {
+    ...defaultStatementBrand(),
+    party: {
+      name: shop.name.toUpperCase(),
+      phone: shop.phone,
+      extra: [vendor.type],
+    },
+    dateLabel,
+    sections: [
+      {
+        title: `PURCHASES & SETTLEMENT TRANSACTIONS (${transactions.length})`,
+        columns: ['S.NO', 'DATE', 'BILL NO', 'ITEM / DESCRIPTION', 'QTY', 'RATE', 'PURCHASE', 'PAID', 'BALANCE'],
+        rows: ledgerRows,
+      },
+    ],
+    summary: [
+      { label: 'Total Purchases', value: formatInvoiceINR(totalPurchase) },
+      { label: 'Amount Settled / Paid', value: formatInvoiceINR(totalReceived) },
+      { label: 'Outstanding Balance', value: formatInvoiceINR(totalBalance) },
+    ],
+    capturedAt: new Date().toISOString(),
+  };
 
   return (
     <PrintPreviewModal
@@ -49,6 +114,10 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
       title="Vendor Supplier Statement"
       badgeLabel="Vendor Supplier Statement"
       badgeIcon={<Store size={16} color="var(--primary, #e2c399)" />}
+      shareKind="shop"
+      shareEntityId={shop.id}
+      shareTitle={shop.name}
+      sharePayload={sharePayload}
     >
       {/* VENDOR & DATE ROW */}
       <div className="statement-meta-row" style={{ fontSize: '18px' }}>
@@ -61,15 +130,7 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
         </div>
         <div className="meta-right">
           <span className="meta-label">DATE:</span>{' '}
-          <span className="meta-date-value">
-            {fromDate && toDate
-              ? `${formatToDDMMYYYY(fromDate)} to ${formatToDDMMYYYY(toDate)}`
-              : fromDate
-              ? `From ${formatToDDMMYYYY(fromDate)}`
-              : toDate
-              ? `Up to ${formatToDDMMYYYY(toDate)}`
-              : formattedToday}
-          </span>
+          <span className="meta-date-value">{dateLabel}</span>
         </div>
       </div>
 
@@ -122,7 +183,7 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
                   <td className="statement-cell">{index + 1}</td>
                   <td className="statement-cell">{formatToDDMMYYYY(tx.date)}</td>
                   <td className="statement-cell" style={{ fontWeight: 600 }}>
-                    {tx.billNumber || '-'}
+                    -
                   </td>
                   <td
                     className="statement-cell"
@@ -137,11 +198,6 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
                     {tx.clientName && (
                       <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--primary, #e2c399)' }}>
                         Client/Site: {tx.clientName}
-                      </div>
-                    )}
-                    {tx.notes && (
-                      <div style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-secondary, #94a3b8)' }}>
-                        {tx.notes}
                       </div>
                     )}
                   </td>

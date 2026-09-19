@@ -1,0 +1,12 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import '../../styles/global.css';
+import SharedStatementPage from '../../components/shared-statement/SharedStatementPage';
+---
+
+<Layout
+  title="Statement | Afrah Constructions"
+  description="View a shared account statement from Afrah Constructions."
+>
+  <SharedStatementPage client:only="react" />
+</Layout>

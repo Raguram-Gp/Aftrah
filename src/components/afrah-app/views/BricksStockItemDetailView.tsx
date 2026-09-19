@@ -971,6 +971,9 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
       <TablePrintPreviewModal
         isOpen={isPrintPreviewOpen}
         onClose={() => setIsPrintPreviewOpen(false)}
+        shareKind="brick_stock_item"
+        shareEntityId={item.id}
+        shareTitle={item.item}
         title="Stock Item Ledger Statement"
         badgeLabel="Stock Ledger Statement"
         badgeIcon={<Boxes size={16} color="var(--primary, #e2c399)" />}

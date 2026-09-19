@@ -1,6 +1,8 @@
 import React from 'react';
 import { PrintPreviewModal } from './PrintPreviewModal';
 import { FileSpreadsheet } from 'lucide-react';
+import type { StatementKind, StatementSnapshot } from '@/lib/statementSnapshot';
+import { defaultStatementBrand } from '@/lib/statementSnapshot';
 
 export interface TablePrintPreviewModalProps {
   isOpen: boolean;
@@ -35,6 +37,99 @@ export interface TablePrintPreviewModalProps {
     values: (string | number | React.ReactNode)[];
   };
   children?: React.ReactNode;
+  shareKind?: StatementKind;
+  shareEntityId?: string | null;
+  shareTitle?: string;
+}
+
+function extractCellText(cell: string | number | React.ReactNode): string {
+  if (cell === null || cell === undefined) return '';
+  if (typeof cell === 'string' || typeof cell === 'number') return String(cell);
+
+  if (Array.isArray(cell)) {
+    return cell.map((child) => extractCellText(child)).filter(Boolean).join(' ');
+  }
+
+  if (React.isValidElement(cell)) {
+    const props = cell.props as { children?: React.ReactNode };
+    if (props.children !== undefined && props.children !== null) {
+      return extractCellText(props.children);
+    }
+  }
+
+  return String(cell);
+}
+
+function buildTableSharePayload(args: {
+  title: string;
+  companyName?: string;
+  companySub?: string;
+  metaValue?: string;
+  dateText: string;
+  sectionTitle?: string;
+  headers: string[];
+  rows: (string | number | React.ReactNode)[][];
+  totalRow?: TablePrintPreviewModalProps['totalRow'];
+  summaryItems?: TablePrintPreviewModalProps['summaryItems'];
+  highlightBanner?: TablePrintPreviewModalProps['highlightBanner'];
+}): StatementSnapshot {
+  const brand = defaultStatementBrand();
+
+  const summary: StatementSnapshot['summary'] = [
+    ...(args.summaryItems?.map((item) => ({
+      label: item.label,
+      value: String(item.value),
+    })) ?? []),
+    ...(args.highlightBanner
+      ? [{ label: args.highlightBanner.label, value: args.highlightBanner.value }]
+      : []),
+  ];
+
+  const stringRows = args.rows.map((row) => row.map((cell) => extractCellText(cell)));
+
+  let totalLabel: string | undefined;
+  let totalValue: string | undefined;
+
+  if (args.totalRow) {
+    const labelIdx = args.totalRow.labelIndex ?? 1;
+    const stringValues = args.totalRow.values.map((val) => extractCellText(val));
+    totalLabel =
+      args.totalRow.label ??
+      stringValues[labelIdx] ??
+      undefined;
+
+    for (let i = stringValues.length - 1; i >= 0; i -= 1) {
+      if (i === labelIdx) continue;
+      const val = stringValues[i]?.trim();
+      if (val) {
+        totalValue = val;
+        break;
+      }
+    }
+
+    if (!totalValue && totalLabel) {
+      summary.push({ label: totalLabel, value: stringValues.filter(Boolean).join(' · ') || '—' });
+      totalLabel = undefined;
+    }
+  }
+
+  return {
+    ...brand,
+    company: args.companyName ?? brand.company,
+    subtitle: args.companySub ?? brand.subtitle,
+    party: { name: args.metaValue || args.title },
+    dateLabel: args.dateText,
+    sections: [
+      {
+        title: args.sectionTitle || args.title,
+        columns: args.headers,
+        rows: stringRows,
+        ...(totalLabel ? { totalLabel, totalValue } : {}),
+      },
+    ],
+    summary,
+    capturedAt: new Date().toISOString(),
+  };
 }
 
 export const TablePrintPreviewModal: React.FC<TablePrintPreviewModalProps> = ({
@@ -56,15 +151,36 @@ export const TablePrintPreviewModal: React.FC<TablePrintPreviewModalProps> = ({
   colAlignments,
   rows,
   totalRow,
-  children
+  children,
+  shareKind,
+  shareEntityId,
+  shareTitle,
 }) => {
   if (!isOpen) return null;
 
   const today = new Date().toLocaleDateString('en-IN', {
     day: '2-digit',
     month: 'short',
-    year: 'numeric'
+    year: 'numeric',
   });
+
+  const resolvedDateText = dateText || today;
+  const sharePayload =
+    shareKind != null
+      ? buildTableSharePayload({
+          title,
+          companyName,
+          companySub,
+          metaValue,
+          dateText: resolvedDateText,
+          sectionTitle,
+          headers,
+          rows,
+          totalRow,
+          summaryItems,
+          highlightBanner,
+        })
+      : undefined;
 
   return (
     <PrintPreviewModal
@@ -75,6 +191,10 @@ export const TablePrintPreviewModal: React.FC<TablePrintPreviewModalProps> = ({
       badgeIcon={badgeIcon || <FileSpreadsheet size={16} color="var(--primary, #e2c399)" />}
       companyName={companyName}
       companySub={companySub}
+      shareKind={shareKind}
+      shareEntityId={shareEntityId}
+      shareTitle={shareTitle ?? title}
+      sharePayload={sharePayload}
     >
       {/* META ROW */}
       <div className="statement-meta-row" style={{ fontSize: '18px' }}>
@@ -84,7 +204,7 @@ export const TablePrintPreviewModal: React.FC<TablePrintPreviewModalProps> = ({
         </div>
         <div className="meta-right">
           <span className="meta-label">DATE:</span>{' '}
-          <span className="meta-date-value">{dateText || today}</span>
+          <span className="meta-date-value">{resolvedDateText}</span>
         </div>
       </div>
 
@@ -141,7 +261,7 @@ export const TablePrintPreviewModal: React.FC<TablePrintPreviewModalProps> = ({
                         key={cIdx}
                         className="statement-cell"
                         style={{
-                          textAlign: colAlignments?.[cIdx] || 'center'
+                          textAlign: colAlignments?.[cIdx] || 'center',
                         }}
                       >
                         {cell}
@@ -165,7 +285,7 @@ export const TablePrintPreviewModal: React.FC<TablePrintPreviewModalProps> = ({
                           : ''
                       }
                       style={{
-                        textAlign: colAlignments?.[idx] || 'center'
+                        textAlign: colAlignments?.[idx] || 'center',
                       }}
                     >
                       {val}

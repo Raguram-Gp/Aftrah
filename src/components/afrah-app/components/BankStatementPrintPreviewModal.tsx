@@ -3,6 +3,89 @@ import type { BankAccount, BankTransaction } from '../types';
 import { formatToDDMMYYYY } from './DateInput';
 import { PrintPreviewModal } from './PrintPreviewModal';
 import { Landmark } from 'lucide-react';
+import type { StatementSnapshot } from '@/lib/statementSnapshot';
+import { defaultStatementBrand } from '@/lib/statementSnapshot';
+
+const formatInvoiceINR = (val: number) => {
+  const formatted = Math.abs(val || 0).toLocaleString('en-IN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  return `₹${formatted}/-`;
+};
+
+function buildBankStatementPayload(args: {
+  bankAccount: BankAccount;
+  transactions: BankTransaction[];
+  fromDate?: string;
+  toDate?: string;
+  totalCredits: number;
+  totalDebits: number;
+  currentBalance: number;
+}): StatementSnapshot {
+  const { bankAccount, transactions, fromDate, toDate, totalCredits, totalDebits, currentBalance } =
+    args;
+
+  const brand = defaultStatementBrand();
+  const formattedToday = formatToDDMMYYYY(new Date().toISOString().slice(0, 10));
+  const dateLabel =
+    fromDate && toDate
+      ? `${formatToDDMMYYYY(fromDate)} to ${formatToDDMMYYYY(toDate)}`
+      : fromDate
+        ? `From ${formatToDDMMYYYY(fromDate)}`
+        : toDate
+          ? `Up to ${formatToDDMMYYYY(toDate)}`
+          : formattedToday;
+
+  const accountExtra = [
+    `A/C: ${bankAccount.accountNumber || '—'}`,
+    bankAccount.branch || '—',
+    `IFSC: ${bankAccount.ifscCode || '—'}`,
+  ];
+
+  const dataRows =
+    transactions.length === 0
+      ? [['—', 'No ledger transactions recorded for this account.', '', '', '', '']]
+      : transactions.map((tx) => {
+          const isDeposit = tx.type === 'credit' || tx.type === 'deposit';
+          return [
+            formatToDDMMYYYY(tx.date),
+            tx.note || '—',
+            '-',
+            !isDeposit ? formatInvoiceINR(tx.amount) : '-',
+            isDeposit ? formatInvoiceINR(tx.amount) : '-',
+            '-',
+          ];
+        });
+
+  const rows = [
+    ...dataRows,
+    ['', 'TOTALS', '', formatInvoiceINR(totalDebits), formatInvoiceINR(totalCredits), formatInvoiceINR(currentBalance)],
+  ];
+
+  return {
+    ...brand,
+    party: {
+      name: bankAccount.bankName.toUpperCase(),
+      extra: accountExtra,
+    },
+    dateLabel,
+    sections: [
+      {
+        title: `PASSBOOK LEDGER TRANSACTIONS (${transactions.length})`,
+        columns: ['DATE', 'PARTICULARS / DESCRIPTION', 'REF / CHQ NO', 'WITHDRAWAL (DR)', 'DEPOSIT (CR)', 'BALANCE'],
+        rows,
+      },
+    ],
+    summary: [
+      { label: 'Total Entries', value: `${transactions.length} Records` },
+      { label: 'Total Withdrawals (Debit)', value: formatInvoiceINR(totalDebits) },
+      { label: 'Total Deposits (Credit)', value: formatInvoiceINR(totalCredits) },
+      { label: 'Closing Net Balance', value: formatInvoiceINR(currentBalance) },
+    ],
+    capturedAt: new Date().toISOString(),
+  };
+}
 
 interface BankStatementPrintPreviewModalProps {
   isOpen: boolean;
@@ -29,16 +112,18 @@ export const BankStatementPrintPreviewModal: React.FC<BankStatementPrintPreviewM
 }) => {
   if (!isOpen) return null;
 
-  const formatInvoiceINR = (val: number) => {
-    const formatted = Math.abs(val || 0).toLocaleString('en-IN', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-    return `₹${formatted}/-`;
-  };
-
   const currentDate = new Date();
   const formattedToday = formatToDDMMYYYY(currentDate.toISOString().slice(0, 10));
+
+  const sharePayload = buildBankStatementPayload({
+    bankAccount,
+    transactions,
+    fromDate,
+    toDate,
+    totalCredits,
+    totalDebits,
+    currentBalance,
+  });
 
   return (
     <PrintPreviewModal
@@ -47,6 +132,10 @@ export const BankStatementPrintPreviewModal: React.FC<BankStatementPrintPreviewM
       title="Bank Passbook Statement"
       badgeLabel="Bank Passbook Statement"
       badgeIcon={<Landmark size={16} color="var(--primary, #e2c399)" />}
+      shareKind="bank"
+      shareEntityId={bankAccount.id}
+      shareTitle={bankAccount.bankName}
+      sharePayload={sharePayload}
     >
       {/* BANK & DATE ROW */}
       <div className="statement-meta-row" style={{ fontSize: '18px' }}>
@@ -151,7 +240,7 @@ export const BankStatementPrintPreviewModal: React.FC<BankStatementPrintPreviewM
                       {isDeposit ? formatInvoiceINR(tx.amount) : '-'}
                     </td>
                     <td className="statement-cell" style={{ fontWeight: 700, whiteSpace: 'nowrap' }}>
-                      {tx.balanceAfter !== undefined ? formatInvoiceINR(tx.balanceAfter) : '-'}
+                      -
                     </td>
                   </tr>
                 );

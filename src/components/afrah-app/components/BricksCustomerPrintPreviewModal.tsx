@@ -3,6 +3,105 @@ import type { BrickCustomer, BrickTransaction } from '../types';
 import { formatToDDMMYYYY } from './DateInput';
 import { PrintPreviewModal } from './PrintPreviewModal';
 import { BrickWall } from 'lucide-react';
+import type { StatementSnapshot } from '@/lib/statementSnapshot';
+import { defaultStatementBrand } from '@/lib/statementSnapshot';
+
+const formatInvoiceINR = (val: number) => {
+  const formatted = Math.abs(val || 0).toLocaleString('en-IN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  return `₹${formatted}/-`;
+};
+
+function formatBrickDescription(tx: BrickTransaction): string {
+  const parts = [tx.brickType.toUpperCase()];
+  if (tx.notes) parts.push(tx.notes);
+  if (tx.siteLocation) parts.push(`Site: ${tx.siteLocation}`);
+  return parts.join(' · ');
+}
+
+function buildBrickCustomerPayload(args: {
+  customer: BrickCustomer;
+  transactions: BrickTransaction[];
+  fromDate?: string;
+  toDate?: string;
+  totalAmount: number;
+  totalPaid: number;
+  totalBalance: number;
+  totalQuantity: number;
+}): StatementSnapshot {
+  const {
+    customer,
+    transactions,
+    fromDate,
+    toDate,
+    totalAmount,
+    totalPaid,
+    totalBalance,
+    totalQuantity,
+  } = args;
+
+  const brand = defaultStatementBrand();
+  const formattedToday = formatToDDMMYYYY(new Date().toISOString().slice(0, 10));
+  const dateLabel =
+    fromDate && toDate
+      ? `${formatToDDMMYYYY(fromDate)} to ${formatToDDMMYYYY(toDate)}`
+      : fromDate
+        ? `From ${formatToDDMMYYYY(fromDate)}`
+        : toDate
+          ? `Up to ${formatToDDMMYYYY(toDate)}`
+          : formattedToday;
+
+  const dataRows =
+    transactions.length === 0
+      ? [['—', 'No transaction records found for this customer.', '', '', '', '', '']]
+      : transactions.map((tx) => [
+          formatToDDMMYYYY(tx.date),
+          formatBrickDescription(tx),
+          tx.quantity ? tx.quantity.toLocaleString('en-IN') : '-',
+          tx.rate ? `₹${tx.rate}` : '-',
+          formatInvoiceINR(tx.totalAmount),
+          formatInvoiceINR(tx.paidAmount),
+          formatInvoiceINR(tx.balanceAmount),
+        ]);
+
+  const rows = [
+    ...dataRows,
+    [
+      '',
+      'TOTAL',
+      totalQuantity.toLocaleString('en-IN'),
+      '',
+      formatInvoiceINR(totalAmount),
+      formatInvoiceINR(totalPaid),
+      formatInvoiceINR(totalBalance),
+    ],
+  ];
+
+  return {
+    ...brand,
+    party: { name: customer.name.toUpperCase(), phone: customer.phone },
+    dateLabel,
+    sections: [
+      {
+        title: `DELIVERY ENTRIES & LEDGER TRANSACTIONS (${transactions.length})`,
+        columns: ['DATE', 'BRICK TYPE / DESCRIPTION', 'QTY', 'RATE', 'TOTAL', 'PAID', 'BALANCE'],
+        rows,
+      },
+    ],
+    summary: [
+      {
+        label: 'Total Deliveries',
+        value: `${transactions.length} Batches (${totalQuantity.toLocaleString('en-IN')} units)`,
+      },
+      { label: 'Total Billing', value: formatInvoiceINR(totalAmount) },
+      { label: 'Total Paid', value: formatInvoiceINR(totalPaid) },
+      { label: 'Outstanding Balance', value: formatInvoiceINR(totalBalance) },
+    ],
+    capturedAt: new Date().toISOString(),
+  };
+}
 
 interface BricksCustomerPrintPreviewModalProps {
   isOpen: boolean;
@@ -33,16 +132,19 @@ export const BricksCustomerPrintPreviewModal: React.FC<BricksCustomerPrintPrevie
 }) => {
   if (!isOpen) return null;
 
-  const formatInvoiceINR = (val: number) => {
-    const formatted = Math.abs(val || 0).toLocaleString('en-IN', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-    return `₹${formatted}/-`;
-  };
-
   const currentDate = new Date();
   const formattedToday = formatToDDMMYYYY(currentDate.toISOString().slice(0, 10));
+
+  const sharePayload = buildBrickCustomerPayload({
+    customer,
+    transactions,
+    fromDate,
+    toDate,
+    totalAmount,
+    totalPaid,
+    totalBalance,
+    totalQuantity,
+  });
 
   return (
     <PrintPreviewModal
@@ -51,6 +153,10 @@ export const BricksCustomerPrintPreviewModal: React.FC<BricksCustomerPrintPrevie
       title="Bricks Customer Statement"
       badgeLabel="Bricks Customer Statement"
       badgeIcon={<BrickWall size={16} color="var(--primary, #e2c399)" />}
+      shareKind="brick_customer"
+      shareEntityId={customer.id}
+      shareTitle={customer.name}
+      sharePayload={sharePayload}
     >
       {/* CUSTOMER NAME & DATE ROW */}
       <div className="statement-meta-row" style={{ fontSize: '18px' }}>

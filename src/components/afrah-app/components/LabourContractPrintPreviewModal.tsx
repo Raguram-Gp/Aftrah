@@ -3,6 +3,8 @@ import type { LabourContract, LabourContractEntry } from '../types';
 import { formatToDDMMYYYY } from './DateInput';
 import { PrintPreviewModal } from './PrintPreviewModal';
 import { HardHat } from 'lucide-react';
+import type { StatementSnapshot } from '@/lib/statementSnapshot';
+import { defaultStatementBrand } from '@/lib/statementSnapshot';
 
 interface LabourContractPrintPreviewModalProps {
   isOpen: boolean;
@@ -39,6 +41,48 @@ export const LabourContractPrintPreviewModal: React.FC<LabourContractPrintPrevie
   const formattedToday = formatToDDMMYYYY(currentDate.toISOString().slice(0, 10));
   const totalDays = entries.reduce((sum, e) => sum + (e.days || 0), 0);
 
+  const musterRows: string[][] =
+    entries.length === 0
+      ? [['—', '—', 'No daily muster work entries found for this contract.', '', '', '']]
+      : entries.map((entry, index) => {
+          const workType = entry.note
+            ? `${entry.workType.toUpperCase()} (${entry.note})`
+            : entry.workType.toUpperCase();
+          return [
+            String(index + 1),
+            formatToDDMMYYYY(entry.date),
+            workType,
+            String(entry.days),
+            entry.salaryPerDay ? `₹${entry.salaryPerDay}` : '-',
+            formatInvoiceINR(entry.totalAmount),
+          ];
+        });
+
+  musterRows.push(['', '', 'TOTAL', String(totalDays), '', formatInvoiceINR(paidAmount)]);
+
+  const sharePayload: StatementSnapshot = {
+    ...defaultStatementBrand(),
+    party: {
+      name: contract.labourName.toUpperCase(),
+      phone: contract.phone,
+      extra: contract.siteName ? [contract.siteName] : undefined,
+    },
+    dateLabel: formattedToday,
+    sections: [
+      {
+        title: `DAILY MUSTER ROLL & WORK ENTRIES (${entries.length})`,
+        columns: ['S.NO', 'DATE', 'WORK TYPE', 'DAYS', 'RATE/DAY', 'AMOUNT'],
+        rows: musterRows,
+      },
+    ],
+    summary: [
+      { label: 'Agreed Contract Charge', value: formatInvoiceINR(labourCharge) },
+      { label: 'Total Paid to Date', value: formatInvoiceINR(paidAmount) },
+      { label: 'Balance Payable', value: formatInvoiceINR(balanceAmount) },
+    ],
+    capturedAt: new Date().toISOString(),
+  };
+
   return (
     <PrintPreviewModal
       isOpen={isOpen}
@@ -46,6 +90,10 @@ export const LabourContractPrintPreviewModal: React.FC<LabourContractPrintPrevie
       title={contractType === 'construction' ? 'Labour Muster Roll Statement' : 'Interior Labour Statement'}
       badgeLabel={contractType === 'construction' ? 'Labour Muster Roll' : 'Interior Labour Statement'}
       badgeIcon={<HardHat size={16} color="var(--primary, #e2c399)" />}
+      shareKind={contractType === 'interior' ? 'interior_labour_contract' : 'labour_contract'}
+      shareEntityId={contract.id}
+      shareTitle={contract.labourName}
+      sharePayload={sharePayload}
     >
       {/* CONTRACTOR INFO ROW */}
       <div className="statement-meta-row" style={{ fontSize: '18px' }}>

@@ -5,5 +5,8 @@ export const onRequest = defineMiddleware((context, next) => {
   if (path !== '/afrah-app' && path.startsWith('/afrah-app/')) {
     return next('/afrah-app');
   }
+  if (path !== '/s' && path.startsWith('/s/')) {
+    return next('/s');
+  }
   return next();
 });

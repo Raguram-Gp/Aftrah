@@ -625,6 +625,8 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
       <TablePrintPreviewModal
         isOpen={isPrintPreviewOpen}
         onClose={() => setIsPrintPreviewOpen(false)}
+        shareKind="interior_client"
+        shareTitle="Interior Clients Directory"
         title="Interior Clients Directory"
         badgeLabel="Interior Clients Directory"
         badgeIcon={<Paintbrush size={16} color="var(--primary, #e2c399)" />}

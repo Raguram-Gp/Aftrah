@@ -791,6 +791,8 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
       <TablePrintPreviewModal
         isOpen={isPrintPreviewOpen}
         onClose={() => setIsPrintPreviewOpen(false)}
+        shareKind="brick_expenses"
+        shareTitle="Production Expenses Statement"
         title="Production Expenses Statement"
         badgeLabel="Brick Production Expenses"
         badgeIcon={<Flame size={16} color="var(--primary, #e2c399)" />}

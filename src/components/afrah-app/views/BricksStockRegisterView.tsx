@@ -315,6 +315,8 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
       <TablePrintPreviewModal
         isOpen={isPrintPreviewOpen}
         onClose={() => setIsPrintPreviewOpen(false)}
+        shareKind="brick_stock_register"
+        shareTitle="Stock Register & Inventory Statement"
         title="Stock Register & Inventory Statement"
         badgeLabel="Brick Stock Register"
         badgeIcon={<Boxes size={16} color="var(--primary, #e2c399)" />}

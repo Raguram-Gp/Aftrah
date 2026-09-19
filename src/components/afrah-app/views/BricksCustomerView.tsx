@@ -697,6 +697,8 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
       <TablePrintPreviewModal
         isOpen={isPrintPreviewOpen}
         onClose={() => setIsPrintPreviewOpen(false)}
+        shareKind="brick_customer"
+        shareTitle="Bricks Customer Directory"
         title="Bricks Customer Directory"
         badgeLabel="Bricks Customer Directory"
         badgeIcon={<BrickWall size={16} color="var(--primary, #e2c399)" />}
