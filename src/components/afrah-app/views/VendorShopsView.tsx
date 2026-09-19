@@ -327,7 +327,7 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
                           </div>
                         </td>
                         <td>
-                          <span className="cell-amount">
+                          <span className={`cell-amount ${pending > 0 ? 'is-negative' : 'is-positive'}`}>
                             {formatINR(pending)}
                           </span>
                         </td>

@@ -54,7 +54,7 @@ export const BankStatementPrintPreviewModal: React.FC<BankStatementPrintPreviewM
           <span className="meta-label">BANK / A/C:</span>{' '}
           <span className="meta-name-value">{bankAccount.bankName.toUpperCase()}</span>
           <span style={{ fontSize: '14px', marginLeft: '10px', opacity: 0.85 }}>
-            (A/C: {bankAccount.accountNumber} · {bankAccount.branch} · IFSC: {bankAccount.ifsc})
+            (A/C: {bankAccount.accountNumber || '—'} · {bankAccount.branch || '—'} · IFSC: {bankAccount.ifscCode || '—'})
           </span>
         </div>
         <div className="meta-right">
@@ -125,10 +125,10 @@ export const BankStatementPrintPreviewModal: React.FC<BankStatementPrintPreviewM
                         fontWeight: 600
                       }}
                     >
-                      {tx.description}
+                      {tx.note || '—'}
                     </td>
                     <td className="statement-cell" style={{ fontWeight: 500 }}>
-                      {tx.referenceNumber || '-'}
+                      {'-'}
                     </td>
                     <td
                       className="statement-cell"

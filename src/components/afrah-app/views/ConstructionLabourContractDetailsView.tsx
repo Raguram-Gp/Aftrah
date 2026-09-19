@@ -452,11 +452,11 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
               <thead>
                 <tr>
                   <th className="text-center" style={{ width: '55px' }}>S.NO</th>
-                  <th style={{ width: '105px' }}>DATE</th>
+                  <th style={{ width: '155px' }}>DATE</th>
                   <th>WORK TYPE</th>
-                  <th style={{ width: '125px' }}>DAYS</th>
-                  <th style={{ width: '150px' }}>SALARY / DAY</th>
-                  <th style={{ width: '150px' }}>TOTAL AMOUNT</th>
+                  <th style={{ width: '155px' }}>DAYS</th>
+                  <th style={{ width: '200px' }}>SALARY / DAY</th>
+                  <th style={{ width: '200px' }}>TOTAL AMOUNT</th>
                   <th style={{ width: '80px', textAlign: 'center' }} className="no-print">ACTIONS</th>
                 </tr>
               </thead>
@@ -538,19 +538,6 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
                   ))
                 )}
               </tbody>
-              {filteredEntries.length > 0 && (
-                <tfoot>
-                  <tr style={{ background: 'rgba(255, 255, 255, 0.02)', fontWeight: 700 }}>
-                    <td colSpan={3} style={{ textAlign: 'right', padding: '12px 16px', color: 'var(--text-secondary)' }}>
-                      Total ({filteredEntries.length} entries):
-                    </td>
-                    <td style={{ textAlign: 'center', color: '#60a5fa' }}>{totalDays}</td>
-                    <td>-</td>
-                    <td className="cell-amount">{formatINR(paidAmount)}</td>
-                    <td className="no-print" />
-                  </tr>
-                </tfoot>
-              )}
             </table>
           </div>
 

@@ -155,7 +155,7 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
                     {formatInvoiceINR(tx.totalAmount)}
                   </td>
                   <td className="statement-cell" style={{ fontWeight: 700, color: '#16a34a', whiteSpace: 'nowrap' }}>
-                    {formatInvoiceINR(tx.paidAmount)}
+                    {formatInvoiceINR(tx.receivedAmount)}
                   </td>
                   <td
                     className="statement-cell"

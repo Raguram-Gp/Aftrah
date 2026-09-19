@@ -989,26 +989,31 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
             ? ['S.NO', 'DATE', 'STOCK OPENING', 'CURRENT PRODUCTION', 'SALES', 'PENDING STOCK']
             : ['S.NO', 'DATE', 'ITEM', 'STOCK OPENING', `MATERIAL USAGE (${unitLabel})`, 'PENDING STOCK']
         }
-        colAlignments={['center', 'center', 'center', 'center', 'center', 'center']}
+        colAlignments={
+          isBricks
+            ? ['center', 'center', 'right', 'right', 'right', 'right']
+            : ['center', 'center', 'left', 'right', 'right', 'right']
+        }
         rows={filteredEntries.map((entry, idx) => {
           const openingVal = entry.stockOpening !== undefined ? entry.stockOpening : 0;
-          const prodVal = entry.currentProduction !== undefined ? entry.currentProduction : (entry.type === 'production' ? entry.quantity : 0);
-          const salesVal = entry.sales !== undefined ? entry.sales : (entry.type === 'sales' ? entry.quantity : 0);
+          const prodVal = entry.currentProduction !== undefined ? entry.currentProduction : (entry.type === 'production' ? entry.quantity : 0) || 0;
+          const salesVal = entry.sales !== undefined ? entry.sales : (entry.type === 'sales' ? entry.quantity : 0) || 0;
           const usageVal = entry.materialUsage !== undefined ? entry.materialUsage : salesVal;
           const pendingVal = entry.pendingStock !== undefined
             ? entry.pendingStock
             : isBricks
-            ? openingVal + (prodVal || 0) - (salesVal || 0)
-            : openingVal - (usageVal || 0);
+              ? openingVal + Number(prodVal) - Number(salesVal)
+              : openingVal - Number(usageVal);
+          const fmt = (n: number) => Number(n).toLocaleString('en-IN');
 
           if (isBricks) {
             return [
               idx + 1,
               formatToDDMMYYYY(entry.date),
-              Number(openingVal).toLocaleString('en-IN'),
-              prodVal ? Number(prodVal).toLocaleString('en-IN') : '-',
-              salesVal ? Number(salesVal).toLocaleString('en-IN') : '-',
-              <strong>{Number(pendingVal).toLocaleString('en-IN')} {unitLabel}</strong>
+              fmt(openingVal),
+              Number(prodVal) > 0 ? fmt(Number(prodVal)) : '-',
+              Number(salesVal) > 0 ? fmt(Number(salesVal)) : '-',
+              <strong>{fmt(Number(pendingVal))} {unitLabel}</strong>
             ];
           }
 
@@ -1016,15 +1021,16 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
             idx + 1,
             formatToDDMMYYYY(entry.date),
             entry.item || item.item,
-            Number(openingVal).toLocaleString('en-IN'),
-            usageVal ? Number(usageVal).toLocaleString('en-IN') : '-',
-            <strong>{Number(pendingVal).toLocaleString('en-IN')} {unitLabel}</strong>
+            fmt(openingVal),
+            Number(usageVal) > 0 ? fmt(Number(usageVal)) : '-',
+            <strong>{fmt(Number(pendingVal))} {unitLabel}</strong>
           ];
         })}
         summaryItems={[
           { label: 'Item Name', value: item.item },
-          { label: 'Ledger Entries', value: `${filteredEntries.length} Transactions` },
-          { label: 'Current Pending Stock', value: `${Number(item.pendingStock || 0).toLocaleString('en-IN')} ${unitLabel}`, highlightColor: '#16a34a' }
+          { label: isBricks ? 'Total Sales' : 'Total Usage', value: Number(item.materialUsage ?? item.sales ?? 0).toLocaleString('en-IN') },
+          { label: 'Ledger Entries', value: `${filteredEntries.length} ${filteredEntries.length === 1 ? 'Entry' : 'Entries'}` },
+          { label: 'Pending Stock', value: `${Number(item.pendingStock || 0).toLocaleString('en-IN')} ${unitLabel}`, highlightColor: '#16a34a' }
         ]}
       />
     </div>

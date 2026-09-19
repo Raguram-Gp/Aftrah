@@ -413,12 +413,14 @@ export const InteriorLabourContractView: React.FC<
                         </div>
                       </td>
                       <td>
-                        <strong className="cell-amount">
+                        <strong className="cell-amount is-primary">
                           {formatINR(charge)}
                         </strong>
                       </td>
                       <td>
-                        <span className="cell-amount">
+                        <span
+                          className={`cell-amount-pill ${balance > 0 ? "is-negative" : "is-positive"}`}
+                        >
                           {formatINR(balance)}
                         </span>
                       </td>

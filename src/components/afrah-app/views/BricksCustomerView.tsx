@@ -454,7 +454,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                         </div>
                       </td>
                       <td style={{ whiteSpace: 'nowrap' }}>
-                        <span className="cell-amount">
+                        <span className={`cell-amount-pill ${currentBalance > 0 ? 'is-negative' : 'is-positive'}`}>
                           {formatINR(currentBalance)}
                         </span>
                       </td>

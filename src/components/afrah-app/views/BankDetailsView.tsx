@@ -293,6 +293,27 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
     );
   }, [activeLedgerBank, ledgerFromDate, ledgerToDate]);
 
+  const isLedgerCredit = (tx: BankTransaction) =>
+    tx.type === "credit" || tx.type === "deposit" || tx.type === "adjustment";
+
+  const ledgerCredits = useMemo(
+    () =>
+      filteredLedgerTransactions.reduce(
+        (sum, tx) => (isLedgerCredit(tx) ? sum + (tx.amount || 0) : sum),
+        0,
+      ),
+    [filteredLedgerTransactions],
+  );
+
+  const ledgerDebits = useMemo(
+    () =>
+      filteredLedgerTransactions.reduce(
+        (sum, tx) => (!isLedgerCredit(tx) ? sum + (tx.amount || 0) : sum),
+        0,
+      ),
+    [filteredLedgerTransactions],
+  );
+
   // Ledger Multi-select Checkbox Handlers
   const isAllTxSelected =
     filteredLedgerTransactions.length > 0 &&
@@ -1032,7 +1053,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
           isOpen={isPrintPreviewOpen}
           onClose={() => setIsPrintPreviewOpen(false)}
           bankAccount={activeLedgerBank}
-          transactions={filteredTransactions}
+          transactions={filteredLedgerTransactions}
           fromDate={ledgerFromDate}
           toDate={ledgerToDate}
           totalCredits={ledgerCredits}

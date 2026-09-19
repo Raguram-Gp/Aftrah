@@ -436,14 +436,14 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
                           )}
                         </div>
                       </td>
-                      <td className="cell-amount">
+                      <td className="cell-amount is-positive">
                         {formatINR(totalAdvance)}
                       </td>
-                      <td className="cell-amount">
+                      <td className="cell-amount is-primary">
                         {formatINR(totalExpenses)}
                       </td>
                       <td>
-                        <span className="cell-amount">
+                        <span className={`cell-amount-pill ${balance >= 0 ? 'is-positive' : 'is-negative'}`}>
                           {formatINR(balance)}
                         </span>
                       </td>
