@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /afrah-app
+Disallow: /afrah-app/
+Disallow: /s
+Disallow: /s/

@@ -9,7 +9,8 @@ import {
   Flame,
   Boxes,
   ChevronRight,
-  HardHat
+  HardHat,
+  LogOut
 } from 'lucide-react';
 import type {
   Client,
@@ -62,6 +63,7 @@ interface AfrahAppTopBarProps {
   onNavigateVendorCategory?: () => void;
   onNavigateBricksRoot?: (subTab?: BricksSubTab) => void;
   isLiveDb: boolean;
+  onSignOut?: () => void;
 }
 
 export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
@@ -102,7 +104,8 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
   onNavigateVendorRoot,
   onNavigateVendorCategory,
   onNavigateBricksRoot,
-  isLiveDb
+  isLiveDb,
+  onSignOut
 }) => {
   return (
     <header className="afrah-app-topbar">
@@ -363,6 +366,13 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
           <span className={`db-dot ${isLiveDb ? 'live' : 'local'}`} />
           <span>{isLiveDb ? 'Supabase Connected' : 'Local / Cache Mode'}</span>
         </div>
+
+        {onSignOut ? (
+          <button type="button" className="afrah-app-signout-btn" onClick={onSignOut}>
+            <LogOut size={13} />
+            <span>Sign out</span>
+          </button>
+        ) : null}
 
         {activeTab === 'clients' ? (
           <span className="stat-label">

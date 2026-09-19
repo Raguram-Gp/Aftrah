@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
+import { AfrahAppAuthGate } from './AfrahAppAuthGate';
 import { AfrahAppSidebar, type TabType } from './layout/AfrahAppSidebar';
 import { AfrahAppTopBar } from './layout/AfrahAppTopBar';
 import { ToastContainer, showToast } from './layout/ToastContainer';
@@ -64,9 +65,10 @@ import {
   Paintbrush,
   HardHat
 } from 'lucide-react';
+import { supabase } from '@/lib/supabaseClient';
 import './styles/afrah-app.css';
 
-export const AfrahAppPortal: React.FC = () => {
+const AfrahAppShell: React.FC = () => {
   const initialNav = useMemo(() => parseNavState(), []);
   const [activeTab, setActiveTab] = useState<TabType>(initialNav.activeTab);
   const [activeInteriorSubTab, setActiveInteriorSubTab] = useState<InteriorSubTab>(initialNav.activeInteriorSubTab);
@@ -615,6 +617,9 @@ export const AfrahAppPortal: React.FC = () => {
             });
           }}
           isLiveDb={isLiveDb}
+          onSignOut={() => {
+            void supabase.auth.signOut();
+          }}
         />
 
         {/* Global Error Banner (if any) */}
@@ -1354,5 +1359,11 @@ export const AfrahAppPortal: React.FC = () => {
     </div>
   );
 };
+
+export const AfrahAppPortal: React.FC = () => (
+  <AfrahAppAuthGate>
+    <AfrahAppShell />
+  </AfrahAppAuthGate>
+);
 
 export default AfrahAppPortal;
