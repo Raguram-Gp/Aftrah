@@ -2,25 +2,60 @@ import React, { useState, useMemo } from 'react';
 import type { BrickStockItem } from '../types';
 import {
   Boxes,
+  Plus,
+  Pencil,
   Search,
   ChevronLeft,
   ChevronRight,
-  Printer
+  Printer,
+  X
 } from 'lucide-react';
+import { TableFormPopover } from '../components/TableFormPopover';
 import { TablePrintPreviewModal } from '../components/TablePrintPreviewModal';
 
 interface BricksStockRegisterViewProps {
   stockItems: BrickStockItem[];
+  stats?: {
+    totalOpening: number;
+    totalProduction: number;
+    totalSales: number;
+    totalPendingStock: number;
+    totalStockUnits: number;
+  };
   onSelectItem?: (item: BrickStockItem) => void;
+  onAddStockItem: (
+    data: Omit<BrickStockItem, 'id' | 'sNo' | 'pendingStock' | 'createdAt' | 'updatedAt'>
+  ) => Promise<any>;
+  onUpdateStockItem: (updated: BrickStockItem) => Promise<any>;
+  onDeleteStockItem?: (id: string) => Promise<any>;
+  onDeleteMultipleStockItems?: (ids: string[]) => Promise<any>;
 }
 
 export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = ({
   stockItems,
-  onSelectItem
+  onSelectItem,
+  onAddStockItem,
+  onUpdateStockItem
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [addItem, setAddItem] = useState('');
+  const [addOpening, setAddOpening] = useState('');
+  const [addNewStock, setAddNewStock] = useState('');
+  const [addUsage, setAddUsage] = useState('');
+  const [addUnitName, setAddUnitName] = useState('Units');
+  const [addError, setAddError] = useState('');
+  const [isAdding, setIsAdding] = useState(false);
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [editItem, setEditItem] = useState('');
+  const [editUnitName, setEditUnitName] = useState('Units');
+  const [editError, setEditError] = useState('');
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
 
   // Filtered Stock Items
   const filteredItems = useMemo(() => {
@@ -37,7 +72,6 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
     );
   }, [stockItems, searchQuery]);
 
-  // Overall Totals
   const totalSales = useMemo(() => {
     return filteredItems.reduce((sum, item) => sum + (Number(item.sales) || 0), 0);
   }, [filteredItems]);
@@ -62,6 +96,111 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
 
   // Print Statement Preview State
   const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+
+  const existingItemNames = useMemo(
+    () => new Set(stockItems.map((item) => item.item.trim().toLowerCase())),
+    [stockItems]
+  );
+
+  const trimmedAddItem = addItem.trim();
+  const isDuplicateName =
+    trimmedAddItem.length > 0 && existingItemNames.has(trimmedAddItem.toLowerCase());
+  const isAddFormValid = trimmedAddItem.length > 0 && !isDuplicateName && !isAdding;
+
+  const trimmedEditItem = editItem.trim();
+  const isEditDuplicateName =
+    trimmedEditItem.length > 0 &&
+    stockItems.some(
+      (item) =>
+        item.id !== editingItemId &&
+        item.item.trim().toLowerCase() === trimmedEditItem.toLowerCase()
+    );
+  const isEditFormValid =
+    trimmedEditItem.length > 0 && !isEditDuplicateName && !isSavingEdit && Boolean(editingItemId);
+
+  const resetAddForm = () => {
+    setAddItem('');
+    setAddOpening('');
+    setAddNewStock('');
+    setAddUsage('');
+    setAddUnitName('Units');
+    setAddError('');
+  };
+
+  const handleAddSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isAddFormValid) return;
+
+    setIsAdding(true);
+    setAddError('');
+    try {
+      await onAddStockItem({
+        item: trimmedAddItem,
+        stockOpening: parseFloat(addOpening) || 0,
+        currentProduction: parseFloat(addNewStock) || 0,
+        sales: parseFloat(addUsage) || 0,
+        materialUsage: parseFloat(addUsage) || 0,
+        unitName: addUnitName.trim() || 'Units',
+        notes: '',
+        entries: []
+      });
+      resetAddForm();
+      setIsAddModalOpen(false);
+      setCurrentPage(1);
+    } catch (err: any) {
+      const message = String(err?.message || '');
+      if (err?.code === '23505' || message.toLowerCase().includes('duplicate')) {
+        setAddError('A stock category with this name already exists.');
+      } else {
+        setAddError(message || 'Failed to add stock category.');
+      }
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const handleOpenEdit = (item: BrickStockItem, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditingItemId(item.id);
+    setEditItem(item.item);
+    setEditUnitName(item.unitName || 'Units');
+    setEditError('');
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEdit = () => {
+    setIsEditModalOpen(false);
+    setEditingItemId(null);
+    setEditError('');
+  };
+
+  const handleSaveEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isEditFormValid || !editingItemId) return;
+
+    const target = stockItems.find((item) => item.id === editingItemId);
+    if (!target) return;
+
+    setIsSavingEdit(true);
+    setEditError('');
+    try {
+      await onUpdateStockItem({
+        ...target,
+        item: trimmedEditItem,
+        unitName: editUnitName.trim() || 'Units'
+      });
+      handleCloseEdit();
+    } catch (err: any) {
+      const message = String(err?.message || '');
+      if (err?.code === '23505' || message.toLowerCase().includes('duplicate')) {
+        setEditError('A stock category with this name already exists.');
+      } else {
+        setEditError(message || 'Failed to update stock category.');
+      }
+    } finally {
+      setIsSavingEdit(false);
+    }
+  };
 
   // Print Handler - opens preview modal first
   const handlePrint = () => {
@@ -98,19 +237,22 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
         </div>
       </div>
 
-      <div className="client-details-top-actions no-print">
-        <button
-          onClick={handlePrint}
-          className="afrah-app-back-btn"
-          title="Preview and Print Statement"
-        >
-          <Printer size={15} />
-          <span>Print Preview / Statement</span>
-        </button>
+      {/* Screen Header Bar */}
+      <div className="client-details-header no-print">
+        <div className="client-details-top-actions">
+          <button
+            onClick={handlePrint}
+            className="afrah-app-back-btn"
+            title="Preview and Print Statement"
+          >
+            <Printer size={15} />
+            <span>Print Preview / Statement</span>
+          </button>
+        </div>
       </div>
 
-      {/* MAIN OVERVIEW TABLE SECTION (Full Width, Add Details Panel Removed) */}
-      <section className="afrah-app-table-section" style={{ width: '100%' }}>
+      {/* MAIN OVERVIEW TABLE SECTION */}
+      <section className={`afrah-app-table-section${isAddModalOpen ? ' with-add-popover' : ''}`} style={{ width: '100%' }}>
         <div className="afrah-app-section-header no-print">
           <div>
             <div className="flex-center-10">
@@ -133,9 +275,7 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
               </h1>
             </div>
             <span className="afrah-app-section-subtitle">
-              {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'} · Total Outflow / Sales:{' '}
-              <strong className="text-negative">{Number(totalSales).toLocaleString('en-IN')}</strong> · Total Pending Stock:{' '}
-              <strong className="text-primary-gold">{Number(totalPendingStock).toLocaleString('en-IN')} Units</strong> · Click any row to open its detailed ledger
+              {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'} · Click any row to open its detailed ledger
             </span>
           </div>
 
@@ -155,6 +295,117 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
               />
             </div>
 
+            <TableFormPopover
+              open={isAddModalOpen}
+              onOpenChange={setIsAddModalOpen}
+              label="Add Details"
+              onOpen={resetAddForm}
+            >
+              <form onSubmit={handleAddSubmit} className="afrah-app-add-form">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Stock Category <span className="required-star">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Flyash, Cement, Coal..."
+                    value={addItem}
+                    onChange={(e) => {
+                      setAddItem(e.target.value);
+                      setAddError('');
+                    }}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Opening Stock</label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0"
+                    placeholder="0"
+                    value={addOpening}
+                    onChange={(e) => setAddOpening(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">New Stock</label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0"
+                    placeholder="0"
+                    value={addNewStock}
+                    onChange={(e) => setAddNewStock(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Usage</label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0"
+                    placeholder="0"
+                    value={addUsage}
+                    onChange={(e) => setAddUsage(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Unit</label>
+                  <input
+                    type="text"
+                    placeholder="Units"
+                    value={addUnitName}
+                    onChange={(e) => setAddUnitName(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                {!trimmedAddItem && (
+                  <div className="afrah-app-validation-notice mt-6">
+                    * Enter a stock category name to enable submission.
+                  </div>
+                )}
+
+                {isDuplicateName && (
+                  <div className="afrah-app-validation-notice mt-6">
+                    A stock category named "{trimmedAddItem}" already exists.
+                  </div>
+                )}
+
+                {addError && (
+                  <div className="afrah-app-validation-notice mt-6">
+                    {addError}
+                  </div>
+                )}
+
+                <div className="afrah-app-add-popover-actions">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddModalOpen(false)}
+                    className="afrah-app-back-btn"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!isAddFormValid}
+                    className="btn-theme-primary"
+                  >
+                    <Plus size={16} />
+                    <span>{isAdding ? 'Saving...' : 'Save Details'}</span>
+                  </button>
+                </div>
+              </form>
+            </TableFormPopover>
           </div>
         </div>
 
@@ -164,18 +415,19 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
             <thead>
               <tr>
                 <th className="text-center" style={{ width: '70px' }}>S NO</th>
-                <th style={{ width: '30%', paddingLeft: '16px' }}>ITEM</th>
-                <th style={{ width: '35%', textAlign: 'left', paddingLeft: '16px' }}>TOTAL SALES / USAGE</th>
-                <th style={{ width: '35%', textAlign: 'right', paddingRight: '16px' }}>PENDING STOCK</th>
+                <th style={{ width: '28%', paddingLeft: '16px' }}>ITEM</th>
+                <th style={{ width: '32%', textAlign: 'left', paddingLeft: '16px' }}>TOTAL SALES / USAGE</th>
+                <th style={{ width: '28%', textAlign: 'right', paddingRight: '16px' }}>PENDING STOCK</th>
+                <th className="no-print text-center" style={{ width: '80px' }}>EDIT</th>
               </tr>
             </thead>
             <tbody>
               {paginatedItems.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="empty-state-cell">
+                  <td colSpan={5} className="empty-state-cell">
                     {searchQuery
                       ? 'No matching stock items found.'
-                      : 'No stock items found. Use the "Add details" form on the right to add one.'}
+                      : 'No stock categories found. Use "Add Details" to add one.'}
                   </td>
                 </tr>
               ) : (
@@ -238,6 +490,18 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
                         }}
                       >
                         {Number(item.pendingStock || 0).toLocaleString('en-IN')} Units
+                      </td>
+
+                      <td className="no-print text-center" onClick={(e) => e.stopPropagation()}>
+                        <div className="cell-actions">
+                          <button
+                            onClick={(e) => handleOpenEdit(item, e)}
+                            className="afrah-app-action-btn afrah-app-edit-btn"
+                            title={`Edit ${item.item}`}
+                          >
+                            <Pencil size={13} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -363,6 +627,95 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
           { label: 'Current Available Stock', value: `${Number(totalPendingStock).toLocaleString('en-IN')} Units`, highlightColor: '#16a34a' }
         ]}
       />
+
+      {isEditModalOpen && (
+        <div className="afrah-app-modal-overlay" onClick={handleCloseEdit}>
+          <div
+            className="afrah-app-modal-container modal-w-sm"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="afrah-app-modal-header">
+              <div className="flex-center">
+                <Pencil size={17} color="var(--primary)" />
+                <h3 className="afrah-app-modal-title">Edit Stock Category</h3>
+              </div>
+              <button
+                onClick={handleCloseEdit}
+                className="afrah-app-modal-close-btn"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit}>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Stock Category <span className="required-star">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Flyash, Cement, Coal..."
+                    value={editItem}
+                    onChange={(e) => {
+                      setEditItem(e.target.value);
+                      setEditError('');
+                    }}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Unit</label>
+                  <input
+                    type="text"
+                    placeholder="Units"
+                    value={editUnitName}
+                    onChange={(e) => setEditUnitName(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                {!trimmedEditItem && (
+                  <div className="afrah-app-validation-notice mt-6">
+                    * Enter a stock category name to save changes.
+                  </div>
+                )}
+
+                {isEditDuplicateName && (
+                  <div className="afrah-app-validation-notice mt-6">
+                    A stock category named "{trimmedEditItem}" already exists.
+                  </div>
+                )}
+
+                {editError && (
+                  <div className="afrah-app-validation-notice mt-6">
+                    {editError}
+                  </div>
+                )}
+              </div>
+
+              <div className="afrah-app-modal-footer">
+                <button
+                  type="button"
+                  onClick={handleCloseEdit}
+                  className="afrah-app-back-btn"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!isEditFormValid}
+                  className="btn-theme-primary"
+                >
+                  <span>{isSavingEdit ? 'Saving...' : 'Save Changes'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

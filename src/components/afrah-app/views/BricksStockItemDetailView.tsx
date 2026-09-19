@@ -85,7 +85,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
 
   const previewNewPending = isBricks
     ? carriedOpening + addProdNum - addSalesNum
-    : carriedOpening - addUsageNum;
+    : carriedOpening + addProdNum - addUsageNum;
 
   // Edit Form Preview
   const editProdNum = parseFloat(editProduction) || 0;
@@ -94,20 +94,12 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
 
   const editPreviewPending = isBricks
     ? editOpening + editProdNum - editSalesNum
-    : editOpening - editUsageNum;
+    : editOpening + editProdNum - editUsageNum;
 
-  // Validations
-  const isAddValid =
-    isValidDate(entryDate) &&
-    (isBricks
-      ? entryProduction !== '' || entrySales !== ''
-      : entryUsage !== '');
+  // Validations — date is required; new stock and usage may be zero
+  const isAddValid = isValidDate(entryDate);
 
-  const isEditValid =
-    isValidDate(editDate) &&
-    (isBricks
-      ? editProduction !== '' || editSales !== ''
-      : editUsage !== '');
+  const isEditValid = isValidDate(editDate);
 
   // Handle Add Entry Submit
   const handleAddSubmit = async (e: React.FormEvent) => {
@@ -123,9 +115,10 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
     } else {
       await onAddEntry(item.id, {
         date: entryDate,
+        currentProduction: addProdNum,
+        materialInflow: addProdNum,
         materialUsage: addUsageNum,
-        sales: addUsageNum,
-        currentProduction: 0
+        sales: addUsageNum
       });
     }
 
@@ -150,7 +143,13 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
     setEditingEntryId(entry.id);
     setEditDate(entry.date);
     setEditOpening(entry.stockOpening !== undefined ? entry.stockOpening : 0);
-    setEditProduction(entry.currentProduction !== undefined ? entry.currentProduction.toString() : '0');
+    setEditProduction(
+      entry.currentProduction !== undefined
+        ? entry.currentProduction.toString()
+        : entry.materialInflow !== undefined
+          ? entry.materialInflow.toString()
+          : '0'
+    );
     setEditSales(entry.sales !== undefined ? entry.sales.toString() : '0');
     setEditUsage(
       entry.materialUsage !== undefined
@@ -187,7 +186,8 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
         stockOpening: editOpening,
         materialUsage: editUsageNum,
         sales: editUsageNum,
-        currentProduction: 0,
+        currentProduction: editProdNum,
+        materialInflow: editProdNum,
         pendingStock: editPreviewPending,
         balanceAfter: editPreviewPending
       });
@@ -302,7 +302,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
               <span className="afrah-app-section-subtitle">
                 {isBricks
                   ? 'Detailed Stock Opening, Production, Sales & Pending Register for Bricks'
-                  : `Detailed Stock Opening, Material Usage & Pending Register for ${item.item}`}
+                  : `Detailed Stock Opening, New Stock, Usage & Pending Register for ${item.item}`}
               </span>
             </div>
           </div>
@@ -364,7 +364,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
               {Number(item.pendingStock || 0).toLocaleString('en-IN')} Units
             </div>
             <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
-              {isBricks ? 'Opening + Prod - Sales' : 'Opening - Material Usage'}
+              {isBricks ? 'Opening + Prod - Sales' : 'Opening + New Stock - Usage'}
             </span>
           </div>
         </div>
@@ -506,21 +506,33 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                       </div>
                     </>
                   ) : (
-                    <div className="afrah-app-form-group">
-                      <label className="afrah-app-label">
-                        MATERIAL USAGE ({unitLabel}) <span className="required-star">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        step="any"
-                        min="0"
-                        required
-                        placeholder="e.g. 5"
-                        value={entryUsage}
-                        onChange={(e) => setEntryUsage(e.target.value)}
-                        className="afrah-app-input"
-                      />
-                    </div>
+                    <>
+                      <div className="afrah-app-form-group">
+                        <label className="afrah-app-label">NEW STOCK ({unitLabel})</label>
+                        <input
+                          type="number"
+                          step="any"
+                          min="0"
+                          placeholder="0"
+                          value={entryProduction}
+                          onChange={(e) => setEntryProduction(e.target.value)}
+                          className="afrah-app-input"
+                        />
+                      </div>
+
+                      <div className="afrah-app-form-group">
+                        <label className="afrah-app-label">USAGE ({unitLabel})</label>
+                        <input
+                          type="number"
+                          step="any"
+                          min="0"
+                          placeholder="0"
+                          value={entryUsage}
+                          onChange={(e) => setEntryUsage(e.target.value)}
+                          className="afrah-app-input"
+                        />
+                      </div>
+                    </>
                   )}
 
                   <div
@@ -551,9 +563,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
 
                   {!isAddValid && (
                     <div className="afrah-app-validation-notice">
-                      {isBricks
-                        ? '* Date and either Production or Sales are required to submit.'
-                        : '* Date and Material Usage are required to submit.'}
+                      * Date is required. New stock and usage can be 0.
                     </div>
                   )}
 
@@ -595,13 +605,14 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                     <th className="no-print text-center" style={{ width: '90px' }}>EDIT / DELETE</th>
                   </tr>
                 ) : (
-                  /* RAW MATERIALS TABLE HEADER (S NO | DATE | ITEM | STOCK OPENING | MATERIAL USAGE (Units / kg) | PENDING STOCK | EDIT/DELETE) */
+                  /* RAW MATERIALS TABLE HEADER */
                   <tr>
                     <th className="text-center" style={{ width: '60px' }}>S NO</th>
                     <th style={{ width: '110px' }}>DATE</th>
                     <th style={{ width: '110px' }}>ITEM</th>
                     <th>STOCK OPENING</th>
-                    <th>MATERIAL USAGE ({unitLabel})</th>
+                    <th>NEW STOCK</th>
+                    <th>USAGE ({unitLabel})</th>
                     <th>PENDING STOCK</th>
                     <th className="no-print text-center" style={{ width: '90px' }}>EDIT / DELETE</th>
                   </tr>
@@ -610,7 +621,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
               <tbody>
                 {paginatedEntries.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="empty-state-cell">
+                    <td colSpan={isBricks ? 7 : 8} className="empty-state-cell">
                       No entries recorded for this item yet. Use the "Add details" form on the right to log new records.
                     </td>
                   </tr>
@@ -618,14 +629,16 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                   paginatedEntries.map((entry, index) => {
                     const displaySNo = startIndex + index + 1;
                     const openingVal = entry.stockOpening !== undefined ? entry.stockOpening : 0;
-                    const prodVal = entry.currentProduction !== undefined ? entry.currentProduction : (entry.type === 'production' ? entry.quantity : 0);
+                    const prodVal = entry.currentProduction !== undefined
+                      ? entry.currentProduction
+                      : entry.materialInflow !== undefined
+                        ? entry.materialInflow
+                        : (entry.type === 'production' || entry.type === 'inflow' ? entry.quantity : 0);
                     const salesVal = entry.sales !== undefined ? entry.sales : (entry.type === 'sales' ? entry.quantity : 0);
                     const usageVal = entry.materialUsage !== undefined ? entry.materialUsage : salesVal;
                     const pendingVal = entry.pendingStock !== undefined
                       ? entry.pendingStock
-                      : isBricks
-                      ? openingVal + prodVal - salesVal
-                      : openingVal - usageVal;
+                      : openingVal + Number(prodVal || 0) - Number(isBricks ? salesVal : usageVal);
 
                     return (
                       <tr
@@ -681,16 +694,26 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                             </td>
                           </>
                         ) : (
-                          /* MATERIAL USAGE (Soil, Msand, Wood, Diesel) */
-                          <td
-                            style={{
-                              textAlign: 'left',
-                              fontWeight: 700,
-                              color: usageVal > 0 ? '#f87171' : 'var(--text-secondary)'
-                            }}
-                          >
-                            {usageVal > 0 ? Number(usageVal).toLocaleString('en-IN') : '-'}
-                          </td>
+                          <>
+                            <td
+                              style={{
+                                textAlign: 'left',
+                                fontWeight: 700,
+                                color: Number(prodVal) > 0 ? '#3b82f6' : 'var(--text-secondary)'
+                              }}
+                            >
+                              {Number(prodVal) > 0 ? Number(prodVal).toLocaleString('en-IN') : '0'}
+                            </td>
+                            <td
+                              style={{
+                                textAlign: 'left',
+                                fontWeight: 700,
+                                color: Number(usageVal) > 0 ? '#f87171' : 'var(--text-secondary)'
+                              }}
+                            >
+                              {Number(usageVal) > 0 ? Number(usageVal).toLocaleString('en-IN') : '0'}
+                            </td>
+                          </>
                         )}
 
                       {/* PENDING STOCK */}
@@ -889,20 +912,33 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                   </div>
                 </>
               ) : (
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">
-                    Material Usage ({unitLabel}) <span className="required-star">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    step="any"
-                    min="0"
-                    required
-                    value={editUsage}
-                    onChange={(e) => setEditUsage(e.target.value)}
-                    className="afrah-app-input"
-                  />
-                </div>
+                <>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">New Stock ({unitLabel})</label>
+                    <input
+                      type="number"
+                      step="any"
+                      min="0"
+                      placeholder="0"
+                      value={editProduction}
+                      onChange={(e) => setEditProduction(e.target.value)}
+                      className="afrah-app-input"
+                    />
+                  </div>
+
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Usage ({unitLabel})</label>
+                    <input
+                      type="number"
+                      step="any"
+                      min="0"
+                      placeholder="0"
+                      value={editUsage}
+                      onChange={(e) => setEditUsage(e.target.value)}
+                      className="afrah-app-input"
+                    />
+                  </div>
+                </>
               )}
 
               {/* Computed Pending Stock Preview */}
@@ -990,23 +1026,21 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
         headers={
           isBricks
             ? ['S.NO', 'DATE', 'STOCK OPENING', 'CURRENT PRODUCTION', 'SALES', 'PENDING STOCK']
-            : ['S.NO', 'DATE', 'ITEM', 'STOCK OPENING', `MATERIAL USAGE (${unitLabel})`, 'PENDING STOCK']
+            : ['S.NO', 'DATE', 'ITEM', 'STOCK OPENING', 'NEW STOCK', `USAGE (${unitLabel})`, 'PENDING STOCK']
         }
         colAlignments={
           isBricks
             ? ['center', 'center', 'right', 'right', 'right', 'right']
-            : ['center', 'center', 'left', 'right', 'right', 'right']
+            : ['center', 'center', 'left', 'right', 'right', 'right', 'right']
         }
         rows={filteredEntries.map((entry, idx) => {
           const openingVal = entry.stockOpening !== undefined ? entry.stockOpening : 0;
-          const prodVal = entry.currentProduction !== undefined ? entry.currentProduction : (entry.type === 'production' ? entry.quantity : 0) || 0;
+          const prodVal = entry.currentProduction !== undefined ? entry.currentProduction : (entry.type === 'production' || entry.type === 'inflow' ? entry.quantity : 0) || 0;
           const salesVal = entry.sales !== undefined ? entry.sales : (entry.type === 'sales' ? entry.quantity : 0) || 0;
           const usageVal = entry.materialUsage !== undefined ? entry.materialUsage : salesVal;
           const pendingVal = entry.pendingStock !== undefined
             ? entry.pendingStock
-            : isBricks
-              ? openingVal + Number(prodVal) - Number(salesVal)
-              : openingVal - Number(usageVal);
+            : openingVal + Number(prodVal) - Number(isBricks ? salesVal : usageVal);
           const fmt = (n: number) => Number(n).toLocaleString('en-IN');
 
           if (isBricks) {
@@ -1025,7 +1059,8 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
             formatToDDMMYYYY(entry.date),
             entry.item || item.item,
             fmt(openingVal),
-            Number(usageVal) > 0 ? fmt(Number(usageVal)) : '-',
+            fmt(Number(prodVal) || 0),
+            fmt(Number(usageVal) || 0),
             <strong>{fmt(Number(pendingVal))} {unitLabel}</strong>
           ];
         })}

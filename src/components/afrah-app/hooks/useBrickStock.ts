@@ -17,21 +17,20 @@ const recalculateItemTotals = (item: BrickStockItem): BrickStockItem => {
   );
 
   const updatedEntries: BrickStockItemEntry[] = sortedEntries.map((e, idx) => {
-    let prod = 0;
-    let salesOrUsage = 0;
-    let pending = 0;
-
-    const opening = runningOpening; // Carried forward from previous entry
-
-    if (isBricks) {
-      prod = Number(e.currentProduction || (e.type === 'production' ? e.quantity : 0)) || 0;
-      salesOrUsage = Number(e.sales || (e.type === 'sales' ? e.quantity : 0)) || 0;
-      pending = opening + prod - salesOrUsage;
-    } else {
-      prod = 0;
-      salesOrUsage = Number(e.materialUsage !== undefined ? e.materialUsage : e.sales) || 0;
-      pending = opening - salesOrUsage;
-    }
+    const opening = runningOpening;
+    const prod =
+      Number(
+        e.currentProduction ||
+          e.materialInflow ||
+          (e.type === 'production' || e.type === 'inflow' ? e.quantity : 0)
+      ) || 0;
+    const salesOrUsage =
+      Number(
+        e.materialUsage !== undefined
+          ? e.materialUsage
+          : e.sales || (e.type === 'sales' || e.type === 'usage' ? e.quantity : 0)
+      ) || 0;
+    const pending = opening + prod - salesOrUsage;
 
     totalProd += prod;
     totalSalesOrUsage += salesOrUsage;
@@ -45,21 +44,21 @@ const recalculateItemTotals = (item: BrickStockItem): BrickStockItem => {
       currentProduction: prod,
       sales: salesOrUsage,
       materialUsage: salesOrUsage,
-      materialInflow: 0,
+      materialInflow: prod,
       pendingStock: pending,
       balanceAfter: pending,
       type: isBricks
         ? prod >= salesOrUsage
           ? 'production'
           : 'sales'
-        : 'usage',
-      quantity: isBricks && prod > 0 ? prod : salesOrUsage
+        : prod > 0
+          ? 'inflow'
+          : 'usage',
+      quantity: prod > 0 ? prod : salesOrUsage
     };
   });
 
-  const finalPendingStock = isBricks
-    ? baseOpening + totalProd - totalSalesOrUsage
-    : baseOpening - totalSalesOrUsage;
+  const finalPendingStock = baseOpening + totalProd - totalSalesOrUsage;
 
   return {
     ...item,
@@ -215,6 +214,8 @@ export const useBrickStock = () => {
         setError(null);
         const sNo = stockItems.length + 1;
         const opening = Number(data.stockOpening) || 0;
+        const newStock = Number(data.currentProduction) || 0;
+        const usage = Number(data.materialUsage ?? data.sales) || 0;
 
         const { data: inserted, error: insertError } = await supabase
           .from('brick_stock_items')
@@ -234,7 +235,53 @@ export const useBrickStock = () => {
 
         if (insertError) throw insertError;
 
-        const newItem: BrickStockItem = {
+        let entries: BrickStockItemEntry[] = [];
+        if (newStock !== 0 || usage !== 0) {
+          const { data: insertedEntry, error: entryError } = await supabase
+            .from('brick_stock_entries')
+            .insert({
+              stock_item_id: inserted.id,
+              s_no: 1,
+              date: new Date().toISOString().slice(0, 10),
+              item: inserted.item,
+              stock_opening: opening,
+              current_production: newStock,
+              sales: usage,
+              material_usage: usage,
+              material_inflow: newStock,
+              pending_stock: opening + newStock - usage,
+              type: newStock > 0 ? 'inflow' : 'usage',
+              quantity: newStock > 0 ? newStock : usage,
+              notes: null,
+              balance_after: opening + newStock - usage,
+            })
+            .select()
+            .single();
+
+          if (entryError) throw entryError;
+
+          entries = [
+            {
+              id: insertedEntry.id,
+              sNo: insertedEntry.s_no,
+              date: insertedEntry.date,
+              item: insertedEntry.item,
+              stockOpening: Number(insertedEntry.stock_opening),
+              currentProduction: Number(insertedEntry.current_production),
+              sales: Number(insertedEntry.sales),
+              materialUsage: Number(insertedEntry.material_usage),
+              materialInflow: Number(insertedEntry.material_inflow),
+              pendingStock: Number(insertedEntry.pending_stock),
+              type: insertedEntry.type,
+              quantity: Number(insertedEntry.quantity),
+              notes: '',
+              balanceAfter: Number(insertedEntry.balance_after),
+              createdAt: insertedEntry.created_at,
+            },
+          ];
+        }
+
+        const rawItem: BrickStockItem = {
           id: inserted.id,
           sNo: inserted.s_no,
           item: inserted.item,
@@ -245,11 +292,13 @@ export const useBrickStock = () => {
           pendingStock: Number(inserted.stock_opening),
           unitName: inserted.unit_name,
           notes: inserted.notes || '',
-          entries: [],
+          entries,
           createdAt: inserted.created_at,
           updatedAt: inserted.updated_at,
         };
 
+        const newItem = recalculateItemTotals(rawItem);
+        await syncItemTotalsToDb(newItem);
         setStockItems((prev) => [...prev, newItem]);
         return newItem;
       } catch (err: any) {
@@ -368,17 +417,20 @@ export const useBrickStock = () => {
         setError(null);
         const targetItem = stockItems.find((x) => x.id === itemId);
         const isBricks = targetItem?.item.toLowerCase() === 'bricks';
-        const prod = isBricks ? Number(entryData.currentProduction || 0) : 0;
-        const usageOrSales = Number(
-          entryData.materialUsage !== undefined
-            ? entryData.materialUsage
-            : entryData.sales || 0
-        ) || 0;
+        const prod = Number(entryData.currentProduction ?? entryData.materialInflow ?? 0) || 0;
+        const usageOrSales =
+          Number(
+            entryData.materialUsage !== undefined
+              ? entryData.materialUsage
+              : entryData.sales || 0
+          ) || 0;
         const entryType = isBricks
           ? prod >= usageOrSales
             ? 'production'
             : 'sales'
-          : 'usage';
+          : prod > 0
+            ? 'inflow'
+            : 'usage';
         const sNo = (targetItem?.entries?.length || 0) + 1;
 
         const { data: inserted, error: insertError } = await supabase
@@ -392,10 +444,10 @@ export const useBrickStock = () => {
             current_production: prod,
             sales: usageOrSales,
             material_usage: usageOrSales,
-            material_inflow: 0,
+            material_inflow: prod,
             pending_stock: 0,
             type: entryType,
-            quantity: isBricks && prod > 0 ? prod : usageOrSales,
+            quantity: prod > 0 ? prod : usageOrSales,
             batch_no: entryData.batchNo || null,
             vehicle_number: entryData.vehicleNumber || null,
             customer_name: entryData.customerName || null,
@@ -416,7 +468,7 @@ export const useBrickStock = () => {
           currentProduction: Number(inserted.current_production),
           sales: Number(inserted.sales),
           materialUsage: Number(inserted.material_usage),
-          materialInflow: 0,
+          materialInflow: Number(inserted.material_inflow || inserted.current_production),
           pendingStock: 0,
           type: inserted.type as any,
           quantity: Number(inserted.quantity),
@@ -460,6 +512,7 @@ export const useBrickStock = () => {
             current_production: updatedEntry.currentProduction,
             sales: updatedEntry.sales,
             material_usage: updatedEntry.materialUsage,
+            material_inflow: updatedEntry.materialInflow ?? updatedEntry.currentProduction,
             quantity: updatedEntry.quantity,
             batch_no: updatedEntry.batchNo || null,
             vehicle_number: updatedEntry.vehicleNumber || null,

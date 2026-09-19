@@ -5,6 +5,7 @@ import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { TableFormPopover } from '../components/TableFormPopover';
 import { TablePrintPreviewModal } from '../components/TablePrintPreviewModal';
+import { DateFilterBar } from '../components/DateFilterBar';
 import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
   Flame,
@@ -17,7 +18,8 @@ import {
   X,
   Printer,
   RotateCcw,
-  Check
+  Check,
+  TrendingDown
 } from 'lucide-react';
 
 interface BricksProductionExpensesViewProps {
@@ -42,6 +44,8 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
   onDeleteMultipleExpenses
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
   const [selectedExpenseIds, setSelectedExpenseIds] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -195,29 +199,36 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
     }
   };
 
-  // Filter expenses by search query
+  // Filter expenses by date range and search query
   const filteredExpenses = useMemo(() => {
-    const q = searchQuery.toLowerCase().trim();
-    const list = q
-      ? expenses.filter(
-          (item) =>
-            item.expenseName.toLowerCase().includes(q) ||
-            (item.category && item.category.toLowerCase().includes(q)) ||
-            (item.date && item.date.includes(q)) ||
-            formatToDDMMYYYY(item.date).includes(q) ||
-            String(item.quantity).includes(q) ||
-            String(item.rate).includes(q) ||
-            String(item.totalAmount).includes(q) ||
-            String(item.sNo).includes(q)
-        )
-      : expenses;
-    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
-  }, [expenses, searchQuery]);
+    let list = expenses;
 
-  // Overall Total
-  const totalProductionExpenses = useMemo(() => {
-    return expenses.reduce((sum, item) => sum + (Number(item.totalAmount) || 0), 0);
-  }, [expenses]);
+    if (fromDate) {
+      const fromISO = formatToYYYYMMDD(fromDate);
+      list = list.filter((item) => formatToYYYYMMDD(item.date) >= fromISO);
+    }
+    if (toDate) {
+      const toISO = formatToYYYYMMDD(toDate);
+      list = list.filter((item) => formatToYYYYMMDD(item.date) <= toISO);
+    }
+
+    const q = searchQuery.toLowerCase().trim();
+    if (q) {
+      list = list.filter(
+        (item) =>
+          item.expenseName.toLowerCase().includes(q) ||
+          (item.category && item.category.toLowerCase().includes(q)) ||
+          (item.date && item.date.includes(q)) ||
+          formatToDDMMYYYY(item.date).includes(q) ||
+          String(item.quantity).includes(q) ||
+          String(item.rate).includes(q) ||
+          String(item.totalAmount).includes(q) ||
+          String(item.sNo).includes(q)
+      );
+    }
+
+    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
+  }, [expenses, searchQuery, fromDate, toDate]);
 
   const filteredTotalProductionExpenses = useMemo(() => {
     return filteredExpenses.reduce((sum, item) => sum + (Number(item.totalAmount) || 0), 0);
@@ -300,7 +311,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
             <span>Total Expense Records:</span> <strong>{filteredExpenses.length} Entries</strong>
           </div>
           <div className="print-total-item">
-            <span>Total Production Spend:</span> <strong style={{ color: '#b91c1c' }}>{formatINR(totalProductionExpenses)}</strong>
+            <span>Total Production Spend:</span> <strong style={{ color: '#b91c1c' }}>{formatINR(filteredTotalProductionExpenses)}</strong>
           </div>
           <div className="print-total-item">
             <span>Statement Date:</span> <strong>{new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</strong>
@@ -308,16 +319,69 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
         </div>
       </div>
 
-      <div className="client-details-top-actions no-print">
-        <button
-          onClick={handlePrint}
-          className="afrah-app-back-btn"
-          title="Preview and Print Statement"
-        >
-          <Printer size={15} />
-          <span>Print Preview / Statement</span>
-        </button>
+      <div className="client-details-header no-print">
+        <div className="client-details-top-actions">
+          <button
+            onClick={handlePrint}
+            className="afrah-app-back-btn"
+            title="Preview and Print Statement"
+          >
+            <Printer size={15} />
+            <span>Print Preview / Statement</span>
+          </button>
+        </div>
+
+        <div className="client-unified-summary-card summary-cols-3">
+          <div className="client-unified-card-item client-info-item">
+            <h1 className="client-unified-name-title">
+              <span className="client-unified-label">Expenses :</span>{' '}
+              <span className="client-unified-name">PRODUCTION</span>
+            </h1>
+          </div>
+
+          <div className="client-unified-card-item metric-item">
+            <div className="metric-icon-wrap red">
+              <TrendingDown size={24} />
+            </div>
+            <div>
+              <span className="metric-label">TOTAL AMOUNT</span>
+              <span className="metric-value red">
+                {formatINR(filteredTotalProductionExpenses)}
+              </span>
+            </div>
+          </div>
+
+          <div className="client-unified-card-item metric-item">
+            <div className="metric-icon-wrap gold">
+              <Flame size={24} />
+            </div>
+            <div>
+              <span className="metric-label">ENTRIES</span>
+              <span className="metric-value gold">
+                {filteredExpenses.length}
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <DateFilterBar
+        fromDate={fromDate}
+        toDate={toDate}
+        onFromDateChange={(d) => {
+          setFromDate(d);
+          setCurrentPage(1);
+        }}
+        onToDateChange={(d) => {
+          setToDate(d);
+          setCurrentPage(1);
+        }}
+        onClearDates={() => {
+          setFromDate('');
+          setToDate('');
+          setCurrentPage(1);
+        }}
+      />
 
       {/* PRODUCTION EXPENSES TABLE (Matching sketch: S NO | DATE | EXPENSES | Quality | Rate | Total) */}
       <section className={`afrah-app-table-section w-full${isAddModalOpen ? ' with-add-popover' : ''}`}>
@@ -343,8 +407,8 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
               </h1>
             </div>
             <span className="afrah-app-section-subtitle">
-              {filteredExpenses.length} {filteredExpenses.length === 1 ? 'expense entry' : 'expense entries'} · Total Production Spend:{' '}
-              <strong className="text-negative">{formatINR(totalProductionExpenses)}</strong>
+              {filteredExpenses.length} {filteredExpenses.length === 1 ? 'expense entry' : 'expense entries'}
+              {(fromDate || toDate) ? ' (filtered)' : ''}
             </span>
           </div>
 
@@ -493,7 +557,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
               {paginatedExpenses.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="empty-state-cell">
-                    {searchQuery
+                    {searchQuery || fromDate || toDate
                       ? 'No matching production expense records found.'
                       : 'No production expense records found. Use the "Add details" form on the right to record new ones.'}
                   </td>
@@ -648,107 +712,92 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
       {/* EDIT MODAL */}
       {isEditModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
-          <div className="afrah-app-modal-card modal-w-sm" onClick={(e) => e.stopPropagation()}>
+          <div className="afrah-app-modal-container modal-w-sm" onClick={(e) => e.stopPropagation()}>
             <div className="afrah-app-modal-header">
               <div className="flex-center">
-                <Pencil size={16} color="var(--primary)" />
+                <Pencil size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Production Expense</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsEditModalOpen(false)}
-                className="afrah-app-modal-close"
+                className="afrah-app-modal-close-btn"
                 aria-label="Close modal"
               >
                 <X size={18} />
               </button>
             </div>
 
-            <form onSubmit={handleSaveEdit} className="afrah-app-add-form" style={{ padding: '16px' }}>
-              {/* Date */}
-              <div className="afrah-app-form-group">
-                <label className="afrah-app-label">
-                  Date <span className="required-star">*</span>
-                </label>
-                <DateInput
-                  required
-                  value={editDate}
-                  onChange={setEditDate}
-                  className="afrah-app-input"
-                />
+            <form onSubmit={handleSaveEdit}>
+              <div className="afrah-app-modal-body">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Date <span className="required-star">*</span>
+                  </label>
+                  <DateInput
+                    required
+                    value={editDate}
+                    onChange={setEditDate}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Expenses <span className="required-star">*</span>
+                  </label>
+                  <SearchableExpenseSelect
+                    value={editExpenseName}
+                    onChange={(val) => setEditExpenseName(val)}
+                    options={BRICK_PRODUCTION_EXPENSE_OPTIONS}
+                    placeholder="Search or select expense..."
+                    searchPlaceholder="Filter (Soil, Wood, Disel...)"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Quality / Quantity <span className="required-star">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0.01"
+                    required
+                    value={editQuality}
+                    onChange={(e) => setEditQuality(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Rate (₹) <span className="required-star">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0"
+                    required
+                    value={editRate}
+                    onChange={(e) => setEditRate(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Total Amount</label>
+                  <div className="total-amount-display" style={{ color: '#f87171' }}>
+                    {formatINR(calculatedEditTotal)}
+                  </div>
+                </div>
               </div>
 
-              {/* Expenses Searchable Dropdown */}
-              <div className="afrah-app-form-group">
-                <label className="afrah-app-label">
-                  Expenses <span className="required-star">*</span>
-                </label>
-                <SearchableExpenseSelect
-                  value={editExpenseName}
-                  onChange={(val) => setEditExpenseName(val)}
-                  options={BRICK_PRODUCTION_EXPENSE_OPTIONS}
-                  placeholder="Search or select expense..."
-                  searchPlaceholder="Filter (Soil, Wood, Disel...)"
-                />
-              </div>
-
-              {/* Quality / Quantity */}
-              <div className="afrah-app-form-group">
-                <label className="afrah-app-label">
-                  Quality / Quantity <span className="required-star">*</span>
-                </label>
-                <input
-                  type="number"
-                  step="any"
-                  min="0.01"
-                  required
-                  value={editQuality}
-                  onChange={(e) => setEditQuality(e.target.value)}
-                  className="afrah-app-input"
-                />
-              </div>
-
-              {/* Rate */}
-              <div className="afrah-app-form-group">
-                <label className="afrah-app-label">
-                  Rate (₹) <span className="required-star">*</span>
-                </label>
-                <input
-                  type="number"
-                  step="any"
-                  min="0"
-                  required
-                  value={editRate}
-                  onChange={(e) => setEditRate(e.target.value)}
-                  className="afrah-app-input"
-                />
-              </div>
-
-              {/* Computed Total */}
-              <div
-                style={{
-                  padding: '10px 14px',
-                  borderRadius: '8px',
-                  background: 'var(--surface-container, #1e2126)',
-                  border: '1px solid var(--border-stroke, #2c303a)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginBottom: '8px'
-                }}
-              >
-                <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 600 }}>Total:</span>
-                <span style={{ fontSize: '16px', fontWeight: 800, color: '#f87171', fontFamily: 'Cinzel, serif' }}>
-                  {formatINR(calculatedEditTotal)}
-                </span>
-              </div>
-
-              <div style={{ display: 'flex', gap: '10px', marginTop: '12px' }}>
+              <div className="afrah-app-modal-footer">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
                   className="afrah-app-back-btn"
-                  style={{ flex: 1, height: '42px' }}
                 >
                   Cancel
                 </button>
@@ -756,7 +805,6 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                   type="submit"
                   disabled={!isEditValid}
                   className="btn-theme-primary"
-                  style={{ flex: 1, height: '42px' }}
                 >
                   <Check size={15} strokeWidth={2.5} />
                   <span>Save Changes</span>
@@ -802,7 +850,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
         metaValue="KILN & FACTORY PRODUCTION EXPENSES"
         highlightBanner={{
           label: 'TOTAL PRODUCTION SPEND',
-          value: formatINR(totalProductionExpenses),
+          value: formatINR(filteredTotalProductionExpenses),
           isNegative: true,
           color: '#ef4444'
         }}
@@ -824,11 +872,11 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
         ])}
         totalRow={{
           labelIndex: 2,
-          values: ['', '', 'TOTAL PRODUCTION EXPENSES', '', '', formatINR(totalProductionExpenses)]
+          values: ['', '', 'TOTAL PRODUCTION EXPENSES', '', '', formatINR(filteredTotalProductionExpenses)]
         }}
         summaryItems={[
           { label: 'Total Expense Records', value: `${filteredExpenses.length} Entries` },
-          { label: 'Total Production Spend', value: formatINR(totalProductionExpenses), highlightColor: '#ef4444' }
+          { label: 'Total Production Spend', value: formatINR(filteredTotalProductionExpenses), highlightColor: '#ef4444' }
         ]}
       />
     </div>
