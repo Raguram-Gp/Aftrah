@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import type { BrickCustomer } from '../types';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { TableFormPopover } from '../components/TableFormPopover';
+import { TablePrintPreviewModal } from '../components/TablePrintPreviewModal';
 import {
   BrickWall,
   Users,
@@ -225,9 +226,12 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
     }
   };
 
-  // Print Statement Handler
+  // Print Statement Preview State
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+
+  // Print Statement Handler - opens preview modal first
   const handlePrint = () => {
-    window.print();
+    setIsPrintPreviewOpen(true);
   };
 
   return (
@@ -687,6 +691,40 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
         isDeleting={isBulkDeleting}
         onConfirm={handleConfirmBulkDelete}
         onClose={() => setIsBulkDeleteOpen(false)}
+      />
+
+      {/* BRICKS CUSTOMER DIRECTORY PRINT PREVIEW MODAL */}
+      <TablePrintPreviewModal
+        isOpen={isPrintPreviewOpen}
+        onClose={() => setIsPrintPreviewOpen(false)}
+        title="Bricks Customer Directory"
+        badgeLabel="Bricks Customer Directory"
+        badgeIcon={<BrickWall size={16} color="var(--primary, #e2c399)" />}
+        metaTitle="REPORT"
+        metaValue="REGISTERED CUSTOMERS DIRECTORY"
+        highlightBanner={{
+          label: 'TOTAL OUTSTANDING RECEIVABLES',
+          value: formatINR(totalOutstandingBalance),
+          isNegative: totalOutstandingBalance > 0
+        }}
+        headers={['S.NO', 'CUSTOMER NAME', 'PHONE NUMBER', 'SITE / ADDRESS', 'DELIVERIES', 'TOTAL BILLING', 'OUTSTANDING BALANCE']}
+        colAlignments={['center', 'left', 'center', 'left', 'center', 'right', 'right']}
+        colWidths={['55px', '220px', '130px', undefined, '100px', '140px', '160px']}
+        rows={filteredCustomers.map((c, idx) => [
+          idx + 1,
+          c.name.toUpperCase(),
+          c.phone || '-',
+          c.address || '-',
+          c.totalOrders || 0,
+          formatINR(c.totalAmount || 0),
+          <strong key={c.id} style={{ color: (c.totalBalance || 0) > 0 ? '#dc2626' : '#16a34a' }}>
+            {formatINR(c.totalBalance || 0)}
+          </strong>
+        ])}
+        summaryItems={[
+          { label: 'Total Customers', value: `${filteredCustomers.length} Records` },
+          { label: 'Total Outstanding Balance', value: formatINR(totalOutstandingBalance), highlightColor: totalOutstandingBalance > 0 ? '#dc2626' : '#16a34a' }
+        ]}
       />
     </div>
   );

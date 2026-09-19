@@ -266,10 +266,26 @@
   body.statement-preview-active .client-details-side-by-side-grid,
   body.statement-preview-active .client-details-header,
   body.statement-preview-active .client-unified-summary-card,
+  body.statement-preview-active .afrah-app-table-section,
+  body.statement-preview-active .afrah-app-sidebar,
+  body.statement-preview-active .afrah-app-topbar,
+  body.statement-preview-active .client-details-top-actions,
+  body.statement-preview-active .afrah-app-container > *:not(.statement-preview-backdrop),
+  body.statement-preview-active .client-details-page > *:not(.statement-preview-backdrop),
+  body.statement-preview-active .afrah-app-main-viewport > *:not(.statement-preview-backdrop),
+  body.statement-preview-active .w-full:not(.statement-pdf-sheet *),
   body:has(.statement-preview-backdrop) .print-only-statement-header,
   body:has(.statement-preview-backdrop) .client-details-side-by-side-grid,
   body:has(.statement-preview-backdrop) .client-details-header,
-  body:has(.statement-preview-backdrop) .client-unified-summary-card {
+  body:has(.statement-preview-backdrop) .client-unified-summary-card,
+  body:has(.statement-preview-backdrop) .afrah-app-table-section,
+  body:has(.statement-preview-backdrop) .afrah-app-sidebar,
+  body:has(.statement-preview-backdrop) .afrah-app-topbar,
+  body:has(.statement-preview-backdrop) .client-details-top-actions,
+  body:has(.statement-preview-backdrop) .afrah-app-container > *:not(.statement-preview-backdrop),
+  body:has(.statement-preview-backdrop) .client-details-page > *:not(.statement-preview-backdrop),
+  body:has(.statement-preview-backdrop) .afrah-app-main-viewport > *:not(.statement-preview-backdrop),
+  body:has(.statement-preview-backdrop) .w-full:not(.statement-pdf-sheet *) {
     display: none !important;
   }
 

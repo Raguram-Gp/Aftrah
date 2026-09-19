@@ -3,6 +3,7 @@ import type { BankAccount, BankTransaction } from "../types";
 import { BankLogo } from "../components/BankLogo";
 import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
 import { DateFilterBar } from "../components/DateFilterBar";
+import { BankStatementPrintPreviewModal } from "../components/BankStatementPrintPreviewModal";
 import {
   formatToDDMMYYYY,
   formatToYYYYMMDD,
@@ -339,8 +340,11 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
     }
   };
 
+  // Print Statement Preview State
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+
   const handlePrint = () => {
-    window.print();
+    setIsPrintPreviewOpen(true);
   };
 
   return (
@@ -1021,6 +1025,21 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
         onConfirm={handleConfirmBulkDeleteTx}
         onClose={() => setIsBulkDeleteTxOpen(false)}
       />
+
+      {/* BANK STATEMENT PRINT PREVIEW MODAL */}
+      {activeLedgerBank && (
+        <BankStatementPrintPreviewModal
+          isOpen={isPrintPreviewOpen}
+          onClose={() => setIsPrintPreviewOpen(false)}
+          bankAccount={activeLedgerBank}
+          transactions={filteredTransactions}
+          fromDate={ledgerFromDate}
+          toDate={ledgerToDate}
+          totalCredits={ledgerCredits}
+          totalDebits={ledgerDebits}
+          currentBalance={activeLedgerBank.balance}
+        />
+      )}
     </div>
   );
 };

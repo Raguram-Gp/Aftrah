@@ -1,8 +1,10 @@
 import React, { useState, useMemo } from "react";
 import type { Vendor, VendorShop, ShopTransaction } from "../types";
+import { VENDOR_MATERIAL_PRESETS, COMMON_MATERIAL_PRESETS } from "../types";
 import { SearchableExpenseSelect } from "../components/SearchableExpenseSelect";
 import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
 import { TableFormPopover } from "../components/TableFormPopover";
+import { ShopPrintPreviewModal } from "../components/ShopPrintPreviewModal";
 import {
   DateInput,
   isValidDate,
@@ -105,6 +107,41 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
     null,
   );
   const [isDeletingTx, setIsDeletingTx] = useState(false);
+
+  // Contextual material/item presets based on vendor category and past shop transactions
+  const itemOptions = useMemo(() => {
+    const list: string[] = [];
+    const seen = new Set<string>();
+
+    const add = (val?: string) => {
+      const trimmed = val?.trim();
+      if (!trimmed) return;
+      const lower = trimmed.toLowerCase();
+      if (lower === "settlement" || lower.includes("settlement")) return;
+      if (!seen.has(lower)) {
+        seen.add(lower);
+        list.push(trimmed);
+      }
+    };
+
+    // 1. Items already logged in this shop (highest relevance)
+    (shop.transactions || []).forEach((t) => add(t.itemType));
+
+    // 2. Items logged in sibling shops under the same vendor
+    (vendor.shops || []).forEach((s) => {
+      (s.transactions || []).forEach((t) => add(t.itemType));
+    });
+
+    // 3. Category presets for this vendor's type (e.g. Bricks, Cement, Steel, etc.)
+    if (vendor.type && VENDOR_MATERIAL_PRESETS[vendor.type]) {
+      VENDOR_MATERIAL_PRESETS[vendor.type].forEach(add);
+    }
+
+    // 4. Common construction materials fallback
+    COMMON_MATERIAL_PRESETS.forEach(add);
+
+    return list;
+  }, [vendor, shop]);
 
   const parseOptionalNumber = (val: string) => {
     if (val.trim() === "") return 0;
@@ -231,9 +268,12 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
     }
   };
 
-  // Print Statement Handler
+  // Print Statement Preview State
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+
+  // Print Statement Handler - opens preview modal first
   const handlePrint = () => {
-    window.print();
+    setIsPrintPreviewOpen(true);
   };
 
   // Historical settlement records (created before Add Record unified the form)
@@ -550,10 +590,6 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
             <h2 className="afrah-app-section-title">
               MATERIAL PROCUREMENT & SETTLEMENT LEDGER
             </h2>
-            <span className="afrah-app-section-subtitle">
-              {filteredTransactions.length}{" "}
-              {filteredTransactions.length === 1 ? "record" : "records"} logged
-            </span>
           </div>
 
           <div
@@ -564,20 +600,6 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
               flexWrap: "wrap",
             }}
           >
-            <div className="afrah-app-search-wrapper">
-              <Search size={14} className="afrah-app-search-icon" />
-              <input
-                type="text"
-                placeholder="Search item, client..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="afrah-app-search-input"
-              />
-            </div>
-
             <TableFormPopover
               open={isAddFormOpen}
               onOpenChange={setIsAddFormOpen}
@@ -614,12 +636,12 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                   <label className="afrah-app-label">
                     Item / Material Description
                   </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Wirecut Red Bricks Grade A"
+                  <SearchableExpenseSelect
                     value={txItemType}
-                    onChange={(e) => setTxItemType(e.target.value)}
-                    className="afrah-app-input"
+                    onChange={(val) => setTxItemType(val)}
+                    options={itemOptions}
+                    placeholder="e.g. Wirecut Red Bricks Grade A"
+                    searchPlaceholder="Search or type description..."
                   />
                 </div>
 
@@ -1047,11 +1069,12 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                   <label className="afrah-app-label">
                     Item / Material Description
                   </label>
-                  <input
-                    type="text"
+                  <SearchableExpenseSelect
                     value={editTxItemType}
-                    onChange={(e) => setEditTxItemType(e.target.value)}
-                    className="afrah-app-input"
+                    onChange={(val) => setEditTxItemType(val)}
+                    options={itemOptions}
+                    placeholder="e.g. Wirecut Red Bricks Grade A"
+                    searchPlaceholder="Search or type description..."
                   />
                 </div>
 
@@ -1182,6 +1205,20 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
         isDeleting={isBulkDeleting}
         onConfirm={handleConfirmBulkDelete}
         onClose={() => setIsBulkDeleteOpen(false)}
+      />
+
+      {/* VENDOR SHOP STATEMENT PRINT PREVIEW MODAL */}
+      <ShopPrintPreviewModal
+        isOpen={isPrintPreviewOpen}
+        onClose={() => setIsPrintPreviewOpen(false)}
+        vendor={vendor}
+        shop={shop}
+        transactions={filteredTransactions}
+        fromDate={fromDate}
+        toDate={toDate}
+        totalPurchase={totalPurchase}
+        totalReceived={totalReceived}
+        totalBalance={totalBalance}
       />
     </div>
   );

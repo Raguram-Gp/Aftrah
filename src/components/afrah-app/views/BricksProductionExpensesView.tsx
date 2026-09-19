@@ -4,6 +4,7 @@ import { BRICK_PRODUCTION_EXPENSE_OPTIONS } from '../types';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { TableFormPopover } from '../components/TableFormPopover';
+import { TablePrintPreviewModal } from '../components/TablePrintPreviewModal';
 import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
   Flame,
@@ -272,9 +273,12 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
     });
   };
 
-  // Print Handler
+  // Print Statement Preview State
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+
+  // Print Handler - opens preview modal first
   const handlePrint = () => {
-    window.print();
+    setIsPrintPreviewOpen(true);
   };
 
   return (
@@ -781,6 +785,47 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
         isDeleting={isBulkDeleting}
         onConfirm={handleConfirmBulkDelete}
         onCancel={() => setIsBulkDeleteOpen(false)}
+      />
+
+      {/* PRODUCTION EXPENSES STATEMENT PRINT PREVIEW MODAL */}
+      <TablePrintPreviewModal
+        isOpen={isPrintPreviewOpen}
+        onClose={() => setIsPrintPreviewOpen(false)}
+        title="Production Expenses Statement"
+        badgeLabel="Brick Production Expenses"
+        badgeIcon={<Flame size={16} color="var(--primary, #e2c399)" />}
+        companyName="KABIBULLAH BRICKS"
+        companySub="BRICK MANUFACTURING, KILN OPERATIONS & PRODUCTION EXPENSES"
+        metaTitle="STATEMENT"
+        metaValue="KILN & FACTORY PRODUCTION EXPENSES"
+        highlightBanner={{
+          label: 'TOTAL PRODUCTION SPEND',
+          value: formatINR(totalProductionExpenses),
+          isNegative: true,
+          color: '#ef4444'
+        }}
+        headers={['S.NO', 'DATE', 'EXPENSE ITEM / NATURE', 'QUALITY / QTY', 'RATE (₹)', 'TOTAL AMOUNT (₹)']}
+        colAlignments={['center', 'center', 'left', 'center', 'center', 'right']}
+        colWidths={['55px', '125px', undefined, '130px', '110px', '160px']}
+        rows={filteredExpenses.map((exp, idx) => [
+          idx + 1,
+          formatToDDMMYYYY(exp.date),
+          <div key={exp.id}>
+            <span style={{ fontWeight: 700, textTransform: 'uppercase' }}>{exp.expenseName}</span>
+            {exp.notes && <div style={{ fontSize: '12px', color: 'var(--text-secondary, #94a3b8)' }}>{exp.notes}</div>}
+          </div>,
+          exp.quality || '-',
+          exp.rate ? `₹${exp.rate}` : '-',
+          <strong key={exp.id} style={{ color: '#ef4444' }}>{formatINR(exp.totalAmount)}</strong>
+        ])}
+        totalRow={{
+          labelIndex: 2,
+          values: ['', '', 'TOTAL PRODUCTION EXPENSES', '', '', formatINR(totalProductionExpenses)]
+        }}
+        summaryItems={[
+          { label: 'Total Expense Records', value: `${filteredExpenses.length} Entries` },
+          { label: 'Total Production Spend', value: formatINR(totalProductionExpenses), highlightColor: '#ef4444' }
+        ]}
       />
     </div>
   );

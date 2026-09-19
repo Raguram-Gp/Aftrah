@@ -33,6 +33,7 @@ export const SearchableExpenseSelect: React.FC<SearchableExpenseSelectProps> = (
     const handleClickOutside = (e: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
         setIsOpen(false);
+        setQuery('');
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -50,11 +51,42 @@ export const SearchableExpenseSelect: React.FC<SearchableExpenseSelectProps> = (
     onChange(customVal);
   };
 
+  const handleToggle = () => {
+    if (!isOpen) {
+      setQuery('');
+    }
+    setIsOpen(!isOpen);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      const exactMatch = filtered.find(
+        (item) => item.toLowerCase() === query.trim().toLowerCase()
+      );
+      if (exactMatch) {
+        handleSelect(exactMatch);
+      } else if (query.trim()) {
+        handleSelect(query.trim());
+      } else if (filtered.length > 0) {
+        handleSelect(filtered[0]);
+      } else {
+        setIsOpen(false);
+      }
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsOpen(false);
+      setQuery('');
+    }
+  };
+
   return (
     <div className="searchable-select-wrapper" ref={wrapperRef}>
       <div
         className={`searchable-select-trigger ${isOpen ? 'open' : ''}`}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggle}
       >
         <span className={value ? 'select-value-text' : 'select-placeholder'}>
           {value || placeholder}
@@ -72,33 +104,51 @@ export const SearchableExpenseSelect: React.FC<SearchableExpenseSelectProps> = (
               placeholder={searchPlaceholder}
               value={query}
               onChange={(e) => handleCustomInput(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="searchable-select-input"
               onClick={(e) => e.stopPropagation()}
             />
           </div>
 
           <div className="searchable-select-list">
-            {filtered.length === 0 ? (
+            {query.trim() &&
+              !filtered.some(
+                (item) => item.toLowerCase() === query.trim().toLowerCase()
+              ) && (
+                <div
+                  className="searchable-select-custom-item"
+                  style={{ marginBottom: '4px' }}
+                  onClick={() => handleSelect(query.trim())}
+                >
+                  Use custom: <strong>"{query.trim()}"</strong>
+                </div>
+              )}
+
+            {filtered.map((item) => {
+              const isSelected = (value || '').toLowerCase() === item.toLowerCase();
+              return (
+                <div
+                  key={item}
+                  className={`searchable-select-item ${isSelected ? 'selected' : ''}`}
+                  onClick={() => handleSelect(item)}
+                >
+                  <span>{item}</span>
+                  {isSelected && <Check size={13} color="var(--primary)" />}
+                </div>
+              );
+            })}
+
+            {filtered.length === 0 && !query.trim() && (
               <div
-                className="searchable-select-custom-item"
-                onClick={() => handleSelect(query.trim())}
+                style={{
+                  padding: '8px 10px',
+                  fontSize: 'var(--fs-2xs)',
+                  color: 'var(--text-secondary)',
+                  textAlign: 'center',
+                }}
               >
-                Use custom: <strong>"{query}"</strong>
+                No options available
               </div>
-            ) : (
-              filtered.map((item) => {
-                const isSelected = value.toLowerCase() === item.toLowerCase();
-                return (
-                  <div
-                    key={item}
-                    className={`searchable-select-item ${isSelected ? 'selected' : ''}`}
-                    onClick={() => handleSelect(item)}
-                  >
-                    <span>{item}</span>
-                    {isSelected && <Check size={13} color="var(--primary)" />}
-                  </div>
-                );
-              })
             )}
           </div>
         </div>

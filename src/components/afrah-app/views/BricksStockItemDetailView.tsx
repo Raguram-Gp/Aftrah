@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import type { BrickStockItem, BrickStockItemEntry } from '../types';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { TableFormPopover } from '../components/TableFormPopover';
+import { TablePrintPreviewModal } from '../components/TablePrintPreviewModal';
 import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
   Boxes,
@@ -254,9 +255,12 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
     return pages;
   }, [currentPage, totalPages]);
 
-  // Print Handler
+  // Print Statement Preview State
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+
+  // Print Handler - opens preview modal first
   const handlePrint = () => {
-    window.print();
+    setIsPrintPreviewOpen(true);
   };
 
   return (
@@ -961,6 +965,44 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
         isDeleting={isDeleting}
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeleteTarget(null)}
+      />
+
+      {/* STOCK ITEM LEDGER PRINT PREVIEW MODAL */}
+      <TablePrintPreviewModal
+        isOpen={isPrintPreviewOpen}
+        onClose={() => setIsPrintPreviewOpen(false)}
+        title="Stock Item Ledger Statement"
+        badgeLabel="Stock Ledger Statement"
+        badgeIcon={<Boxes size={16} color="var(--primary, #e2c399)" />}
+        companyName="KABIBULLAH BRICKS"
+        companySub="BRICK STOCK REGISTER, MANUFACTURING & INVENTORY MANAGEMENT"
+        metaTitle="ITEM"
+        metaValue={`${item.name.toUpperCase()} (${item.category.toUpperCase()})`}
+        highlightBanner={{
+          label: 'CURRENT REMAINING IN-STOCK BALANCE',
+          value: `${item.currentStock.toLocaleString('en-IN')} ${item.unit}`,
+          isNegative: false,
+          color: '#16a34a'
+        }}
+        headers={['S.NO', 'DATE', 'TRANSACTION TYPE', 'MOVEMENT / QTY', 'BALANCE AFTER', 'NOTES / REMARKS']}
+        colAlignments={['center', 'center', 'center', 'center', 'center', 'left']}
+        colWidths={['55px', '125px', '160px', '140px', '150px', undefined]}
+        rows={filteredEntries.map((e, idx) => [
+          idx + 1,
+          formatToDDMMYYYY(e.date),
+          <span key={e.id} style={{ fontWeight: 600, textTransform: 'capitalize' }}>{e.type.replace('_', ' ')}</span>,
+          <span key={e.id} style={{ fontWeight: 700, color: e.type === 'in' ? '#16a34a' : '#ef4444' }}>
+            {e.type === 'in' ? '+' : '-'}{e.quantity.toLocaleString('en-IN')} {item.unit}
+          </span>,
+          <strong key={e.id}>{e.balanceAfter.toLocaleString('en-IN')} {item.unit}</strong>,
+          e.note || '-'
+        ])}
+        summaryItems={[
+          { label: 'Item Name', value: item.name },
+          { label: 'Category', value: item.category },
+          { label: 'Ledger Entries', value: `${filteredEntries.length} Transactions` },
+          { label: 'Current In-Stock', value: `${item.currentStock.toLocaleString('en-IN')} ${item.unit}`, highlightColor: '#16a34a' }
+        ]}
       />
     </div>
   );

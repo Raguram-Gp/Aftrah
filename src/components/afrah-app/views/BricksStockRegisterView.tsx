@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Printer
 } from 'lucide-react';
+import { TablePrintPreviewModal } from '../components/TablePrintPreviewModal';
 
 interface BricksStockRegisterViewProps {
   stockItems: BrickStockItem[];
@@ -59,9 +60,12 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
     return pages;
   }, [currentPage, totalPages]);
 
-  // Print Handler
+  // Print Statement Preview State
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+
+  // Print Handler - opens preview modal first
   const handlePrint = () => {
-    window.print();
+    setIsPrintPreviewOpen(true);
   };
 
   return (
@@ -306,6 +310,48 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
           </div>
         )}
       </section>
+
+      {/* STOCK REGISTER PRINT PREVIEW MODAL */}
+      <TablePrintPreviewModal
+        isOpen={isPrintPreviewOpen}
+        onClose={() => setIsPrintPreviewOpen(false)}
+        title="Stock Register & Inventory Statement"
+        badgeLabel="Brick Stock Register"
+        badgeIcon={<Boxes size={16} color="var(--primary, #e2c399)" />}
+        companyName="KABIBULLAH BRICKS"
+        companySub="BRICK STOCK REGISTER, MANUFACTURING & INVENTORY MANAGEMENT"
+        metaTitle="REGISTER"
+        metaValue="FACTORY INVENTORY & FINISHED GOODS"
+        highlightBanner={{
+          label: 'TOTAL AVAILABLE FINISHED STOCK',
+          value: `${Number(totalPendingStock).toLocaleString('en-IN')} Units`,
+          isNegative: false,
+          color: '#16a34a'
+        }}
+        headers={['S.NO', 'ITEM NAME', 'CATEGORY', 'STARTING STOCK', 'TOTAL ADDITIONS', 'TOTAL SALES', 'CURRENT STOCK']}
+        colAlignments={['center', 'left', 'center', 'center', 'center', 'center', 'center']}
+        colWidths={['55px', '200px', '140px', '130px', '130px', '130px', '140px']}
+        rows={filteredItems.map((item, idx) => [
+          idx + 1,
+          <span key={item.id} style={{ fontWeight: 700, textTransform: 'uppercase' }}>{item.name}</span>,
+          item.category || '-',
+          (item.openingStock || 0).toLocaleString('en-IN'),
+          (item.totalAdded || 0).toLocaleString('en-IN'),
+          (item.totalSold || 0).toLocaleString('en-IN'),
+          <strong key={item.id} style={{ color: (item.currentStock || 0) > 0 ? '#16a34a' : '#ef4444' }}>
+            {(item.currentStock || 0).toLocaleString('en-IN')} {item.unit || 'Units'}
+          </strong>
+        ])}
+        totalRow={{
+          labelIndex: 2,
+          values: ['', '', 'TOTAL STOCK METRICS', '', '', `${Number(totalSales).toLocaleString('en-IN')} Units`, `${Number(totalPendingStock).toLocaleString('en-IN')} Units`]
+        }}
+        summaryItems={[
+          { label: 'Total Stock Items', value: `${filteredItems.length} Records` },
+          { label: 'Total Dispatched / Sales', value: `${Number(totalSales).toLocaleString('en-IN')} Units` },
+          { label: 'Current Available Stock', value: `${Number(totalPendingStock).toLocaleString('en-IN')} Units`, highlightColor: '#16a34a' }
+        ]}
+      />
     </div>
   );
 };

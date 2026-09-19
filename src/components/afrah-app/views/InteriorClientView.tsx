@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import type { InteriorClient } from '../types';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { TableFormPopover } from '../components/TableFormPopover';
+import { TablePrintPreviewModal } from '../components/TablePrintPreviewModal';
 import {
   Paintbrush,
   Search,
@@ -215,8 +216,11 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
     }
   };
 
+  // Print Statement Preview State
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+
   const handlePrint = () => {
-    window.print();
+    setIsPrintPreviewOpen(true);
   };
 
   return (
@@ -615,6 +619,50 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
         isDeleting={isBulkDeleting}
         onConfirm={handleConfirmBulkDelete}
         onClose={() => setIsBulkDeleteOpen(false)}
+      />
+
+      {/* INTERIOR CLIENT DIRECTORY PRINT PREVIEW MODAL */}
+      <TablePrintPreviewModal
+        isOpen={isPrintPreviewOpen}
+        onClose={() => setIsPrintPreviewOpen(false)}
+        title="Interior Clients Directory"
+        badgeLabel="Interior Clients Directory"
+        badgeIcon={<Paintbrush size={16} color="var(--primary, #e2c399)" />}
+        companyName="KAAB INTERIOR · AFRAH CONSTRUCTIONS"
+        companySub="LUXURY INTERIORS, MODULAR WOODWORK & TURNKEY EXECUTION"
+        metaTitle="DIRECTORY"
+        metaValue="INTERIOR PROJECTS CLIENT LIST"
+        highlightBanner={{
+          label: 'NET PROJECT PORTFOLIO BALANCE',
+          value: formatINR(totalNetBalance),
+          isNegative: totalNetBalance < 0,
+          color: totalNetBalance >= 0 ? '#16a34a' : '#ef4444'
+        }}
+        headers={['S.NO', 'CLIENT NAME', 'PHONE NUMBER', 'SITE / ADDRESS', 'TOTAL ESTIMATE', 'TOTAL ADVANCE', 'NET BALANCE']}
+        colAlignments={['center', 'left', 'center', 'left', 'right', 'right', 'right']}
+        colWidths={['55px', '220px', '130px', undefined, '140px', '140px', '150px']}
+        rows={filteredClients.map((c, idx) => {
+          const clientAdvance = c.totalAdvance || 0;
+          const clientExpenses = c.totalExpenses || 0;
+          const clientNet = clientAdvance - clientExpenses;
+          return [
+            idx + 1,
+            c.name.toUpperCase(),
+            c.phone || '-',
+            c.address || '-',
+            formatINR(clientExpenses),
+            formatINR(clientAdvance),
+            <strong key={c.id} style={{ color: clientNet >= 0 ? '#16a34a' : '#ef4444' }}>
+              {formatINR(clientNet)}
+            </strong>
+          ];
+        })}
+        summaryItems={[
+          { label: 'Total Clients', value: `${filteredClients.length} Projects` },
+          { label: 'Total Advances', value: formatINR(totalAdvancesSum) },
+          { label: 'Total Expenses', value: formatINR(totalExpensesSum) },
+          { label: 'Net Balance', value: formatINR(totalNetBalance), highlightColor: totalNetBalance >= 0 ? '#16a34a' : '#ef4444' }
+        ]}
       />
     </div>
   );

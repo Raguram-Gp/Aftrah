@@ -3,6 +3,7 @@ import type { LabourContract, LabourContractEntry } from '../types';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { TableFormPopover } from '../components/TableFormPopover';
+import { LabourContractPrintPreviewModal } from '../components/LabourContractPrintPreviewModal';
 import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
   IndianRupee,
@@ -53,6 +54,9 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Print Statement Preview State
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // Add Details Modal State
@@ -219,7 +223,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
       <div className="client-details-header no-print">
         <div className="client-details-top-actions">
           <button
-            onClick={() => window.print()}
+            onClick={() => setIsPrintPreviewOpen(true)}
             className="afrah-app-back-btn"
             title="Preview and Print Statement"
           >
@@ -752,6 +756,18 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
           }
         }}
         onClose={() => setDeleteTarget(null)}
+      />
+
+      {/* LABOUR CONTRACT MUSTER ROLL PRINT PREVIEW MODAL */}
+      <LabourContractPrintPreviewModal
+        isOpen={isPrintPreviewOpen}
+        onClose={() => setIsPrintPreviewOpen(false)}
+        contract={contract}
+        entries={filteredEntries}
+        labourCharge={labourCharge}
+        paidAmount={paidAmount}
+        balanceAmount={balanceAmount}
+        contractType="interior"
       />
     </div>
   );

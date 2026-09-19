@@ -3,6 +3,7 @@ import type { LabourContract, LabourContractEntry } from '../types';
 import { PREDEFINED_CONSTRUCTION_WORK_TYPES } from '../types';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { TableFormPopover } from '../components/TableFormPopover';
+import { LabourContractPrintPreviewModal } from '../components/LabourContractPrintPreviewModal';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
@@ -109,12 +110,12 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
     const q = searchQuery.toLowerCase().trim();
     const list = q
       ? entries.filter(
-          (e) =>
-            e.workType.toLowerCase().includes(q) ||
-            (e.note && e.note.toLowerCase().includes(q)) ||
-            e.date.includes(q) ||
-            formatToDDMMYYYY(e.date).includes(q)
-        )
+        (e) =>
+          e.workType.toLowerCase().includes(q) ||
+          (e.note && e.note.toLowerCase().includes(q)) ||
+          e.date.includes(q) ||
+          formatToDDMMYYYY(e.date).includes(q)
+      )
       : entries;
     return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
   }, [entries, searchQuery]);
@@ -219,9 +220,12 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
     }
   };
 
-  // Handle Print
+  // Print Statement Preview State
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+
+  // Handle Print - opens preview modal first
   const handlePrint = () => {
-    window.print();
+    setIsPrintPreviewOpen(true);
   };
 
   return (
@@ -328,26 +332,9 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
           <div className="afrah-app-section-header">
             <div>
               <h2 className="afrah-app-section-title">DAILY MUSTER & WORK ENTRIES</h2>
-              <span className="afrah-app-section-subtitle">
-                {filteredEntries.length} {filteredEntries.length === 1 ? 'entry' : 'entries'} · Total Paid: {formatINR(paidAmount)} ({totalDays} {totalDays === 1 ? 'Day' : 'Days'})
-              </span>
             </div>
 
             <div className="no-print flex-center-10">
-              <div className="afrah-app-search-wrapper">
-                <Search size={14} className="afrah-app-search-icon" />
-                <input
-                  type="text"
-                  placeholder="Search work type, date..."
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                  className="afrah-app-search-input"
-                />
-              </div>
-
               <TableFormPopover
                 open={isAddModalOpen}
                 onOpenChange={setIsAddModalOpen}
@@ -467,9 +454,9 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
                   <th className="text-center" style={{ width: '55px' }}>S.NO</th>
                   <th style={{ width: '105px' }}>DATE</th>
                   <th>WORK TYPE</th>
-                  <th style={{ width: '85px' }}>DAYS</th>
-                  <th style={{ width: '130px' }}>SALARY / DAY</th>
-                  <th style={{ width: '130px' }}>TOTAL AMOUNT</th>
+                  <th style={{ width: '125px' }}>DAYS</th>
+                  <th style={{ width: '150px' }}>SALARY / DAY</th>
+                  <th style={{ width: '150px' }}>TOTAL AMOUNT</th>
                   <th style={{ width: '80px', textAlign: 'center' }} className="no-print">ACTIONS</th>
                 </tr>
               </thead>
@@ -634,8 +621,8 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
       {editingEntry && (
         <div className="afrah-app-modal-overlay" onClick={() => setEditingEntry(null)}>
           <div
-              className="afrah-app-modal-container modal-w-lg"
-              onClick={(e) => e.stopPropagation()}
+            className="afrah-app-modal-container modal-w-lg"
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
               <div className="flex-center">
@@ -821,6 +808,18 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
         isDeleting={isDeleting}
         onConfirm={handleConfirmDeleteEntry}
         onClose={() => setDeleteTarget(null)}
+      />
+
+      {/* LABOUR CONTRACT MUSTER ROLL PRINT PREVIEW MODAL */}
+      <LabourContractPrintPreviewModal
+        isOpen={isPrintPreviewOpen}
+        onClose={() => setIsPrintPreviewOpen(false)}
+        contract={contract}
+        entries={filteredEntries}
+        labourCharge={labourCharge}
+        paidAmount={paidAmount}
+        balanceAmount={balanceAmount}
+        contractType="construction"
       />
     </div>
   );

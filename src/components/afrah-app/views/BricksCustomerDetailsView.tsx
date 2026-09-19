@@ -4,6 +4,7 @@ import { PREDEFINED_BRICK_TYPES } from "../types";
 import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
 import { DateFilterBar } from "../components/DateFilterBar";
 import { TableFormPopover } from "../components/TableFormPopover";
+import { BricksCustomerPrintPreviewModal } from "../components/BricksCustomerPrintPreviewModal";
 import {
   DateInput,
   isValidDate,
@@ -274,9 +275,12 @@ export const BricksCustomerDetailsView: React.FC<
     }
   };
 
-  // Print Statement Handler
+  // Print Statement Preview State
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+
+  // Print Statement Handler - opens preview modal first
   const handlePrint = () => {
-    window.print();
+    setIsPrintPreviewOpen(true);
   };
 
   // Reset Add Form
@@ -1203,6 +1207,21 @@ export const BricksCustomerDetailsView: React.FC<
         isDeleting={isBulkDeleting}
         onConfirm={handleConfirmBulkDelete}
         onClose={() => setIsBulkDeleteOpen(false)}
+      />
+
+      {/* BRICKS CUSTOMER STATEMENT PRINT PREVIEW MODAL */}
+      <BricksCustomerPrintPreviewModal
+        isOpen={isPrintPreviewOpen}
+        onClose={() => setIsPrintPreviewOpen(false)}
+        customer={customer}
+        transactions={filteredTransactions}
+        fromDate={fromDate}
+        toDate={toDate}
+        totalAmount={totalAmount}
+        totalPaid={totalPaid}
+        totalBalance={totalBalance}
+        totalOrders={totalOrders}
+        totalQuantity={totalQuantity}
       />
     </div>
   );

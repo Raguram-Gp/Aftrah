@@ -15,6 +15,7 @@ import { SearchableExpenseSelect } from "../components/SearchableExpenseSelect";
 import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
 import { DateFilterBar } from "../components/DateFilterBar";
 import { TableFormPopover } from "../components/TableFormPopover";
+import { InteriorClientPrintPreviewModal } from "../components/InteriorClientPrintPreviewModal";
 import {
   DateInput,
   isValidDate,
@@ -541,8 +542,12 @@ export const InteriorClientDetailsView: React.FC<
     }
   };
 
+  // Print Statement Preview State
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+
+  // Print Statement Handler - opens preview modal first
   const handlePrint = () => {
-    window.print();
+    setIsPrintPreviewOpen(true);
   };
 
   return (
@@ -1567,6 +1572,17 @@ export const InteriorClientDetailsView: React.FC<
         isDeleting={isBulkDeletingExp}
         onConfirm={handleConfirmBulkDeleteExp}
         onClose={() => setIsBulkDeleteExpOpen(false)}
+      />
+
+      {/* INTERIOR CLIENT STATEMENT PRINT PREVIEW MODAL */}
+      <InteriorClientPrintPreviewModal
+        isOpen={isPrintPreviewOpen}
+        onClose={() => setIsPrintPreviewOpen(false)}
+        client={client}
+        advancePayments={filteredAdvance}
+        expenses={filteredExpenses}
+        fromDate={expFromDate || advFromDate}
+        toDate={expToDate || advToDate}
       />
     </div>
   );
