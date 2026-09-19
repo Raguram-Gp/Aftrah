@@ -193,7 +193,7 @@ export const VendorView: React.FC<VendorViewProps> = ({
                       className="clickable-client-row"
                     >
                       <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
-                        #{startIndex + index + 1}
+                        {startIndex + index + 1}
                       </td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

@@ -57,6 +57,13 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
     };
   }, [isOpen]);
 
+  // Select the tab that matches where the user opened the preview from
+  React.useEffect(() => {
+    if (isOpen) {
+      setActiveTab(initialMode);
+    }
+  }, [isOpen, initialMode]);
+
   // Print sheet ref
   const printSheetRef = useRef<HTMLDivElement>(null);
 

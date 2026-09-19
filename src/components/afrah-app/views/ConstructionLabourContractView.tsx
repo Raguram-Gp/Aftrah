@@ -11,7 +11,6 @@ import {
   Trash2,
   Phone,
   MapPin,
-  Calendar,
   ChevronLeft,
   ChevronRight,
   X,
@@ -240,13 +239,12 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
           </div>
         </div>
 
-        {/* Table: S.NO, DATE, LABOUR NAME, CONSTRUCTION SITE NAME, PHONE, LABOUR CHARGE, REMAINING AMOUNT, ACTIONS */}
+        {/* Table: S.NO, LABOUR NAME, CONSTRUCTION SITE NAME, PHONE, LABOUR CHARGE, REMAINING AMOUNT, ACTIONS */}
         <div className="afrah-app-table-container">
           <table className="afrah-app-table">
             <thead>
               <tr>
                 <th style={{ width: '55px', textAlign: 'center' }}>S.NO</th>
-                <th style={{ width: '105px' }}>DATE</th>
                 <th>CONTRACTOR / LABOUR NAME</th>
                 <th>CONSTRUCTION SITE NAME</th>
                 <th style={{ width: '140px' }}>PHONE</th>
@@ -258,7 +256,7 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
             <tbody>
               {paginatedContracts.length === 0 ? (
                 <tr>
-                  <td colSpan={8} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
+                  <td colSpan={7} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
                     {searchQuery ? 'No matching construction labour contracts found.' : 'No construction labour contracts added yet. Click "+ Add Details" to create one.'}
                   </td>
                 </tr>
@@ -273,13 +271,7 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
                       className="clickable-client-row"
                     >
                       <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
-                        #{startIndex + index + 1}
-                      </td>
-                      <td style={{ whiteSpace: 'nowrap', fontSize: '12px', color: 'var(--text-secondary)' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                          <Calendar size={12} color="var(--primary)" />
-                          <span>{formatToDDMMYYYY(contract.date)}</span>
-                        </div>
+                        {startIndex + index + 1}
                       </td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

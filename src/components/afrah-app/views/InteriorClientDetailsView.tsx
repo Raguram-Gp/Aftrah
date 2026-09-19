@@ -548,12 +548,13 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
           </button>
         </div>
 
-        <div className="client-details-title-row">
-          <div>
-            <h1 className="client-details-main-title">
-              {client.name} <span>· Interior Estimate & Ledger</span>
+        <div className="client-unified-summary-card">
+          <div className="client-unified-card-item client-info-item">
+            <h1 className="client-unified-name-title">
+              <span className="client-unified-label">Client Name :</span>{' '}
+              <span className="client-unified-name">{client.name}</span>
             </h1>
-            <div className="client-meta-row">
+            <div className="client-meta-row" style={{ marginTop: '6px' }}>
               <span className="client-meta-pill">
                 <Phone size={13} color="var(--primary)" />
                 {client.phone}
@@ -565,40 +566,37 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
             </div>
           </div>
 
-          {/* Top KPI Financial Summary Cards */}
-          <div className="client-financial-summary">
-            <div className="summary-metric-card">
-              <div className="metric-icon-wrap green">
-                <Wallet size={24} />
-              </div>
-              <div>
-                <span className="metric-label">TOTAL ADVANCE RECEIVED</span>
-                <span className="metric-value green">{formatINR(totalAdvanceAmount)}</span>
-              </div>
+          <div className="client-unified-card-item metric-item">
+            <div className="metric-icon-wrap green">
+              <Wallet size={24} />
             </div>
-
-            <div className="summary-metric-card">
-              <div className="metric-icon-wrap gold">
-                <TrendingDown size={24} />
-              </div>
-              <div>
-                <span className="metric-label">TOTAL ESTIMATE AMOUNT</span>
-                <span className="metric-value gold">{formatINR(totalExpensesAmount)}</span>
-              </div>
+            <div>
+              <span className="metric-label">TOTAL ADVANCE RECEIVED</span>
+              <span className="metric-value green">{formatINR(totalAdvanceAmount)}</span>
             </div>
+          </div>
 
-            <div className="summary-metric-card">
-              <div className={`metric-icon-wrap ${netBalance >= 0 ? 'green' : 'red'}`}>
-                <Scale size={24} />
-              </div>
-              <div>
-                <span className="metric-label">
-                  {netBalance >= 0 ? 'SURPLUS / UNUSED ADVANCE' : 'OUTSTANDING BALANCE DUE'}
-                </span>
-                <span className={`metric-value ${netBalance >= 0 ? 'green' : 'red'}`}>
-                  {formatINR(netBalance)}
-                </span>
-              </div>
+          <div className="client-unified-card-item metric-item">
+            <div className="metric-icon-wrap gold">
+              <TrendingDown size={24} />
+            </div>
+            <div>
+              <span className="metric-label">TOTAL ESTIMATE AMOUNT</span>
+              <span className="metric-value gold">{formatINR(totalExpensesAmount)}</span>
+            </div>
+          </div>
+
+          <div className="client-unified-card-item metric-item">
+            <div className={`metric-icon-wrap ${netBalance >= 0 ? 'green' : 'red'}`}>
+              <Scale size={24} />
+            </div>
+            <div>
+              <span className="metric-label">
+                {netBalance >= 0 ? 'SURPLUS / UNUSED ADVANCE' : 'OUTSTANDING BALANCE DUE'}
+              </span>
+              <span className={`metric-value ${netBalance >= 0 ? 'green' : 'red'}`}>
+                {formatINR(netBalance)}
+              </span>
             </div>
           </div>
         </div>
@@ -675,7 +673,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                           style={{ cursor: 'default' }}
                         >
                           <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
-                            #{advStartIndex + index + 1}
+                            {advStartIndex + index + 1}
                           </td>
                           <td>
                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>

@@ -426,12 +426,13 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
           </div>
         </div>
 
-        <div className="client-details-title-row">
-          <div>
-            <h1 className="client-details-main-title">
-              {customer.name} <span>· Brick Delivery Ledger</span>
+        <div className="client-unified-summary-card">
+          <div className="client-unified-card-item client-info-item">
+            <h1 className="client-unified-name-title">
+              <span className="client-unified-label">Customer Name :</span>{' '}
+              <span className="client-unified-name">{customer.name}</span>
             </h1>
-            <div className="client-meta-row">
+            <div className="client-meta-row" style={{ marginTop: '6px' }}>
               <span className="client-meta-pill">
                 <Phone size={13} color="var(--primary)" />
                 {customer.phone}
@@ -443,43 +444,37 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
             </div>
           </div>
 
-          {/* Top KPI Financial Summary Cards */}
-          <div className="client-financial-summary">
-            {/* 1. Total Order Value */}
-            <div className="summary-metric-card">
-              <div className="metric-icon-wrap gold">
-                <Wallet size={24} />
-              </div>
-              <div>
-                <span className="metric-label">TOTAL BILLING</span>
-                <span className="metric-value gold">{formatINR(totalAmount)}</span>
-              </div>
+          <div className="client-unified-card-item metric-item">
+            <div className="metric-icon-wrap gold">
+              <Wallet size={24} />
             </div>
-
-            {/* 3. Total Received */}
-            <div className="summary-metric-card">
-              <div className="metric-icon-wrap green">
-                <CheckCircle2 size={24} />
-              </div>
-              <div>
-                <span className="metric-label">TOTAL PAID</span>
-                <span className="metric-value green">{formatINR(totalPaid)}</span>
-              </div>
+            <div>
+              <span className="metric-label">TOTAL BILLING</span>
+              <span className="metric-value gold">{formatINR(totalAmount)}</span>
             </div>
+          </div>
 
-            {/* 4. Outstanding Balance */}
-            <div className="summary-metric-card">
-              <div className={`metric-icon-wrap ${totalBalance > 0 ? 'red' : 'green'}`}>
-                <Scale size={24} />
-              </div>
-              <div>
-                <span className="metric-label">
-                  {totalBalance > 0 ? 'OUTSTANDING BALANCE' : 'FULLY SETTLED'}
-                </span>
-                <span className={`metric-value ${totalBalance > 0 ? 'red' : 'green'}`}>
-                  {formatINR(totalBalance)}
-                </span>
-              </div>
+          <div className="client-unified-card-item metric-item">
+            <div className="metric-icon-wrap green">
+              <CheckCircle2 size={24} />
+            </div>
+            <div>
+              <span className="metric-label">TOTAL PAID</span>
+              <span className="metric-value green">{formatINR(totalPaid)}</span>
+            </div>
+          </div>
+
+          <div className="client-unified-card-item metric-item">
+            <div className={`metric-icon-wrap ${totalBalance > 0 ? 'red' : 'green'}`}>
+              <Scale size={24} />
+            </div>
+            <div>
+              <span className="metric-label">
+                {totalBalance > 0 ? 'OUTSTANDING BALANCE' : 'FULLY SETTLED'}
+              </span>
+              <span className={`metric-value ${totalBalance > 0 ? 'red' : 'green'}`}>
+                {formatINR(totalBalance)}
+              </span>
             </div>
           </div>
         </div>
@@ -594,7 +589,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                           textAlign: 'center'
                         }}
                       >
-                        #{startIndex + idx + 1}
+                        {startIndex + idx + 1}
                       </td>
                       <td style={{ whiteSpace: 'nowrap' }}>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>

@@ -259,7 +259,7 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
                       className="clickable-client-row"
                     >
                       <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
-                        #{startIndex + index + 1}
+                        {startIndex + index + 1}
                       </td>
                       <td style={{ whiteSpace: 'nowrap', fontSize: '12px', color: 'var(--text-secondary)' }}>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>

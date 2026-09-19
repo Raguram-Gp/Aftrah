@@ -369,7 +369,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                           textAlign: 'center'
                         }}
                       >
-                        #{startIndex + index + 1}
+                        {startIndex + index + 1}
                       </td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

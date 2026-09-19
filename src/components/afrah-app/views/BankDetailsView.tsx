@@ -716,7 +716,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                 <table className="afrah-app-table">
                   <thead>
                     <tr>
-                      <th style={{ width: '45px', textAlign: 'center' }}>#</th>
+                      <th style={{ width: '45px', textAlign: 'center' }}>S.NO</th>
                       <th>DATE</th>
                       <th>TYPE</th>
                       <th>DESCRIPTION / NOTE</th>
@@ -742,7 +742,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                             style={{ cursor: 'default' }}
                           >
                             <td style={{ fontFamily: 'monospace', color: 'var(--text-secondary)', textAlign: 'center' }}>
-                              #{idx + 1}
+                              {idx + 1}
                             </td>
                             <td>
                               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>

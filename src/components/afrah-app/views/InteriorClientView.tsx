@@ -366,7 +366,7 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
                           textAlign: 'center'
                         }}
                       >
-                        #{startIndex + index + 1}
+                        {startIndex + index + 1}
                       </td>
                       <td>
                         <span className="row-client-name" style={{ fontWeight: 750, color: 'var(--text-primary)', fontSize: '15px' }}>

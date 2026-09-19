@@ -6,7 +6,6 @@ import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
   ArrowLeft,
-  HardHat,
   Phone,
   Calendar,
   IndianRupee,
@@ -274,16 +273,13 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
           </button>
         </div>
 
-        <div className="client-details-title-row">
-          <div>
-            <h1 className="client-details-main-title">
-              {contract.labourName}
+        <div className="client-unified-summary-card">
+          <div className="client-unified-card-item client-info-item">
+            <h1 className="client-unified-name-title">
+              <span className="client-unified-label">Labour Name :</span>{' '}
+              <span className="client-unified-name">{contract.labourName}</span>
             </h1>
-            <div className="client-meta-row">
-              <span className="client-meta-pill">
-                <HardHat size={13} color="var(--primary)" />
-                Construction Contractor
-              </span>
+            <div className="client-meta-row" style={{ marginTop: '6px' }}>
               <span className="client-meta-pill">
                 <MapPin size={13} color="var(--primary)" />
                 {contract.siteName}
@@ -299,52 +295,45 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
             </div>
           </div>
 
-          {/* Top 3 KPI Cards: Agreed Labour Charge, Paid Amount, Balance Amount */}
-          <div className="client-financial-summary">
-            {/* Card 1: Agreed Labour Charge */}
-            <div
-              className="summary-metric-card"
-              style={{ cursor: 'pointer' }}
-              onClick={() => {
-                setChargeInput(String(labourCharge));
-                setIsEditChargeOpen(true);
-              }}
-              title="Click to edit Labour Charge"
-            >
-              <div className="metric-icon-wrap gold">
-                <Wallet size={22} />
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px' }}>
-                  <span className="metric-label">AGREED CHARGE</span>
-                  <Pencil size={11} color="var(--primary)" />
-                </div>
-                <span className="metric-value gold">{formatINR(labourCharge)}</span>
-              </div>
+          <div
+            className="client-unified-card-item metric-item clickable"
+            onClick={() => {
+              setChargeInput(String(labourCharge));
+              setIsEditChargeOpen(true);
+            }}
+            title="Click to edit Labour Charge"
+          >
+            <div className="metric-icon-wrap gold">
+              <Wallet size={22} />
             </div>
-
-            {/* Card 2: Paid Amount */}
-            <div className="summary-metric-card">
-              <div className="metric-icon-wrap green">
-                <IndianRupee size={22} />
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span className="metric-label">AGREED CHARGE</span>
+                <Pencil size={11} color="var(--primary)" />
               </div>
-              <div>
-                <span className="metric-label">PAID AMOUNT</span>
-                <span className="metric-value green">{formatINR(paidAmount)}</span>
-              </div>
+              <span className="metric-value gold">{formatINR(labourCharge)}</span>
             </div>
+          </div>
 
-            {/* Card 3: Balance Amount */}
-            <div className="summary-metric-card">
-              <div className={`metric-icon-wrap ${balanceAmount > 0 ? 'red' : 'green'}`}>
-                <Scale size={22} />
-              </div>
-              <div>
-                <span className="metric-label">BALANCE PAYABLE</span>
-                <span className={`metric-value ${balanceAmount > 0 ? 'red' : 'green'}`}>
-                  {formatINR(balanceAmount)}
-                </span>
-              </div>
+          <div className="client-unified-card-item metric-item">
+            <div className="metric-icon-wrap green">
+              <IndianRupee size={22} />
+            </div>
+            <div>
+              <span className="metric-label">PAID AMOUNT</span>
+              <span className="metric-value green">{formatINR(paidAmount)}</span>
+            </div>
+          </div>
+
+          <div className="client-unified-card-item metric-item">
+            <div className={`metric-icon-wrap ${balanceAmount > 0 ? 'red' : 'green'}`}>
+              <Scale size={22} />
+            </div>
+            <div>
+              <span className="metric-label">BALANCE PAYABLE</span>
+              <span className={`metric-value ${balanceAmount > 0 ? 'red' : 'green'}`}>
+                {formatINR(balanceAmount)}
+              </span>
             </div>
           </div>
         </div>
@@ -413,7 +402,7 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
                   paginatedEntries.map((entry, index) => (
                     <tr key={entry.id}>
                       <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
-                        #{startIndex + index + 1}
+                        {startIndex + index + 1}
                       </td>
                       <td style={{ whiteSpace: 'nowrap', fontSize: '12px', color: 'var(--text-secondary)' }}>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>

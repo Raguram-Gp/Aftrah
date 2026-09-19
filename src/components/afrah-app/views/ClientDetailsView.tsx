@@ -757,7 +757,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                           style={{ cursor: 'default' }}
                         >
                           <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
-                            #{advStartIndex + index + 1}
+                            {advStartIndex + index + 1}
                           </td>
                           <td>
                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600 }}>
@@ -943,7 +943,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                           style={{ cursor: 'default' }}
                         >
                           <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
-                            #{expStartIndex + index + 1}
+                            {expStartIndex + index + 1}
                           </td>
                           <td>
                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600 }}>
