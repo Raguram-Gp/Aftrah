@@ -52,7 +52,7 @@ export const TablePrintPreviewModal: React.FC<TablePrintPreviewModalProps> = ({
   summaryItems,
   sectionTitle,
   headers,
-  colWidths,
+  colWidths: _colWidths,
   colAlignments,
   rows,
   totalRow,
@@ -117,7 +117,6 @@ export const TablePrintPreviewModal: React.FC<TablePrintPreviewModalProps> = ({
                   <th
                     key={i}
                     className={colAlignments?.[i] ? `text-${colAlignments[i]}` : 'text-center'}
-                    style={{ width: colWidths?.[i] }}
                   >
                     {h}
                   </th>

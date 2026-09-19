@@ -710,17 +710,22 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
         headers={['S.NO', 'CUSTOMER NAME', 'PHONE NUMBER', 'SITE / ADDRESS', 'DELIVERIES', 'TOTAL BILLING', 'OUTSTANDING BALANCE']}
         colAlignments={['center', 'left', 'center', 'left', 'center', 'right', 'right']}
         colWidths={['55px', '220px', '130px', undefined, '100px', '140px', '160px']}
-        rows={filteredCustomers.map((c, idx) => [
-          idx + 1,
-          c.name.toUpperCase(),
-          c.phone || '-',
-          c.address || '-',
-          c.totalOrders || 0,
-          formatINR(c.totalAmount || 0),
-          <strong key={c.id} style={{ color: (c.totalBalance || 0) > 0 ? '#dc2626' : '#16a34a' }}>
-            {formatINR(c.totalBalance || 0)}
-          </strong>
-        ])}
+        rows={filteredCustomers.map((c, idx) => {
+          const deliveries = (c.transactions || []).length;
+          const billing = (c.transactions || []).reduce((sum, tx) => sum + (Number(tx.totalAmount) || 0), 0);
+          const outstanding = Number(c.balance || 0);
+          return [
+            idx + 1,
+            c.name.toUpperCase(),
+            c.phone || '-',
+            c.address || '-',
+            deliveries,
+            formatINR(billing),
+            <strong style={{ color: outstanding > 0 ? '#dc2626' : '#16a34a' }}>
+              {formatINR(outstanding)}
+            </strong>
+          ];
+        })}
         summaryItems={[
           { label: 'Total Customers', value: `${filteredCustomers.length} Records` },
           { label: 'Total Outstanding Balance', value: formatINR(totalOutstandingBalance), highlightColor: totalOutstandingBalance > 0 ? '#dc2626' : '#16a34a' }

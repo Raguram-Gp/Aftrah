@@ -203,8 +203,8 @@
   }
 
   @page {
-    margin: 8mm 8mm;
-    size: auto;
+    size: A4 portrait;
+    margin: 8mm;
   }
 
   /* Specific rules when Statement Print Preview is active */
@@ -251,14 +251,51 @@
   body:has(.statement-preview-backdrop) .statement-pdf-sheet {
     max-width: 100% !important;
     width: 100% !important;
+    min-width: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
     box-shadow: none !important;
+    overflow: visible !important;
   }
 
   body.statement-preview-active .statement-document-frame,
   body:has(.statement-preview-backdrop) .statement-document-frame {
     border: 2px solid #000000 !important;
+    overflow: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .statement-invoice-table {
+    table-layout: fixed !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .statement-invoice-table th,
+  .statement-invoice-table td {
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    white-space: normal !important;
+    min-width: 0 !important;
+  }
+
+  .statement-final-reconciliation-row,
+  .statement-header-row,
+  .statement-meta-row {
+    flex-wrap: wrap !important;
+    max-width: 100% !important;
+  }
+
+  .statement-final-reconciliation-row .reconciliation-item {
+    white-space: normal !important;
+  }
+
+  .statement-brand-mark {
+    width: 42px !important;
+    height: auto !important;
+    flex-shrink: 0 !important;
   }
 
   /* Hide background content when statement preview is printed */
@@ -310,12 +347,16 @@
     color: #000000 !important;
   }
 
-  .statement-brand-title {
+  .statement-brand-title,
+  .statement-brand-title-text {
     fill: #000000 !important;
+    color: #000000 !important;
   }
 
-  .statement-brand-sub {
+  .statement-brand-sub,
+  .statement-brand-sub-text {
     fill: #333333 !important;
+    color: #4b5563 !important;
   }
 
   .statement-logo-base {
@@ -349,8 +390,8 @@ html.light .statement-preview-backdrop {
 }
 
 .statement-preview-dialog {
-  width: 100%;
-  max-width: 1040px;
+  width: min(920px, calc(100vw - 32px));
+  max-width: 100%;
   background: var(--surface-container, #1e2023);
   border: 1px solid var(--border-stroke, #2d3340);
   border-radius: 12px;
@@ -358,8 +399,9 @@ html.light .statement-preview-backdrop {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  margin: auto 0;
-  transition: max-width 0.3s ease;
+  margin: 12px auto;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 [data-theme="light"] .statement-preview-dialog,
@@ -370,7 +412,7 @@ html.light .statement-preview-dialog {
 }
 
 .statement-preview-dialog.fullwidth {
-  max-width: 1180px;
+  width: min(1080px, calc(100vw - 32px));
 }
 
 /* Floating Toolbar: Single-Row Layout */
@@ -479,66 +521,6 @@ html.light .preview-pill-btn.active {
   box-shadow: 0 2px 8px rgba(150, 112, 50, 0.25);
 }
 
-/* View Mode Selector: Theme View vs Paper View */
-.preview-sheet-mode-toggle {
-  display: inline-flex;
-  align-items: center;
-  background: var(--surface-container-lowest, #0c0e11);
-  padding: 3px;
-  border-radius: 8px;
-  border: 1px solid var(--border-stroke, #2d3340);
-  gap: 2px;
-}
-
-[data-theme="light"] .preview-sheet-mode-toggle,
-html.light .preview-sheet-mode-toggle {
-  background: #f1f5f9;
-  border-color: #e2e8f0;
-}
-
-.preview-mode-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
-  font-size: var(--fs-3xs);
-  font-weight: 600;
-  color: var(--text-secondary, #9ca3af);
-  background: transparent;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.preview-mode-btn:hover {
-  color: var(--text-primary, #ffffff);
-}
-
-[data-theme="light"] .preview-mode-btn,
-html.light .preview-mode-btn {
-  color: #64748b;
-}
-
-[data-theme="light"] .preview-mode-btn:hover,
-html.light .preview-mode-btn:hover {
-  color: #0f172a;
-}
-
-.preview-mode-btn.active {
-  background: rgba(226, 195, 153, 0.18);
-  color: var(--primary, #e2c399);
-  font-weight: 700;
-}
-
-[data-theme="light"] .preview-mode-btn.active,
-html.light .preview-mode-btn.active {
-  background: #ffffff;
-  color: #967032;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
 .preview-print-primary-btn {
   display: inline-flex;
   align-items: center;
@@ -596,14 +578,14 @@ html.light .preview-print-primary-btn:hover {
 
 /* Preview Viewport & Physical Sheet */
 .statement-preview-viewport {
-  padding: 24px;
+  padding: 20px 24px 28px;
   background: var(--surface-container-lowest, #0c0e11);
   background-image: radial-gradient(rgba(226, 195, 153, 0.05) 1px, transparent 1px);
   background-size: 24px 24px;
-  overflow-y: auto;
+  overflow: auto;
   max-height: calc(88vh - 70px);
-  display: flex;
-  justify-content: center;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 [data-theme="light"] .statement-preview-viewport,
@@ -618,15 +600,16 @@ html.light .statement-preview-viewport {
    ========================================================================== */
 
 .statement-pdf-sheet {
-  width: 100%;
-  max-width: 780px;
+  width: 210mm;
+  max-width: 100%;
+  min-width: 0;
   background: #14171d;
   color: var(--text-primary, #F5F5F7);
-  padding: 20px;
+  padding: 12px;
+  margin: 0 auto;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(226, 195, 153, 0.12);
   font-family: Arial, Helvetica, sans-serif;
   box-sizing: border-box;
-  transition: all 0.25s ease;
 }
 
 /* Outer Border Frame */
@@ -634,23 +617,63 @@ html.light .statement-preview-viewport {
   border: 2px solid var(--border-stroke, #2e3440);
   background: #14171d;
   box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
 }
 
 /* Header row: Logo & Address */
 .statement-header-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 10px 16px;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
   border-bottom: 2px solid var(--border-stroke, #2e3440);
   background: #181c24;
+  min-width: 0;
 }
 
-.statement-construction-svg {
-  height: 52px;
-  width: auto;
-  max-width: 380px;
+.statement-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1 1 58%;
+}
+
+.statement-brand-mark {
+  width: 42px;
+  height: auto;
+  flex-shrink: 0;
   display: block;
+}
+
+.statement-brand-copy {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.statement-brand-title-text {
+  font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  color: #F5F5F7;
+  overflow-wrap: break-word;
+}
+
+.statement-brand-sub-text {
+  font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  color: var(--primary, #e2c399);
+  margin-top: 3px;
+  padding-bottom: 3px;
+  border-bottom: 2.5px solid #C8A676;
+  overflow-wrap: break-word;
 }
 
 .statement-logo-base {
@@ -671,10 +694,13 @@ html.light .statement-preview-viewport {
 .statement-address-container {
   text-align: right;
   color: #d1d5db;
-  font-size: var(--fs-xs);
+  font-size: 11px;
   font-weight: 700;
   line-height: 1.35;
   font-family: Arial, Helvetica, sans-serif;
+  flex: 0 1 36%;
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 /* Client Name & Date Row */
@@ -682,12 +708,25 @@ html.light .statement-preview-viewport {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 7px 16px;
+  gap: 8px 16px;
+  flex-wrap: wrap;
+  padding: 7px 12px;
   border-bottom: 2px solid var(--border-stroke, #2e3440);
   background: #161921;
   color: #F5F5F7;
   font-weight: 800;
   font-family: Arial, Helvetica, sans-serif;
+  min-width: 0;
+}
+
+.statement-meta-row .meta-left,
+.statement-meta-row .meta-right {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.statement-meta-row .meta-left {
+  flex: 1 1 220px;
 }
 
 .statement-meta-row .meta-label {
@@ -703,7 +742,7 @@ html.light .statement-preview-viewport {
 
 /* Pending Balance Row */
 .statement-pending-balance-row {
-  padding: 8px 16px;
+  padding: 8px 12px;
   text-align: center;
   font-weight: 900;
   letter-spacing: 0.04em;
@@ -711,6 +750,16 @@ html.light .statement-preview-viewport {
   border-bottom: 2px solid var(--border-stroke, #2e3440);
   background: rgba(226, 195, 153, 0.07);
   font-family: Arial, Helvetica, sans-serif;
+  overflow-wrap: break-word;
+}
+
+.statement-pdf-sheet.a4-sheet .statement-final-reconciliation-row {
+  font-size: 14px !important;
+}
+
+.statement-table-block {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .statement-pending-balance-row .pending-balance-label {
@@ -723,7 +772,7 @@ html.light .statement-preview-viewport {
 
 /* Section Title Banner */
 .statement-section-title-row {
-  padding: 7px 16px;
+  padding: 7px 12px;
   text-align: center;
   font-weight: 900;
   letter-spacing: 0.05em;
@@ -731,11 +780,14 @@ html.light .statement-preview-viewport {
   border-bottom: 2px solid var(--border-stroke, #2e3440);
   background: #1b202a;
   font-family: Arial, Helvetica, sans-serif;
+  overflow-wrap: break-word;
 }
 
 /* The Invoice Table */
 .statement-invoice-table {
   width: 100%;
+  max-width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   background: #14171d;
   font-family: Arial, Helvetica, sans-serif;
@@ -745,18 +797,40 @@ html.light .statement-preview-viewport {
   background-color: #1e2430;
   color: var(--primary, #e2c399);
   font-weight: 900;
-  letter-spacing: 0.05em;
-  padding: 10px 8px;
+  letter-spacing: 0.02em;
+  padding: 7px 4px;
   border: 1px solid var(--border-stroke, #2e3440);
   text-align: center;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
+  min-width: 0;
+  hyphens: manual;
 }
 
 .statement-invoice-table td {
   color: #f3f4f6;
   border: 1px solid #252b36;
-  padding: 8px 10px;
+  padding: 7px 4px;
   vertical-align: middle;
   background: transparent;
+  overflow-wrap: break-word;
+  word-break: normal;
+  min-width: 0;
+}
+
+.statement-pdf-sheet.a4-sheet .statement-invoice-table th,
+.statement-pdf-sheet.a4-sheet .statement-invoice-table td,
+.statement-pdf-sheet.a4-sheet .table-header-row,
+.statement-pdf-sheet.a4-sheet .invoice-data-row,
+.statement-pdf-sheet.a4-sheet .invoice-total-row {
+  font-size: 12px !important;
+}
+
+.statement-pdf-sheet.a4-sheet .statement-meta-row,
+.statement-pdf-sheet.a4-sheet .statement-pending-balance-row,
+.statement-pdf-sheet.a4-sheet .statement-section-title-row {
+  font-size: 13px !important;
 }
 
 .statement-invoice-table tr.invoice-data-row:hover td {
@@ -789,21 +863,26 @@ html.light .statement-preview-viewport {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
   border-top: 2px solid var(--border-stroke, #2e3440);
   background: #161921;
   font-weight: 800;
   color: #F5F5F7;
-  gap: 8px;
+  gap: 6px 12px;
   box-sizing: border-box;
+  min-width: 0;
 }
 
 .statement-final-reconciliation-row .reconciliation-item {
   color: #F5F5F7;
   display: inline-flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 4px;
-  white-space: nowrap;
+  white-space: normal;
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .statement-final-reconciliation-row .reconciliation-pending.is-due {
@@ -848,15 +927,23 @@ html.light .statement-logo-base {
 }
 
 .statement-pdf-sheet.sheet-paper-mode .statement-brand-title,
+.statement-pdf-sheet.sheet-paper-mode .statement-brand-title-text,
 [data-theme="light"] .statement-brand-title,
-html.light .statement-brand-title {
+[data-theme="light"] .statement-brand-title-text,
+html.light .statement-brand-title,
+html.light .statement-brand-title-text {
   fill: #000000 !important;
+  color: #000000 !important;
 }
 
 .statement-pdf-sheet.sheet-paper-mode .statement-brand-sub,
+.statement-pdf-sheet.sheet-paper-mode .statement-brand-sub-text,
 [data-theme="light"] .statement-brand-sub,
-html.light .statement-brand-sub {
+[data-theme="light"] .statement-brand-sub-text,
+html.light .statement-brand-sub,
+html.light .statement-brand-sub-text {
   fill: #4b5563 !important;
+  color: #4b5563 !important;
 }
 
 .statement-pdf-sheet.sheet-paper-mode .statement-address-container,

@@ -977,31 +977,54 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
         companyName="KABIBULLAH BRICKS"
         companySub="BRICK STOCK REGISTER, MANUFACTURING & INVENTORY MANAGEMENT"
         metaTitle="ITEM"
-        metaValue={`${item.name.toUpperCase()} (${item.category.toUpperCase()})`}
+        metaValue={item.item.toUpperCase()}
         highlightBanner={{
-          label: 'CURRENT REMAINING IN-STOCK BALANCE',
-          value: `${item.currentStock.toLocaleString('en-IN')} ${item.unit}`,
+          label: 'CURRENT PENDING STOCK',
+          value: `${Number(item.pendingStock || 0).toLocaleString('en-IN')} ${unitLabel}`,
           isNegative: false,
           color: '#16a34a'
         }}
-        headers={['S.NO', 'DATE', 'TRANSACTION TYPE', 'MOVEMENT / QTY', 'BALANCE AFTER', 'NOTES / REMARKS']}
-        colAlignments={['center', 'center', 'center', 'center', 'center', 'left']}
-        colWidths={['55px', '125px', '160px', '140px', '150px', undefined]}
-        rows={filteredEntries.map((e, idx) => [
-          idx + 1,
-          formatToDDMMYYYY(e.date),
-          <span key={e.id} style={{ fontWeight: 600, textTransform: 'capitalize' }}>{e.type.replace('_', ' ')}</span>,
-          <span key={e.id} style={{ fontWeight: 700, color: e.type === 'in' ? '#16a34a' : '#ef4444' }}>
-            {e.type === 'in' ? '+' : '-'}{e.quantity.toLocaleString('en-IN')} {item.unit}
-          </span>,
-          <strong key={e.id}>{e.balanceAfter.toLocaleString('en-IN')} {item.unit}</strong>,
-          e.note || '-'
-        ])}
+        headers={
+          isBricks
+            ? ['S.NO', 'DATE', 'STOCK OPENING', 'CURRENT PRODUCTION', 'SALES', 'PENDING STOCK']
+            : ['S.NO', 'DATE', 'ITEM', 'STOCK OPENING', `MATERIAL USAGE (${unitLabel})`, 'PENDING STOCK']
+        }
+        colAlignments={['center', 'center', 'center', 'center', 'center', 'center']}
+        rows={filteredEntries.map((entry, idx) => {
+          const openingVal = entry.stockOpening !== undefined ? entry.stockOpening : 0;
+          const prodVal = entry.currentProduction !== undefined ? entry.currentProduction : (entry.type === 'production' ? entry.quantity : 0);
+          const salesVal = entry.sales !== undefined ? entry.sales : (entry.type === 'sales' ? entry.quantity : 0);
+          const usageVal = entry.materialUsage !== undefined ? entry.materialUsage : salesVal;
+          const pendingVal = entry.pendingStock !== undefined
+            ? entry.pendingStock
+            : isBricks
+            ? openingVal + (prodVal || 0) - (salesVal || 0)
+            : openingVal - (usageVal || 0);
+
+          if (isBricks) {
+            return [
+              idx + 1,
+              formatToDDMMYYYY(entry.date),
+              Number(openingVal).toLocaleString('en-IN'),
+              prodVal ? Number(prodVal).toLocaleString('en-IN') : '-',
+              salesVal ? Number(salesVal).toLocaleString('en-IN') : '-',
+              <strong>{Number(pendingVal).toLocaleString('en-IN')} {unitLabel}</strong>
+            ];
+          }
+
+          return [
+            idx + 1,
+            formatToDDMMYYYY(entry.date),
+            entry.item || item.item,
+            Number(openingVal).toLocaleString('en-IN'),
+            usageVal ? Number(usageVal).toLocaleString('en-IN') : '-',
+            <strong>{Number(pendingVal).toLocaleString('en-IN')} {unitLabel}</strong>
+          ];
+        })}
         summaryItems={[
-          { label: 'Item Name', value: item.name },
-          { label: 'Category', value: item.category },
+          { label: 'Item Name', value: item.item },
           { label: 'Ledger Entries', value: `${filteredEntries.length} Transactions` },
-          { label: 'Current In-Stock', value: `${item.currentStock.toLocaleString('en-IN')} ${item.unit}`, highlightColor: '#16a34a' }
+          { label: 'Current Pending Stock', value: `${Number(item.pendingStock || 0).toLocaleString('en-IN')} ${unitLabel}`, highlightColor: '#16a34a' }
         ]}
       />
     </div>

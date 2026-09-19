@@ -810,13 +810,15 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
         rows={filteredExpenses.map((exp, idx) => [
           idx + 1,
           formatToDDMMYYYY(exp.date),
-          <div key={exp.id}>
-            <span style={{ fontWeight: 700, textTransform: 'uppercase' }}>{exp.expenseName}</span>
+          <div>
+            <span style={{ fontWeight: 700, textTransform: 'uppercase' }}>{exp.expenseName || exp.category}</span>
             {exp.notes && <div style={{ fontSize: '12px', color: 'var(--text-secondary, #94a3b8)' }}>{exp.notes}</div>}
           </div>,
-          exp.quality || '-',
-          exp.rate ? `₹${exp.rate}` : '-',
-          <strong key={exp.id} style={{ color: '#ef4444' }}>{formatINR(exp.totalAmount)}</strong>
+          exp.quantity
+            ? `${Number(exp.quantity).toLocaleString('en-IN')}${exp.unit ? ` ${exp.unit}` : ''}`
+            : '-',
+          exp.rate ? `₹${Number(exp.rate).toLocaleString('en-IN')}` : '-',
+          <strong style={{ color: '#ef4444' }}>{formatINR(exp.totalAmount)}</strong>
         ])}
         totalRow={{
           labelIndex: 2,

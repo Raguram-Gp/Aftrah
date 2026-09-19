@@ -91,12 +91,12 @@ export const LabourContractPrintPreviewModal: React.FC<LabourContractPrintPrevie
         <table className="statement-invoice-table" style={{ '--stmt-cell-padding': '9px 12px' } as React.CSSProperties}>
           <thead>
             <tr className="table-header-row" style={{ fontSize: '18px' }}>
-              <th className="text-center" style={{ width: '55px' }}>S.NO</th>
-              <th className="text-center" style={{ width: '120px' }}>DATE</th>
+              <th className="text-center" style={{ width: '72px' }}>S.NO</th>
+              <th className="text-center" style={{ width: '110px' }}>DATE</th>
               <th className="text-center">WORK TYPE / SCOPE</th>
-              <th className="text-center" style={{ width: '85px' }}>DAYS</th>
-              <th className="text-center" style={{ width: '130px' }}>RATE / DAY</th>
-              <th className="text-center" style={{ width: '150px' }}>AMOUNT (₹)</th>
+              <th className="text-center" style={{ width: '70px' }}>DAYS</th>
+              <th className="text-center" style={{ width: '110px' }}>RATE / DAY</th>
+              <th className="text-center" style={{ width: '130px' }}>AMOUNT (₹)</th>
             </tr>
           </thead>
           <tbody>
@@ -159,7 +159,7 @@ export const LabourContractPrintPreviewModal: React.FC<LabourContractPrintPrevie
       </div>
 
       {/* FINAL SUMMARY ROW */}
-      <div className="statement-final-reconciliation-row" style={{ fontSize: '18px' }}>
+      <div className="statement-final-reconciliation-row" style={{ fontSize: '14px' }}>
         <div className="reconciliation-item">
           <span>Agreed Contract Charge:</span> <strong>{formatInvoiceINR(labourCharge)}</strong>
         </div>

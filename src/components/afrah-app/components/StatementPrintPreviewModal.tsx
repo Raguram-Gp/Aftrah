@@ -7,9 +7,7 @@ import {
   FileText,
   CreditCard,
   Layers,
-  Building2,
-  Moon,
-  SunMedium
+  Building2
 } from 'lucide-react';
 
 interface StatementPrintPreviewModalProps {
@@ -37,8 +35,6 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
   const [fontSizeScale] = useState<'normal' | 'large' | 'xlarge'>('large');
   const [showSNo] = useState(false);
   const [isFullWidth] = useState(false);
-  // Sheet view mode: 'theme' (matches dark/light mode) or 'paper' (shows exact white print sheet)
-  const [sheetViewMode, setSheetViewMode] = useState<'theme' | 'paper'>('theme');
 
   // Business Header info matching construction theme
   const [companyName] = useState('AFRAH CONSTRUCTIONS');
@@ -169,28 +165,6 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
           </div>
 
           <div className="preview-toolbar-right">
-            {/* Theme View vs Paper View Mode Toggle */}
-            <div className="preview-sheet-mode-toggle">
-              <button
-                type="button"
-                className={`preview-mode-btn ${sheetViewMode === 'theme' ? 'active' : ''}`}
-                onClick={() => setSheetViewMode('theme')}
-                title="Preview with active app construction theme"
-              >
-                <Moon size={12} />
-                <span>Theme View</span>
-              </button>
-              <button
-                type="button"
-                className={`preview-mode-btn ${sheetViewMode === 'paper' ? 'active' : ''}`}
-                onClick={() => setSheetViewMode('paper')}
-                title="Preview exact white paper print layout"
-              >
-                <SunMedium size={12} />
-                <span>Paper View</span>
-              </button>
-            </div>
-
             {/* Print Button directly on the first row */}
             <button
               type="button"
@@ -219,7 +193,7 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
         {/* =================================================================== */}
         <div className="statement-preview-viewport">
           <div
-            className={`statement-pdf-sheet ${sheetViewMode === 'paper' ? 'sheet-paper-mode' : 'sheet-theme-mode'}`}
+            className="statement-pdf-sheet sheet-paper-mode a4-sheet"
             ref={printSheetRef}
           >
             {/* Top Outer Box Container */}
@@ -227,65 +201,33 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
               {/* HEADER ROW: CONSTRUCTION LOGO (Left) & STORE ADDRESS (Right) */}
               <div className="statement-header-row">
                 <div className="statement-logo-container">
-                  {/* Construction Architectural Structure Vector Logo */}
                   <svg
-                    className="statement-construction-svg"
-                    width="360"
-                    height="54"
-                    viewBox="0 0 380 64"
+                    className="statement-brand-mark"
+                    width="42"
+                    height="50"
+                    viewBox="0 0 44 52"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
                   >
-                    {/* Architectural Structure Icon */}
-                    <g transform="translate(4, 5)">
-                      {/* Structure base & roof frame */}
-                      <path
-                        className="statement-logo-base"
-                        d="M 22 2 L 42 20 L 42 48 L 2 48 L 2 20 Z"
-                        fill="#1E293B"
-                        stroke="#C8A676"
-                        strokeWidth="2"
-                      />
-                      {/* Geometric architectural trusses */}
-                      <path
-                        d="M 22 2 L 22 48 M 2 20 L 42 20 M 2 34 L 42 34 M 2 48 L 22 34 L 42 48 M 2 34 L 22 20 L 42 34 M 2 20 L 22 2 L 42 20"
-                        stroke="#E2C399"
-                        strokeWidth="1.5"
-                      />
-                      {/* Apex spire */}
-                      <circle cx="22" cy="2" r="2.5" fill="#E2C399" />
-                    </g>
-
-                    {/* Brand Typography: AFRAH CONSTRUCTIONS */}
-                    <g transform="translate(56, 26)">
-                      <text
-                        className="statement-brand-title"
-                        x="0"
-                        y="0"
-                        fontFamily="'Plus Jakarta Sans', Arial, Helvetica, sans-serif"
-                        fontSize="21"
-                        fontWeight="900"
-                        letterSpacing="1"
-                        fill="currentColor"
-                      >
-                        {companyName}
-                      </text>
-                      <text
-                        className="statement-brand-sub"
-                        x="0"
-                        y="15"
-                        fontFamily="'Plus Jakarta Sans', Arial, Helvetica, sans-serif"
-                        fontSize="9.5"
-                        fontWeight="700"
-                        letterSpacing="0.8"
-                        fill="#C8A676"
-                      >
-                        CIVIL CONSTRUCTION & ARCHITECTURAL WORKS
-                      </text>
-                      {/* Bottom Accent Bar */}
-                      <rect x="0" y="20" width="280" height="2.5" fill="#C8A676" />
-                    </g>
+                    <path
+                      className="statement-logo-base"
+                      d="M 22 2 L 42 20 L 42 48 L 2 48 L 2 20 Z"
+                      fill="#1E293B"
+                      stroke="#C8A676"
+                      strokeWidth="2"
+                    />
+                    <path
+                      d="M 22 2 L 22 48 M 2 20 L 42 20 M 2 34 L 42 34 M 2 48 L 22 34 L 42 48 M 2 34 L 22 20 L 42 34 M 2 20 L 22 2 L 42 20"
+                      stroke="#E2C399"
+                      strokeWidth="1.5"
+                    />
+                    <circle cx="22" cy="2" r="2.5" fill="#E2C399" />
                   </svg>
+                  <div className="statement-brand-copy">
+                    <div className="statement-brand-title-text">{companyName}</div>
+                    <div className="statement-brand-sub-text">{companySub}</div>
+                  </div>
                 </div>
 
                 <div className="statement-address-container">
