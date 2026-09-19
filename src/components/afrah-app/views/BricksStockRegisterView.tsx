@@ -328,23 +328,20 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
           isNegative: false,
           color: '#16a34a'
         }}
-        headers={['S.NO', 'ITEM NAME', 'CATEGORY', 'STARTING STOCK', 'TOTAL ADDITIONS', 'TOTAL SALES', 'CURRENT STOCK']}
-        colAlignments={['center', 'left', 'center', 'center', 'center', 'center', 'center']}
-        colWidths={['55px', '200px', '140px', '130px', '130px', '130px', '140px']}
+        headers={['S.NO', 'ITEM', 'TOTAL SALES / USAGE', 'PENDING STOCK']}
+        colAlignments={['center', 'left', 'right', 'right']}
+        colWidths={['55px', undefined, '180px', '180px']}
         rows={filteredItems.map((item, idx) => [
           idx + 1,
-          <span key={item.id} style={{ fontWeight: 700, textTransform: 'uppercase' }}>{item.name}</span>,
-          item.category || '-',
-          (item.openingStock || 0).toLocaleString('en-IN'),
-          (item.totalAdded || 0).toLocaleString('en-IN'),
-          (item.totalSold || 0).toLocaleString('en-IN'),
-          <strong key={item.id} style={{ color: (item.currentStock || 0) > 0 ? '#16a34a' : '#ef4444' }}>
-            {(item.currentStock || 0).toLocaleString('en-IN')} {item.unit || 'Units'}
+          <span key={item.id} style={{ fontWeight: 700, textTransform: 'uppercase' }}>{item.item}</span>,
+          `${Number(item.sales || 0).toLocaleString('en-IN')} Units`,
+          <strong key={item.id} style={{ color: (item.pendingStock || 0) > 0 ? '#16a34a' : '#ef4444' }}>
+            {Number(item.pendingStock || 0).toLocaleString('en-IN')} Units
           </strong>
         ])}
         totalRow={{
-          labelIndex: 2,
-          values: ['', '', 'TOTAL STOCK METRICS', '', '', `${Number(totalSales).toLocaleString('en-IN')} Units`, `${Number(totalPendingStock).toLocaleString('en-IN')} Units`]
+          labelIndex: 1,
+          values: ['', 'TOTAL STOCK METRICS', `${Number(totalSales).toLocaleString('en-IN')} Units`, `${Number(totalPendingStock).toLocaleString('en-IN')} Units`]
         }}
         summaryItems={[
           { label: 'Total Stock Items', value: `${filteredItems.length} Records` },

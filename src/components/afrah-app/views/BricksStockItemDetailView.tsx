@@ -977,31 +977,65 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
         companyName="KABIBULLAH BRICKS"
         companySub="BRICK STOCK REGISTER, MANUFACTURING & INVENTORY MANAGEMENT"
         metaTitle="ITEM"
-        metaValue={`${item.name.toUpperCase()} (${item.category.toUpperCase()})`}
+        metaValue={item.item.toUpperCase()}
         highlightBanner={{
-          label: 'CURRENT REMAINING IN-STOCK BALANCE',
-          value: `${item.currentStock.toLocaleString('en-IN')} ${item.unit}`,
+          label: 'PENDING STOCK',
+          value: `${Number(item.pendingStock || 0).toLocaleString('en-IN')} Units`,
           isNegative: false,
           color: '#16a34a'
         }}
-        headers={['S.NO', 'DATE', 'TRANSACTION TYPE', 'MOVEMENT / QTY', 'BALANCE AFTER', 'NOTES / REMARKS']}
-        colAlignments={['center', 'center', 'center', 'center', 'center', 'left']}
-        colWidths={['55px', '125px', '160px', '140px', '150px', undefined]}
-        rows={filteredEntries.map((e, idx) => [
-          idx + 1,
-          formatToDDMMYYYY(e.date),
-          <span key={e.id} style={{ fontWeight: 600, textTransform: 'capitalize' }}>{e.type.replace('_', ' ')}</span>,
-          <span key={e.id} style={{ fontWeight: 700, color: e.type === 'in' ? '#16a34a' : '#ef4444' }}>
-            {e.type === 'in' ? '+' : '-'}{e.quantity.toLocaleString('en-IN')} {item.unit}
-          </span>,
-          <strong key={e.id}>{e.balanceAfter.toLocaleString('en-IN')} {item.unit}</strong>,
-          e.note || '-'
-        ])}
+        headers={
+          isBricks
+            ? ['S.NO', 'DATE', 'STOCK OPENING', 'CURRENT PRODUCTION', 'SALES', 'PENDING STOCK']
+            : ['S.NO', 'DATE', 'ITEM', 'STOCK OPENING', `MATERIAL USAGE (${unitLabel})`, 'PENDING STOCK']
+        }
+        colAlignments={
+          isBricks
+            ? ['center', 'center', 'right', 'right', 'right', 'right']
+            : ['center', 'center', 'left', 'right', 'right', 'right']
+        }
+        colWidths={
+          isBricks
+            ? ['55px', '125px', '140px', '160px', '130px', '140px']
+            : ['55px', '125px', '140px', '140px', '180px', '140px']
+        }
+        rows={filteredEntries.map((e, idx) => {
+          const openingVal = e.stockOpening !== undefined ? e.stockOpening : 0;
+          const prodVal = e.currentProduction !== undefined ? e.currentProduction : (e.type === 'production' ? e.quantity : 0) || 0;
+          const salesVal = e.sales !== undefined ? e.sales : (e.type === 'sales' ? e.quantity : 0) || 0;
+          const usageVal = e.materialUsage !== undefined ? e.materialUsage : salesVal;
+          const pendingVal = e.pendingStock !== undefined
+            ? e.pendingStock
+            : isBricks
+              ? openingVal + Number(prodVal) - Number(salesVal)
+              : openingVal - Number(usageVal);
+          const fmt = (n: number) => Number(n).toLocaleString('en-IN');
+
+          if (isBricks) {
+            return [
+              idx + 1,
+              formatToDDMMYYYY(e.date),
+              fmt(openingVal),
+              prodVal > 0 ? fmt(Number(prodVal)) : '-',
+              salesVal > 0 ? fmt(Number(salesVal)) : '-',
+              <strong key={e.id}>{fmt(Number(pendingVal))}</strong>
+            ];
+          }
+
+          return [
+            idx + 1,
+            formatToDDMMYYYY(e.date),
+            e.item || item.item,
+            fmt(openingVal),
+            usageVal > 0 ? fmt(Number(usageVal)) : '-',
+            <strong key={e.id}>{fmt(Number(pendingVal))}</strong>
+          ];
+        })}
         summaryItems={[
-          { label: 'Item Name', value: item.name },
-          { label: 'Category', value: item.category },
-          { label: 'Ledger Entries', value: `${filteredEntries.length} Transactions` },
-          { label: 'Current In-Stock', value: `${item.currentStock.toLocaleString('en-IN')} ${item.unit}`, highlightColor: '#16a34a' }
+          { label: 'Item Name', value: item.item },
+          { label: isBricks ? 'Total Sales' : 'Total Usage', value: Number(item.materialUsage ?? item.sales ?? 0).toLocaleString('en-IN') },
+          { label: 'Ledger Entries', value: `${filteredEntries.length} ${filteredEntries.length === 1 ? 'Entry' : 'Entries'}` },
+          { label: 'Pending Stock', value: `${Number(item.pendingStock || 0).toLocaleString('en-IN')} Units`, highlightColor: '#16a34a' }
         ]}
       />
     </div>
