@@ -672,9 +672,6 @@ const AfrahAppShell: React.FC = () => {
                 onDeleteContract={deleteConstructionLabourContract}
                 siteOptions={Array.from(new Set([
                   ...clients.map((c) => c.name),
-                  'Dr. K. Rajendran Villa - Site #4',
-                  'Commercial Complex - Anna Nagar',
-                  'Green Valley Plot 14 Residence',
                   ...constructionLabourContracts.map((c) => c.siteName).filter(Boolean)
                 ]))}
               />
@@ -800,11 +797,8 @@ const AfrahAppShell: React.FC = () => {
                   onUpdateContract={updateLabourContract}
                   onDeleteContract={deleteLabourContract}
                   siteOptions={Array.from(new Set([
+                    ...interiorLedgerClients.map((c) => c.name),
                     ...interiorClients.map((c) => c.name),
-                    'Palayam',
-                    'A.R. Rahman Villa',
-                    'Dr. Vikramaditya Reddy Site',
-                    'Green Meadows Apt',
                     ...labourContracts.map((c) => c.siteName).filter(Boolean)
                   ]))}
                 />

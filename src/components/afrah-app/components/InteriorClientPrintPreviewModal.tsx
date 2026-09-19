@@ -107,7 +107,7 @@ function buildInteriorQuotePayload(args: {
   const { client, expenses, quoteDate, totalExpenses } = args;
   const brand = defaultStatementBrand('kaab');
   const grouped = groupInteriorExpenses(expenses);
-  const extra = [siteLine(client), `Quote No: ${resolveInteriorQuoteNo(client)}`].filter(Boolean);
+  const extra = [siteLine(client)].filter(Boolean);
   const quoteExtras = buildInteriorQuoteExtras(client, totalExpenses);
 
   const rows: string[][] =
@@ -120,7 +120,7 @@ function buildInteriorQuotePayload(args: {
             exp.expenseName.toUpperCase(),
             String(exp.quantity),
             exp.unit || 'Sq.ft',
-            exp.rate ? String(exp.rate) : '-',
+            exp.rate ? Number(exp.rate).toLocaleString('en-IN') : '-',
             formatInvoiceINR(exp.totalAmount),
           ]),
           ['', 'TOTAL', '', '', '', formatInvoiceINR(group.subtotal)],

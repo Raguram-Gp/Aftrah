@@ -29,7 +29,10 @@ BEGIN
         'brick_production_expenses',
         'interior_vendor_categories',
         'interior_vendors',
-        'interior_vendor_ledgers'
+        'interior_vendor_ledgers',
+        'interior_ledger_clients',
+        'interior_ledger_advances',
+        'interior_ledger_expenses'
     ]) LOOP
         IF to_regclass('public.' || tbl) IS NULL THEN
             CONTINUE;

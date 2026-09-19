@@ -32,6 +32,7 @@ export interface StatementSnapshot {
     greetingTitle: string;
     greetingBody: string;
     materials?: string;
+    quoteNo?: string;
     deliveryTerms: string;
     paymentTerms: Array<{ label: string; amount: string }>;
     notes: string[];

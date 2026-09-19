@@ -1,5 +1,6 @@
 import type { InteriorClient } from '../types';
 import type { StatementSnapshot } from '@/lib/statementSnapshot';
+import { resolveInteriorQuoteNo } from './quoteNo';
 
 const formatQuoteINR = (val: number) => {
   const formatted = Math.abs(val || 0).toLocaleString('en-IN', {
@@ -66,6 +67,7 @@ export function buildInteriorQuoteExtras(
     greetingTitle: QUOTE_GREETING_TITLE,
     greetingBody: QUOTE_GREETING_BODY,
     materials: quoteMaterialsFor(client),
+    quoteNo: resolveInteriorQuoteNo(client),
     deliveryTerms: QUOTE_DELIVERY_TERMS,
     paymentTerms: quotePaymentSchedule(total).map((row) => ({
       label: row.label,
