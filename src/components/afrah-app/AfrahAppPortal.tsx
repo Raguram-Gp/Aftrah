@@ -1,8 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { AfrahAppSidebar, type TabType } from './layout/AfrahAppSidebar';
 import { AfrahAppTopBar } from './layout/AfrahAppTopBar';
 import { ToastContainer, showToast } from './layout/ToastContainer';
 import { ConfirmDeleteModal } from './components/ConfirmDeleteModal';
+import { EntityNotFound } from './components/EntityNotFound';
 import { useClients } from './hooks/useClients';
 import { useInteriorClients } from './hooks/useInteriorClients';
 import { useVendors } from './hooks/useVendors';
@@ -13,6 +14,8 @@ import { useBanks } from './hooks/useBanks';
 import { useBrickCustomers } from './hooks/useBrickCustomers';
 import { useBrickProductionExpenses } from './hooks/useBrickProductionExpenses';
 import { useBrickStock } from './hooks/useBrickStock';
+import { buildNavPath, parseNavState } from './navUrl';
+
 import { ClientDetailsView } from './views/ClientDetailsView';
 import { InteriorClientView } from './views/InteriorClientView';
 import { InteriorClientDetailsView } from './views/InteriorClientDetailsView';
@@ -44,6 +47,7 @@ import {
   ChevronLeft,
   ChevronRight,
   AlertCircle,
+  Loader2,
   BrickWall,
   Flame,
   Boxes,
@@ -53,20 +57,99 @@ import {
 import './styles/afrah-app.css';
 
 export const AfrahAppPortal: React.FC = () => {
-  // Navigation & Drilldown State
-  const [activeTab, setActiveTab] = useState<TabType>('clients');
-  const [activeInteriorSubTab, setActiveInteriorSubTab] = useState<InteriorSubTab>('directory');
-  const [activeBricksSubTab, setActiveBricksSubTab] = useState<BricksSubTab>('directory');
-  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
-  const [selectedConstructionLabourContractId, setSelectedConstructionLabourContractId] = useState<string | null>(null);
-  const [selectedInteriorClientId, setSelectedInteriorClientId] = useState<string | null>(null);
-  const [selectedInteriorVendorId, setSelectedInteriorVendorId] = useState<string | null>(null);
-  const [selectedInteriorShopId, setSelectedInteriorShopId] = useState<string | null>(null);
-  const [selectedLabourContractId, setSelectedLabourContractId] = useState<string | null>(null);
-  const [selectedVendorId, setSelectedVendorId] = useState<string | null>(null);
-  const [selectedShopId, setSelectedShopId] = useState<string | null>(null);
-  const [selectedBrickCustomerId, setSelectedBrickCustomerId] = useState<string | null>(null);
-  const [selectedStockItemId, setSelectedStockItemId] = useState<string | null>(null);
+  const initialNav = useMemo(() => parseNavState(), []);
+  const [activeTab, setActiveTab] = useState<TabType>(initialNav.activeTab);
+  const [activeInteriorSubTab, setActiveInteriorSubTab] = useState<InteriorSubTab>(initialNav.activeInteriorSubTab);
+  const [activeBricksSubTab, setActiveBricksSubTab] = useState<BricksSubTab>(initialNav.activeBricksSubTab);
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(initialNav.selectedClientId);
+  const [selectedConstructionLabourContractId, setSelectedConstructionLabourContractId] = useState<string | null>(initialNav.selectedConstructionLabourContractId);
+  const [selectedInteriorClientId, setSelectedInteriorClientId] = useState<string | null>(initialNav.selectedInteriorClientId);
+  const [selectedInteriorVendorId, setSelectedInteriorVendorId] = useState<string | null>(initialNav.selectedInteriorVendorId);
+  const [selectedInteriorShopId, setSelectedInteriorShopId] = useState<string | null>(initialNav.selectedInteriorShopId);
+  const [selectedLabourContractId, setSelectedLabourContractId] = useState<string | null>(initialNav.selectedLabourContractId);
+  const [selectedVendorId, setSelectedVendorId] = useState<string | null>(initialNav.selectedVendorId);
+  const [selectedShopId, setSelectedShopId] = useState<string | null>(initialNav.selectedShopId);
+  const [selectedBrickCustomerId, setSelectedBrickCustomerId] = useState<string | null>(initialNav.selectedBrickCustomerId);
+  const [selectedStockItemId, setSelectedStockItemId] = useState<string | null>(initialNav.selectedStockItemId);
+
+  const skipNextUrlWrite = useRef(false);
+  const hasInitializedUrl = useRef(false);
+
+  useEffect(() => {
+    const nextPath = buildNavPath({
+      activeTab,
+      activeInteriorSubTab,
+      activeBricksSubTab,
+      selectedClientId,
+      selectedConstructionLabourContractId,
+      selectedInteriorClientId,
+      selectedInteriorVendorId,
+      selectedInteriorShopId,
+      selectedLabourContractId,
+      selectedVendorId,
+      selectedShopId,
+      selectedBrickCustomerId,
+      selectedStockItemId,
+    });
+    const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
+    const nextNormalized = nextPath.replace(/\/+$/, '');
+    const urlChanged =
+      currentPath !== nextNormalized || Boolean(window.location.hash) || Boolean(window.location.search);
+
+    if (!urlChanged) return;
+    if (skipNextUrlWrite.current) {
+      skipNextUrlWrite.current = false;
+      return;
+    }
+
+    if (!hasInitializedUrl.current) {
+      hasInitializedUrl.current = true;
+      window.history.replaceState(null, '', nextPath);
+      return;
+    }
+
+    window.history.pushState(null, '', nextPath);
+  }, [
+    activeTab,
+    activeInteriorSubTab,
+    activeBricksSubTab,
+    selectedClientId,
+    selectedConstructionLabourContractId,
+    selectedInteriorClientId,
+    selectedInteriorVendorId,
+    selectedInteriorShopId,
+    selectedLabourContractId,
+    selectedVendorId,
+    selectedShopId,
+    selectedBrickCustomerId,
+    selectedStockItemId,
+  ]);
+
+  const applyNavFromPath = useCallback(() => {
+    const nav = parseNavState();
+    setActiveTab(nav.activeTab);
+    setActiveInteriorSubTab(nav.activeInteriorSubTab);
+    setActiveBricksSubTab(nav.activeBricksSubTab);
+    setSelectedClientId(nav.selectedClientId);
+    setSelectedConstructionLabourContractId(nav.selectedConstructionLabourContractId);
+    setSelectedInteriorClientId(nav.selectedInteriorClientId);
+    setSelectedInteriorVendorId(nav.selectedInteriorVendorId);
+    setSelectedInteriorShopId(nav.selectedInteriorShopId);
+    setSelectedLabourContractId(nav.selectedLabourContractId);
+    setSelectedVendorId(nav.selectedVendorId);
+    setSelectedShopId(nav.selectedShopId);
+    setSelectedBrickCustomerId(nav.selectedBrickCustomerId);
+    setSelectedStockItemId(nav.selectedStockItemId);
+  }, []);
+
+  useEffect(() => {
+    const onPopState = () => {
+      skipNextUrlWrite.current = true;
+      applyNavFromPath();
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, [applyNavFromPath]);
 
   // Responsive Drawer & Sidebar State
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -116,6 +199,7 @@ export const AfrahAppPortal: React.FC = () => {
 
   const {
     interiorClients,
+    isLoading: interiorClientsLoading,
     addClient: addInteriorClient,
     updateClient: updateInteriorClient,
     deleteClient: deleteInteriorClient,
@@ -132,6 +216,7 @@ export const AfrahAppPortal: React.FC = () => {
 
   const {
     vendors: interiorVendors,
+    isLoading: interiorVendorsLoading,
     addCategory: addInteriorCategory,
     updateCategory: updateInteriorCategory,
     deleteCategory: deleteInteriorCategory,
@@ -146,6 +231,7 @@ export const AfrahAppPortal: React.FC = () => {
 
   const {
     contracts: labourContracts,
+    isLoading: labourContractsLoading,
     addContract: addLabourContract,
     updateContract: updateLabourContract,
     updateLabourCharge,
@@ -158,6 +244,7 @@ export const AfrahAppPortal: React.FC = () => {
 
   const {
     contracts: constructionLabourContracts,
+    isLoading: constructionLabourLoading,
     addContract: addConstructionLabourContract,
     updateContract: updateConstructionLabourContract,
     updateLabourCharge: updateConstructionLabourCharge,
@@ -213,6 +300,7 @@ export const AfrahAppPortal: React.FC = () => {
 
   const {
     expenses: brickExpenses,
+    isLoading: brickExpensesLoading,
     stats: brickExpensesStats,
     addExpense: addBrickExpense,
     updateExpense: updateBrickExpense,
@@ -222,6 +310,7 @@ export const AfrahAppPortal: React.FC = () => {
 
   const {
     stockItems,
+    isLoading: brickStockLoading,
     stats: stockStats,
     addStockItem,
     updateStockItem,
@@ -275,6 +364,23 @@ export const AfrahAppPortal: React.FC = () => {
   const selectedStockItem = useMemo(() => {
     return stockItems.find((s) => s.id === selectedStockItemId) || null;
   }, [stockItems, selectedStockItemId]);
+
+  const bootLoading =
+    clientsLoading ||
+    vendorsLoading ||
+    banksLoading ||
+    interiorClientsLoading ||
+    interiorVendorsLoading ||
+    labourContractsLoading ||
+    constructionLabourLoading ||
+    bricksLoading ||
+    brickExpensesLoading ||
+    brickStockLoading;
+
+  const [bootReady, setBootReady] = useState(false);
+  useEffect(() => {
+    if (!bootLoading) setBootReady(true);
+  }, [bootLoading]);
 
   // Validation Flags
   const isAddClientValid =
@@ -528,6 +634,12 @@ export const AfrahAppPortal: React.FC = () => {
 
         {/* Main Content */}
         <main className="afrah-app-main-content">
+          {!bootReady && (
+            <div className="afrah-app-boot-overlay" role="status" aria-live="polite">
+              <Loader2 size={28} className="animate-spin" />
+              <span>Loading…</span>
+            </div>
+          )}
           {activeTab === 'construction_labour' ? (
             selectedConstructionLabourContract ? (
               /* CONSTRUCTION LABOUR CONTRACTOR DETAILS & WORK MUSTER LEDGER */
@@ -539,6 +651,12 @@ export const AfrahAppPortal: React.FC = () => {
                 onAddEntry={addConstructionLabourEntry}
                 onUpdateEntry={updateConstructionLabourEntry}
                 onDeleteEntry={deleteConstructionLabourEntry}
+              />
+            ) : selectedConstructionLabourContractId && bootReady ? (
+              <EntityNotFound
+                entityLabel="contract"
+                backLabel="Go to Construction Labour"
+                onBack={() => setSelectedConstructionLabourContractId(null)}
               />
             ) : (
               /* CONSTRUCTION LABOUR CONTRACTS DIRECTORY */
@@ -572,6 +690,23 @@ export const AfrahAppPortal: React.FC = () => {
                   onDeleteTransaction={deleteInteriorShopTransaction}
                   onDeleteMultipleShopTransactions={deleteMultipleInteriorShopTransactions}
                 />
+              ) : selectedInteriorVendorId && selectedInteriorShopId && bootReady && !selectedInteriorShop ? (
+                selectedInteriorVendor ? (
+                  <EntityNotFound
+                    entityLabel="shop"
+                    backLabel="Go to Shops"
+                    onBack={() => setSelectedInteriorShopId(null)}
+                  />
+                ) : (
+                  <EntityNotFound
+                    entityLabel="vendor"
+                    backLabel="Go to Vendors"
+                    onBack={() => {
+                      setSelectedInteriorVendorId(null);
+                      setSelectedInteriorShopId(null);
+                    }}
+                  />
+                )
               ) : selectedInteriorVendor ? (
                 /* INTERIOR VENDOR SHOPS LIST */
                 <VendorShopsView
@@ -581,6 +716,15 @@ export const AfrahAppPortal: React.FC = () => {
                   onAddShop={(shopData) => addInteriorVendorShop(selectedInteriorVendor.id, shopData)}
                   onUpdateShop={(updatedShop) => updateInteriorVendorShop(selectedInteriorVendor.id, updatedShop)}
                   onDeleteShop={(shopId) => deleteInteriorVendorShop(selectedInteriorVendor.id, shopId)}
+                />
+              ) : selectedInteriorVendorId && bootReady ? (
+                <EntityNotFound
+                  entityLabel="vendor"
+                  backLabel="Go to Vendors"
+                  onBack={() => {
+                    setSelectedInteriorVendorId(null);
+                    setSelectedInteriorShopId(null);
+                  }}
                 />
               ) : (
                 /* INTERIOR VENDOR CATEGORIES LIST (Hardware, Carpenter, Plywoods...) */
@@ -606,6 +750,12 @@ export const AfrahAppPortal: React.FC = () => {
                   onAddEntry={addLabourEntry}
                   onUpdateEntry={updateLabourEntry}
                   onDeleteEntry={deleteLabourEntry}
+                />
+              ) : selectedLabourContractId && bootReady ? (
+                <EntityNotFound
+                  entityLabel="contract"
+                  backLabel="Go to Labour Contracts"
+                  onBack={() => setSelectedLabourContractId(null)}
                 />
               ) : (
                 /* LABOUR CONTRACTS DIRECTORY (Matching wireframe & sketch) */
@@ -640,6 +790,12 @@ export const AfrahAppPortal: React.FC = () => {
                 onDeleteExpense={deleteInteriorExpense}
                 onDeleteMultipleExpenses={deleteMultipleInteriorExpenses}
               />
+            ) : selectedInteriorClientId && bootReady ? (
+              <EntityNotFound
+                entityLabel="client"
+                backLabel="Go to Interior Clients"
+                onBack={() => setSelectedInteriorClientId(null)}
+              />
             ) : (
               /* KAAB INTERIOR - CLIENTS DIRECTORY */
               <InteriorClientView
@@ -665,6 +821,12 @@ export const AfrahAppPortal: React.FC = () => {
                     onUpdateTransaction={updateBrickTransaction}
                     onDeleteTransaction={deleteBrickTransaction}
                     onDeleteMultipleTransactions={deleteMultipleBrickTransactions}
+                  />
+                ) : selectedBrickCustomerId && bootReady ? (
+                  <EntityNotFound
+                    entityLabel="customer"
+                    backLabel="Go to Bricks Customers"
+                    onBack={() => setSelectedBrickCustomerId(null)}
                   />
                 ) : (
                   /* KABIBULLAH BRICKS - CUSTOMER DIRECTORY */
@@ -698,6 +860,12 @@ export const AfrahAppPortal: React.FC = () => {
                     onUpdateEntry={updateStockItemEntry}
                     onDeleteEntry={deleteStockItemEntry}
                     onDeleteMultipleEntries={deleteMultipleStockItemEntries}
+                  />
+                ) : selectedStockItemId && bootReady ? (
+                  <EntityNotFound
+                    entityLabel="stock item"
+                    backLabel="Go to Stock Register"
+                    onBack={() => setSelectedStockItemId(null)}
                   />
                 ) : (
                   <BricksStockRegisterView
@@ -737,6 +905,23 @@ export const AfrahAppPortal: React.FC = () => {
                 onDeleteTransaction={deleteShopTransaction}
                 onDeleteMultipleShopTransactions={deleteMultipleShopTransactions}
               />
+            ) : selectedVendorId && selectedShopId && bootReady && !selectedShop ? (
+              selectedVendor ? (
+                <EntityNotFound
+                  entityLabel="shop"
+                  backLabel="Go to Shops"
+                  onBack={() => setSelectedShopId(null)}
+                />
+              ) : (
+                <EntityNotFound
+                  entityLabel="vendor"
+                  backLabel="Go to Vendors"
+                  onBack={() => {
+                    setSelectedVendorId(null);
+                    setSelectedShopId(null);
+                  }}
+                />
+              )
             ) : selectedVendor ? (
               /* VENDOR SHOPS LIST (List of shops for e.g. Bricks + Add Shop form) */
               <VendorShopsView
@@ -746,6 +931,15 @@ export const AfrahAppPortal: React.FC = () => {
                 onAddShop={(shopData) => addVendorShop(selectedVendor.id, shopData)}
                 onUpdateShop={(updatedShop) => updateVendorShop(selectedVendor.id, updatedShop)}
                 onDeleteShop={(shopId) => deleteVendorShop(selectedVendor.id, shopId)}
+              />
+            ) : selectedVendorId && bootReady ? (
+              <EntityNotFound
+                entityLabel="vendor"
+                backLabel="Go to Vendors"
+                onBack={() => {
+                  setSelectedVendorId(null);
+                  setSelectedShopId(null);
+                }}
               />
             ) : (
               /* VENDOR CATEGORIES LIST (Bricks, Hardware, M.Sand...) */
@@ -774,6 +968,12 @@ export const AfrahAppPortal: React.FC = () => {
               onUpdateExpense={updateExpense}
               onDeleteExpense={deleteExpense}
               onDeleteMultipleExpenses={deleteMultipleExpenses}
+            />
+          ) : selectedClientId && bootReady ? (
+            <EntityNotFound
+              entityLabel="client"
+              backLabel="Go to Clients"
+              onBack={() => setSelectedClientId(null)}
             />
           ) : (
             /* CLIENT LIST FULL-PAGE VIEW */

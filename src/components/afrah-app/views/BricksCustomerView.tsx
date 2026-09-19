@@ -256,6 +256,17 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
         </div>
       </div>
 
+      <div className="client-details-top-actions no-print">
+        <button
+          onClick={handlePrint}
+          className="afrah-app-back-btn"
+          title="Preview and Print Statement"
+        >
+          <Printer size={15} />
+          <span>Print Preview / Statement</span>
+        </button>
+      </div>
+
       {/* VIEW BRICKS CUSTOMER TABLE */}
       <section className="afrah-app-table-section w-full">
         <div className="afrah-app-section-header no-print">
@@ -299,15 +310,6 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                 className="afrah-app-search-input"
               />
             </div>
-
-            <button
-              onClick={handlePrint}
-              className="afrah-app-back-btn"
-              title="Print Customer Directory"
-            >
-              <Printer size={15} />
-              <span>Print</span>
-            </button>
 
             <button
               type="button"

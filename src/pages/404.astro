@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../styles/global.css';
+import AfrahAppPortal from '../components/afrah-app/AfrahAppPortal';
+---
+
+<Layout
+  title="Afrah Constructions | Operations, Procurement & Banking ERP"
+  description="Manage enterprise client accounts, milestone billing schedules, vendor procurement ledgers, and multi-bank corporate finances for Afrah Constructions."
+>
+  <div id="afrah-app-fallback">
+    <AfrahAppPortal client:only="react" />
+  </div>
+  <div id="generic-404" hidden style="min-height: 70vh; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 12px; font-family: sans-serif;">
+    <h1 style="margin: 0; font-size: 28px;">Page not found</h1>
+    <a href="/" style="color: inherit;">Return home</a>
+  </div>
+  <script is:inline>
+    (function () {
+      var path = window.location.pathname;
+      var isApp = path === '/afrah-app' || path.indexOf('/afrah-app/') === 0;
+      if (isApp) return;
+      var app = document.getElementById('afrah-app-fallback');
+      var missing = document.getElementById('generic-404');
+      if (app) app.setAttribute('hidden', '');
+      if (missing) {
+        missing.removeAttribute('hidden');
+        missing.style.display = 'flex';
+      }
+    })();
+  </script>
+</Layout>

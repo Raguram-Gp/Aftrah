@@ -22,7 +22,6 @@ import {
   compareByDateDesc,
 } from "../components/DateInput";
 import {
-  ArrowLeft,
   Wallet,
   TrendingDown,
   Scale,
@@ -93,7 +92,7 @@ export const InteriorClientDetailsView: React.FC<
   InteriorClientDetailsViewProps
 > = ({
   client,
-  onBack,
+  onBack: _onBack,
   onUpdateClient,
   onAddAdvance,
   onUpdateAdvance,
@@ -619,28 +618,14 @@ export const InteriorClientDetailsView: React.FC<
 
       {/* Screen Header Bar */}
       <div className="client-details-header no-print">
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: "8px",
-            flexWrap: "wrap",
-            gap: "12px",
-          }}
-        >
-          <button onClick={onBack} className="afrah-app-back-btn">
-            <ArrowLeft size={16} />
-            <span>Back to KAAB INTERIOR</span>
-          </button>
-
+        <div className="client-details-top-actions">
           <button
             onClick={handlePrint}
             className="afrah-app-back-btn"
-            title="Print or Export Interior Estimate Statement"
+            title="Preview and Print Statement"
           >
             <Printer size={15} />
-            <span>Print Estimate Statement</span>
+            <span>Print Preview / Statement</span>
           </button>
         </div>
 

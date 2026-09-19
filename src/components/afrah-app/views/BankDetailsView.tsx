@@ -848,6 +848,17 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
               className="afrah-app-modal-body"
               style={{ padding: "16px 20px" }}
             >
+              <div className="client-details-top-actions no-print">
+                <button
+                  onClick={handlePrint}
+                  className="afrah-app-back-btn"
+                  title="Preview and Print Statement"
+                >
+                  <Printer size={15} />
+                  <span>Print Preview / Statement</span>
+                </button>
+              </div>
+
               {/* Date Filter Bar inside Passbook Ledger */}
               <DateFilterBar
                 fromDate={ledgerFromDate}
@@ -860,8 +871,6 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                 }}
                 selectedCount={selectedTxIds.size}
                 onBulkDelete={() => setIsBulkDeleteTxOpen(true)}
-                onPrint={handlePrint}
-                printLabel="Print Passbook"
               />
 
               <div

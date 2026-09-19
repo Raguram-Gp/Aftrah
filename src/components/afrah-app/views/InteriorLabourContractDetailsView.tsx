@@ -4,7 +4,6 @@ import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
-  ArrowLeft,
   IndianRupee,
   Plus,
   Pencil,
@@ -44,7 +43,7 @@ const PRESET_WORK_TYPES = [
 
 export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractDetailsViewProps> = ({
   contract,
-  onBack,
+  onBack: _onBack,
   onUpdateContract,
   onUpdateLabourCharge,
   onAddEntry,
@@ -217,15 +216,14 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
     <div className="client-details-page">
       {/* Top Header Card using Theme Design System */}
       <div className="client-details-header no-print">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', flexWrap: 'wrap', gap: '12px' }}>
-          <button onClick={onBack} className="afrah-app-back-btn">
-            <ArrowLeft size={16} />
-            <span>Back to Labour Contracts</span>
-          </button>
-
-          <button onClick={() => window.print()} className="afrah-app-print-btn">
+        <div className="client-details-top-actions">
+          <button
+            onClick={() => window.print()}
+            className="afrah-app-back-btn"
+            title="Preview and Print Statement"
+          >
             <Printer size={15} />
-            <span>Print Statement</span>
+            <span>Print Preview / Statement</span>
           </button>
         </div>
 

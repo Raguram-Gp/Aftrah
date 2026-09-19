@@ -11,7 +11,6 @@ import {
   compareByDateDesc,
 } from "../components/DateInput";
 import {
-  ArrowLeft,
   BrickWall,
   Boxes,
   Truck,
@@ -57,7 +56,7 @@ export const BricksCustomerDetailsView: React.FC<
   BricksCustomerDetailsViewProps
 > = ({
   customer,
-  onBack,
+  onBack: _onBack,
   onUpdateCustomer,
   onAddTransaction,
   onUpdateTransaction,
@@ -474,48 +473,15 @@ export const BricksCustomerDetailsView: React.FC<
 
       {/* Screen Header Bar */}
       <div className="client-details-header no-print">
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: "8px",
-            flexWrap: "wrap",
-            gap: "12px",
-          }}
-        >
+        <div className="client-details-top-actions">
           <button
-            onClick={onBack}
+            onClick={handlePrint}
             className="afrah-app-back-btn"
-            title="Return to Bricks Customers List"
-            aria-label="Back to Bricks Customers List"
+            title="Preview and Print Statement"
           >
-            <ArrowLeft size={16} />
-            <span>Back to Customers</span>
+            <Printer size={15} />
+            <span>Print Preview / Statement</span>
           </button>
-
-          <div className="flex-center-10">
-            <button
-              onClick={handlePrint}
-              className="afrah-app-back-btn"
-              title="Print or export ledger statement"
-            >
-              <Printer size={15} />
-              <span>Print Statement</span>
-            </button>
-
-            <button
-              onClick={() => {
-                resetAddForm();
-                setIsAddModalOpen(true);
-              }}
-              className="btn-theme-primary"
-              style={{ height: "38px", padding: "0 16px", fontSize: "13px" }}
-            >
-              <Plus size={16} strokeWidth={2.5} />
-              <span>New Brick Delivery</span>
-            </button>
-          </div>
         </div>
 
         <div className="client-unified-summary-card">
@@ -587,8 +553,6 @@ export const BricksCustomerDetailsView: React.FC<
         }}
         selectedCount={selectedTxIds.size}
         onBulkDelete={() => setIsBulkDeleteOpen(true)}
-        onPrint={handlePrint}
-        printLabel="Print Statement"
       />
 
       {/* Transactions Section */}
