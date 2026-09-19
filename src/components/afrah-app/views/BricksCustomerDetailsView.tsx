@@ -6,8 +6,6 @@ import { DateFilterBar } from '../components/DateFilterBar';
 import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
   ArrowLeft,
-  Phone,
-  MapPin,
   Calendar,
   BrickWall,
   Boxes,
@@ -432,16 +430,6 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
               <span className="client-unified-label">Customer Name :</span>{' '}
               <span className="client-unified-name">{customer.name}</span>
             </h1>
-            <div className="client-meta-row" style={{ marginTop: '6px' }}>
-              <span className="client-meta-pill">
-                <Phone size={13} color="var(--primary)" />
-                {customer.phone}
-              </span>
-              <span className="client-meta-pill">
-                <MapPin size={13} color="var(--primary)" />
-                {customer.address}
-              </span>
-            </div>
           </div>
 
           <div className="client-unified-card-item metric-item">

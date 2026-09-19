@@ -5,8 +5,6 @@ import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
   ArrowLeft,
-  HardHat,
-  Phone,
   Calendar,
   IndianRupee,
   Plus,
@@ -238,20 +236,6 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
               <span className="client-unified-label">Labour Name :</span>{' '}
               <span className="client-unified-name">{contract.labourName}</span>
             </h1>
-            <div className="client-meta-row" style={{ marginTop: '6px' }}>
-              <span className="client-meta-pill">
-                <HardHat size={13} color="var(--primary)" />
-                {contract.siteName}
-              </span>
-              <span className="client-meta-pill">
-                <Phone size={13} color="var(--primary)" />
-                {contract.phone}
-              </span>
-              <span className="client-meta-pill">
-                <Calendar size={13} color="var(--primary)" />
-                Registered: {formatToDDMMYYYY(contract.date)}
-              </span>
-            </div>
           </div>
 
           <div

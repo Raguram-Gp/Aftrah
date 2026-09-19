@@ -8,8 +8,6 @@ import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDa
 import { showToast } from '../layout/ToastContainer';
 import { StatementPrintPreviewModal } from '../components/StatementPrintPreviewModal';
 import {
-  Phone,
-  MapPin,
   CreditCard,
   Receipt,
   Plus,
@@ -617,16 +615,6 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               <span className="client-unified-label">Client Name :</span>{' '}
               <span className="client-unified-name">{client.name}</span>
             </h1>
-            <div className="client-meta-row" style={{ marginTop: '6px' }}>
-              <span className="client-meta-pill">
-                <Phone size={13} color="var(--primary)" />
-                {client.phone}
-              </span>
-              <span className="client-meta-pill">
-                <MapPin size={13} color="var(--primary)" />
-                {client.address}
-              </span>
-            </div>
           </div>
 
           {/* Total Advance */}

@@ -10,8 +10,6 @@ import {
 } from "../components/DateInput";
 import {
   ArrowLeft,
-  Phone,
-  MapPin,
   Calendar,
   Wallet,
   TrendingDown,
@@ -529,16 +527,6 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
               <span className="client-unified-label">Vendor:</span>{" "}
               <span className="client-unified-name">{shop.name}</span>
             </h1>
-            <div className="client-meta-row" style={{ marginTop: "6px" }}>
-              <span className="client-meta-pill">
-                <Phone size={13} color="var(--primary)" />
-                {shop.phone}
-              </span>
-              <span className="client-meta-pill">
-                <MapPin size={13} color="var(--primary)" />
-                {shop.address}
-              </span>
-            </div>
           </div>
 
           <div className="client-unified-card-item metric-item">
