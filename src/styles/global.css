@@ -17,6 +17,7 @@ html.dark {
   --surface-bright: #37393d;
   --surface-container-lowest: #0c0e11;
   --surface-container-low: #1a1c1f;
+  --sidebar-bg: #141618;
   --surface-container: #1e2023;
   --surface-container-high: #282a2d;
   --surface-container-highest: #333538;
@@ -120,6 +121,7 @@ html.light {
   --surface-bright: #FFFFFF;
   --surface-container-lowest: #FFFFFF;
   --surface-container-low: #F6F7FA;
+  --sidebar-bg: #FBF8F3;
   --surface-container: #EEF0F5;
   --surface-container-high: #E4E7EE;
   --surface-container-highest: #D9DDE6;
