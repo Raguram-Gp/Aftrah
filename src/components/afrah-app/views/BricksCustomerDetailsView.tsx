@@ -773,8 +773,8 @@ export const BricksCustomerDetailsView: React.FC<
                         style={{
                           textAlign: "right",
                           fontFamily: "monospace",
-                          color: "#4ade80",
                           fontWeight: 600,
+                          color: "var(--text-primary)",
                         }}
                       >
                         {formatINR(tx.paidAmount)}
@@ -788,14 +788,7 @@ export const BricksCustomerDetailsView: React.FC<
                             fontWeight: 700,
                             fontFamily: "monospace",
                             fontSize: "12px",
-                            background:
-                              (tx.balanceAmount || 0) > 0
-                                ? "rgba(239, 68, 68, 0.12)"
-                                : "rgba(34, 197, 94, 0.12)",
-                            color:
-                              (tx.balanceAmount || 0) > 0
-                                ? "#f87171"
-                                : "#4ade80",
+                            color: "var(--text-primary)",
                           }}
                         >
                           {formatINR(tx.balanceAmount)}

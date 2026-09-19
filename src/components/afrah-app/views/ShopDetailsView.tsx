@@ -972,7 +972,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                           textAlign: "right",
                           fontWeight: 700,
                           color: tx.totalAmount
-                            ? "var(--primary)"
+                            ? "var(--text-primary)"
                             : "var(--text-secondary)",
                           fontFamily: "JetBrains Mono, monospace",
                         }}
@@ -982,7 +982,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                       <td
                         style={{
                           textAlign: "right",
-                          color: isSettlement ? "#34d399" : "#93c5fd",
+                          color: "var(--text-primary)",
                           fontWeight: 700,
                           fontFamily: "JetBrains Mono, monospace",
                         }}
@@ -998,15 +998,14 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                       >
                         {isSettlement ? (
                           <span
-                            style={{ color: "#34d399", fontSize: "11.5px" }}
+                            style={{ color: "var(--text-primary)", fontSize: "11.5px" }}
                           >
                             - {formatINR(tx.receivedAmount)}
                           </span>
                         ) : (
                           <span
                             style={{
-                              color:
-                                tx.balanceAmount > 0 ? "#f87171" : "#4ade80",
+                              color: "var(--text-primary)",
                             }}
                           >
                             {formatINR(tx.balanceAmount)}

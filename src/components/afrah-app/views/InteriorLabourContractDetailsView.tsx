@@ -384,7 +384,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                         {formatINR(entry.salaryPerDay)}
                       </td>
                       <td>
-                        <strong style={{ color: '#4ade80', fontSize: '13.5px' }}>
+                        <strong style={{ color: 'var(--text-primary)', fontSize: '13.5px' }}>
                           {formatINR(entry.totalAmount)}
                         </strong>
                       </td>
@@ -416,9 +416,9 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                     <td colSpan={3} style={{ textAlign: 'right', padding: '12px 16px', color: 'var(--text-secondary)' }}>
                       Total ({filteredEntries.length} entries):
                     </td>
-                    <td style={{ textAlign: 'center', color: '#60a5fa' }}>{totalDays}</td>
+                    <td style={{ textAlign: 'center', color: 'var(--text-primary)' }}>{totalDays}</td>
                     <td>-</td>
-                    <td style={{ color: '#4ade80' }}>{formatINR(paidAmount)}</td>
+                    <td style={{ color: 'var(--text-primary)' }}>{formatINR(paidAmount)}</td>
                     <td />
                   </tr>
                 </tfoot>

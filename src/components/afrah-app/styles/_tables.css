@@ -13,8 +13,8 @@
 
 [data-theme="light"] .afrah-app-table-section,
 [data-theme="light"] .app2-table-section {
-  background: #FFFFFF;
-  border-color: #E2E8F0;
+  background: #ffffff;
+  border-color: #e2e8f0;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
 }
 
@@ -27,7 +27,7 @@
   gap: 14px;
   margin: -20px -20px 18px;
   padding: 16px 20px;
-  background: rgba(226, 195, 153, 0.10);
+  background: rgba(226, 195, 153, 0.1);
   border-bottom: 1px solid var(--border-stroke, #252830);
 }
 
@@ -35,13 +35,13 @@
 [data-theme="light"] .app2-section-header,
 html.light .afrah-app-section-header,
 html.light .app2-section-header {
-  background: #F6EFE4;
-  border-bottom-color: #E8E2D6;
+  background: #f6efe4;
+  border-bottom-color: #e8e2d6;
 }
 
 .afrah-app-section-title,
 .app2-section-title {
-  font-family: 'Cinzel', serif;
+  font-family: "Cinzel", serif;
   font-size: var(--fs-lg);
   font-weight: 850;
   letter-spacing: 0.05em;
@@ -80,8 +80,8 @@ html.light .app2-section-header {
 }
 
 [data-theme="light"] .section-total-badge {
-  background: #F8FAFC;
-  border-color: #CBD5E1;
+  background: #f8fafc;
+  border-color: #cbd5e1;
 }
 
 .afrah-app-search-wrapper,
@@ -117,8 +117,8 @@ html.light .app2-section-header {
 
 [data-theme="light"] .afrah-app-search-input,
 [data-theme="light"] .app2-search-input {
-  background: #F8FAFC;
-  border-color: #CBD5E1;
+  background: #f8fafc;
+  border-color: #cbd5e1;
 }
 
 .afrah-app-search-input:focus,
@@ -140,7 +140,7 @@ html.light .app2-section-header {
 
 [data-theme="light"] .afrah-app-table-container,
 [data-theme="light"] .app2-table-container {
-  border-color: #E2E8F0;
+  border-color: #e2e8f0;
 }
 
 .afrah-app-table,
@@ -153,7 +153,7 @@ html.light .app2-section-header {
 
 .afrah-app-table th,
 .app2-table th {
-  background: rgba(226, 195, 153, 0.10);
+  background: rgba(226, 195, 153, 0.1);
   padding: 11px 12px;
   font-size: var(--fs-3xs);
   font-weight: var(--fw-bold);
@@ -168,8 +168,8 @@ html.light .app2-section-header {
 [data-theme="light"] .app2-table th,
 html.light .afrah-app-table th,
 html.light .app2-table th {
-  background: #F6EFE4;
-  border-bottom-color: #E8E2D6;
+  background: #f6efe4;
+  border-bottom-color: #e8e2d6;
   color: #334155;
 }
 
@@ -187,7 +187,7 @@ html.light .app2-table th {
 [data-theme="light"] .app2-table td,
 html.light .afrah-app-table td,
 html.light .app2-table td {
-  border-bottom-color: #E8E2D6;
+  border-bottom-color: #e8e2d6;
 }
 
 .afrah-app-table tbody tr,
@@ -202,7 +202,7 @@ html.light .app2-table td {
 
 [data-theme="light"] .afrah-app-table tbody tr:hover,
 [data-theme="light"] .app2-table tbody tr:hover {
-  background: #F8FAFC;
+  background: #f8fafc;
 }
 
 .clickable-client-row {
@@ -227,7 +227,7 @@ html.light .app2-table td {
 /* TABLE CELL SYSTEM — reusable cell primitives.
    Change a cell type here once; every table updates. */
 .cell-sno {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   color: var(--text-secondary);
@@ -252,7 +252,7 @@ html.light .app2-table td {
 }
 
 .cell-phone {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   white-space: nowrap;
@@ -265,22 +265,30 @@ html.light .app2-table td {
 }
 
 .cell-amount {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-size: var(--fs-sm);
   font-weight: var(--fw-black);
   white-space: nowrap;
 }
 
-.cell-amount.is-primary { color: var(--primary); }
-.cell-amount.is-positive { color: #4ade80; }
-.cell-amount.is-negative { color: #f87171; }
-.cell-amount.is-warning { color: #f59e0b; }
+.cell-amount.is-primary {
+  color: var(--text-primary);
+}
+.cell-amount.is-positive {
+  color: #4ade80;
+}
+.cell-amount.is-negative {
+  color: #f87171;
+}
+.cell-amount.is-warning {
+  color: #f59e0b;
+}
 
 .cell-amount-pill {
   display: inline-block;
   padding: 4px 10px;
   border-radius: 6px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-size: var(--fs-sm);
   font-weight: var(--fw-black);
   white-space: nowrap;
@@ -472,9 +480,9 @@ html.light .app2-table .col-divider {
 
 [data-theme="light"] .afrah-app-select-sm,
 [data-theme="light"] .app2-select-sm {
-  background: #FFFFFF;
-  border-color: #CBD5E1;
-  color: #1E293B;
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #1e293b;
 }
 
 .afrah-app-select-sm:focus,
@@ -508,8 +516,8 @@ html.light .app2-table .col-divider {
 
 [data-theme="light"] .afrah-app-page-nav-btn,
 [data-theme="light"] .app2-page-nav-btn {
-  background: #FFFFFF;
-  border-color: #CBD5E1;
+  background: #ffffff;
+  border-color: #cbd5e1;
 }
 
 .afrah-app-page-nav-btn:hover:not(:disabled),
@@ -548,8 +556,8 @@ html.light .app2-table .col-divider {
 
 [data-theme="light"] .afrah-app-page-num-btn,
 [data-theme="light"] .app2-page-num-btn {
-  background: #FFFFFF;
-  border-color: #CBD5E1;
+  background: #ffffff;
+  border-color: #cbd5e1;
 }
 
 .afrah-app-page-num-btn:hover:not(.active),
@@ -584,8 +592,8 @@ html.light .app2-table .col-divider {
 
 [data-theme="light"] .afrah-app-form-card,
 [data-theme="light"] .app2-form-card {
-  background: #FFFFFF;
-  border-color: #E2E8F0;
+  background: #ffffff;
+  border-color: #e2e8f0;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
 }
 
@@ -598,7 +606,7 @@ html.light .app2-table .col-divider {
 
 [data-theme="light"] .afrah-app-form-card-header,
 [data-theme="light"] .app2-form-card-header {
-  border-bottom-color: #E2E8F0;
+  border-bottom-color: #e2e8f0;
 }
 
 .afrah-app-form-card-title,
@@ -659,8 +667,8 @@ html.light .app2-table .col-divider {
 }
 
 [data-theme="light"] .afrah-app-add-popover {
-  background: #FFFFFF;
-  border-color: #E2E8F0;
+  background: #ffffff;
+  border-color: #e2e8f0;
   box-shadow: 0 16px 36px rgba(15, 23, 42, 0.16);
 }
 
@@ -708,13 +716,17 @@ html.light .app2-table .col-divider {
   font-size: var(--fs-xs);
   outline: none;
   box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .afrah-app-select,
 .app2-select {
   padding: 0 32px 0 12px;
-  background: var(--surface-container, #1e2126) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center;
+  background: var(--surface-container, #1e2126)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")
+    no-repeat right 10px center;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -734,14 +746,16 @@ html.light .app2-table .col-divider {
 [data-theme="light"] .app2-input,
 [data-theme="light"] .app2-textarea,
 [data-theme="light"] .app2-select {
-  background: #F8FAFC;
-  border-color: #CBD5E1;
-  color: #1E293B;
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #1e293b;
 }
 
 [data-theme="light"] .afrah-app-select,
 [data-theme="light"] .app2-select {
-  background: #F8FAFC url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center;
+  background: #f8fafc
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")
+    no-repeat right 10px center;
 }
 
 .afrah-app-input:focus,
@@ -820,7 +834,10 @@ html.light .app2-table .col-divider {
   gap: 8px;
   background: linear-gradient(135deg, var(--primary, #e2c399) 0%, #c8a676 100%);
   color: #111317 !important;
-  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-family:
+    "Plus Jakarta Sans",
+    -apple-system,
+    sans-serif;
   font-weight: 700;
   font-size: var(--fs-sm);
   letter-spacing: 0.03em;
@@ -859,4 +876,3 @@ html.light .app2-table .col-divider {
   height: 44px;
   margin-top: 4px;
 }
-

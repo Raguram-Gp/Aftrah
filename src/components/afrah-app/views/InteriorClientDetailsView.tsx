@@ -825,7 +825,7 @@ export const InteriorClientDetailsView: React.FC<
                               textAlign: "right",
                               fontFamily: "monospace",
                               fontWeight: 700,
-                              color: "#4ade80",
+                              color: "var(--text-primary)",
                             }}
                           >
                             {formatINR(item.amount)}
@@ -1021,7 +1021,7 @@ export const InteriorClientDetailsView: React.FC<
                                 Subtotal:{" "}
                                 <strong
                                   style={{
-                                    color: "var(--primary)",
+                                    color: "var(--text-primary)",
                                     fontFamily: "monospace",
                                   }}
                                 >
@@ -1091,7 +1091,7 @@ export const InteriorClientDetailsView: React.FC<
                                   textAlign: "right",
                                   fontFamily: "monospace",
                                   fontWeight: 700,
-                                  color: "var(--primary)",
+                                  color: "var(--text-primary)",
                                 }}
                               >
                                 {formatINR(exp.totalAmount)}
@@ -1147,7 +1147,7 @@ export const InteriorClientDetailsView: React.FC<
                               fontWeight: 800,
                               fontFamily: "monospace",
                               fontSize: "13px",
-                              color: "var(--primary)",
+                              color: "var(--text-primary)",
                             }}
                           >
                             {formatINR(group.subtotal)}
@@ -1185,7 +1185,7 @@ export const InteriorClientDetailsView: React.FC<
                           fontWeight: 900,
                           fontFamily: "monospace",
                           fontSize: "15px",
-                          color: "var(--primary)",
+                          color: "var(--text-primary)",
                           padding: "12px 16px",
                         }}
                       >

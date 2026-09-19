@@ -560,16 +560,16 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                           </td>
                         )}
 
-                        {/* PENDING STOCK */}
-                        <td
-                          style={{
-                            textAlign: 'right',
-                            fontWeight: 800,
-                            color: pendingVal >= 0 ? 'var(--primary)' : '#f87171'
-                          }}
-                        >
-                          {Number(pendingVal).toLocaleString('en-IN')}
-                        </td>
+                      {/* PENDING STOCK */}
+                      <td
+                        style={{
+                          textAlign: 'right',
+                          fontWeight: 800,
+                          color: 'var(--text-primary)'
+                        }}
+                      >
+                        {Number(pendingVal).toLocaleString('en-IN')}
+                      </td>
 
                         {/* Actions: Edit & Delete */}
                         <td className="no-print text-center">

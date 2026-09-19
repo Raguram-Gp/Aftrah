@@ -958,7 +958,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                                 textAlign: "right",
                                 fontWeight: 700,
                                 fontFamily: "JetBrains Mono, monospace",
-                                color: isCredit ? "#4ade80" : "#f87171",
+                                color: "var(--text-primary)",
                               }}
                             >
                               {isCredit ? "+" : "-"}

@@ -225,7 +225,7 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
                         style={{
                           textAlign: 'right',
                           fontWeight: 'var(--fw-black)',
-                          color: item.pendingStock >= 0 ? 'var(--primary)' : '#f87171',
+                          color: 'var(--text-primary)',
                           fontSize: 'var(--fs-sm)',
                           paddingRight: '24px'
                         }}
