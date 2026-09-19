@@ -794,11 +794,11 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                 <th>DATE</th>
                 <th>TYPE / ITEM DESCRIPTION</th>
                 <th>CLIENT / SITE TAG</th>
-                <th style={{ textAlign: "right" }}>QTY</th>
-                <th style={{ textAlign: "right" }}>RATE</th>
-                <th style={{ textAlign: "right" }}>TOTAL AMOUNT</th>
-                <th style={{ textAlign: "right" }}>PAID</th>
-                <th style={{ textAlign: "right" }}>STATUS / BALANCE</th>
+                <th className="text-right">QTY</th>
+                <th className="text-right">RATE</th>
+                <th className="text-right">TOTAL AMOUNT</th>
+                <th className="text-right">PAID</th>
+                <th className="text-right">STATUS / BALANCE</th>
                 <th
                   className="no-print"
                   style={{ width: "70px", textAlign: "center" }}

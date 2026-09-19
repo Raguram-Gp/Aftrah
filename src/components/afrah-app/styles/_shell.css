@@ -1,0 +1,400 @@
+/* Shell and Base */
+.afrah-app-container,
+.app2-container {
+  min-height: 100vh;
+  background-color: var(--background, #111317);
+  color: var(--text-primary, #F5F5F7);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  max-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+}
+
+.afrah-app-container button,
+.afrah-app-container input,
+.afrah-app-container select,
+.afrah-app-container textarea,
+.app2-container button,
+.app2-container input,
+.app2-container select,
+.app2-container textarea {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Ambient glow */
+.afrah-app-ambient-glow,
+.app2-ambient-glow {
+  position: fixed;
+  top: -150px;
+  right: 12%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(226, 195, 153, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.afrah-app-ambient-glow-2,
+.app2-ambient-glow-2 {
+  position: fixed;
+  bottom: -200px;
+  left: 8%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(186, 200, 227, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Database Connection Banner */
+.db-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: var(--fs-3xs);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.db-status-badge.live {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.db-status-badge.local {
+  background: rgba(226, 195, 153, 0.15);
+  color: var(--primary);
+  border: 1px solid rgba(226, 195, 153, 0.3);
+}
+
+.db-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.db-dot.live {
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+}
+
+.db-dot.local {
+  background: var(--primary);
+}
+
+/* Sidebar Navigation */
+.afrah-app-sidebar,
+.app2-sidebar {
+  width: 250px;
+  min-width: 250px;
+  height: 100vh;
+  max-height: 100vh;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-container-low, #141618);
+  border-right: 1px solid var(--border-stroke, #232730);
+  position: relative;
+  z-index: 100;
+  box-sizing: border-box;
+  /* Must stay visible: collapse control hangs over the sidebar/main seam */
+  overflow: visible;
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.afrah-app-sidebar.collapsed,
+.app2-sidebar.collapsed {
+  width: 68px;
+  min-width: 68px;
+}
+
+[data-theme="light"] .afrah-app-sidebar,
+[data-theme="light"] .app2-sidebar,
+html.light .afrah-app-sidebar,
+html.light .app2-sidebar {
+  background: #FFFFFF;
+  border-right: 1px solid #E2E8F0;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.03);
+}
+
+/* Sidebar Brand: Afrah Constructions */
+.afrah-app-sidebar-brand,
+.app2-sidebar-brand {
+  padding: 16px 22px 16px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-stroke, #232730);
+  height: 56px;
+  box-sizing: border-box;
+  position: relative;
+  overflow: visible;
+}
+
+.afrah-app-sidebar.collapsed .afrah-app-sidebar-brand,
+.app2-sidebar.collapsed .app2-sidebar-brand {
+  padding: 12px 8px;
+  justify-content: center;
+}
+
+.afrah-app-brand-link,
+.app2-brand-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.afrah-app-brand-icon,
+.app2-brand-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(226, 195, 153, 0.15);
+  border: 1px solid rgba(226, 195, 153, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.afrah-app-brand-text,
+.app2-brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.afrah-app-brand-title,
+.app2-brand-title {
+  font-family: 'Cinzel', serif;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  color: var(--primary, #e2c399);
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.afrah-app-sidebar-collapse-btn,
+.app2-sidebar-collapse-btn {
+  position: absolute;
+  top: 50%;
+  right: -12px;
+  transform: translateY(-50%);
+  background: var(--surface-container-high, #25282c);
+  border: 1px solid var(--border-stroke, #3a3f4a);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+  z-index: 110;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.afrah-app-sidebar-collapse-btn:hover,
+.app2-sidebar-collapse-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--primary);
+  background: rgba(226, 195, 153, 0.2);
+}
+
+[data-theme="light"] .afrah-app-sidebar-collapse-btn,
+[data-theme="light"] .app2-sidebar-collapse-btn {
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.afrah-app-sidebar-mobile-close,
+.app2-sidebar-mobile-close {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* Nav Menu */
+.afrah-app-sidebar-nav,
+.app2-sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 8px;
+}
+
+.afrah-app-nav-list,
+.app2-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.afrah-app-nav-item,
+.app2-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.afrah-app-sidebar.collapsed .afrah-app-nav-item,
+.app2-sidebar.collapsed .app2-nav-item {
+  justify-content: center;
+  padding: 10px 0;
+  width: 44px;
+  margin: 0 auto;
+}
+
+.afrah-app-nav-left,
+.app2-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.afrah-app-sidebar.collapsed .afrah-app-nav-left,
+.app2-sidebar.collapsed .app2-nav-left {
+  gap: 0;
+  justify-content: center;
+}
+
+.afrah-app-nav-item.active,
+.app2-nav-item.active {
+  color: var(--primary, #e2c399);
+  background: rgba(226, 195, 153, 0.12);
+  border: 1px solid rgba(226, 195, 153, 0.25);
+}
+
+[data-theme="light"] .afrah-app-nav-item.active,
+[data-theme="light"] .app2-nav-item.active {
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FDE68A;
+}
+
+/* Nav label — centralized so sidebar weight/spacing lives in one place */
+.nav-label {
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.01em;
+}
+
+.afrah-app-division-header .nav-label {
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.04em;
+}
+
+.afrah-app-badge-count,
+.app2-badge-count {
+  font-size: var(--fs-3xs);
+  font-weight: var(--fw-bold);
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(226, 195, 153, 0.2);
+  color: var(--primary);
+}
+
+[data-theme="light"] .afrah-app-badge-count,
+[data-theme="light"] .app2-badge-count {
+  background: #E2E8F0;
+  color: #0F172A;
+}
+
+.afrah-app-badge-dot,
+.app2-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+/* Sidebar Footer */
+.afrah-app-sidebar-footer,
+.app2-sidebar-footer {
+  padding: 12px 10px 16px;
+  border-top: 1px solid var(--border-stroke, #232730);
+}
+
+.afrah-app-tools-row,
+.app2-tools-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.afrah-app-sidebar.collapsed .afrah-app-tools-row,
+.app2-sidebar.collapsed .app2-tools-row {
+  flex-direction: column;
+  gap: 8px;
+}
+
+.afrah-app-tool-btn,
+.app2-tool-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-stroke, #232730);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--fs-3xs);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.afrah-app-sidebar.collapsed .afrah-app-tool-btn,
+.app2-sidebar.collapsed .app2-tool-btn {
+  width: 40px;
+  height: 36px;
+  padding: 0;
+  flex: none;
+}
+
+.afrah-app-tool-btn:hover,
+.app2-tool-btn:hover {
+  color: var(--text-primary);
+  background: rgba(226, 195, 153, 0.08);
+  border-color: var(--primary);
+}
+

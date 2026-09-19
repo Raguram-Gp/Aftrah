@@ -670,7 +670,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 </span>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div className="flex-center-10">
                 <div className="afrah-app-search-wrapper" style={{ minWidth: '150px' }}>
                   <Search size={13} className="afrah-app-search-icon" />
                   <input
@@ -700,11 +700,11 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               <table className="afrah-app-table">
                 <thead>
                   <tr>
-                    <th style={{ width: '45px', textAlign: 'center' }}>S.NO</th>
+                    <th className="text-center" style={{ width: '45px' }}>S.NO</th>
                     <th>DATE</th>
                     <th>AMOUNT</th>
                     <th>PAYMENT MODE</th>
-                    <th className="no-print" style={{ width: '70px', textAlign: 'center' }}>ACTIONS</th>
+                    <th className="no-print text-center" style={{ width: '70px' }}>ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -719,9 +719,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       return (
                         <tr
                           key={item.id}
-                          style={{ cursor: 'default' }}
+                          className="cursor-default"
                         >
-                          <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
+                          <td className="cell-sno">
                             {advStartIndex + index + 1}
                           </td>
                           <td>
@@ -738,8 +738,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                               {item.mode}
                             </span>
                           </td>
-                          <td className="no-print" style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <td className="no-print text-center" onClick={(e) => e.stopPropagation()}>
+                            <div className="flex-center-4">
                               <button
                                 onClick={() => handleOpenEditAdv(item)}
                                 className="afrah-app-action-btn afrah-app-edit-btn"
@@ -831,7 +831,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 </span>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div className="flex-center-10">
                 <div className="afrah-app-search-wrapper" style={{ minWidth: '150px' }}>
                   <Search size={13} className="afrah-app-search-icon" />
                   <input
@@ -861,13 +861,13 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               <table className="afrah-app-table">
                 <thead>
                   <tr>
-                    <th style={{ width: '45px', textAlign: 'center' }}>S.NO</th>
+                    <th className="text-center" style={{ width: '45px' }}>S.NO</th>
                     <th>DATE</th>
                     <th>EXPENSE NAME</th>
                     <th>QTY</th>
                     <th>RATE</th>
                     <th>TOTAL</th>
-                    <th className="no-print" style={{ width: '70px', textAlign: 'center' }}>ACTIONS</th>
+                    <th className="no-print text-center" style={{ width: '70px' }}>ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -882,9 +882,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       return (
                         <tr
                           key={exp.id}
-                          style={{ cursor: 'default' }}
+                          className="cursor-default"
                         >
-                          <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
+                          <td className="cell-sno">
                             {expStartIndex + index + 1}
                           </td>
                           <td>
@@ -907,8 +907,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                           <td style={{ fontWeight: 800, fontSize: '14.5px', color: 'var(--primary)', fontFamily: 'JetBrains Mono, monospace' }}>
                             {formatINR(exp.totalAmount)}
                           </td>
-                          <td className="no-print" style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <td className="no-print text-center" onClick={(e) => e.stopPropagation()}>
+                            <div className="flex-center-4">
                               <button
                                 onClick={() => handleOpenEditExp(exp)}
                                 className="afrah-app-action-btn afrah-app-edit-btn"
@@ -992,9 +992,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       {/* MODAL 1: ADD ADVANCE PAYMENT */}
       {isAddAdvModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsAddAdvModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="afrah-app-modal-container modal-w-sm" onClick={(e) => e.stopPropagation()}>
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Receipt size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Add Advance Payment</h3>
               </div>
@@ -1058,9 +1058,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       {/* MODAL 2: EDIT ADVANCE PAYMENT */}
       {isEditAdvModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditAdvModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="afrah-app-modal-container modal-w-sm" onClick={(e) => e.stopPropagation()}>
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Advance Payment</h3>
               </div>
@@ -1122,9 +1122,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       {/* MODAL 3: ADD EXPENSE */}
       {isAddExpModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsAddExpModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '460px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="afrah-app-modal-container modal-w-md" onClick={(e) => e.stopPropagation()}>
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <CreditCard size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Add Site Expense</h3>
               </div>
@@ -1151,7 +1151,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     placeholder="Select or type custom expense..."
                   />
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="grid-2-12">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Quantity *</label>
                     <input
@@ -1203,9 +1203,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       {/* MODAL 4: EDIT EXPENSE */}
       {isEditExpModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditExpModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '460px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="afrah-app-modal-container modal-w-md" onClick={(e) => e.stopPropagation()}>
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Site Expense</h3>
               </div>
@@ -1231,7 +1231,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     onChange={(val) => setEditExpName(val)}
                   />
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="grid-2-12">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Quantity *</label>
                     <input

@@ -1,0 +1,164 @@
+/* Main Viewport */
+/* Stats label — the "Total X: N" pills in the top bar.
+   Keeps the bold value on the same baseline as the label text. */
+.stat-label {
+  font-size: var(--fs-2xs);
+  color: var(--text-secondary);
+  line-height: 1.4;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.stat-label strong {
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: var(--fw-bold);
+  vertical-align: baseline;
+}
+
+.afrah-app-main-viewport,
+.app2-main-viewport {
+  flex: 1;
+  min-width: 0;
+  height: 100vh;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+/* TopBar */
+.afrah-app-topbar,
+.app2-topbar {
+  height: 54px;
+  min-height: 54px;
+  flex-shrink: 0;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface-container-low, rgba(20, 22, 24, 0.85));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-stroke, #232730);
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  box-sizing: border-box;
+}
+
+[data-theme="light"] .afrah-app-topbar,
+[data-theme="light"] .app2-topbar {
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.afrah-app-topbar-left,
+.app2-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.afrah-app-topbar-menu-btn,
+.app2-topbar-menu-btn {
+  display: none;
+  background: none;
+  border: 1px solid var(--border-stroke, #232730);
+  border-radius: 6px;
+  padding: 6px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.afrah-app-breadcrumbs,
+.app2-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-xs);
+}
+
+.afrah-app-breadcrumb-link,
+.app2-breadcrumb-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.afrah-app-breadcrumb-link:hover,
+.app2-breadcrumb-link:hover {
+  color: var(--primary);
+}
+
+.afrah-app-breadcrumb-active,
+.app2-breadcrumb-active {
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.afrah-app-topbar-right,
+.app2-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Main Content Area */
+.afrah-app-main-content,
+.app2-main-content {
+  flex: 1;
+  padding: 20px 24px 48px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+/* Wireframe 2-Column Layout */
+.afrah-app-wireframe-layout,
+.app2-wireframe-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 20px;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1320px) {
+  .afrah-app-wireframe-layout,
+  .app2-wireframe-layout {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 1120px) {
+  .afrah-app-wireframe-layout,
+  .app2-wireframe-layout {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 920px) {
+  .afrah-app-wireframe-layout,
+  .app2-wireframe-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+

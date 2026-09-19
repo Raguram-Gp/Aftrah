@@ -179,7 +179,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                 <div className="afrah-app-nav-left">
                   <Building2 size={17} className="nav-icon" />
                   {!isCollapsed && (
-                    <span className="nav-label" style={{ fontWeight: 600, letterSpacing: '0.04em' }}>
+                    <span className="nav-label">
                       CONSTRUCTION
                     </span>
                   )}
@@ -258,7 +258,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
             </div>
 
             {/* 3. KABIBULLAH BRICKS (Boxed Division with Sub-items) */}
-            <div className="afrah-app-nav-group" style={{ marginTop: '6px' }}>
+            <div className="afrah-app-nav-group mt-6">
               <button
                 onClick={() => {
                   if (isCollapsed) {
@@ -274,7 +274,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                 <div className="afrah-app-nav-left">
                   <BrickWall size={17} className="nav-icon" />
                   {!isCollapsed && (
-                    <span className="nav-label" style={{ fontWeight: 600, letterSpacing: '0.04em' }}>
+                    <span className="nav-label">
                       KABIBULLAH BRICKS
                     </span>
                   )}
@@ -363,7 +363,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
             </div>
 
             {/* 4. KAAB INTERIOR (Boxed Division with Sub-items) */}
-            <div className="afrah-app-nav-group" style={{ marginTop: '6px' }}>
+            <div className="afrah-app-nav-group mt-6">
               <button
                 onClick={() => {
                   if (isCollapsed) {
@@ -379,7 +379,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                 <div className="afrah-app-nav-left">
                   <Paintbrush size={17} className="nav-icon" />
                   {!isCollapsed && (
-                    <span className="nav-label" style={{ fontWeight: 600, letterSpacing: '0.04em' }}>
+                    <span className="nav-label">
                       KAAB INTERIOR
                     </span>
                   )}
@@ -468,7 +468,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
             </div>
 
             {/* Top-level: Bank details (last) */}
-            <div className="afrah-app-nav-group" style={{ marginTop: '6px' }}>
+            <div className="afrah-app-nav-group mt-6">
               <button
                 onClick={() => {
                   onSelectTab('banks');
@@ -480,7 +480,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                 <div className="afrah-app-nav-left">
                   <Landmark size={17} className="nav-icon" />
                   {!isCollapsed && (
-                    <span className="nav-label" style={{ fontWeight: 600, letterSpacing: '0.04em' }}>
+                    <span className="nav-label">
                       BANK DETAILS
                     </span>
                   )}

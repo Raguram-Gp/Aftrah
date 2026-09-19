@@ -400,7 +400,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
             <span>Back to Customers</span>
           </button>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="flex-center-10">
             <button
               onClick={handlePrint}
               className="afrah-app-back-btn"
@@ -504,7 +504,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="flex-center-10">
             <div className="afrah-app-search-wrapper">
               <Search size={14} className="afrah-app-search-icon" />
               <input
@@ -538,14 +538,14 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
           <table className="afrah-app-table">
             <thead>
               <tr>
-                <th style={{ width: '48px', textAlign: 'center' }}>S.NO</th>
+                <th className="text-center" style={{ width: '48px' }}>S.NO</th>
                 <th style={{ width: '105px' }}>DATE</th>
                 <th>BRICK TYPE / DESCRIPTION</th>
-                <th style={{ width: '90px', textAlign: 'right' }}>QTY</th>
-                <th style={{ width: '90px', textAlign: 'right' }}>RATE (₹)</th>
-                <th style={{ width: '120px', textAlign: 'right' }}>TOTAL (₹)</th>
-                <th style={{ width: '120px', textAlign: 'right' }}>PAID (₹)</th>
-                <th style={{ width: '120px', textAlign: 'right' }}>BALANCE (₹)</th>
+                <th className="text-right" style={{ width: '90px' }}>QTY</th>
+                <th className="text-right" style={{ width: '90px' }}>RATE (₹)</th>
+                <th className="text-right" style={{ width: '120px' }}>TOTAL (₹)</th>
+                <th className="text-right" style={{ width: '120px' }}>PAID (₹)</th>
+                <th className="text-right" style={{ width: '120px' }}>BALANCE (₹)</th>
                 <th className="no-print" style={{ width: '75px', textAlign: 'center' }}>ACTIONS</th>
               </tr>
             </thead>
@@ -554,7 +554,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                 <tr>
                   <td
                     colSpan={9}
-                    style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}
+                    className="empty-state-cell"
                   >
                     <BrickWall size={32} style={{ opacity: 0.3, margin: '0 auto 8px auto', display: 'block' }} />
                     {searchQuery || fromDate || toDate
@@ -567,7 +567,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   return (
                     <tr
                       key={tx.id}
-                      style={{ cursor: 'default' }}
+                      className="cursor-default"
                     >
                       <td
                         style={{
@@ -579,7 +579,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                       >
                         {startIndex + idx + 1}
                       </td>
-                      <td style={{ whiteSpace: 'nowrap' }}>
+                      <td className="nowrap">
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
                           <Calendar size={13} color="var(--primary)" />
                           <span style={{ fontFamily: 'monospace', fontSize: '12px' }}>{formatToDDMMYYYY(tx.date)}</span>
@@ -622,7 +622,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                     <td style={{ textAlign: 'right', fontFamily: 'monospace', color: '#4ade80', fontWeight: 600 }}>
                       {formatINR(tx.paidAmount)}
                     </td>
-                    <td style={{ textAlign: 'right' }}>
+                    <td className="text-right">
                       <span
                         style={{
                           display: 'inline-block',
@@ -641,7 +641,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                         {formatINR(tx.balanceAmount)}
                       </span>
                     </td>
-                    <td style={{ textAlign: 'center' }}>
+                    <td className="text-center">
                       <div
                         style={{
                           display: 'inline-flex',
@@ -749,7 +749,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
             onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <BrickWall size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">New Brick Delivery Entry</h3>
               </div>
@@ -764,7 +764,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
 
             <form onSubmit={handleAddSubmit}>
               <div className="afrah-app-modal-body">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="grid-2">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Date *</label>
                     <DateInput
@@ -805,7 +805,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   </div>
                 )}
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="grid-2">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Site / Delivery Location</label>
                     <input
@@ -880,7 +880,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="grid-2">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Amount Paid / Advance (₹) *</label>
                     <input
@@ -960,7 +960,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
             onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Brick Delivery Entry</h3>
               </div>
@@ -975,7 +975,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
 
             <form onSubmit={handleSaveEdit}>
               <div className="afrah-app-modal-body">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="grid-2">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Date *</label>
                     <DateInput
@@ -1015,7 +1015,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   </div>
                 )}
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="grid-2">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Site / Delivery Location</label>
                     <input
@@ -1085,7 +1085,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="grid-2">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Amount Paid / Advance (₹) *</label>
                     <input

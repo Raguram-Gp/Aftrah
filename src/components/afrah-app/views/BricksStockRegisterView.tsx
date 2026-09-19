@@ -83,7 +83,7 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
             <span>Total Items:</span> <strong>{filteredItems.length} Records</strong>
           </div>
           <div className="print-total-item">
-            <span>Total Sales:</span> <strong style={{ color: '#f87171' }}>{Number(totalSales).toLocaleString('en-IN')} Units</strong>
+            <span>Total Sales:</span> <strong className="text-negative">{Number(totalSales).toLocaleString('en-IN')} Units</strong>
           </div>
           <div className="print-total-item">
             <span>Total Pending Stock:</span> <strong style={{ color: '#16a34a' }}>{Number(totalPendingStock).toLocaleString('en-IN')} Units</strong>
@@ -98,7 +98,7 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
       <section className="afrah-app-table-section" style={{ width: '100%' }}>
         <div className="afrah-app-section-header no-print">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div className="flex-center-10">
               <div
                 style={{
                   width: '32px',
@@ -119,13 +119,13 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
             </div>
             <span className="afrah-app-section-subtitle">
               {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'} · Total Outflow / Sales:{' '}
-              <strong style={{ color: '#f87171' }}>{Number(totalSales).toLocaleString('en-IN')}</strong> · Total Pending Stock:{' '}
-              <strong style={{ color: 'var(--primary)' }}>{Number(totalPendingStock).toLocaleString('en-IN')} Units</strong> · Click any row to open its detailed ledger
+              <strong className="text-negative">{Number(totalSales).toLocaleString('en-IN')}</strong> · Total Pending Stock:{' '}
+              <strong className="text-primary-gold">{Number(totalPendingStock).toLocaleString('en-IN')} Units</strong> · Click any row to open its detailed ledger
             </span>
           </div>
 
           {/* Search & Print Actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <div className="flex-center-wrap-10">
             <div className="afrah-app-search-wrapper">
               <Search size={14} className="afrah-app-search-icon" />
               <input
@@ -156,7 +156,7 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
           <table className="afrah-app-table" style={{ tableLayout: 'fixed', width: '100%' }}>
             <thead>
               <tr>
-                <th style={{ width: '70px', textAlign: 'center' }}>S NO</th>
+                <th className="text-center" style={{ width: '70px' }}>S NO</th>
                 <th style={{ width: '30%', paddingLeft: '16px' }}>ITEM</th>
                 <th style={{ width: '35%', textAlign: 'right', paddingRight: '24px' }}>TOTAL SALES / USAGE</th>
                 <th style={{ width: '35%', textAlign: 'right', paddingRight: '24px' }}>PENDING STOCK</th>
@@ -165,7 +165,7 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
             <tbody>
               {paginatedItems.length === 0 ? (
                 <tr>
-                  <td colSpan={4} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
+                  <td colSpan={4} className="empty-state-cell">
                     {searchQuery
                       ? 'No matching stock items found.'
                       : 'No stock items found. Use the "Add details" form on the right to add one.'}
@@ -184,7 +184,7 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
                       style={{ cursor: 'pointer' }}
                     >
                       {/* S NO */}
-                      <td style={{ textAlign: 'center', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                      <td className="cell-sno">
                         {displaySNo}
                       </td>
 
@@ -195,8 +195,8 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
                             style={{
                               padding: '3px 12px',
                               borderRadius: '6px',
-                              fontSize: '13px',
-                              fontWeight: 700,
+                              fontSize: 'var(--fs-xs)',
+                              fontWeight: 'var(--fw-bold)',
                               background: 'rgba(226, 195, 153, 0.15)',
                               color: 'var(--primary)',
                               border: '1px solid rgba(226, 195, 153, 0.25)'
@@ -211,9 +211,9 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
                       <td
                         style={{
                           textAlign: 'right',
-                          fontWeight: 700,
+                          fontWeight: 'var(--fw-bold)',
                           color: '#f87171',
-                          fontSize: '13.5px',
+                          fontSize: 'var(--fs-sm)',
                           paddingRight: '24px'
                         }}
                       >
@@ -224,9 +224,9 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
                       <td
                         style={{
                           textAlign: 'right',
-                          fontWeight: 800,
+                          fontWeight: 'var(--fw-black)',
                           color: item.pendingStock >= 0 ? 'var(--primary)' : '#f87171',
-                          fontSize: '13.5px',
+                          fontSize: 'var(--fs-sm)',
                           paddingRight: '24px'
                         }}
                       >
@@ -246,7 +246,7 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
             <div className="afrah-app-pagination-left">
               <span className="afrah-app-pagination-info">
                 Showing <strong>{startIndex + 1}</strong>–<strong>{endIndex}</strong> of{' '}
-                <strong>{filteredItems.length}</strong> | Sales: <strong style={{ color: '#f87171' }}>{Number(totalSales).toLocaleString('en-IN')}</strong> · Pending Stock: <strong style={{ color: 'var(--primary)' }}>{Number(totalPendingStock).toLocaleString('en-IN')}</strong>
+                <strong>{filteredItems.length}</strong> | Sales: <strong style={{ color: '#f87171' }}>{Number(totalSales).toLocaleString('en-IN')}</strong> · Pending Stock: <strong className="text-primary-gold">{Number(totalPendingStock).toLocaleString('en-IN')}</strong>
               </span>
 
               <div className="afrah-app-rows-selector">

@@ -1,0 +1,97 @@
+/* ============================================
+   AFRAH APP — DESIGN-SYSTEM UTILITIES
+   Repeated inline-style patterns (>2×) extracted
+   to classes so the whole app reads from tokens.
+   ============================================ */
+
+/* Layout */
+.w-full { width: 100%; max-width: 100%; }
+.cursor-default { cursor: default; }
+.mt-6 { margin-top: 6px; }
+
+/* Flex — gap driven by --gap so callers can override inline if needed */
+.flex-center {
+  display: flex;
+  align-items: center;
+  gap: var(--gap, 8px);
+}
+.flex-center.is-inline { display: inline-flex; }
+.flex-center.is-wrap { flex-wrap: wrap; }
+
+/* Concrete flex variants for the common gaps (avoid --gap override boilerplate) */
+.flex-center-10 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.flex-center-wrap-10 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.flex-center-6 {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.flex-row-6 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.flex-center-4 {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Grid — two equal columns, concrete gap variants */
+.grid-2-12 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.grid-2-10 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* Secondary action button (40px height, used in detail pages) */
+.btn-secondary-lg {
+  min-width: 120px;
+  height: 40px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+/* Grid — two equal columns, gap driven by --gap */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap, 14px);
+}
+
+/* Text colors */
+.text-primary-gold { color: var(--primary); }
+.text-secondary-muted { color: var(--text-secondary); }
+.text-negative { color: #f87171; }
+.text-positive { color: #4ade80; }
+.text-warning { color: #f59e0b; }
+.text-info { color: #38bdf8; }
+
+/* Alignment & whitespace */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.nowrap { white-space: nowrap; }
+
+/* Modal widths */
+.modal-w-sm { max-width: var(--modal-w-sm); }
+.modal-w-md { max-width: var(--modal-w-md); }
+.modal-w-lg { max-width: var(--modal-w-lg); }

@@ -817,17 +817,17 @@ export const AfrahAppPortal: React.FC = () => {
                 <table className="afrah-app-table">
                   <thead>
                     <tr>
-                      <th style={{ width: '56px', textAlign: 'center' }}>S.NO</th>
+                      <th className="text-center" style={{ width: '56px' }}>S.NO</th>
                       <th style={{ width: '260px' }}>NAME</th>
                       <th style={{ width: '180px' }}>PHONE</th>
                       <th>ADDRESS</th>
-                      <th style={{ width: '80px', textAlign: 'center' }}>ACTIONS</th>
+                      <th className="text-center" style={{ width: '80px' }}>ACTIONS</th>
                     </tr>
                   </thead>
                   <tbody>
                     {paginatedClients.length === 0 ? (
                       <tr>
-                        <td colSpan={5} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
+                        <td colSpan={5} className="empty-state-cell">
                           {searchQuery ? 'No matching clients found.' : 'No clients added yet. Click "Add Details" above to add one.'}
                         </td>
                       </tr>
@@ -838,33 +838,33 @@ export const AfrahAppPortal: React.FC = () => {
                           onClick={() => setSelectedClientId(client.id)}
                           className="clickable-client-row"
                         >
-                          <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
+                          <td className="cell-sno">
                             {startIndex + index + 1}
                           </td>
                           <td>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <div className="cell-entity">
                               <div className="afrah-app-user-avatar">
                                 {client.name.charAt(0).toUpperCase()}
                               </div>
-                              <span className="row-client-name" style={{ color: 'var(--text-primary)', fontSize: '20px', fontWeight: 600 }}>
+                              <span className="row-client-name">
                                 {client.name}
                               </span>
                             </div>
                           </td>
-                          <td style={{ whiteSpace: 'nowrap' }}>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                          <td className="nowrap">
+                            <div className="cell-icon-text">
                               <Phone size={13} color="var(--primary)" />
-                              <span style={{ fontFamily: 'monospace', fontSize: '19px', fontWeight: 500 }}>{client.phone}</span>
+                              <span className="cell-phone">{client.phone}</span>
                             </div>
                           </td>
                           <td>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)' }}>
+                            <div className="cell-icon-text is-muted">
                               <MapPin size={13} color="var(--primary)" />
-                              <span style={{ fontSize: '19px', fontWeight: 500 }}>{client.address}</span>
+                              <span className="cell-address">{client.address}</span>
                             </div>
                           </td>
-                          <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                          <td className="text-center" onClick={(e) => e.stopPropagation()}>
+                            <div className="cell-actions">
                               <button
                                 onClick={(e) => handleOpenEditModal(client, e)}
                                 className="afrah-app-action-btn afrah-app-edit-btn"
@@ -963,12 +963,11 @@ export const AfrahAppPortal: React.FC = () => {
       {isAddModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
           <div
-            className="afrah-app-modal-container"
-            style={{ maxWidth: '460px' }}
-            onClick={(e) => e.stopPropagation()}
+              className="afrah-app-modal-container modal-w-md"
+              onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <UserPlus size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Add Details</h3>
               </div>
@@ -1038,8 +1037,7 @@ export const AfrahAppPortal: React.FC = () => {
                 <button
                   type="submit"
                   disabled={!isAddClientValid}
-                  className="btn-theme-primary"
-                  style={{ minWidth: '120px', height: '40px', fontSize: '13px' }}
+                  className="btn-theme-primary btn-secondary-lg"
                 >
                   <UserPlus size={16} strokeWidth={2.5} />
                   <span>Add Details</span>
@@ -1054,12 +1052,11 @@ export const AfrahAppPortal: React.FC = () => {
       {isEditModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
           <div
-            className="afrah-app-modal-container"
-            style={{ maxWidth: '460px' }}
-            onClick={(e) => e.stopPropagation()}
+              className="afrah-app-modal-container modal-w-md"
+              onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Client Information</h3>
               </div>
@@ -1125,8 +1122,7 @@ export const AfrahAppPortal: React.FC = () => {
                 <button
                   type="submit"
                   disabled={!isEditClientValid}
-                  className="btn-theme-primary"
-                  style={{ minWidth: '120px', height: '40px', fontSize: '13px' }}
+                  className="btn-theme-primary btn-secondary-lg"
                 >
                   <Check size={16} strokeWidth={2.5} />
                   <span>Save Changes</span>

@@ -450,7 +450,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div className="flex-row-6">
                     <button
                       onClick={() => setActiveLedgerBankId(bank.id)}
                       className="afrah-app-action-btn"
@@ -530,7 +530,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
 
                 {/* Inline Transaction / Quick Update Controls */}
                 <div className="bank-card-quick-form no-print">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div className="flex-center">
                     {/* Mode Toggle Buttons (+ / -) */}
                     <div
                       style={{
@@ -623,9 +623,9 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
       {/* MODAL 1: NEW BANK ACCOUNT */}
       {isAddAccountModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsAddAccountModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="afrah-app-modal-container modal-w-sm" onClick={(e) => e.stopPropagation()}>
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Landmark size={18} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Add Bank Account</h3>
               </div>
@@ -686,7 +686,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                 <div>
                   <h3 className="afrah-app-modal-title">{activeLedgerBank.bankName}</h3>
                   <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-                    Passbook Ledger & Audit History · Current Balance: <strong style={{ color: 'var(--primary)' }}>{formatINR(activeLedgerBank.balance)}</strong>
+                    Passbook Ledger & Audit History · Current Balance: <strong className="text-primary-gold">{formatINR(activeLedgerBank.balance)}</strong>
                   </span>
                 </div>
               </div>
@@ -716,11 +716,11 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                 <table className="afrah-app-table">
                   <thead>
                     <tr>
-                      <th style={{ width: '45px', textAlign: 'center' }}>S.NO</th>
+                      <th className="text-center" style={{ width: '45px' }}>S.NO</th>
                       <th>DATE</th>
                       <th>TYPE</th>
                       <th>DESCRIPTION / NOTE</th>
-                      <th style={{ textAlign: 'right' }}>AMOUNT</th>
+                      <th className="text-right">AMOUNT</th>
                       <th className="no-print" style={{ width: '50px', textAlign: 'center' }}>ACTION</th>
                     </tr>
                   </thead>
@@ -739,13 +739,13 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                         return (
                           <tr
                             key={tx.id}
-                            style={{ cursor: 'default' }}
+                            className="cursor-default"
                           >
                             <td style={{ fontFamily: 'monospace', color: 'var(--text-secondary)', textAlign: 'center' }}>
                               {idx + 1}
                             </td>
                             <td>
-                              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                              <div className="flex-center-6">
                                 <Calendar size={12} color="var(--primary)" />
                                 <span>{formatToDDMMYYYY(tx.date)}</span>
                               </div>
@@ -782,7 +782,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                             >
                               {isCredit ? '+' : '-'}{formatINR(tx.amount)}
                             </td>
-                            <td className="no-print" style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+                            <td className="no-print text-center" onClick={(e) => e.stopPropagation()}>
                               <button
                                 onClick={() => setDeleteBankTxTarget({ bank: activeLedgerBank, tx })}
                                 className="afrah-app-action-btn afrah-app-delete-btn"

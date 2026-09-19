@@ -250,7 +250,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
               <Wallet size={22} />
             </div>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div className="flex-row-6">
                 <span className="metric-label">LABOUR CHARGE</span>
                 <Pencil size={11} color="var(--primary)" />
               </div>
@@ -283,9 +283,9 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
       </div>
 
       {/* Table Section */}
-      <div style={{ width: '100%', maxWidth: '100%' }}>
+      <div className="w-full">
         {/* TABLE (S.NO, Date, Work Type, DAYS, Salary/Day, Total Amount, ACTIONS) */}
-        <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
+        <section className="afrah-app-table-section w-full">
           <div className="afrah-app-section-header">
             <div>
               <h2 className="afrah-app-section-title">WORK & ATTENDANCE ENTRIES</h2>
@@ -294,7 +294,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
               </span>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div className="flex-center-10">
               <div className="afrah-app-search-wrapper">
                 <Search size={14} className="afrah-app-search-icon" />
                 <input
@@ -312,8 +312,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
               <button
                 type="button"
                 onClick={() => setIsAddModalOpen(true)}
-                className="btn-theme-primary"
-                style={{ height: '36px', padding: '0 16px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              className="btn-theme-primary btn-add"
               >
                 <Plus size={15} strokeWidth={2.5} />
                 <span>Add Details</span>
@@ -325,26 +324,26 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
             <table className="afrah-app-table">
               <thead>
                 <tr>
-                  <th style={{ width: '55px', textAlign: 'center' }}>S.NO</th>
+                  <th className="text-center" style={{ width: '55px' }}>S.NO</th>
                   <th style={{ width: '105px' }}>DATE</th>
                   <th>WORK TYPE</th>
-                  <th style={{ width: '85px', textAlign: 'center' }}>DAYS</th>
+                  <th className="text-center" style={{ width: '85px' }}>DAYS</th>
                   <th style={{ width: '130px' }}>SALARY / DAY</th>
                   <th style={{ width: '130px' }}>TOTAL AMOUNT</th>
-                  <th style={{ width: '80px', textAlign: 'center' }}>ACTIONS</th>
+                  <th className="text-center" style={{ width: '80px' }}>ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedEntries.length === 0 ? (
                   <tr>
-                    <td colSpan={7} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
+                    <td colSpan={7} className="empty-state-cell">
                       {searchQuery ? 'No matching entries found.' : 'No work entries added yet. Use the form on the right to add daily details.'}
                     </td>
                   </tr>
                 ) : (
                   paginatedEntries.map((entry, index) => (
                     <tr key={entry.id}>
-                      <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
+                      <td className="cell-sno">
                         {startIndex + index + 1}
                       </td>
                       <td style={{ whiteSpace: 'nowrap', fontSize: '12px', color: 'var(--text-secondary)' }}>
@@ -354,7 +353,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                         </div>
                       </td>
                       <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div className="flex-center">
                           <div className="afrah-app-user-avatar" style={{ background: 'rgba(226, 195, 153, 0.12)', color: 'var(--primary)', width: '28px', height: '28px' }}>
                             <Briefcase size={13} />
                           </div>
@@ -370,7 +369,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                           </div>
                         </div>
                       </td>
-                      <td style={{ textAlign: 'center' }}>
+                      <td className="text-center">
                         <span
                           style={{
                             display: 'inline-block',
@@ -393,7 +392,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                           {formatINR(entry.totalAmount)}
                         </strong>
                       </td>
-                      <td style={{ textAlign: 'center' }}>
+                      <td className="text-center">
                         <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
                           <button
                             onClick={(e) => handleOpenEdit(entry, e)}
@@ -496,12 +495,11 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
         {isAddModalOpen && (
           <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
             <div
-              className="afrah-app-modal-container"
-              style={{ maxWidth: '480px' }}
+              className="afrah-app-modal-container modal-w-lg"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="afrah-app-modal-header">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="flex-center">
                   <Plus size={17} color="var(--primary)" />
                   <h3 className="afrah-app-modal-title">Add Details</h3>
                 </div>
@@ -537,7 +535,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                     />
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  <div className="grid-2-10">
                     <div className="afrah-app-form-group">
                       <label className="afrah-app-label">DAYS *</label>
                       <input
@@ -607,8 +605,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                   </button>
                   <button
                     type="submit"
-                    className="btn-theme-primary"
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                    className="btn-theme-primary flex-center-6"
                   >
                     <Plus size={15} strokeWidth={2.5} />
                     <span>Add Details</span>
@@ -625,7 +622,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditChargeOpen(false)}>
           <div className="afrah-app-modal-container" style={{ maxWidth: '380px' }} onClick={(e) => e.stopPropagation()}>
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={16} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Labour Charge</h3>
               </div>
@@ -666,9 +663,9 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
       {/* Edit Entry Modal */}
       {editingEntry && (
         <div className="afrah-app-modal-overlay" onClick={() => setEditingEntry(null)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="afrah-app-modal-container modal-w-sm" onClick={(e) => e.stopPropagation()}>
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={16} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Work Entry</h3>
               </div>
@@ -701,7 +698,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                   />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div className="grid-2-10">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Days *</label>
                     <input

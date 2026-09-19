@@ -264,7 +264,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
       <div className="no-print" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {/* Title Bar */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="flex-center-10">
             <div
               style={{
                 width: '36px',
@@ -291,7 +291,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="flex-center-10">
             <button
               onClick={handlePrint}
               className="afrah-app-back-btn"
@@ -396,9 +396,9 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
       </div>
 
       {/* STOCK REGISTER SECTION */}
-      <div style={{ width: '100%', maxWidth: '100%' }}>
+      <div className="w-full">
         {/* STOCK REGISTER TABLE */}
-        <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
+        <section className="afrah-app-table-section w-full">
           <div className="afrah-app-section-header no-print">
             <div>
               <h2 className="afrah-app-section-title" style={{ fontSize: '15px' }}>
@@ -410,7 +410,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
             </div>
 
             {/* Search & Add Button */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <div className="flex-center-wrap-10">
               <div className="afrah-app-search-wrapper" style={{ minWidth: '220px' }}>
                 <Search size={14} className="afrah-app-search-icon" />
                 <input
@@ -428,8 +428,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
               <button
                 type="button"
                 onClick={() => setIsAddModalOpen(true)}
-                className="btn-theme-primary"
-                style={{ height: '36px', padding: '0 16px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              className="btn-theme-primary btn-add"
               >
                 <Plus size={15} strokeWidth={2.5} />
                 <span>Add Details</span>
@@ -444,31 +443,31 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                 {isBricks ? (
                   /* BRICKS TABLE HEADER (S NO | DATE | STOCK OPENING | CURRENT PRODUCTION | SALES | PENDING STOCK | EDIT/DELETE) */
                   <tr>
-                    <th style={{ width: '60px', textAlign: 'center' }}>S NO</th>
+                    <th className="text-center" style={{ width: '60px' }}>S NO</th>
                     <th style={{ width: '120px' }}>DATE</th>
-                    <th style={{ textAlign: 'right' }}>STOCK OPENING</th>
-                    <th style={{ textAlign: 'right' }}>CURRENT PRODUCTION</th>
-                    <th style={{ textAlign: 'right' }}>SALES</th>
-                    <th style={{ textAlign: 'right' }}>PENDING STOCK</th>
-                    <th className="no-print" style={{ width: '90px', textAlign: 'center' }}>EDIT / DELETE</th>
+                    <th className="text-right">STOCK OPENING</th>
+                    <th className="text-right">CURRENT PRODUCTION</th>
+                    <th className="text-right">SALES</th>
+                    <th className="text-right">PENDING STOCK</th>
+                    <th className="no-print text-center" style={{ width: '90px' }}>EDIT / DELETE</th>
                   </tr>
                 ) : (
                   /* RAW MATERIALS TABLE HEADER (S NO | DATE | ITEM | STOCK OPENING | MATERIAL USAGE (Units / kg) | PENDING STOCK | EDIT/DELETE) */
                   <tr>
-                    <th style={{ width: '60px', textAlign: 'center' }}>S NO</th>
+                    <th className="text-center" style={{ width: '60px' }}>S NO</th>
                     <th style={{ width: '110px' }}>DATE</th>
                     <th style={{ width: '110px' }}>ITEM</th>
-                    <th style={{ textAlign: 'right' }}>STOCK OPENING</th>
-                    <th style={{ textAlign: 'right' }}>MATERIAL USAGE ({unitLabel})</th>
-                    <th style={{ textAlign: 'right' }}>PENDING STOCK</th>
-                    <th className="no-print" style={{ width: '90px', textAlign: 'center' }}>EDIT / DELETE</th>
+                    <th className="text-right">STOCK OPENING</th>
+                    <th className="text-right">MATERIAL USAGE ({unitLabel})</th>
+                    <th className="text-right">PENDING STOCK</th>
+                    <th className="no-print text-center" style={{ width: '90px' }}>EDIT / DELETE</th>
                   </tr>
                 )}
               </thead>
               <tbody>
                 {paginatedEntries.length === 0 ? (
                   <tr>
-                    <td colSpan={7} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
+                    <td colSpan={7} className="empty-state-cell">
                       No entries recorded for this item yet. Use the "Add details" form on the right to log new records.
                     </td>
                   </tr>
@@ -488,7 +487,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                     return (
                       <tr
                         key={entry.id}
-                        style={{ cursor: 'default' }}
+                        className="cursor-default"
                       >
                         {/* S NO */}
                         <td style={{ textAlign: 'center', fontWeight: 600, color: 'var(--text-secondary)' }}>
@@ -573,7 +572,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                         </td>
 
                         {/* Actions: Edit & Delete */}
-                        <td className="no-print" style={{ textAlign: 'center' }}>
+                        <td className="no-print text-center">
                           <div
                             style={{
                               display: 'inline-flex',
@@ -679,12 +678,11 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
         {isAddModalOpen && (
           <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
             <div
-              className="afrah-app-modal-container"
-              style={{ maxWidth: '460px' }}
+              className="afrah-app-modal-container modal-w-md"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="afrah-app-modal-header">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="flex-center">
                   <Plus size={17} color="var(--primary)" />
                   <h3 className="afrah-app-modal-title">Add Details</h3>
                 </div>
@@ -712,7 +710,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                       marginBottom: '10px'
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <div className="flex-row-6">
                       <ArrowRightLeft size={13} color="var(--primary)" />
                       <span style={{ fontSize: '11.5px', color: 'var(--text-secondary)', fontWeight: 600 }}>
                         Carried Opening:
@@ -841,8 +839,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                   <button
                     type="submit"
                     disabled={!isAddValid}
-                    className="btn-theme-primary"
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                    className="btn-theme-primary flex-center-6"
                   >
                     <Plus size={15} strokeWidth={2.5} />
                     <span>Add Details</span>
@@ -857,9 +854,9 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
       {/* EDIT MODAL */}
       {isEditModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
-          <div className="afrah-app-modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '440px' }}>
+          <div className="afrah-app-modal-card modal-w-sm" onClick={(e) => e.stopPropagation()}>
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={16} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Stock Entry</h3>
               </div>

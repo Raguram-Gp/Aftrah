@@ -188,9 +188,9 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
   };
 
   return (
-    <div style={{ width: '100%', maxWidth: '100%' }}>
+    <div className="w-full">
       {/* LABOUR CONTRACTS LIST */}
-      <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
+      <section className="afrah-app-table-section w-full">
         <div className="afrah-app-section-header">
           <div>
             <h1 className="afrah-app-section-title">LABOUR CONTRACTS</h1>
@@ -199,7 +199,7 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="flex-center-10">
             <div className="afrah-app-search-wrapper">
               <Search size={14} className="afrah-app-search-icon" />
               <input
@@ -217,8 +217,7 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
             <button
               type="button"
               onClick={() => setIsAddModalOpen(true)}
-              className="btn-theme-primary"
-              style={{ height: '36px', padding: '0 16px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              className="btn-theme-primary btn-add"
             >
               <Plus size={15} strokeWidth={2.5} />
               <span>Add Details</span>
@@ -231,20 +230,20 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
           <table className="afrah-app-table">
             <thead>
               <tr>
-                <th style={{ width: '55px', textAlign: 'center' }}>S.NO</th>
+                <th className="text-center" style={{ width: '55px' }}>S.NO</th>
                 <th style={{ width: '105px' }}>DATE</th>
                 <th>LABOUR NAME</th>
                 <th>CONSTRUCTION SITE NAME</th>
                 <th style={{ width: '140px' }}>PHONE</th>
                 <th style={{ width: '135px' }}>LABOUR CHARGE</th>
                 <th style={{ width: '140px' }}>REMAINING AMOUNT</th>
-                <th style={{ width: '80px', textAlign: 'center' }}>ACTIONS</th>
+                <th className="text-center" style={{ width: '80px' }}>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
               {paginatedContracts.length === 0 ? (
                 <tr>
-                  <td colSpan={8} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
+                  <td colSpan={8} className="empty-state-cell">
                     {searchQuery ? 'No matching labour contracts found.' : 'No labour contracts added yet. Click "+ Add Details" to create one.'}
                   </td>
                 </tr>
@@ -258,63 +257,49 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
                       onClick={() => onSelectContract(contract)}
                       className="clickable-client-row"
                     >
-                      <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
+                      <td className="cell-sno">
                         {startIndex + index + 1}
                       </td>
-                      <td style={{ whiteSpace: 'nowrap', fontSize: '12px', color: 'var(--text-secondary)' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                      <td className="cell-meta nowrap">
+                        <div className="cell-icon-text" style={{ gap: '5px' }}>
                           <Calendar size={12} color="var(--primary)" />
                           <span>{formatToDDMMYYYY(contract.date)}</span>
                         </div>
                       </td>
                       <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div className="cell-entity">
                           <div className="afrah-app-user-avatar" style={{ background: 'rgba(226, 195, 153, 0.15)', color: 'var(--primary)' }}>
                             <HardHat size={14} />
                           </div>
-                          <div>
-                            <span className="row-entity-name" style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 750 }}>
-                              {contract.labourName}
-                            </span>
-                          </div>
+                          <span className="row-entity-name">
+                            {contract.labourName}
+                          </span>
                         </div>
                       </td>
                       <td>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--text-primary)' }}>
+                        <div className="cell-icon-text">
                           <MapPin size={13} color="var(--primary)" />
-                          <span style={{ fontSize: '13.5px', fontWeight: 600 }}>{contract.siteName}</span>
+                          <span className="cell-address" style={{ fontWeight: 'var(--fw-semibold)' }}>{contract.siteName}</span>
                         </div>
                       </td>
-                      <td style={{ whiteSpace: 'nowrap' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <td className="nowrap">
+                        <div className="cell-icon-text">
                           <Phone size={13} color="var(--primary)" />
-                          <span style={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 600 }}>{contract.phone}</span>
+                          <span className="cell-phone">{contract.phone}</span>
                         </div>
                       </td>
                       <td>
-                        <strong style={{ color: 'var(--primary)', fontSize: '14.5px', fontWeight: 800, fontFamily: 'JetBrains Mono, monospace' }}>
+                        <strong className="cell-amount is-primary">
                           {formatINR(charge)}
                         </strong>
                       </td>
                       <td>
-                        <span
-                          style={{
-                            display: 'inline-block',
-                            padding: '4px 10px',
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                            fontWeight: 800,
-                            fontFamily: 'JetBrains Mono, monospace',
-                            background: balance > 0 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)',
-                            color: balance > 0 ? '#f87171' : '#4ade80',
-                            border: `1px solid ${balance > 0 ? 'rgba(239, 68, 68, 0.25)' : 'rgba(34, 197, 94, 0.25)'}`
-                          }}
-                        >
+                        <span className={`cell-amount-pill ${balance > 0 ? 'is-negative' : 'is-positive'}`}>
                           {formatINR(balance)}
                         </span>
                       </td>
-                      <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                      <td className="text-center" onClick={(e) => e.stopPropagation()}>
+                        <div className="cell-actions">
                           <button
                             onClick={(e) => handleOpenEdit(contract, e)}
                             className="afrah-app-action-btn afrah-app-edit-btn"
@@ -407,12 +392,11 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
       {isAddModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
           <div
-            className="afrah-app-modal-container"
-            style={{ maxWidth: '460px' }}
-            onClick={(e) => e.stopPropagation()}
+              className="afrah-app-modal-container modal-w-md"
+              onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Plus size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Add Details</h3>
               </div>
@@ -504,8 +488,7 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
                 <button
                   type="submit"
                   disabled={!isAddFormValid}
-                  className="btn-theme-primary"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  className="btn-theme-primary flex-center-6"
                 >
                   <Plus size={15} strokeWidth={2.5} />
                   <span>Add Details</span>
@@ -520,12 +503,11 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
       {isEditModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
           <div
-            className="afrah-app-modal-container"
-            style={{ maxWidth: '460px' }}
-            onClick={(e) => e.stopPropagation()}
+              className="afrah-app-modal-container modal-w-md"
+              onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Labour Contract</h3>
               </div>

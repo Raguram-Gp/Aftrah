@@ -636,12 +636,12 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
               <table className="afrah-app-table">
                 <thead>
                   <tr>
-                    <th style={{ width: '45px', textAlign: 'center' }}>S.NO</th>
+                    <th className="text-center" style={{ width: '45px' }}>S.NO</th>
                     <th>DATE</th>
                     <th>PAYMENT MODE</th>
                     <th>NOTE / MILESTONE</th>
-                    <th style={{ textAlign: 'right' }}>AMOUNT (₹)</th>
-                    <th className="no-print" style={{ width: '70px', textAlign: 'center' }}>ACTIONS</th>
+                    <th className="text-right">AMOUNT (₹)</th>
+                    <th className="no-print text-center" style={{ width: '70px' }}>ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -658,13 +658,13 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                       return (
                         <tr
                           key={item.id}
-                          style={{ cursor: 'default' }}
+                          className="cursor-default"
                         >
-                          <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
+                          <td className="cell-sno">
                             {advStartIndex + index + 1}
                           </td>
                           <td>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                            <div className="flex-center-6">
                               <Calendar size={12} color="var(--primary)" />
                               <span>{formatToDDMMYYYY(item.date)}</span>
                             </div>
@@ -700,8 +700,8 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                           >
                             {formatINR(item.amount)}
                           </td>
-                          <td className="no-print" style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <td className="no-print text-center" onClick={(e) => e.stopPropagation()}>
+                            <div className="flex-center-4">
                               <button
                                 onClick={(e) => handleOpenEditAdv(item, e)}
                                 className="afrah-app-action-btn afrah-app-edit-btn"
@@ -748,7 +748,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
               <div>
                 <h2 className="afrah-app-section-title">ESTIMATE FOR INTERIOR WORKS</h2>
                 <span className="afrah-app-section-subtitle">
-                  {filteredExpenses.length} items across {groupedExpenses.length} sections · Total: <strong style={{ color: 'var(--primary)' }}>{formatINR(totalExpensesAmount)}</strong>
+                  {filteredExpenses.length} items across {groupedExpenses.length} sections · Total: <strong className="text-primary-gold">{formatINR(totalExpensesAmount)}</strong>
                 </span>
               </div>
 
@@ -775,12 +775,12 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
               <table className="afrah-app-table">
                 <thead>
                   <tr>
-                    <th style={{ width: '50px', textAlign: 'center' }}>SI.No</th>
+                    <th className="text-center" style={{ width: '50px' }}>SI.No</th>
                     <th>Particulars</th>
-                    <th style={{ width: '60px', textAlign: 'right' }}>Qty</th>
-                    <th style={{ width: '60px', textAlign: 'center' }}>Per</th>
-                    <th style={{ width: '90px', textAlign: 'right' }}>Rate</th>
-                    <th style={{ width: '115px', textAlign: 'right' }}>Amount</th>
+                    <th className="text-right" style={{ width: '60px' }}>Qty</th>
+                    <th className="text-center" style={{ width: '60px' }}>Per</th>
+                    <th className="text-right" style={{ width: '90px' }}>Rate</th>
+                    <th className="text-right" style={{ width: '115px' }}>Amount</th>
                     <th className="no-print" style={{ width: '65px', textAlign: 'center' }}>Actions</th>
                   </tr>
                 </thead>
@@ -808,7 +808,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                             }}
                           >
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <div className="flex-center">
                                 <span
                                   style={{
                                     display: 'inline-flex',
@@ -849,7 +849,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                           return (
                             <tr
                               key={exp.id}
-                              style={{ cursor: 'default' }}
+                              className="cursor-default"
                             >
                               <td
                                 style={{
@@ -893,8 +893,8 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                               >
                                 {formatINR(exp.totalAmount)}
                               </td>
-                              <td className="no-print" style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                              <td className="no-print text-center" onClick={(e) => e.stopPropagation()}>
+                                <div className="flex-center-4">
                                   <button
                                     onClick={(e) => handleOpenEditExp(exp, e)}
                                     className="afrah-app-action-btn afrah-app-edit-btn"
@@ -983,9 +983,9 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
       {/* ================= MODALS: ADD & EDIT ADVANCE ================= */}
       {isAddAdvModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsAddAdvModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="afrah-app-modal-container modal-w-sm" onClick={(e) => e.stopPropagation()}>
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Plus size={18} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Record Advance Receipt</h3>
               </div>
@@ -1063,9 +1063,9 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
 
       {isEditAdvModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditAdvModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="afrah-app-modal-container modal-w-sm" onClick={(e) => e.stopPropagation()}>
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={18} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Advance Receipt</h3>
               </div>
@@ -1143,7 +1143,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
         <div className="afrah-app-modal-overlay" onClick={() => setIsAddExpModalOpen(false)}>
           <div className="afrah-app-modal-container" style={{ maxWidth: '520px' }} onClick={(e) => e.stopPropagation()}>
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Plus size={18} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Add Interior Estimate Item</h3>
               </div>
@@ -1154,7 +1154,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
 
             <form onSubmit={handleAddExpSubmit}>
               <div className="afrah-app-modal-body">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="grid-2-12">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Date *</label>
                     <DateInput
@@ -1267,7 +1267,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditExpModalOpen(false)}>
           <div className="afrah-app-modal-container" style={{ maxWidth: '520px' }} onClick={(e) => e.stopPropagation()}>
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={18} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Interior Estimate Item</h3>
               </div>
@@ -1278,7 +1278,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
 
             <form onSubmit={handleSaveEditExp}>
               <div className="afrah-app-modal-body">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="grid-2-12">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Date *</label>
                     <DateInput

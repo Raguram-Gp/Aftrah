@@ -63,7 +63,7 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
             background: 'var(--surface-container, #1e2126)'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div className="flex-center">
             <div
               style={{
                 width: '28px',

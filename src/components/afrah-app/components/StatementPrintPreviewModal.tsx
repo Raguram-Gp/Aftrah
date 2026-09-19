@@ -325,15 +325,15 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
                     PURCHASE DETAILS
                   </div>
 
-                  <table className="statement-invoice-table">
+                  <table className="statement-invoice-table" style={{ '--stmt-cell-padding': fontSizes.padding }}>
                     <thead>
                       <tr className="table-header-row" style={{ fontSize: fontSizes.th }}>
-                        {showSNo && <th style={{ width: '55px', textAlign: 'center' }}>S.NO</th>}
-                        <th style={{ width: '125px', textAlign: 'center' }}>DATE</th>
-                        <th style={{ textAlign: 'center' }}>ITEM</th>
-                        <th style={{ width: '110px', textAlign: 'center' }}>QUANTITY</th>
-                        <th style={{ width: '95px', textAlign: 'center' }}>RATE</th>
-                        <th style={{ width: '160px', textAlign: 'center' }}>AMOUNT</th>
+                        {showSNo && <th className="text-center" style={{ width: '55px' }}>S.NO</th>}
+                        <th className="text-center" style={{ width: '125px' }}>DATE</th>
+                        <th className="text-center">ITEM</th>
+                        <th className="text-center" style={{ width: '110px' }}>QUANTITY</th>
+                        <th className="text-center" style={{ width: '95px' }}>RATE</th>
+                        <th className="text-center" style={{ width: '160px' }}>AMOUNT</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -350,17 +350,16 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
                         expenses.map((exp, index) => (
                           <tr key={exp.id} className="invoice-data-row" style={{ fontSize: fontSizes.body }}>
                             {showSNo && (
-                              <td style={{ textAlign: 'center', padding: fontSizes.padding }}>
+                              <td className="statement-cell">
                                 {index + 1}
                               </td>
                             )}
-                            <td style={{ textAlign: 'center', padding: fontSizes.padding }}>
+                            <td className="statement-cell">
                               {formatToDDMMYYYY(exp.date)}
                             </td>
                             <td
+                              className="statement-cell"
                               style={{
-                                textAlign: 'center',
-                                padding: fontSizes.padding,
                                 textTransform: 'uppercase',
                                 fontWeight: 700
                               }}
@@ -368,27 +367,20 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
                               {exp.expenseName}
                             </td>
                             <td
-                              style={{
-                                textAlign: 'center',
-                                padding: fontSizes.padding,
-                                fontWeight: 600
-                              }}
+                              className="statement-cell"
+                              style={{ fontWeight: 600 }}
                             >
                               {exp.quantity}
                             </td>
                             <td
-                              style={{
-                                textAlign: 'center',
-                                padding: fontSizes.padding,
-                                fontWeight: 600
-                              }}
+                              className="statement-cell"
+                              style={{ fontWeight: 600 }}
                             >
                               {exp.rate ? exp.rate : ''}
                             </td>
                             <td
+                              className="statement-cell"
                               style={{
-                                textAlign: 'center',
-                                padding: fontSizes.padding,
                                 fontWeight: 700,
                                 whiteSpace: 'nowrap'
                               }}
@@ -427,13 +419,13 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
                     ADVANCE PAYMENTS DETAILS
                   </div>
 
-                  <table className="statement-invoice-table">
+                  <table className="statement-invoice-table" style={{ '--stmt-cell-padding': fontSizes.padding }}>
                     <thead>
                       <tr className="table-header-row" style={{ fontSize: fontSizes.th }}>
-                        {showSNo && <th style={{ width: '55px', textAlign: 'center' }}>S.NO</th>}
-                        <th style={{ width: '135px', textAlign: 'center' }}>DATE</th>
-                        <th style={{ textAlign: 'center' }}>PAYMENT MODE</th>
-                        <th style={{ width: '180px', textAlign: 'center' }}>AMOUNT</th>
+                        {showSNo && <th className="text-center" style={{ width: '55px' }}>S.NO</th>}
+                        <th className="text-center" style={{ width: '135px' }}>DATE</th>
+                        <th className="text-center">PAYMENT MODE</th>
+                        <th className="text-center" style={{ width: '180px' }}>AMOUNT</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -450,17 +442,16 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
                         advancePayments.map((adv, index) => (
                           <tr key={adv.id} className="invoice-data-row" style={{ fontSize: fontSizes.body }}>
                             {showSNo && (
-                              <td style={{ textAlign: 'center', padding: fontSizes.padding }}>
+                              <td className="statement-cell">
                                 {index + 1}
                               </td>
                             )}
-                            <td style={{ textAlign: 'center', padding: fontSizes.padding }}>
+                            <td className="statement-cell">
                               {formatToDDMMYYYY(adv.date)}
                             </td>
                             <td
+                              className="statement-cell"
                               style={{
-                                textAlign: 'center',
-                                padding: fontSizes.padding,
                                 textTransform: 'uppercase',
                                 fontWeight: 700
                               }}
@@ -468,9 +459,8 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
                               {adv.mode}
                             </td>
                             <td
+                              className="statement-cell"
                               style={{
-                                textAlign: 'center',
-                                padding: fontSizes.padding,
                                 fontWeight: 700,
                                 whiteSpace: 'nowrap'
                               }}
