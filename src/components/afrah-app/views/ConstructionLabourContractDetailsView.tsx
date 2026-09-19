@@ -495,15 +495,7 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
                       </td>
                       <td>
                         <span
-                          style={{
-                            display: 'inline-block',
-                            padding: '2px 10px',
-                            borderRadius: '999px',
-                            background: 'rgba(96, 165, 250, 0.12)',
-                            color: '#60a5fa',
-                            fontSize: 'var(--fs-sm)',
-                            fontWeight: 600
-                          }}
+
                         >
                           {entry.days}
                         </span>
