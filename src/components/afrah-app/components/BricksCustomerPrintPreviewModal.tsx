@@ -203,16 +203,26 @@ export const BricksCustomerPrintPreviewModal: React.FC<BricksCustomerPrintPrevie
         </div>
 
         <table className="statement-invoice-table" style={{ '--stmt-cell-padding': '9px 12px' } as React.CSSProperties}>
+          <colgroup>
+            <col style={{ width: '6%' }} />
+            <col style={{ width: '12%' }} />
+            <col style={{ width: '24%' }} />
+            <col style={{ width: '8%' }} />
+            <col style={{ width: '8%' }} />
+            <col style={{ width: '14%' }} />
+            <col style={{ width: '14%' }} />
+            <col style={{ width: '14%' }} />
+          </colgroup>
           <thead>
             <tr className="table-header-row" style={{ fontSize: '18px' }}>
-              <th className="text-center" style={{ width: '55px' }}>S.NO</th>
-              <th className="text-center" style={{ width: '125px' }}>DATE</th>
+              <th className="text-center">S.NO</th>
+              <th className="text-center">DATE</th>
               <th className="text-center">BRICK TYPE / DESCRIPTION</th>
-              <th className="text-center" style={{ width: '95px' }}>QTY</th>
-              <th className="text-center" style={{ width: '95px' }}>RATE</th>
-              <th className="text-center" style={{ width: '140px' }}>TOTAL</th>
-              <th className="text-center" style={{ width: '130px' }}>PAID</th>
-              <th className="text-center" style={{ width: '140px' }}>BALANCE</th>
+              <th className="text-center">QTY</th>
+              <th className="text-center">RATE</th>
+              <th className="text-center">TOTAL</th>
+              <th className="text-center">PAID</th>
+              <th className="text-center">BALANCE</th>
             </tr>
           </thead>
           <tbody>
