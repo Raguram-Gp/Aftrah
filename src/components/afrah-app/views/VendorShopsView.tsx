@@ -80,7 +80,10 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
 
   // Calculate total pending balance for a shop
   const getShopPendingAmount = (shop: VendorShop) => {
-    return (shop.transactions || []).reduce((sum, tx) => sum + (tx.balanceAmount || 0), 0);
+    return (shop.transactions || []).reduce(
+      (sum, tx) => sum + ((tx.totalAmount || 0) - (tx.receivedAmount || 0)),
+      0
+    );
   };
 
   const formatINR = (val: number) => {

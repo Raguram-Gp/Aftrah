@@ -10,6 +10,7 @@ import {
   DateInput,
   isValidDate,
   formatToDDMMYYYY,
+  formatToYYYYMMDD,
   compareByDateDesc,
 } from "../components/DateInput";
 import { newId } from "@/lib/id";
@@ -27,6 +28,7 @@ import {
   User,
   ArrowDownLeft,
   Printer,
+  Filter,
 } from "lucide-react";
 
 interface ShopDetailsViewProps {
@@ -184,9 +186,104 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
   const isAddValid = !txDate || isValidDate(txDate);
   const isEditValid = !editTxDate || isValidDate(editTxDate);
 
-  // Filter transactions by search query
+  // Normalize client key: trimmed lowercase, or '__general__' for empty / unassigned
+  const getClientKey = (clientName?: string | null) => {
+    const trimmed = (clientName || "").trim().toLowerCase();
+    return trimmed === "" ? "__general__" : trimmed;
+  };
+
+  // 1. Chronological running balances per client across ALL transactions of this shop
+  const { runningBalanceByTxId, clientOverallBalances } = useMemo(() => {
+    // Sort all shop transactions chronologically (oldest to newest)
+    const chronological = [...transactions].sort((a, b) => {
+      const isoA = formatToYYYYMMDD(a.date || "");
+      const isoB = formatToYYYYMMDD(b.date || "");
+      const dateDiff = isoA.localeCompare(isoB);
+      if (dateDiff !== 0) return dateDiff;
+      return (a.sNo || 0) - (b.sNo || 0);
+    });
+
+    const runningBalances = new Map<string, number>();
+    const clientAccumulator = new Map<string, number>();
+
+    for (const tx of chronological) {
+      const key = getClientKey(tx.clientName);
+      const prevBal = clientAccumulator.get(key) || 0;
+      const total = Number(tx.totalAmount) || 0;
+      const paid = Number(tx.receivedAmount) || 0;
+      const currentBal = prevBal + total - paid;
+
+      clientAccumulator.set(key, currentBal);
+      runningBalances.set(tx.id, currentBal);
+    }
+
+    return {
+      runningBalanceByTxId: runningBalances,
+      clientOverallBalances: clientAccumulator,
+    };
+  }, [transactions]);
+
+  // 2. Client filter options list
+  const [selectedClientFilter, setSelectedClientFilter] = useState<string>("all");
+
+  const clientFilterList = useMemo(() => {
+    const map = new Map<string, string>(); // key -> display label
+    let hasGeneral = false;
+
+    for (const tx of transactions) {
+      if (!tx.clientName || tx.clientName.trim() === "") {
+        hasGeneral = true;
+      } else {
+        const trimmed = tx.clientName.trim();
+        const key = trimmed.toLowerCase();
+        if (!map.has(key)) {
+          map.set(key, trimmed);
+        }
+      }
+    }
+
+    // Also include clientOptions passed down if available
+    for (const opt of clientOptions) {
+      const trimmed = (opt || "").trim();
+      if (trimmed) {
+        const key = trimmed.toLowerCase();
+        if (!map.has(key)) {
+          map.set(key, trimmed);
+        }
+      }
+    }
+
+    const list = Array.from(map.entries())
+      .map(([key, label]) => ({
+        key,
+        label,
+        balance: clientOverallBalances.get(key) || 0,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+
+    return {
+      clients: list,
+      hasGeneral,
+      generalBalance: clientOverallBalances.get("__general__") || 0,
+    };
+  }, [transactions, clientOptions, clientOverallBalances]);
+
+  // 3. Filter transactions by client and search query
   const filteredTransactions = useMemo(() => {
     let list = transactions;
+
+    // Filter by client if not "all"
+    if (selectedClientFilter !== "all") {
+      if (selectedClientFilter === "__general__") {
+        list = list.filter((tx) => !tx.clientName || tx.clientName.trim() === "");
+      } else {
+        list = list.filter(
+          (tx) => (tx.clientName || "").trim().toLowerCase() === selectedClientFilter
+        );
+      }
+    }
+
+    // Filter by search query
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       list = list.filter(
@@ -206,9 +303,9 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
     return [...list].sort((a, b) =>
       compareByDateDesc(a.date, b.date, a.sNo, b.sNo),
     );
-  }, [transactions, searchQuery]);
+  }, [transactions, selectedClientFilter, searchQuery]);
 
-  // Financial summary computations
+  // 4. Financial summary computations
   const totalPurchase = filteredTransactions.reduce(
     (sum, tx) => sum + (tx.totalAmount || 0),
     0,
@@ -217,7 +314,15 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
     (sum, tx) => sum + (tx.receivedAmount || 0),
     0,
   );
-  const totalBalance = Math.max(0, totalPurchase - totalReceived);
+  const totalBalance = totalPurchase - totalReceived;
+
+  // Transactions with running balance attached for print statement
+  const transactionsWithRunningBalance = useMemo(() => {
+    return filteredTransactions.map((tx) => ({
+      ...tx,
+      balanceAmount: runningBalanceByTxId.get(tx.id) ?? tx.balanceAmount,
+    }));
+  }, [filteredTransactions, runningBalanceByTxId]);
 
   const formatINR = (val: number) => {
     return "₹" + Number(val || 0).toLocaleString("en-IN");
@@ -469,6 +574,17 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
             <div className="print-meta-sub">
               Phone: {shop.phone} · Address: {shop.address}
             </div>
+            {selectedClientFilter !== "all" && (
+              <div className="print-meta-sub" style={{ marginTop: "3px", color: "var(--primary, #b45309)" }}>
+                Client / Site Filter:{" "}
+                <strong>
+                  {selectedClientFilter === "__general__"
+                    ? "General Stock"
+                    : clientFilterList.clients.find((c) => c.key === selectedClientFilter)?.label ||
+                      selectedClientFilter}
+                </strong>
+              </div>
+            )}
           </div>
 
           <div className="print-meta-box">
@@ -488,10 +604,14 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
               className="print-meta-val"
               style={{
                 marginTop: "4px",
-                color: totalBalance > 0 ? "#b91c1c" : "#15803d",
+                color: totalBalance > 0 ? "#b91c1c" : totalBalance < 0 ? "#0284c7" : "#15803d",
               }}
             >
-              Pending Balance: {formatINR(totalBalance)}
+              {totalBalance > 0
+                ? `Pending Balance: ${formatINR(totalBalance)}`
+                : totalBalance < 0
+                  ? `Advance Balance: - ${formatINR(Math.abs(totalBalance))}`
+                  : `Settled Balance: ₹0`}
             </div>
           </div>
         </div>
@@ -511,9 +631,17 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
             <strong>{formatINR(totalReceived)}</strong>
           </div>
           <div className="print-total-item">
-            <span>Outstanding Balance:</span>{" "}
-            <strong style={{ color: totalBalance > 0 ? "#b91c1c" : "#15803d" }}>
-              {formatINR(totalBalance)}
+            <span>
+              {totalBalance < 0 ? "Advance Balance:" : "Outstanding Balance:"}
+            </span>{" "}
+            <strong
+              style={{
+                color: totalBalance > 0 ? "#b91c1c" : totalBalance < 0 ? "#0284c7" : "#15803d",
+              }}
+            >
+              {totalBalance < 0
+                ? `- ${formatINR(Math.abs(totalBalance))}`
+                : formatINR(totalBalance)}
             </strong>
           </div>
         </div>
@@ -538,6 +666,46 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
               <span className="client-unified-label">Vendor:</span>{" "}
               <span className="client-unified-name">{shop.name}</span>
             </h1>
+            {selectedClientFilter !== "all" && (
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  marginTop: "6px",
+                  padding: "3px 8px",
+                  borderRadius: "6px",
+                  background: "rgba(217, 119, 6, 0.15)",
+                  color: "#d97706",
+                  fontSize: "var(--fs-xs)",
+                  fontWeight: 600,
+                  width: "fit-content",
+                }}
+              >
+                <span>
+                  Client:{" "}
+                  {selectedClientFilter === "__general__"
+                    ? "General Stock"
+                    : clientFilterList.clients.find((c) => c.key === selectedClientFilter)?.label ||
+                      selectedClientFilter}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedClientFilter("all")}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "inherit",
+                    padding: 0,
+                    display: "inline-flex",
+                  }}
+                  title="Clear client filter"
+                >
+                  <X size={12} />
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="client-unified-card-item metric-item">
@@ -566,18 +734,28 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
 
           <div className="client-unified-card-item metric-item">
             <div
-              className={`metric-icon-wrap ${totalBalance > 0 ? "red" : "green"}`}
+              className={`metric-icon-wrap ${
+                totalBalance > 0 ? "red" : totalBalance < 0 ? "blue" : "green"
+              }`}
             >
               <Scale size={24} />
             </div>
             <div>
               <span className="metric-label">
-                {totalBalance > 0 ? "OUTSTANDING BALANCE" : "FULLY SETTLED"}
+                {totalBalance > 0
+                  ? "OUTSTANDING BALANCE"
+                  : totalBalance < 0
+                    ? "ADVANCE / CREDIT"
+                    : "FULLY SETTLED"}
               </span>
               <span
-                className={`metric-value ${totalBalance > 0 ? "red" : "green"}`}
+                className={`metric-value ${
+                  totalBalance > 0 ? "red" : totalBalance < 0 ? "blue" : "green"
+                }`}
               >
-                {formatINR(totalBalance)}
+                {totalBalance < 0
+                  ? `- ${formatINR(Math.abs(totalBalance))}`
+                  : formatINR(totalBalance)}
               </span>
             </div>
           </div>
@@ -603,6 +781,118 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
               flexWrap: "wrap",
             }}
           >
+            {/* Search Input */}
+            <div style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
+              <Search
+                size={14}
+                style={{
+                  position: "absolute",
+                  left: "10px",
+                  color: "var(--text-secondary)",
+                  pointerEvents: "none",
+                }}
+              />
+              <input
+                type="text"
+                placeholder="Search ledger..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="afrah-app-input"
+                style={{
+                  paddingLeft: "32px",
+                  paddingRight: searchQuery ? "28px" : "12px",
+                  height: "36px",
+                  fontSize: "var(--fs-sm)",
+                  width: "180px",
+                }}
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  style={{
+                    position: "absolute",
+                    right: "8px",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "var(--text-secondary)",
+                    padding: 0,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                  title="Clear search"
+                >
+                  <X size={12} />
+                </button>
+              )}
+            </div>
+
+            {/* Client / Site Tag Filter Dropdown */}
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                background: "rgba(255, 255, 255, 0.03)",
+                padding: "2px 8px 2px 10px",
+                borderRadius: "8px",
+                border: "1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))",
+              }}
+            >
+              <Filter size={13} style={{ color: "var(--primary)" }} />
+              <label
+                htmlFor="client-filter-select"
+                style={{
+                  fontSize: "var(--fs-xs)",
+                  fontWeight: 600,
+                  color: "var(--text-secondary)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.04em",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Client:
+              </label>
+              <select
+                id="client-filter-select"
+                value={selectedClientFilter}
+                onChange={(e) => {
+                  setSelectedClientFilter(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="afrah-app-input"
+                style={{
+                  height: "32px",
+                  padding: "0 8px",
+                  fontSize: "var(--fs-xs)",
+                  minWidth: "160px",
+                  maxWidth: "240px",
+                  border: "none",
+                  background: "transparent",
+                  cursor: "pointer",
+                  fontWeight: selectedClientFilter !== "all" ? 600 : 400,
+                  color: selectedClientFilter !== "all" ? "var(--primary)" : undefined,
+                }}
+              >
+                <option value="all">
+                  All Clients / Sites ({transactions.length})
+                </option>
+                {clientFilterList.hasGeneral && (
+                  <option value="__general__">
+                    General Stock ({clientFilterList.generalBalance > 0 ? `+${formatINR(clientFilterList.generalBalance)}` : clientFilterList.generalBalance < 0 ? `-${formatINR(Math.abs(clientFilterList.generalBalance))}` : "Settled"})
+                  </option>
+                )}
+                {clientFilterList.clients.map((c) => (
+                  <option key={c.key} value={c.key}>
+                    {c.label} ({c.balance > 0 ? `+${formatINR(c.balance)}` : c.balance < 0 ? `-${formatINR(Math.abs(c.balance))}` : "Settled"})
+                  </option>
+                ))}
+              </select>
+            </div>
             <TableFormPopover
               open={isAddFormOpen}
               onOpenChange={setIsAddFormOpen}
@@ -712,19 +1002,88 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                   />
                 </div>
 
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">
-                    Balance Remaining (₹)
-                  </label>
-                  <div
-                    className="total-amount-display"
-                    style={{
-                      color: calculatedBalance > 0 ? "#f87171" : "#4ade80",
-                    }}
-                  >
-                    {formatINR(calculatedBalance)}
-                  </div>
-                </div>
+                {(() => {
+                  const clientKey = getClientKey(txClientName);
+                  const clientLabel = txClientName.trim() || "General Stock";
+                  const prevClientBal = clientOverallBalances.get(clientKey) || 0;
+                  const newProjectedBal = prevClientBal + calculatedBalance;
+
+                  return (
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">
+                        Client Balance & Carry-Forward
+                      </label>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "5px",
+                          padding: "8px 12px",
+                          background: "rgba(255, 255, 255, 0.04)",
+                          borderRadius: "8px",
+                          border: "1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))",
+                          fontSize: "var(--fs-xs)",
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "var(--text-secondary)" }}>
+                            {clientLabel} Prior Balance:
+                          </span>
+                          <span
+                            style={{
+                              fontWeight: 600,
+                              color:
+                                prevClientBal > 0
+                                  ? "#f87171"
+                                  : prevClientBal < 0
+                                    ? "#38bdf8"
+                                    : "#34d399",
+                            }}
+                          >
+                            {prevClientBal < 0
+                              ? `- ${formatINR(Math.abs(prevClientBal))}`
+                              : formatINR(prevClientBal)}
+                          </span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span style={{ color: "var(--text-secondary)" }}>This Entry Net:</span>
+                          <span style={{ fontWeight: 600 }}>
+                            {calculatedBalance >= 0
+                              ? `+ ${formatINR(calculatedBalance)}`
+                              : `- ${formatINR(Math.abs(calculatedBalance))}`}
+                          </span>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            borderTop: "1px dashed rgba(255, 255, 255, 0.12)",
+                            paddingTop: "4px",
+                            marginTop: "2px",
+                          }}
+                        >
+                          <span style={{ fontWeight: 600, color: "var(--text-primary)" }}>
+                            Projected Balance:
+                          </span>
+                          <strong
+                            style={{
+                              color:
+                                newProjectedBal > 0
+                                  ? "#f87171"
+                                  : newProjectedBal < 0
+                                    ? "#38bdf8"
+                                    : "#34d399",
+                            }}
+                          >
+                            {newProjectedBal < 0
+                              ? `- ${formatINR(Math.abs(newProjectedBal))}`
+                              : formatINR(newProjectedBal)}
+                          </strong>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 <div className="afrah-app-add-popover-actions">
                   <button
@@ -920,11 +1279,49 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                         {formatINR(tx.receivedAmount)}
                       </td>
                       <td className="cell-amount col-metric">
-                        {isSettlement ? (
-                          <span>- {formatINR(tx.receivedAmount)}</span>
-                        ) : (
-                          <span>{formatINR(tx.balanceAmount)}</span>
-                        )}
+                        {(() => {
+                          const runningBal =
+                            runningBalanceByTxId.get(tx.id) ?? tx.balanceAmount;
+                          const clientLabel = tx.clientName || "General Stock";
+
+                          if (runningBal > 0) {
+                            return (
+                              <span
+                                style={{
+                                  color: "var(--danger, #f87171)",
+                                  fontWeight: 700,
+                                }}
+                                title={`Running balance for ${clientLabel}: ${formatINR(runningBal)}`}
+                              >
+                                {formatINR(runningBal)}
+                              </span>
+                            );
+                          }
+                          if (runningBal < 0) {
+                            return (
+                              <span
+                                style={{
+                                  color: "var(--info, #38bdf8)",
+                                  fontWeight: 700,
+                                }}
+                                title={`Advance balance for ${clientLabel}: -${formatINR(Math.abs(runningBal))}`}
+                              >
+                                - {formatINR(Math.abs(runningBal))}
+                              </span>
+                            );
+                          }
+                          return (
+                            <span
+                              style={{
+                                color: "var(--success, #34d399)",
+                                fontWeight: 600,
+                              }}
+                              title={`Settled balance for ${clientLabel}: ₹0`}
+                            >
+                              ₹0
+                            </span>
+                          );
+                        })()}
                       </td>
                       <td style={{ textAlign: "center" }}>
                         <div
@@ -1150,10 +1547,17 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                   <div
                     className="total-amount-display"
                     style={{
-                      color: editCalculatedBalance > 0 ? "#f87171" : "#4ade80",
+                      color:
+                        editCalculatedBalance > 0
+                          ? "#f87171"
+                          : editCalculatedBalance < 0
+                            ? "#38bdf8"
+                            : "#4ade80",
                     }}
                   >
-                    {formatINR(editCalculatedBalance)}
+                    {editCalculatedBalance < 0
+                      ? `- ${formatINR(Math.abs(editCalculatedBalance))}`
+                      : formatINR(editCalculatedBalance)}
                   </div>
                 </div>
               </div>
@@ -1216,11 +1620,19 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
         onClose={() => setIsPrintPreviewOpen(false)}
         vendor={vendor}
         shop={shop}
-        transactions={filteredTransactions}
+        transactions={transactionsWithRunningBalance}
         totalPurchase={totalPurchase}
         totalReceived={totalReceived}
         totalBalance={totalBalance}
         brand={brand}
+        clientFilterName={
+          selectedClientFilter === "all"
+            ? undefined
+            : selectedClientFilter === "__general__"
+              ? "General Stock"
+              : clientFilterList.clients.find((c) => c.key === selectedClientFilter)
+                  ?.label || selectedClientFilter
+        }
       />
     </div>
   );

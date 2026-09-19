@@ -131,17 +131,17 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
     await onAddClient({
       name: addName.trim(),
       phone: addPhone.trim(),
-      address: addAddress.trim()
+      address: addAddress.trim(),
     });
 
     setAddName('');
     setAddPhone('');
     setAddAddress('');
     setIsAddModalOpen(false);
-    setCurrentPage(1);
   };
 
   // Edit Client Submit
+  const isEditValid = editName.trim().length > 0 && editPhone.trim().length > 0;
   const handleOpenEdit = (client: InteriorClient, e: React.MouseEvent) => {
     e.stopPropagation();
     setEditingClientId(client.id);
@@ -153,38 +153,31 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
 
   const handleSaveEdit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingClientId || !editName.trim()) return;
+    if (!isEditValid || !editingClientId) return;
 
-    const target = clients.find((c) => c.id === editingClientId);
-    if (target) {
-      await onUpdateClient({
-        ...target,
-        name: editName.trim(),
-        phone: editPhone.trim(),
-        address: editAddress.trim()
-      });
-    }
+    const original = clients.find((c) => c.id === editingClientId);
+    if (!original) return;
+
+    await onUpdateClient({
+      ...original,
+      name: editName.trim(),
+      phone: editPhone.trim(),
+      address: editAddress.trim(),
+    });
 
     setIsEditModalOpen(false);
     setEditingClientId(null);
   };
 
-  // Confirm Single Delete
+  // Delete Handlers
   const handleConfirmDelete = async () => {
     if (!deleteClientTarget) return;
     setIsDeletingClient(true);
     try {
       await onDeleteClient(deleteClientTarget.id);
-      if (selectedClientIds.has(deleteClientTarget.id)) {
-        setSelectedClientIds((prev) => {
-          const next = new Set(prev);
-          next.delete(deleteClientTarget.id);
-          return next;
-        });
-      }
+      setDeleteClientTarget(null);
     } finally {
       setIsDeletingClient(false);
-      setDeleteClientTarget(null);
     }
   };
 

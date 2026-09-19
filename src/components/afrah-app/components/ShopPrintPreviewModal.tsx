@@ -16,8 +16,8 @@ interface ShopPrintPreviewModalProps {
   toDate?: string;
   totalPurchase: number;
   totalReceived: number;
-  totalBalance: number;
   brand?: PdfBrand;
+  clientFilterName?: string;
 }
 
 export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
@@ -32,15 +32,17 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
   totalReceived,
   totalBalance,
   brand: brandId = 'afrah',
+  clientFilterName,
 }) => {
   if (!isOpen) return null;
 
   const formatInvoiceINR = (val: number) => {
+    const isNeg = (val || 0) < 0;
     const formatted = Math.abs(val || 0).toLocaleString('en-IN', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
-    return `₹${formatted}/-`;
+    return isNeg ? `-₹${formatted}/-` : `₹${formatted}/-`;
   };
 
   const currentDate = new Date();
@@ -81,12 +83,17 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
     formatInvoiceINR(totalBalance),
   ]);
 
+  const partyExtra: string[] = [vendor.type];
+  if (clientFilterName) {
+    partyExtra.push(`Client / Site: ${clientFilterName}`);
+  }
+
   const sharePayload: StatementSnapshot = {
     ...defaultStatementBrand(brandId),
     party: {
       name: shop.name.toUpperCase(),
       phone: shop.phone,
-      extra: [vendor.type],
+      extra: partyExtra,
     },
     dateLabel,
     sections: [
@@ -99,7 +106,10 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
     summary: [
       { label: 'Total Purchases', value: formatInvoiceINR(totalPurchase) },
       { label: 'Amount Settled / Paid', value: formatInvoiceINR(totalReceived) },
-      { label: 'Outstanding Balance', value: formatInvoiceINR(totalBalance) },
+      {
+        label: totalBalance < 0 ? 'Advance / Credit Balance' : 'Outstanding Balance',
+        value: formatInvoiceINR(totalBalance),
+      },
     ],
     capturedAt: new Date().toISOString(),
   };
@@ -125,6 +135,12 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
           <span style={{ fontSize: '14px', marginLeft: '10px', opacity: 0.85 }}>
             ({vendor.type} Supplier · {shop.phone})
           </span>
+          {clientFilterName && (
+            <div style={{ marginTop: '4px', fontSize: '15px', color: 'var(--primary, #e2c399)' }}>
+              <span className="meta-label" style={{ color: 'var(--text-secondary, #94a3b8)' }}>CLIENT / SITE:</span>{' '}
+              <span className="meta-name-value" style={{ fontWeight: 700 }}>{clientFilterName.toUpperCase()}</span>
+            </div>
+          )}
         </div>
         <div className="meta-right">
           <span className="meta-label">DATE:</span>{' '}
@@ -135,11 +151,15 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
       {/* PENDING BALANCE ROW */}
       <div className="statement-pending-balance-row" style={{ fontSize: '18px' }}>
         <span className="pending-balance-label">
-          {totalBalance > 0 ? 'PENDING BALANCE PAYABLE: ' : 'SETTLED BALANCE: '}
+          {totalBalance > 0
+            ? 'PENDING BALANCE PAYABLE: '
+            : totalBalance < 0
+              ? 'ADVANCE / CREDIT BALANCE: '
+              : 'SETTLED BALANCE: '}
         </span>
         <span
           className="pending-balance-amount"
-          style={{ color: totalBalance > 0 ? '#ef4444' : '#22c55e' }}
+          style={{ color: totalBalance > 0 ? '#ef4444' : totalBalance < 0 ? '#38bdf8' : '#22c55e' }}
         >
           {formatInvoiceINR(totalBalance)}
         </span>
@@ -210,7 +230,7 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
                     className="statement-cell"
                     style={{
                       fontWeight: 700,
-                      color: tx.balanceAmount > 0 ? '#dc2626' : '#16a34a',
+                      color: tx.balanceAmount > 0 ? '#dc2626' : tx.balanceAmount < 0 ? '#0284c7' : '#16a34a',
                       whiteSpace: 'nowrap'
                     }}
                   >
@@ -236,7 +256,7 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
               </td>
               <td
                 className="total-amount-cell"
-                style={{ color: totalBalance > 0 ? '#dc2626' : '#16a34a' }}
+                style={{ color: totalBalance > 0 ? '#dc2626' : totalBalance < 0 ? '#0284c7' : '#16a34a' }}
               >
                 {formatInvoiceINR(totalBalance)}
               </td>
