@@ -12,7 +12,7 @@ const VALID_TABS: TabType[] = [
   'kaab_interior',
 ];
 
-const VALID_INTERIOR_SUBS: InteriorSubTab[] = ['directory', 'vendor', 'labour_contract'];
+const VALID_INTERIOR_SUBS: InteriorSubTab[] = ['clients', 'directory', 'vendor', 'labour_contract'];
 const VALID_BRICKS_SUBS: BricksSubTab[] = ['directory', 'expenses', 'stock'];
 
 const TAB_TO_SEGMENT: Record<TabType, string> = {
@@ -34,12 +34,14 @@ const SEGMENT_TO_TAB: Record<string, TabType> = {
 };
 
 const INTERIOR_SUB_TO_SEGMENT: Record<InteriorSubTab, string> = {
+  clients: 'clients',
   directory: 'directory',
   vendor: 'vendor',
   labour_contract: 'labour-contract',
 };
 
 const INTERIOR_SEGMENT_TO_SUB: Record<string, InteriorSubTab> = {
+  clients: 'clients',
   directory: 'directory',
   vendor: 'vendor',
   'labour-contract': 'labour_contract',
@@ -51,6 +53,7 @@ export interface NavState {
   activeBricksSubTab: BricksSubTab;
   selectedClientId: string | null;
   selectedConstructionLabourContractId: string | null;
+  selectedInteriorLedgerClientId: string | null;
   selectedInteriorClientId: string | null;
   selectedInteriorVendorId: string | null;
   selectedInteriorShopId: string | null;
@@ -63,10 +66,11 @@ export interface NavState {
 
 const emptyNav = (): NavState => ({
   activeTab: 'clients',
-  activeInteriorSubTab: 'directory',
+  activeInteriorSubTab: 'clients',
   activeBricksSubTab: 'directory',
   selectedClientId: null,
   selectedConstructionLabourContractId: null,
+  selectedInteriorLedgerClientId: null,
   selectedInteriorClientId: null,
   selectedInteriorVendorId: null,
   selectedInteriorShopId: null,
@@ -90,13 +94,14 @@ const parseLegacyHash = (hash: string): NavState | null => {
     activeInteriorSubTab:
       subParam && VALID_INTERIOR_SUBS.includes(subParam as InteriorSubTab)
         ? (subParam as InteriorSubTab)
-        : 'directory',
+        : 'clients',
     activeBricksSubTab:
       subParam && VALID_BRICKS_SUBS.includes(subParam as BricksSubTab)
         ? (subParam as BricksSubTab)
         : 'directory',
     selectedClientId: params.get('clientId'),
     selectedConstructionLabourContractId: params.get('contractId'),
+    selectedInteriorLedgerClientId: params.get('interiorLedgerClientId'),
     selectedInteriorClientId: params.get('interiorClientId'),
     selectedInteriorVendorId: params.get('interiorVendorId'),
     selectedInteriorShopId: params.get('interiorShopId'),
@@ -146,10 +151,12 @@ export const parseNavState = (): NavState => {
   }
 
   if (tab === 'kaab_interior') {
-    const sub = INTERIOR_SEGMENT_TO_SUB[parts[1]] ?? 'directory';
+    const sub = INTERIOR_SEGMENT_TO_SUB[parts[1]] ?? 'clients';
     nav.activeInteriorSubTab = sub;
-    if (sub === 'directory') {
-      nav.selectedInteriorClientId = parts[1] === 'directory' ? parts[2] || null : null;
+    if (sub === 'clients') {
+      nav.selectedInteriorLedgerClientId = parts[2] || null;
+    } else if (sub === 'directory') {
+      nav.selectedInteriorClientId = parts[2] || null;
     } else if (sub === 'vendor') {
       nav.selectedInteriorVendorId = parts[2] || null;
       nav.selectedInteriorShopId = parts[3] || null;
@@ -179,6 +186,7 @@ export const CLEARED_ENTITY_IDS: Pick<
   NavState,
   | 'selectedClientId'
   | 'selectedConstructionLabourContractId'
+  | 'selectedInteriorLedgerClientId'
   | 'selectedInteriorClientId'
   | 'selectedInteriorVendorId'
   | 'selectedInteriorShopId'
@@ -190,6 +198,7 @@ export const CLEARED_ENTITY_IDS: Pick<
 > = {
   selectedClientId: null,
   selectedConstructionLabourContractId: null,
+  selectedInteriorLedgerClientId: null,
   selectedInteriorClientId: null,
   selectedInteriorVendorId: null,
   selectedInteriorShopId: null,
@@ -228,7 +237,9 @@ export const buildNavPath = (state: NavState): string => {
     segments.push(state.selectedConstructionLabourContractId);
   } else if (state.activeTab === 'kaab_interior') {
     segments.push(INTERIOR_SUB_TO_SEGMENT[state.activeInteriorSubTab]);
-    if (state.activeInteriorSubTab === 'directory' && state.selectedInteriorClientId) {
+    if (state.activeInteriorSubTab === 'clients' && state.selectedInteriorLedgerClientId) {
+      segments.push(state.selectedInteriorLedgerClientId);
+    } else if (state.activeInteriorSubTab === 'directory' && state.selectedInteriorClientId) {
       segments.push(state.selectedInteriorClientId);
     } else if (state.activeInteriorSubTab === 'vendor') {
       if (state.selectedInteriorVendorId) segments.push(state.selectedInteriorVendorId);

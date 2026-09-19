@@ -381,7 +381,7 @@ export const PREDEFINED_CONSTRUCTION_WORK_TYPES = [
    KAAB INTERIOR TYPES & PRESETS
    ========================================== */
 
-export type InteriorSubTab = 'directory' | 'vendor' | 'labour_contract';
+export type InteriorSubTab = 'clients' | 'directory' | 'vendor' | 'labour_contract';
 
 export interface LabourContractEntry {
   id: string;

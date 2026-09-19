@@ -36,6 +36,7 @@ interface AfrahAppSidebarProps {
   brickCustomersCount?: number;
   brickExpensesCount?: number;
   brickStockCount?: number;
+  interiorLedgerClientsCount?: number;
   interiorClientsCount?: number;
   interiorVendorsCount?: number;
   interiorLabourContractsCount?: number;
@@ -59,11 +60,12 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
   brickCustomersCount = 0,
   brickExpensesCount = 0,
   brickStockCount = 0,
+  interiorLedgerClientsCount = 0,
   interiorClientsCount = 0,
   interiorVendorsCount = 0,
   interiorLabourContractsCount = 0,
   activeTab,
-  activeInteriorSubTab = 'directory',
+  activeInteriorSubTab = 'clients',
   activeBricksSubTab = 'directory',
   onSelectTab,
   onSelectInteriorSubTab,
@@ -397,10 +399,30 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                 )}
               </button>
 
-              {/* Sub-items below KAAB INTERIOR: Client directory, Vendor, Interior Labour Contract */}
+              {/* Sub-items below KAAB INTERIOR: Clients, Client directory, Vendor, Interior Labour Contract */}
               {(!isCollapsed ? isInteriorExpanded : false) && (
                 <div className="afrah-app-nav-sublist">
-                  {/* Option A: Client directory */}
+                  {/* Option 1: Clients */}
+                  <button
+                    onClick={() => {
+                      if (onSelectInteriorSubTab) {
+                        onSelectInteriorSubTab('clients');
+                      } else {
+                        onSelectTab('kaab_interior', 'clients');
+                      }
+                      onCloseMobile();
+                    }}
+                    className={`afrah-app-nav-subitem ${activeTab === 'kaab_interior' && activeInteriorSubTab === 'clients' ? 'active' : ''}`}
+                    title="Clients"
+                  >
+                    <div className="afrah-app-nav-left">
+                      <Users size={14} className="nav-icon" />
+                      <span className="nav-label">Clients</span>
+                    </div>
+                    <span className="afrah-app-subbadge-count">{interiorLedgerClientsCount}</span>
+                  </button>
+
+                  {/* Option 2: Client directory */}
                   <button
                     onClick={() => {
                       if (onSelectInteriorSubTab) {

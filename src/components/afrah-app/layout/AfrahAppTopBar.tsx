@@ -29,6 +29,7 @@ interface AfrahAppTopBarProps {
   activeBricksSubTab?: BricksSubTab;
   clientsCount: number;
   constructionLabourContractsCount?: number;
+  interiorLedgerClientsCount?: number;
   interiorClientsCount?: number;
   interiorVendorsCount?: number;
   interiorLabourContractsCount?: number;
@@ -39,6 +40,7 @@ interface AfrahAppTopBarProps {
   brickStockUnits?: number;
   selectedClient: Client | null;
   selectedConstructionLabourContract?: LabourContract | null;
+  selectedInteriorLedgerClient?: Client | null;
   selectedInteriorClient?: InteriorClient | null;
   selectedInteriorVendor?: Vendor | null;
   selectedInteriorShop?: VendorShop | null;
@@ -52,6 +54,7 @@ interface AfrahAppTopBarProps {
   onNavigateHome: () => void;
   onNavigateConstructionLabourRoot?: () => void;
   onNavigateInteriorRoot?: (subTab?: InteriorSubTab) => void;
+  onNavigateInteriorClientsRoot?: () => void;
   onNavigateInteriorVendorRoot?: () => void;
   onNavigateInteriorVendorCategory?: () => void;
   onNavigateInteriorLabourContractRoot?: () => void;
@@ -63,10 +66,11 @@ interface AfrahAppTopBarProps {
 
 export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
   activeTab,
-  activeInteriorSubTab = 'directory',
+  activeInteriorSubTab = 'clients',
   activeBricksSubTab = 'directory',
   clientsCount,
   constructionLabourContractsCount = 0,
+  interiorLedgerClientsCount = 0,
   interiorClientsCount = 0,
   interiorVendorsCount = 0,
   interiorLabourContractsCount = 0,
@@ -77,6 +81,7 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
   brickStockUnits = 0,
   selectedClient,
   selectedConstructionLabourContract = null,
+  selectedInteriorLedgerClient = null,
   selectedInteriorClient = null,
   selectedInteriorVendor = null,
   selectedInteriorShop = null,
@@ -90,6 +95,7 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
   onNavigateHome,
   onNavigateConstructionLabourRoot,
   onNavigateInteriorRoot,
+  onNavigateInteriorClientsRoot,
   onNavigateInteriorVendorRoot,
   onNavigateInteriorVendorCategory,
   onNavigateInteriorLabourContractRoot,
@@ -160,9 +166,11 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
 
               <ChevronRight size={14} color="var(--text-secondary)" />
               <span
-                className={selectedInteriorClient || selectedInteriorVendor || selectedInteriorLabourContract ? 'afrah-app-breadcrumb-link' : 'afrah-app-breadcrumb-active'}
+                className={selectedInteriorLedgerClient || selectedInteriorClient || selectedInteriorVendor || selectedInteriorLabourContract ? 'afrah-app-breadcrumb-link' : 'afrah-app-breadcrumb-active'}
                 onClick={() => {
-                  if (activeInteriorSubTab === 'vendor' && onNavigateInteriorVendorRoot) {
+                  if (activeInteriorSubTab === 'clients' && onNavigateInteriorClientsRoot) {
+                    onNavigateInteriorClientsRoot();
+                  } else if (activeInteriorSubTab === 'vendor' && onNavigateInteriorVendorRoot) {
                     onNavigateInteriorVendorRoot();
                   } else if (activeInteriorSubTab === 'labour_contract' && onNavigateInteriorLabourContractRoot) {
                     onNavigateInteriorLabourContractRoot();
@@ -171,13 +179,18 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
                   }
                 }}
                 style={{
-                  cursor: selectedInteriorClient || selectedInteriorVendor || selectedInteriorLabourContract ? 'pointer' : 'default',
+                  cursor: selectedInteriorLedgerClient || selectedInteriorClient || selectedInteriorVendor || selectedInteriorLabourContract ? 'pointer' : 'default',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '6px'
                 }}
               >
-                {activeInteriorSubTab === 'vendor' ? (
+                {activeInteriorSubTab === 'clients' ? (
+                  <>
+                    <Users size={14} color="var(--primary)" />
+                    <span>Clients</span>
+                  </>
+                ) : activeInteriorSubTab === 'vendor' ? (
                   <>
                     <Truck size={14} color="#38bdf8" />
                     <span>Vendor</span>
@@ -194,6 +207,15 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
                   </>
                 )}
               </span>
+
+              {activeInteriorSubTab === 'clients' && selectedInteriorLedgerClient && (
+                <>
+                  <ChevronRight size={14} color="var(--text-secondary)" />
+                  <span className="afrah-app-breadcrumb-active">
+                    {selectedInteriorLedgerClient.name}
+                  </span>
+                </>
+              )}
 
               {activeInteriorSubTab === 'directory' && selectedInteriorClient && (
                 <>

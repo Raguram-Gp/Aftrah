@@ -7,6 +7,7 @@ import { TableFormPopover } from './components/TableFormPopover';
 import { EntityNotFound } from './components/EntityNotFound';
 import { useClients } from './hooks/useClients';
 import { useInteriorClients } from './hooks/useInteriorClients';
+import { useInteriorLedgerClients } from './hooks/useInteriorLedgerClients';
 import { useVendors } from './hooks/useVendors';
 import { useInteriorVendors } from './hooks/useInteriorVendors';
 import { useLabourContracts } from './hooks/useLabourContracts';
@@ -26,6 +27,8 @@ import {
 import { ClientDetailsView } from './views/ClientDetailsView';
 import { InteriorClientView } from './views/InteriorClientView';
 import { InteriorClientDetailsView } from './views/InteriorClientDetailsView';
+import { InteriorClientLedgerView } from './views/InteriorClientLedgerView';
+import { InteriorClientLedgerDetailsView } from './views/InteriorClientLedgerDetailsView';
 import { InteriorVendorView } from './views/InteriorVendorView';
 import { InteriorLabourContractView } from './views/InteriorLabourContractView';
 import { InteriorLabourContractDetailsView } from './views/InteriorLabourContractDetailsView';
@@ -70,6 +73,7 @@ export const AfrahAppPortal: React.FC = () => {
   const [activeBricksSubTab, setActiveBricksSubTab] = useState<BricksSubTab>(initialNav.activeBricksSubTab);
   const [selectedClientId, setSelectedClientId] = useState<string | null>(initialNav.selectedClientId);
   const [selectedConstructionLabourContractId, setSelectedConstructionLabourContractId] = useState<string | null>(initialNav.selectedConstructionLabourContractId);
+  const [selectedInteriorLedgerClientId, setSelectedInteriorLedgerClientId] = useState<string | null>(initialNav.selectedInteriorLedgerClientId);
   const [selectedInteriorClientId, setSelectedInteriorClientId] = useState<string | null>(initialNav.selectedInteriorClientId);
   const [selectedInteriorVendorId, setSelectedInteriorVendorId] = useState<string | null>(initialNav.selectedInteriorVendorId);
   const [selectedInteriorShopId, setSelectedInteriorShopId] = useState<string | null>(initialNav.selectedInteriorShopId);
@@ -88,6 +92,7 @@ export const AfrahAppPortal: React.FC = () => {
     setActiveBricksSubTab(nav.activeBricksSubTab);
     setSelectedClientId(nav.selectedClientId);
     setSelectedConstructionLabourContractId(nav.selectedConstructionLabourContractId);
+    setSelectedInteriorLedgerClientId(nav.selectedInteriorLedgerClientId);
     setSelectedInteriorClientId(nav.selectedInteriorClientId);
     setSelectedInteriorVendorId(nav.selectedInteriorVendorId);
     setSelectedInteriorShopId(nav.selectedInteriorShopId);
@@ -181,6 +186,23 @@ export const AfrahAppPortal: React.FC = () => {
     deleteExpense: deleteInteriorExpense,
     deleteMultipleExpenses: deleteMultipleInteriorExpenses
   } = useInteriorClients();
+
+  const {
+    clients: interiorLedgerClients,
+    isLoading: interiorLedgerClientsLoading,
+    addClient: addInteriorLedgerClient,
+    updateClient: updateInteriorLedgerClient,
+    deleteClient: deleteInteriorLedgerClient,
+    deleteMultipleClients: deleteMultipleInteriorLedgerClients,
+    addAdvancePayment: addInteriorLedgerAdvance,
+    updateAdvancePayment: updateInteriorLedgerAdvance,
+    deleteAdvancePayment: deleteInteriorLedgerAdvance,
+    deleteMultipleAdvancePayments: deleteMultipleInteriorLedgerAdvances,
+    addExpense: addInteriorLedgerExpense,
+    updateExpense: updateInteriorLedgerExpense,
+    deleteExpense: deleteInteriorLedgerExpense,
+    deleteMultipleExpenses: deleteMultipleInteriorLedgerExpenses,
+  } = useInteriorLedgerClients();
 
   const {
     vendors: interiorVendors,
@@ -299,6 +321,10 @@ export const AfrahAppPortal: React.FC = () => {
     return constructionLabourContracts.find((c) => c.id === selectedConstructionLabourContractId) || null;
   }, [constructionLabourContracts, selectedConstructionLabourContractId]);
 
+  const selectedInteriorLedgerClient = useMemo(() => {
+    return interiorLedgerClients.find((c) => c.id === selectedInteriorLedgerClientId) || null;
+  }, [interiorLedgerClients, selectedInteriorLedgerClientId]);
+
   const selectedInteriorClient = useMemo(() => {
     return interiorClients.find((c) => c.id === selectedInteriorClientId) || null;
   }, [interiorClients, selectedInteriorClientId]);
@@ -337,6 +363,7 @@ export const AfrahAppPortal: React.FC = () => {
     clientsLoading ||
     vendorsLoading ||
     banksLoading ||
+    interiorLedgerClientsLoading ||
     interiorClientsLoading ||
     interiorVendorsLoading ||
     labourContractsLoading ||
@@ -466,6 +493,7 @@ export const AfrahAppPortal: React.FC = () => {
       <AfrahAppSidebar
         clientsCount={clients.length}
         constructionLabourContractsCount={constructionLabourContracts.length}
+        interiorLedgerClientsCount={interiorLedgerClients.length}
         interiorClientsCount={interiorClients.length}
         interiorVendorsCount={interiorVendors.length}
         interiorLabourContractsCount={labourContracts.length}
@@ -481,7 +509,7 @@ export const AfrahAppPortal: React.FC = () => {
           navigate({
             activeTab: tab,
             ...(tab === 'kaab_interior' &&
-            (subTab === 'directory' || subTab === 'vendor' || subTab === 'labour_contract')
+            (subTab === 'clients' || subTab === 'directory' || subTab === 'vendor' || subTab === 'labour_contract')
               ? { activeInteriorSubTab: subTab as InteriorSubTab }
               : {}),
             ...(tab === 'kabibullah_bricks' &&
@@ -495,6 +523,7 @@ export const AfrahAppPortal: React.FC = () => {
           navigate({
             activeTab: 'kaab_interior',
             activeInteriorSubTab: subTab,
+            selectedInteriorLedgerClientId: null,
             selectedInteriorClientId: null,
             selectedInteriorVendorId: null,
             selectedInteriorShopId: null,
@@ -524,6 +553,7 @@ export const AfrahAppPortal: React.FC = () => {
           activeBricksSubTab={activeBricksSubTab}
           clientsCount={clients.length}
           constructionLabourContractsCount={constructionLabourContracts.length}
+          interiorLedgerClientsCount={interiorLedgerClients.length}
           interiorClientsCount={interiorClients.length}
           interiorVendorsCount={interiorVendors.length}
           interiorLabourContractsCount={labourContracts.length}
@@ -534,6 +564,7 @@ export const AfrahAppPortal: React.FC = () => {
           brickStockUnits={stockStats.totalStockUnits}
           selectedClient={selectedClient}
           selectedConstructionLabourContract={selectedConstructionLabourContract}
+          selectedInteriorLedgerClient={selectedInteriorLedgerClient}
           selectedInteriorClient={selectedInteriorClient}
           selectedInteriorVendor={selectedInteriorVendor}
           selectedInteriorShop={selectedInteriorShop}
@@ -550,12 +581,16 @@ export const AfrahAppPortal: React.FC = () => {
           }}
           onNavigateInteriorRoot={(subTab) => {
             navigate({
+              selectedInteriorLedgerClientId: null,
               selectedInteriorClientId: null,
               selectedInteriorVendorId: null,
               selectedInteriorShopId: null,
               selectedLabourContractId: null,
               ...(subTab ? { activeInteriorSubTab: subTab } : {}),
             });
+          }}
+          onNavigateInteriorClientsRoot={() => {
+            navigate({ selectedInteriorLedgerClientId: null });
           }}
           onNavigateInteriorVendorRoot={() => {
             navigate({ selectedInteriorVendorId: null, selectedInteriorShopId: null });
@@ -644,7 +679,39 @@ export const AfrahAppPortal: React.FC = () => {
               />
             )
           ) : activeTab === 'kaab_interior' ? (
-            activeInteriorSubTab === 'vendor' ? (
+            activeInteriorSubTab === 'clients' ? (
+              selectedInteriorLedgerClient ? (
+                /* KAAB INTERIOR - CLIENT DETAILS (ADVANCE & SITE EXPENSES LEDGER) */
+                <InteriorClientLedgerDetailsView
+                  client={selectedInteriorLedgerClient}
+                  onBack={() => navigate({ selectedInteriorLedgerClientId: null })}
+                  onUpdateClient={updateInteriorLedgerClient}
+                  onAddAdvance={addInteriorLedgerAdvance}
+                  onUpdateAdvance={updateInteriorLedgerAdvance}
+                  onDeleteAdvance={deleteInteriorLedgerAdvance}
+                  onDeleteMultipleAdvancePayments={deleteMultipleInteriorLedgerAdvances}
+                  onAddExpense={addInteriorLedgerExpense}
+                  onUpdateExpense={updateInteriorLedgerExpense}
+                  onDeleteExpense={deleteInteriorLedgerExpense}
+                  onDeleteMultipleExpenses={deleteMultipleInteriorLedgerExpenses}
+                />
+              ) : selectedInteriorLedgerClientId && bootReady ? (
+                <EntityNotFound
+                  entityLabel="client"
+                  backLabel="Go to Interior Clients"
+                  onBack={() => navigate({ selectedInteriorLedgerClientId: null })}
+                />
+              ) : (
+                /* KAAB INTERIOR - CLIENTS LIST VIEW */
+                <InteriorClientLedgerView
+                  clients={interiorLedgerClients}
+                  onSelectClient={(c) => navigate({ selectedInteriorLedgerClientId: c.id })}
+                  onAddClient={addInteriorLedgerClient}
+                  onUpdateClient={updateInteriorLedgerClient}
+                  onDeleteClient={deleteInteriorLedgerClient}
+                />
+              )
+            ) : activeInteriorSubTab === 'vendor' ? (
               selectedInteriorVendor && selectedInteriorShop ? (
                 /* INTERIOR SHOP DETAILS VIEW (Transaction Ledger) */
                 <ShopDetailsView
