@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import { newId } from '@/lib/id';
 import type { BankAccount, BankTransaction } from '../types';
-import { INITIAL_BANKS } from '../data/initialBanks';
 import { compareByDateDesc } from '../utils/dateUtils';
 
 export const useBanks = () => {

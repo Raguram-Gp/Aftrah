@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
-import type { InteriorClient, InteriorAdvancePayment, InteriorExpenseItem } from '../types';
+import type { InteriorClient, InteriorExpenseItem } from '../types';
 import { compareByDateDesc } from '../utils/dateUtils';
 import { nextInteriorQuoteNo } from '../utils/quoteNo';
 
@@ -34,15 +34,6 @@ export const useInteriorClients = () => {
           quote_no,
           created_at,
           updated_at,
-          interior_client_advances (
-            id,
-            s_no,
-            date,
-            amount,
-            mode,
-            note,
-            created_at
-          ),
           interior_client_expenses (
             id,
             s_no,
@@ -73,18 +64,6 @@ export const useInteriorClients = () => {
           quoteNo: c.quote_no || '',
           createdAt: c.created_at,
           updatedAt: c.updated_at,
-          advancePayments: (c.interior_client_advances || [])
-            .map((a: any) => ({
-              id: a.id,
-              clientId: c.id,
-              sNo: a.s_no,
-              date: a.date,
-              amount: Number(a.amount) || 0,
-              mode: a.mode,
-              note: a.note || '',
-              createdAt: a.created_at,
-            }))
-            .sort((a: any, b: any) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo)),
           expenses: (c.interior_client_expenses || [])
             .map((e: any) => ({
               id: e.id,
@@ -150,7 +129,6 @@ export const useInteriorClients = () => {
         quoteNo: data.quote_no || quoteNo,
         createdAt: data.created_at,
         updatedAt: data.updated_at,
-        advancePayments: [],
         expenses: [],
       };
 
@@ -235,158 +213,6 @@ export const useInteriorClients = () => {
     } catch (err: any) {
       console.error('Error deleting multiple interior clients:', err);
       setError(err?.message || 'Failed to delete interior clients');
-      throw err;
-    }
-  };
-
-  // ADD ADVANCE PAYMENT
-  const addAdvancePayment = async (
-    clientId: string,
-    advData: Omit<InteriorAdvancePayment, 'id' | 'sNo'>
-  ) => {
-    try {
-      setError(null);
-      const client = interiorClients.find((c) => c.id === clientId);
-      const nextSNo = (client?.advancePayments?.length || 0) + 1;
-
-      const { data, error: insertError } = await supabase
-        .from('interior_client_advances')
-        .insert({
-          client_id: clientId,
-          s_no: nextSNo,
-          date: advData.date,
-          amount: advData.amount,
-          mode: advData.mode,
-          note: advData.note || null,
-        })
-        .select()
-        .single();
-
-      if (insertError) throw insertError;
-
-      const newAdv: InteriorAdvancePayment = {
-        ...advData,
-        id: data.id,
-        clientId,
-        sNo: data.s_no,
-        createdAt: data.created_at,
-      };
-
-      setInteriorClients((prev) =>
-        prev.map((c) => {
-          if (c.id !== clientId) return c;
-          const currentAdv = c.advancePayments || [];
-          return {
-            ...c,
-            updatedAt: new Date().toISOString(),
-            advancePayments: [...currentAdv, newAdv]
-              .sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo))
-              .map((item, idx) => ({ ...item, sNo: idx + 1 })),
-          };
-        })
-      );
-    } catch (err: any) {
-      console.error('Error adding interior advance payment:', err);
-      setError(err?.message || 'Failed to add advance payment');
-      throw err;
-    }
-  };
-
-  // UPDATE ADVANCE PAYMENT
-  const updateAdvancePayment = async (
-    clientId: string,
-    updatedAdv: InteriorAdvancePayment
-  ) => {
-    try {
-      setError(null);
-      const { error: updateError } = await supabase
-        .from('interior_client_advances')
-        .update({
-          date: updatedAdv.date,
-          amount: updatedAdv.amount,
-          mode: updatedAdv.mode,
-          note: updatedAdv.note || null,
-        })
-        .eq('id', updatedAdv.id);
-
-      if (updateError) throw updateError;
-
-      setInteriorClients((prev) =>
-        prev.map((c) => {
-          if (c.id !== clientId) return c;
-          return {
-            ...c,
-            updatedAt: new Date().toISOString(),
-            advancePayments: (c.advancePayments || [])
-              .map((item) => (item.id === updatedAdv.id ? updatedAdv : item))
-              .sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo)),
-          };
-        })
-      );
-    } catch (err: any) {
-      console.error('Error updating interior advance payment:', err);
-      setError(err?.message || 'Failed to update advance payment');
-      throw err;
-    }
-  };
-
-  // DELETE ADVANCE PAYMENT
-  const deleteAdvancePayment = async (clientId: string, advId: string) => {
-    try {
-      setError(null);
-      const { error: deleteError } = await supabase
-        .from('interior_client_advances')
-        .delete()
-        .eq('id', advId);
-
-      if (deleteError) throw deleteError;
-
-      setInteriorClients((prev) =>
-        prev.map((c) => {
-          if (c.id !== clientId) return c;
-          return {
-            ...c,
-            updatedAt: new Date().toISOString(),
-            advancePayments: (c.advancePayments || [])
-              .filter((item) => item.id !== advId)
-              .map((item, idx) => ({ ...item, sNo: idx + 1 })),
-          };
-        })
-      );
-    } catch (err: any) {
-      console.error('Error deleting interior advance payment:', err);
-      setError(err?.message || 'Failed to delete advance payment');
-      throw err;
-    }
-  };
-
-  // DELETE MULTIPLE ADVANCE PAYMENTS
-  const deleteMultipleAdvancePayments = async (clientId: string, advIds: string[]) => {
-    try {
-      setError(null);
-      const { error: deleteError } = await supabase
-        .from('interior_client_advances')
-        .delete()
-        .in('id', advIds);
-
-      if (deleteError) throw deleteError;
-
-      const idSet = new Set(advIds);
-      setInteriorClients((prev) =>
-        prev.map((c) => {
-          if (c.id !== clientId) return c;
-          return {
-            ...c,
-            updatedAt: new Date().toISOString(),
-            advancePayments: (c.advancePayments || [])
-              .filter((item) => !idSet.has(item.id))
-              .map((item, idx) => ({ ...item, sNo: idx + 1 })),
-          };
-        })
-      );
-    } catch (err: any) {
-      console.error('Error deleting multiple advance payments:', err);
-      setError(err?.message || 'Failed to delete advance payments');
       throw err;
     }
   };
@@ -557,10 +383,6 @@ export const useInteriorClients = () => {
     updateClient,
     deleteClient,
     deleteMultipleClients,
-    addAdvancePayment,
-    updateAdvancePayment,
-    deleteAdvancePayment,
-    deleteMultipleAdvancePayments,
     addExpense,
     updateExpense,
     deleteExpense,

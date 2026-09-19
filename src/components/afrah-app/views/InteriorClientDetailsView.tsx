@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import type {
   InteriorClient,
-  InteriorAdvancePayment,
   InteriorExpenseItem,
 } from "../types";
 import {
@@ -34,19 +33,6 @@ interface InteriorClientDetailsViewProps {
   client: InteriorClient;
   onBack: () => void;
   onUpdateClient: (updatedClient: InteriorClient) => Promise<any>;
-  onAddAdvance: (
-    clientId: string,
-    advData: Omit<InteriorAdvancePayment, "id" | "sNo">,
-  ) => Promise<any>;
-  onUpdateAdvance: (
-    clientId: string,
-    advData: InteriorAdvancePayment,
-  ) => Promise<any>;
-  onDeleteAdvance: (clientId: string, advId: string) => Promise<any>;
-  onDeleteMultipleAdvancePayments?: (
-    clientId: string,
-    advIds: string[],
-  ) => Promise<any>;
   onAddExpense: (
     clientId: string,
     expData: Omit<InteriorExpenseItem, "id" | "sNo">,
@@ -88,10 +74,6 @@ export const InteriorClientDetailsView: React.FC<
   client,
   onBack: _onBack,
   onUpdateClient,
-  onAddAdvance: _onAddAdvance,
-  onUpdateAdvance: _onUpdateAdvance,
-  onDeleteAdvance: _onDeleteAdvance,
-  onDeleteMultipleAdvancePayments: _onDeleteMultipleAdvancePayments,
   onAddExpense,
   onUpdateExpense,
   onDeleteExpense,

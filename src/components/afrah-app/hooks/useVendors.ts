@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import { newId } from '@/lib/id';
 import type { Vendor, VendorShop, ShopTransaction } from '../types';
-import { INITIAL_VENDORS } from '../data/initialVendors';
 import { compareByDateDesc } from '../utils/dateUtils';
 
 export const useVendors = () => {
@@ -596,7 +595,7 @@ export const useVendors = () => {
 
     try {
       const { error: deleteError } = await supabase
-        .from('vendor_shops')
+        .from('vendors')
         .delete()
         .in('id', shopIds);
 

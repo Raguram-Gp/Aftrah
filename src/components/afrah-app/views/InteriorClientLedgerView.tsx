@@ -463,10 +463,10 @@ export const InteriorClientLedgerView: React.FC<InteriorClientLedgerViewProps> =
         isOpen={!!deleteTarget}
         title="Delete Client"
         message={`Are you sure you want to delete client "${deleteTarget?.name}"? All related advance payments and expenses will be permanently removed.`}
-        confirmLabel="Delete Client"
-        isLoading={isDeleting}
+        confirmText="Delete Client"
+        isDeleting={isDeleting}
         onConfirm={handleConfirmDelete}
-        onCancel={() => setDeleteTarget(null)}
+        onClose={() => setDeleteTarget(null)}
       />
     </section>
   );

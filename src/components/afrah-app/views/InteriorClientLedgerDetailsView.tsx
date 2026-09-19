@@ -1086,10 +1086,10 @@ export const InteriorClientLedgerDetailsView: React.FC<InteriorClientLedgerDetai
         message={`Are you sure you want to delete advance payment of ${formatINR(
           deleteAdvTarget?.amount || 0
         )} on ${deleteAdvTarget?.date}?`}
-        confirmLabel="Delete Payment"
-        isLoading={isDeletingAdv}
+        confirmText="Delete Payment"
+        isDeleting={isDeletingAdv}
         onConfirm={handleConfirmDeleteAdv}
-        onCancel={() => setDeleteAdvTarget(null)}
+        onClose={() => setDeleteAdvTarget(null)}
       />
 
       {/* CONFIRM BULK DELETE ADVANCE MODAL */}
@@ -1097,10 +1097,10 @@ export const InteriorClientLedgerDetailsView: React.FC<InteriorClientLedgerDetai
         isOpen={isBulkDeleteAdvOpen}
         title="Delete Selected Advance Payments"
         message={`Are you sure you want to delete ${selectedAdvIds.size} selected advance payments?`}
-        confirmLabel="Delete Payments"
-        isLoading={isBulkDeletingAdv}
+        confirmText="Delete Payments"
+        isDeleting={isBulkDeletingAdv}
         onConfirm={handleConfirmBulkDeleteAdv}
-        onCancel={() => setIsBulkDeleteAdvOpen(false)}
+        onClose={() => setIsBulkDeleteAdvOpen(false)}
       />
 
       {/* EDIT EXPENSE MODAL */}
@@ -1202,10 +1202,10 @@ export const InteriorClientLedgerDetailsView: React.FC<InteriorClientLedgerDetai
         message={`Are you sure you want to delete expense "${deleteExpTarget?.expenseName}" of ${formatINR(
           deleteExpTarget?.totalAmount || 0
         )}?`}
-        confirmLabel="Delete Expense"
-        isLoading={isDeletingExp}
+        confirmText="Delete Expense"
+        isDeleting={isDeletingExp}
         onConfirm={handleConfirmDeleteExp}
-        onCancel={() => setDeleteExpTarget(null)}
+        onClose={() => setDeleteExpTarget(null)}
       />
 
       {/* CONFIRM BULK DELETE EXPENSE MODAL */}
@@ -1213,10 +1213,10 @@ export const InteriorClientLedgerDetailsView: React.FC<InteriorClientLedgerDetai
         isOpen={isBulkDeleteExpOpen}
         title="Delete Selected Expenses"
         message={`Are you sure you want to delete ${selectedExpIds.size} selected expenses?`}
-        confirmLabel="Delete Expenses"
-        isLoading={isBulkDeletingExp}
+        confirmText="Delete Expenses"
+        isDeleting={isBulkDeletingExp}
         onConfirm={handleConfirmBulkDeleteExp}
-        onCancel={() => setIsBulkDeleteExpOpen(false)}
+        onClose={() => setIsBulkDeleteExpOpen(false)}
       />
 
       {/* STATEMENT PRINT PREVIEW MODAL */}

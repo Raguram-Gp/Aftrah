@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import { newId } from '@/lib/id';
 import type { Client, AdvancePayment, ExpenseItem } from '../types';
-import { INITIAL_CLIENTS } from '../data/initialClients';
 import { compareByDateDesc } from '../utils/dateUtils';
 
 export const useClients = () => {

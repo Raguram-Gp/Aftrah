@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import { newId } from '@/lib/id';
 import type { Vendor, VendorShop, ShopTransaction } from '../types';
-import { INITIAL_INTERIOR_VENDORS } from '../data/initialInteriorVendors';
 import { compareByDateDesc } from '../utils/dateUtils';
 
 export const useInteriorVendors = () => {

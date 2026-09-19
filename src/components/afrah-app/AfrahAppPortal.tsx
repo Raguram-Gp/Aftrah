@@ -179,10 +179,6 @@ const AfrahAppShell: React.FC = () => {
     updateClient: updateInteriorClient,
     deleteClient: deleteInteriorClient,
     deleteMultipleClients: deleteMultipleInteriorClients,
-    addAdvancePayment: addInteriorAdvance,
-    updateAdvancePayment: updateInteriorAdvance,
-    deleteAdvancePayment: deleteInteriorAdvance,
-    deleteMultipleAdvancePayments: deleteMultipleInteriorAdvances,
     addExpense: addInteriorExpense,
     updateExpense: updateInteriorExpense,
     deleteExpense: deleteInteriorExpense,
@@ -819,10 +815,6 @@ const AfrahAppShell: React.FC = () => {
                 client={selectedInteriorClient}
                 onBack={() => navigate({ selectedInteriorClientId: null })}
                 onUpdateClient={updateInteriorClient}
-                onAddAdvance={addInteriorAdvance}
-                onUpdateAdvance={updateInteriorAdvance}
-                onDeleteAdvance={deleteInteriorAdvance}
-                onDeleteMultipleAdvancePayments={deleteMultipleInteriorAdvances}
                 onAddExpense={addInteriorExpense}
                 onUpdateExpense={updateInteriorExpense}
                 onDeleteExpense={deleteInteriorExpense}
