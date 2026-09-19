@@ -13,7 +13,6 @@ import { DateFilterBar } from '../components/DateFilterBar';
 import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
   ArrowLeft,
-  Calendar,
   Wallet,
   TrendingDown,
   Scale,
@@ -79,7 +78,6 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
   const expenses = client.expenses || [];
 
   // ===================== ADVANCE PAYMENTS STATE =====================
-  const [advSearch, setAdvSearch] = useState('');
   const [advFromDate, setAdvFromDate] = useState('');
   const [advToDate, setAdvToDate] = useState('');
   const [advCurrentPage, setAdvCurrentPage] = useState(1);
@@ -108,7 +106,6 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
   const [isBulkDeletingAdv, setIsBulkDeletingAdv] = useState(false);
 
   // ===================== SITE EXPENSES (ESTIMATE) STATE =====================
-  const [expSearch, setExpSearch] = useState('');
   const [expFromDate, setExpFromDate] = useState('');
   const [expToDate, setExpToDate] = useState('');
   const [selectedExpIds, setSelectedExpIds] = useState<Set<string>>(new Set());
@@ -153,19 +150,8 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
       const toISO = formatToYYYYMMDD(advToDate);
       list = list.filter((a) => formatToYYYYMMDD(a.date) <= toISO);
     }
-    if (advSearch.trim()) {
-      const q = advSearch.toLowerCase().trim();
-      list = list.filter(
-        (a) =>
-          a.mode.toLowerCase().includes(q) ||
-          (a.note && a.note.toLowerCase().includes(q)) ||
-          a.date.includes(q) ||
-          formatToDDMMYYYY(a.date).includes(q) ||
-          String(a.amount).includes(q)
-      );
-    }
     return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
-  }, [advancePayments, advSearch, advFromDate, advToDate]);
+  }, [advancePayments, advFromDate, advToDate]);
 
   const totalAdvanceAmount = filteredAdvance.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
 
@@ -209,22 +195,8 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
       const toISO = formatToYYYYMMDD(expToDate);
       list = list.filter((e) => formatToYYYYMMDD(e.date) <= toISO);
     }
-    if (expSearch.trim()) {
-      const q = expSearch.toLowerCase().trim();
-      list = list.filter(
-        (e) =>
-          (e.category && e.category.toLowerCase().includes(q)) ||
-          e.expenseName.toLowerCase().includes(q) ||
-          (e.unit && e.unit.toLowerCase().includes(q)) ||
-          e.date.includes(q) ||
-          formatToDDMMYYYY(e.date).includes(q) ||
-          String(e.quantity).includes(q) ||
-          String(e.rate).includes(q) ||
-          String(e.totalAmount).includes(q)
-      );
-    }
     return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
-  }, [expenses, expSearch, expFromDate, expToDate]);
+  }, [expenses, expFromDate, expToDate]);
 
   const totalExpensesAmount = filteredExpenses.reduce((sum, item) => sum + (Number(item.totalAmount) || 0), 0);
 
@@ -590,24 +562,11 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
         </div>
       </div>
 
-      {/* DUAL LEDGER SECTIONS: ADVANCE PAYMENTS & INTERIOR EXPENSES */}
+      {/* Combined ledger card: Advance Payments | Interior Expenses */}
+      <section className="afrah-app-table-section client-ledger-split-card">
       <div className="client-details-side-by-side-grid">
         {/* ================= COLUMN 1: ADVANCE PAYMENTS (LEFT AS IS) ================= */}
         <div className="details-column-panel">
-          <DateFilterBar
-            fromDate={advFromDate}
-            toDate={advToDate}
-            onFromDateChange={setAdvFromDate}
-            onToDateChange={setAdvToDate}
-            onClearDates={() => {
-              setAdvFromDate('');
-              setAdvToDate('');
-            }}
-            selectedCount={selectedAdvIds.size}
-            onBulkDelete={() => setIsBulkDeleteAdvOpen(true)}
-          />
-
-          <section className="afrah-app-table-section">
             <div className="afrah-app-section-header no-print">
               <div>
                 <h2 className="afrah-app-section-title">ADVANCE PAYMENT RECEIPTS</h2>
@@ -632,6 +591,19 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
               </button>
             </div>
 
+          <DateFilterBar
+            fromDate={advFromDate}
+            toDate={advToDate}
+            onFromDateChange={setAdvFromDate}
+            onToDateChange={setAdvToDate}
+            onClearDates={() => {
+              setAdvFromDate('');
+              setAdvToDate('');
+            }}
+            selectedCount={selectedAdvIds.size}
+            onBulkDelete={() => setIsBulkDeleteAdvOpen(true)}
+          />
+
             <div className="afrah-app-table-container">
               <table className="afrah-app-table">
                 <thead>
@@ -648,7 +620,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                   {paginatedAdvance.length === 0 ? (
                     <tr>
                       <td colSpan={6} style={{ textAlign: 'center', padding: '36px 16px', color: 'var(--text-secondary)' }}>
-                        {advFromDate || advToDate || advSearch
+                        {advFromDate || advToDate
                           ? 'No matching advance receipts found for filter.'
                           : 'No advance receipts logged yet. Click "Add Advance" above.'}
                       </td>
@@ -664,10 +636,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                             {advStartIndex + index + 1}
                           </td>
                           <td>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                              <Calendar size={12} color="var(--primary)" />
-                              <span>{formatToDDMMYYYY(item.date)}</span>
-                            </div>
+                            {formatToDDMMYYYY(item.date)}
                           </td>
                           <td>
                             <span
@@ -725,25 +694,10 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                 </tbody>
               </table>
             </div>
-          </section>
         </div>
 
         {/* ================= COLUMN 2: ESTIMATE FOR INTERIOR WORKS (SEGREGATED AS IN PDF) ================= */}
         <div className="details-column-panel">
-          <DateFilterBar
-            fromDate={expFromDate}
-            toDate={expToDate}
-            onFromDateChange={setExpFromDate}
-            onToDateChange={setExpToDate}
-            onClearDates={() => {
-              setExpFromDate('');
-              setExpToDate('');
-            }}
-            selectedCount={selectedExpIds.size}
-            onBulkDelete={() => setIsBulkDeleteExpOpen(true)}
-          />
-
-          <section className="afrah-app-table-section">
             <div className="afrah-app-section-header no-print">
               <div>
                 <h2 className="afrah-app-section-title">ESTIMATE FOR INTERIOR WORKS</h2>
@@ -770,6 +724,19 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
               </button>
             </div>
 
+          <DateFilterBar
+            fromDate={expFromDate}
+            toDate={expToDate}
+            onFromDateChange={setExpFromDate}
+            onToDateChange={setExpToDate}
+            onClearDates={() => {
+              setExpFromDate('');
+              setExpToDate('');
+            }}
+            selectedCount={selectedExpIds.size}
+            onBulkDelete={() => setIsBulkDeleteExpOpen(true)}
+          />
+
             {/* SEGREGATED TABLE MATCHING PDF COLUMNS: SI.No | Particulars | Qty | Per | Rate | Amount */}
             <div className="afrah-app-table-container">
               <table className="afrah-app-table">
@@ -788,7 +755,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                   {groupedExpenses.length === 0 ? (
                     <tr>
                       <td colSpan={7} style={{ textAlign: 'center', padding: '36px 16px', color: 'var(--text-secondary)' }}>
-                        {expFromDate || expToDate || expSearch
+                        {expFromDate || expToDate
                           ? 'No matching items found for filter.'
                           : 'No interior estimate items recorded yet. Click "Add Item" above.'}
                       </td>
@@ -976,9 +943,9 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                 </tbody>
               </table>
             </div>
-          </section>
         </div>
       </div>
+      </section>
 
       {/* ================= MODALS: ADD & EDIT ADVANCE ================= */}
       {isAddAdvModalOpen && (

@@ -11,7 +11,6 @@ import {
   Trash2,
   Phone,
   MapPin,
-  Calendar,
   ChevronLeft,
   ChevronRight,
   X,
@@ -262,10 +261,7 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
                         {startIndex + index + 1}
                       </td>
                       <td style={{ whiteSpace: 'nowrap', fontSize: '12px', color: 'var(--text-secondary)' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                          <Calendar size={12} color="var(--primary)" />
-                          <span>{formatToDDMMYYYY(contract.date)}</span>
-                        </div>
+                        {formatToDDMMYYYY(contract.date)}
                       </td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

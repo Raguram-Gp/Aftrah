@@ -694,21 +694,23 @@ html.light .app2-sidebar {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--text-secondary);
-  border-bottom: 1px solid var(--border-stroke, #2c303a);
+  border-bottom: 1px solid #4d5563;
   white-space: nowrap;
 }
 
 [data-theme="light"] .afrah-app-table th,
-[data-theme="light"] .app2-table th {
+[data-theme="light"] .app2-table th,
+html.light .afrah-app-table th,
+html.light .app2-table th {
   background: #F1F5F9;
-  border-bottom-color: #E2E8F0;
+  border-bottom-color: #CBD5E1;
   color: #334155;
 }
 
 .afrah-app-table td,
 .app2-table td {
   padding: 12px 12px;
-  border-bottom: 1px solid var(--border-stroke, #23262e);
+  border-bottom: 1px solid #3f4654;
   color: var(--text-primary);
   vertical-align: middle;
   font-size: 13.5px;
@@ -716,8 +718,10 @@ html.light .app2-sidebar {
 }
 
 [data-theme="light"] .afrah-app-table td,
-[data-theme="light"] .app2-table td {
-  border-bottom-color: #F1F5F9;
+[data-theme="light"] .app2-table td,
+html.light .afrah-app-table td,
+html.light .app2-table td {
+  border-bottom-color: #D0D7E2;
 }
 
 .afrah-app-table tbody tr,
@@ -1492,7 +1496,7 @@ html.light .app2-sidebar {
   align-items: center;
   gap: 20px;
   padding: 18px 24px;
-  background: var(--surface-container-low, #181b1f);
+  background: rgba(226, 195, 153, 0.10);
   border: 1px solid var(--border-stroke, #282c35);
   border-radius: 14px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -1501,8 +1505,8 @@ html.light .app2-sidebar {
 }
 
 [data-theme="light"] .client-unified-summary-card {
-  background: #FFFFFF;
-  border-color: #E2E8F0;
+  background: #F6EFE4;
+  border-color: #E8E2D6;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
 }
 
@@ -1539,7 +1543,7 @@ html.light .app2-sidebar {
 }
 
 [data-theme="light"] .client-unified-card-item:not(:last-child) {
-  border-right-color: #E2E8F0;
+  border-right-color: #E8E2D6;
 }
 
 .client-unified-name-title {
@@ -1590,7 +1594,7 @@ html.light .app2-sidebar {
 
   [data-theme="light"] .client-unified-card-item:nth-child(1),
   [data-theme="light"] .client-unified-card-item:nth-child(2) {
-    border-bottom-color: #E2E8F0;
+    border-bottom-color: #E8E2D6;
   }
 }
 
@@ -1607,7 +1611,7 @@ html.light .app2-sidebar {
   }
 
   [data-theme="light"] .client-unified-card-item:not(:last-child) {
-    border-bottom-color: #E2E8F0;
+    border-bottom-color: #E8E2D6;
   }
 }
 
@@ -1630,6 +1634,75 @@ html.light .app2-sidebar {
   flex-direction: column;
   gap: 20px;
   min-width: 0;
+}
+
+/* Combined Advance Payments + Site Expenses card */
+.client-ledger-split-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.client-ledger-split-card .client-details-side-by-side-grid {
+  gap: 0;
+  align-items: stretch;
+}
+
+.client-ledger-split-card .details-column-panel {
+  gap: 0;
+  padding: 0 20px 16px;
+  min-height: 100%;
+}
+
+.client-ledger-split-card .details-column-panel + .details-column-panel {
+  border-left: 2px solid var(--border-stroke, #252830);
+}
+
+[data-theme="light"] .client-ledger-split-card .details-column-panel + .details-column-panel {
+  border-left-color: #E8E2D6;
+}
+
+.client-ledger-split-card .afrah-app-section-header {
+  background: rgba(226, 195, 153, 0.10);
+  margin: 0 -20px 16px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-stroke, #252830);
+}
+
+[data-theme="light"] .client-ledger-split-card .afrah-app-section-header {
+  background: #F6EFE4;
+  border-bottom-color: #E8E2D6;
+}
+
+.client-ledger-split-card .afrah-app-table th {
+  background: rgba(226, 195, 153, 0.08);
+}
+
+[data-theme="light"] .client-ledger-split-card .afrah-app-table th {
+  background: #F8F4EE;
+}
+
+.client-ledger-split-card .table-filter-toolbar {
+  margin-bottom: 12px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0 0 12px;
+}
+
+@media (max-width: 1200px) {
+  .client-ledger-split-card .client-details-side-by-side-grid {
+    gap: 0;
+  }
+
+  .client-ledger-split-card .details-column-panel + .details-column-panel {
+    border-left: none;
+    border-top: 2px solid var(--border-stroke, #252830);
+  }
+
+  [data-theme="light"] .client-ledger-split-card .details-column-panel + .details-column-panel {
+    border-top-color: #E8E2D6;
+  }
 }
 
 .details-column-panel .afrah-app-form-card,

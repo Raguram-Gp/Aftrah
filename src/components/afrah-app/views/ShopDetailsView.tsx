@@ -10,7 +10,6 @@ import {
 } from "../components/DateInput";
 import {
   ArrowLeft,
-  Calendar,
   Wallet,
   TrendingDown,
   Scale,
@@ -846,18 +845,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                       >
                         {startIndex + index + 1}
                       </td>
-                      <td>
-                        <div
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "6px",
-                          }}
-                        >
-                          <Calendar size={12} color="var(--primary)" />
-                          <span>{formatToDDMMYYYY(tx.date)}</span>
-                        </div>
-                      </td>
+                      <td>{formatToDDMMYYYY(tx.date)}</td>
                       <td>
                         {isSettlement ? (
                           <div

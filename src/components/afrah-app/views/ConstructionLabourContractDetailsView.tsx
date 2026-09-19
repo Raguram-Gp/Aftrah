@@ -6,7 +6,6 @@ import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
   ArrowLeft,
-  Calendar,
   IndianRupee,
   Plus,
   Pencil,
@@ -389,10 +388,7 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
                         {startIndex + index + 1}
                       </td>
                       <td style={{ whiteSpace: 'nowrap', fontSize: '12px', color: 'var(--text-secondary)' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                          <Calendar size={12} color="var(--primary)" />
-                          <span>{formatToDDMMYYYY(entry.date)}</span>
-                        </div>
+                        {formatToDDMMYYYY(entry.date)}
                       </td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

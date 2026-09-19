@@ -12,7 +12,6 @@ import {
   Check,
   Wallet,
   Trash2,
-  Calendar,
   History,
   X,
   Search,
@@ -745,10 +744,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                               {idx + 1}
                             </td>
                             <td>
-                              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                                <Calendar size={12} color="var(--primary)" />
-                                <span>{formatToDDMMYYYY(tx.date)}</span>
-                              </div>
+                              {formatToDDMMYYYY(tx.date)}
                             </td>
                             <td>
                               <span

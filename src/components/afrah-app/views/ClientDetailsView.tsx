@@ -3,7 +3,6 @@ import type { Client, AdvancePayment, ExpenseItem, Expense } from '../types';
 import { PAYMENT_MODES } from '../types';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
-import { DateFilterBar } from '../components/DateFilterBar';
 import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import { showToast } from '../layout/ToastContainer';
 import { StatementPrintPreviewModal } from '../components/StatementPrintPreviewModal';
@@ -12,16 +11,13 @@ import {
   Receipt,
   Plus,
   Trash2,
-  Calendar,
   Wallet,
   TrendingDown,
   Scale,
   Pencil,
   X,
-  Search,
   ChevronLeft,
   ChevronRight,
-  Filter,
   Printer
 } from 'lucide-react';
 
@@ -54,7 +50,6 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 }) => {
   // Advance Payments State
   const advancePayments = client.advancePayments || [];
-  const [advSearch, setAdvSearch] = useState('');
   const [advFromDate, setAdvFromDate] = useState('');
   const [advToDate, setAdvToDate] = useState('');
   const [selectedAdvIds, setSelectedAdvIds] = useState<Set<string>>(new Set());
@@ -78,7 +73,6 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
   // Expenses State
   const expenses = client.expenses || [];
-  const [expSearch, setExpSearch] = useState('');
   const [expFromDate, setExpFromDate] = useState('');
   const [expToDate, setExpToDate] = useState('');
   const [selectedExpIds, setSelectedExpIds] = useState<Set<string>>(new Set());
@@ -115,7 +109,6 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   const editExpTotalAmount =
     (parseFloat(editExpQuantity) || 0) * (parseFloat(editExpRate) || 0);
 
-  // Filtered Advance Payments by search AND date range
   const filteredAdvance = useMemo(() => {
     let list = advancePayments;
     if (advFromDate) {
@@ -126,21 +119,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       const toISO = formatToYYYYMMDD(advToDate);
       list = list.filter((p) => formatToYYYYMMDD(p.date) <= toISO);
     }
-    if (advSearch.trim()) {
-      const q = advSearch.toLowerCase().trim();
-      list = list.filter(
-        (p) =>
-          p.date.toLowerCase().includes(q) ||
-          formatToDDMMYYYY(p.date).includes(q) ||
-          p.mode.toLowerCase().includes(q) ||
-          String(p.amount).includes(q) ||
-          String(p.sNo).includes(q)
-      );
-    }
     return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
-  }, [advancePayments, advSearch, advFromDate, advToDate]);
+  }, [advancePayments, advFromDate, advToDate]);
 
-  // Filtered Expenses by search AND date range
   const filteredExpenses = useMemo(() => {
     let list = expenses;
     if (expFromDate) {
@@ -151,21 +132,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       const toISO = formatToYYYYMMDD(expToDate);
       list = list.filter((e) => formatToYYYYMMDD(e.date) <= toISO);
     }
-    if (expSearch.trim()) {
-      const q = expSearch.toLowerCase().trim();
-      list = list.filter(
-        (exp) =>
-          exp.expenseName.toLowerCase().includes(q) ||
-          exp.date.toLowerCase().includes(q) ||
-          formatToDDMMYYYY(exp.date).includes(q) ||
-          String(exp.quantity).includes(q) ||
-          String(exp.rate).includes(q) ||
-          String(exp.totalAmount).includes(q) ||
-          String(exp.sNo).includes(q)
-      );
-    }
     return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
-  }, [expenses, expSearch, expFromDate, expToDate]);
+  }, [expenses, expFromDate, expToDate]);
 
   // Advance Multi-select handlers
   const isAllAdvSelected =
@@ -656,12 +624,11 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         </div>
       </div>
 
-      {/* 2-COLUMN SIDE-BY-SIDE WIREFRAME GRIDS */}
+      {/* Combined ledger card: Advance Payments | Site Expenses */}
+      <section className="afrah-app-table-section client-ledger-split-card">
       <div className="client-details-side-by-side-grid">
         {/* COLUMN 1: ADVANCE PAYMENTS */}
         <div className="details-column-panel">
-
-          <section className="afrah-app-table-section">
             <div className="afrah-app-section-header no-print">
               <div>
                 <h2 className="afrah-app-section-title">Advance Payments</h2>
@@ -670,30 +637,14 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 </span>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div className="afrah-app-search-wrapper" style={{ minWidth: '150px' }}>
-                  <Search size={13} className="afrah-app-search-icon" />
-                  <input
-                    type="text"
-                    placeholder="Search payments..."
-                    value={advSearch}
-                    onChange={(e) => {
-                      setAdvSearch(e.target.value);
-                      setAdvCurrentPage(1);
-                    }}
-                    className="afrah-app-search-input"
-                  />
-                </div>
-
-                <button
-                  onClick={() => setIsAddAdvModalOpen(true)}
-                  className="btn-theme-primary"
-                  style={{ height: '34px', padding: '0 12px', fontSize: '12px', whiteSpace: 'nowrap' }}
-                >
-                  <Plus size={14} />
-                  <span>Add Advance</span>
-                </button>
-              </div>
+              <button
+                onClick={() => setIsAddAdvModalOpen(true)}
+                className="btn-theme-primary"
+                style={{ height: '34px', padding: '0 12px', fontSize: '12px', whiteSpace: 'nowrap' }}
+              >
+                <Plus size={14} />
+                <span>Add Advance</span>
+              </button>
             </div>
 
             <div className="afrah-app-table-container">
@@ -711,7 +662,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   {paginatedAdvance.length === 0 ? (
                     <tr>
                       <td colSpan={5} style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--text-secondary)' }}>
-                        {advSearch || advFromDate || advToDate ? 'No matching advance payments.' : 'No advance payments added yet.'}
+                        {advFromDate || advToDate ? 'No matching advance payments.' : 'No advance payments added yet.'}
                       </td>
                     </tr>
                   ) : (
@@ -725,10 +676,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                             {advStartIndex + index + 1}
                           </td>
                           <td>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600 }}>
-                              <Calendar size={13} color="var(--primary)" />
-                              <span>{formatToDDMMYYYY(item.date)}</span>
-                            </div>
+                            <span style={{ fontSize: '13px', fontWeight: 600 }}>{formatToDDMMYYYY(item.date)}</span>
                           </td>
                           <td style={{ fontWeight: 800, fontSize: '14.5px', color: 'var(--primary)', fontFamily: 'JetBrains Mono, monospace' }}>
                             {formatINR(item.amount)}
@@ -816,13 +764,10 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 </div>
               </div>
             )}
-          </section>
         </div>
 
         {/* COLUMN 2: SITE EXPENSES */}
         <div className="details-column-panel">
-
-          <section className="afrah-app-table-section">
             <div className="afrah-app-section-header no-print">
               <div>
                 <h2 className="afrah-app-section-title">Site Expenses</h2>
@@ -831,30 +776,14 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 </span>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div className="afrah-app-search-wrapper" style={{ minWidth: '150px' }}>
-                  <Search size={13} className="afrah-app-search-icon" />
-                  <input
-                    type="text"
-                    placeholder="Search expenses..."
-                    value={expSearch}
-                    onChange={(e) => {
-                      setExpSearch(e.target.value);
-                      setExpCurrentPage(1);
-                    }}
-                    className="afrah-app-search-input"
-                  />
-                </div>
-
-                <button
-                  onClick={() => setIsAddExpModalOpen(true)}
-                  className="btn-theme-primary"
-                  style={{ height: '34px', padding: '0 12px', fontSize: '12px', whiteSpace: 'nowrap' }}
-                >
-                  <Plus size={14} />
-                  <span>Add Expense</span>
-                </button>
-              </div>
+              <button
+                onClick={() => setIsAddExpModalOpen(true)}
+                className="btn-theme-primary"
+                style={{ height: '34px', padding: '0 12px', fontSize: '12px', whiteSpace: 'nowrap' }}
+              >
+                <Plus size={14} />
+                <span>Add Expense</span>
+              </button>
             </div>
 
             <div className="afrah-app-table-container">
@@ -874,7 +803,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   {paginatedExpenses.length === 0 ? (
                     <tr>
                       <td colSpan={7} style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--text-secondary)' }}>
-                        {expSearch || expFromDate || expToDate ? 'No matching expenses found.' : 'No expenses logged yet.'}
+                        {expFromDate || expToDate ? 'No matching expenses found.' : 'No expenses logged yet.'}
                       </td>
                     </tr>
                   ) : (
@@ -888,10 +817,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                             {expStartIndex + index + 1}
                           </td>
                           <td>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600 }}>
-                              <Calendar size={13} color="var(--primary)" />
-                              <span>{formatToDDMMYYYY(exp.date)}</span>
-                            </div>
+                            <span style={{ fontSize: '13px', fontWeight: 600 }}>{formatToDDMMYYYY(exp.date)}</span>
                           </td>
                           <td>
                             <span className="expense-name-tag">
@@ -985,9 +911,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 </div>
               </div>
             )}
-          </section>
         </div>
       </div>
+      </section>
 
       {/* MODAL 1: ADD ADVANCE PAYMENT */}
       {isAddAdvModalOpen && (

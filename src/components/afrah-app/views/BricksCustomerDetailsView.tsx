@@ -6,7 +6,6 @@ import { DateFilterBar } from '../components/DateFilterBar';
 import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
   ArrowLeft,
-  Calendar,
   BrickWall,
   Boxes,
   Truck,
@@ -580,10 +579,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                         {startIndex + idx + 1}
                       </td>
                       <td style={{ whiteSpace: 'nowrap' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                          <Calendar size={13} color="var(--primary)" />
-                          <span style={{ fontFamily: 'monospace', fontSize: '12px' }}>{formatToDDMMYYYY(tx.date)}</span>
-                        </div>
+                        <span style={{ fontFamily: 'monospace', fontSize: '12px' }}>{formatToDDMMYYYY(tx.date)}</span>
                       </td>
                       <td>
                         <div>
