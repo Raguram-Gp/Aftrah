@@ -2,7 +2,7 @@ import type { LabourContract } from '../types';
 
 export const INITIAL_LABOUR_CONTRACTS: LabourContract[] = [
   {
-    id: 'contract-1',
+    id: '8fc83c59-9049-44e0-a78b-17ad823a53fc',
     sNo: 1,
     date: '2026-02-15',
     labourName: 'Rajesh',
@@ -13,8 +13,8 @@ export const INITIAL_LABOUR_CONTRACTS: LabourContract[] = [
     createdAt: '2026-02-15',
     entries: [
       {
-        id: 'lc-entry-1',
-        contractId: 'contract-1',
+        id: '5e73c116-406b-45a8-8b4b-eb2665e884c4',
+        contractId: '8fc83c59-9049-44e0-a78b-17ad823a53fc',
         sNo: 1,
         date: '2026-08-02',
         workType: 'Carpenter',
@@ -27,7 +27,7 @@ export const INITIAL_LABOUR_CONTRACTS: LabourContract[] = [
     ]
   },
   {
-    id: 'contract-2',
+    id: '8083e684-e291-4ab1-976e-6cea16ff67fe',
     sNo: 2,
     date: '2026-02-18',
     labourName: 'Murugan Team (Civil & Masonry)',
@@ -38,8 +38,8 @@ export const INITIAL_LABOUR_CONTRACTS: LabourContract[] = [
     createdAt: '2026-02-18',
     entries: [
       {
-        id: 'lc-entry-2',
-        contractId: 'contract-2',
+        id: 'f2d4f4b8-d0b5-46a8-9dd9-d3fa694179b7',
+        contractId: '8083e684-e291-4ab1-976e-6cea16ff67fe',
         sNo: 1,
         date: '2026-02-19',
         workType: 'Masonry Work',
@@ -52,7 +52,7 @@ export const INITIAL_LABOUR_CONTRACTS: LabourContract[] = [
     ]
   },
   {
-    id: 'contract-3',
+    id: '191a9175-3d0e-48ab-8283-e4f42e6914d8',
     sNo: 3,
     date: '2026-02-22',
     labourName: 'Karthik (POP & False Ceiling)',
@@ -63,8 +63,8 @@ export const INITIAL_LABOUR_CONTRACTS: LabourContract[] = [
     createdAt: '2026-02-22',
     entries: [
       {
-        id: 'lc-entry-3',
-        contractId: 'contract-3',
+        id: '11ea5cae-1c01-456f-8e7e-29ddb5d4a355',
+        contractId: '191a9175-3d0e-48ab-8283-e4f42e6914d8',
         sNo: 1,
         date: '2026-02-23',
         workType: 'Ceiling Framing',

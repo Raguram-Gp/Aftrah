@@ -9,6 +9,7 @@ import {
   compareByDateDesc,
 } from "../components/DateInput";
 import { showToast } from "../layout/ToastContainer";
+import { newId } from "@/lib/id";
 import {
   Landmark,
   Plus,
@@ -154,7 +155,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
         });
       } else {
         const newTx: BankTransaction = {
-          id: `tx-${Date.now()}`,
+          id: newId(),
           date: new Date().toISOString().slice(0, 10),
           type: txType,
           amount: amountNum,
@@ -242,7 +243,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
       initBal > 0
         ? [
             {
-              id: `btx-${Date.now()}`,
+              id: newId(),
               date: new Date().toISOString().slice(0, 10),
               amount: initBal,
               type: "deposit",
@@ -919,33 +920,12 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                           tx.type === "adjustment";
                         return (
                           <tr key={tx.id} className="cursor-default">
-                            <td
-                              style={{
-                                fontFamily: "monospace",
-                                color: "var(--text-secondary)",
-                                textAlign: "center",
-                              }}
-                            >
+                            <td className="cell-sno">
                               {idx + 1}
                             </td>
                             <td>{formatToDDMMYYYY(tx.date)}</td>
                             <td>
-                              <span
-                                style={{
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: "4px",
-                                  padding: "2px 8px",
-                                  borderRadius: "5px",
-                                  fontSize: "11px",
-                                  fontWeight: 700,
-                                  textTransform: "uppercase",
-                                  background: isCredit
-                                    ? "rgba(74, 222, 128, 0.15)"
-                                    : "rgba(248, 113, 113, 0.15)",
-                                  color: isCredit ? "#4ade80" : "#f87171",
-                                }}
-                              >
+                              <span className="payment-mode-tag">
                                 {isCredit ? (
                                   <ArrowDownLeft size={11} />
                                 ) : (
@@ -954,12 +934,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                                 {tx.type}
                               </span>
                             </td>
-                            <td
-                              style={{
-                                color: "var(--text-primary)",
-                                fontSize: "12.5px",
-                              }}
-                            >
+                            <td>
                               {tx.note || "—"}
                             </td>
                             <td className="cell-amount">

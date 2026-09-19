@@ -2,7 +2,7 @@ import type { InteriorClient } from '../types';
 
 export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
   {
-    id: 'interior-client-1',
+    id: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
     sNo: 1,
     name: 'Mr. Afrah Construction',
     phone: '98401 23456',
@@ -13,8 +13,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
     updatedAt: '2026-04-20',
     advancePayments: [
       {
-        id: 'adv-int-1',
-        clientId: 'interior-client-1',
+        id: '6306931a-bde2-4df9-b6c8-030dd7459a13',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 1,
         date: '2026-04-04',
         amount: 163845,
@@ -22,8 +22,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
         note: '50% Advance on confirmation & PO'
       },
       {
-        id: 'adv-int-2',
-        clientId: 'interior-client-1',
+        id: 'b78f3811-e7a2-4f88-a4a6-bd3bc1d677f7',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 2,
         date: '2026-04-18',
         amount: 98307,
@@ -34,8 +34,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
     expenses: [
       // 1. KITCHEN
       {
-        id: 'exp-int-1',
-        clientId: 'interior-client-1',
+        id: '08a6c13c-959c-4760-aa49-d20a82e313c1',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 1,
         category: 'KITCHEN',
         date: '2026-04-04',
@@ -46,8 +46,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
         totalAmount: 74925
       },
       {
-        id: 'exp-int-2',
-        clientId: 'interior-client-1',
+        id: '1d11116c-b484-4b0b-baee-884cf8835721',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 2,
         category: 'KITCHEN',
         date: '2026-04-04',
@@ -58,8 +58,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
         totalAmount: 23250
       },
       {
-        id: 'exp-int-3',
-        clientId: 'interior-client-1',
+        id: 'cd6f3708-6e37-4fb0-b5d2-fd65b8300cd1',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 3,
         category: 'KITCHEN',
         date: '2026-04-04',
@@ -70,8 +70,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
         totalAmount: 12600
       },
       {
-        id: 'exp-int-4',
-        clientId: 'interior-client-1',
+        id: 'e17d4707-ae36-4831-a688-faeeb03a8688',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 4,
         category: 'KITCHEN',
         date: '2026-04-04',
@@ -82,8 +82,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
         totalAmount: 28700
       },
       {
-        id: 'exp-int-5',
-        clientId: 'interior-client-1',
+        id: '5d844b6b-2d0e-471f-9a2d-a92545bce91e',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 5,
         category: 'KITCHEN',
         date: '2026-04-04',
@@ -96,8 +96,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
 
       // ACESSORIES FOR KITCHEN
       {
-        id: 'exp-int-6',
-        clientId: 'interior-client-1',
+        id: 'fef3170f-1afa-4c80-b328-531656cdf189',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 6,
         category: 'ACESSORIES FOR KITCHEN',
         date: '2026-04-04',
@@ -108,8 +108,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
         totalAmount: 3300
       },
       {
-        id: 'exp-int-7',
-        clientId: 'interior-client-1',
+        id: '59c7b35b-0e95-4b8b-8766-9a9113edd3c5',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 7,
         category: 'ACESSORIES FOR KITCHEN',
         date: '2026-04-04',
@@ -120,8 +120,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
         totalAmount: 2900
       },
       {
-        id: 'exp-int-8',
-        clientId: 'interior-client-1',
+        id: '161ba643-ad77-42ad-b5aa-5aa7574aff6d',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 8,
         category: 'ACESSORIES FOR KITCHEN',
         date: '2026-04-04',
@@ -132,8 +132,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
         totalAmount: 2700
       },
       {
-        id: 'exp-int-9',
-        clientId: 'interior-client-1',
+        id: 'c97e6126-9c6b-43cd-8f88-8d28089c7f74',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 9,
         category: 'ACESSORIES FOR KITCHEN',
         date: '2026-04-04',
@@ -144,8 +144,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
         totalAmount: 1130
       },
       {
-        id: 'exp-int-10',
-        clientId: 'interior-client-1',
+        id: '7719d583-38e7-4745-9725-9da5beb974c7',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 10,
         category: 'ACESSORIES FOR KITCHEN',
         date: '2026-04-04',
@@ -158,8 +158,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
 
       // 2. HALL TV UNIT
       {
-        id: 'exp-int-11',
-        clientId: 'interior-client-1',
+        id: 'e5c976b8-f128-42e2-b915-c80e46c574d5',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 11,
         category: 'HALL TV UNIT',
         date: '2026-04-04',
@@ -170,8 +170,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
         totalAmount: 16500
       },
       {
-        id: 'exp-int-12',
-        clientId: 'interior-client-1',
+        id: '71d5640d-4ee2-4fbc-89b6-69040d4f551f',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 12,
         category: 'HALL TV UNIT',
         date: '2026-04-04',
@@ -182,8 +182,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
         totalAmount: 6000
       },
       {
-        id: 'exp-int-13',
-        clientId: 'interior-client-1',
+        id: '696e7a7d-cea2-4e74-9f96-c8bd804f7b8e',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 13,
         category: 'HALL TV UNIT',
         date: '2026-04-04',
@@ -194,8 +194,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
         totalAmount: 14760
       },
       {
-        id: 'exp-int-14',
-        clientId: 'interior-client-1',
+        id: '9bcf8348-be2a-4d84-b972-d6e97a0f9bac',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 14,
         category: 'HALL TV UNIT',
         date: '2026-04-04',
@@ -208,8 +208,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
 
       // 3. WARDROBES IN ROOMS - MASTER BEDROOM
       {
-        id: 'exp-int-15',
-        clientId: 'interior-client-1',
+        id: '22aeebe7-a3bd-4328-8a86-f0de280cb533',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 15,
         category: 'WARDROBES - MASTER BEDROOM',
         date: '2026-04-04',
@@ -220,8 +220,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
         totalAmount: 25200
       },
       {
-        id: 'exp-int-16',
-        clientId: 'interior-client-1',
+        id: '26e0e48b-f599-46a9-857e-0e98a0671499',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 16,
         category: 'WARDROBES - MASTER BEDROOM',
         date: '2026-04-04',
@@ -232,8 +232,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
         totalAmount: 16800
       },
       {
-        id: 'exp-int-17',
-        clientId: 'interior-client-1',
+        id: '1a051859-8368-4857-a052-9da30bd96c46',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 17,
         category: 'WARDROBES - MASTER BEDROOM',
         date: '2026-04-04',
@@ -246,8 +246,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
 
       // BEDROOM-1
       {
-        id: 'exp-int-18',
-        clientId: 'interior-client-1',
+        id: '10ff3a45-1a65-496f-87d9-c67a91173595',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 18,
         category: 'WARDROBES - BEDROOM-1',
         date: '2026-04-04',
@@ -258,8 +258,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
         totalAmount: 18900
       },
       {
-        id: 'exp-int-19',
-        clientId: 'interior-client-1',
+        id: '6e85b2a5-24ad-4bc0-a455-5ad090ef9170',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 19,
         category: 'WARDROBES - BEDROOM-1',
         date: '2026-04-04',
@@ -272,8 +272,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
 
       // BEDROOM-2
       {
-        id: 'exp-int-20',
-        clientId: 'interior-client-1',
+        id: '20d81efa-1232-4854-9f03-cdc53c0622fb',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 20,
         category: 'WARDROBES - BEDROOM-2',
         date: '2026-04-04',
@@ -284,8 +284,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
         totalAmount: 23625
       },
       {
-        id: 'exp-int-21',
-        clientId: 'interior-client-1',
+        id: '33ba41bb-c833-47ac-bbf4-22d5f8ce5f52',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 21,
         category: 'WARDROBES - BEDROOM-2',
         date: '2026-04-04',
@@ -298,8 +298,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
 
       // TRANSPORTATION
       {
-        id: 'exp-int-22',
-        clientId: 'interior-client-1',
+        id: '056d2aee-c998-4b90-9e23-2fb869791f2a',
+        clientId: '0896d394-5b7f-4879-86ee-77ee8f50a31d',
         sNo: 22,
         category: 'TRANSPORTATION',
         date: '2026-04-04',
@@ -312,7 +312,7 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
     ]
   },
   {
-    id: 'interior-client-2',
+    id: '308e92fb-69fa-4fe4-b206-1259d1ad6510',
     sNo: 2,
     name: 'Mrs. Jayalakshmi Sundaram',
     phone: '94432 87654',
@@ -323,8 +323,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
     updatedAt: '2026-08-28',
     advancePayments: [
       {
-        id: 'adv-int-3',
-        clientId: 'interior-client-2',
+        id: '06cc6d09-c7b5-47e1-b2fa-e2f4ae30fd38',
+        clientId: '308e92fb-69fa-4fe4-b206-1259d1ad6510',
         sNo: 1,
         date: '2026-08-15',
         amount: 200000,
@@ -334,8 +334,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
     ],
     expenses: [
       {
-        id: 'exp-int-23',
-        clientId: 'interior-client-2',
+        id: 'b0ad0f1e-a5cc-4c00-8f13-4ac7fbdba514',
+        clientId: '308e92fb-69fa-4fe4-b206-1259d1ad6510',
         sNo: 1,
         category: 'WARDROBES - MASTER BEDROOM',
         date: '2026-08-18',

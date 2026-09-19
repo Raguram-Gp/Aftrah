@@ -12,6 +12,7 @@ import {
   compareByDateDesc,
 } from "../components/DateInput";
 import { showToast } from "../layout/ToastContainer";
+import { newId } from "@/lib/id";
 import { StatementPrintPreviewModal } from "../components/StatementPrintPreviewModal";
 import {
   CreditCard,
@@ -317,7 +318,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         });
       } else {
         const newPayment: AdvancePayment = {
-          id: `adv-${Date.now()}`,
+          id: newId(),
           sNo: advancePayments.length + 1,
           date: advDate,
           amount: parseFloat(advAmount),
@@ -422,7 +423,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         });
       } else {
         const newExpense: ExpenseItem = {
-          id: `exp-${Date.now()}`,
+          id: newId(),
           sNo: expenses.length + 1,
           date: expDate,
           expenseName: expName.trim(),
@@ -833,10 +834,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                           <td className="cell-sno">
                             {advStartIndex + index + 1}
                           </td>
-                          <td>
-                            <span style={{ fontSize: "13px", fontWeight: 600 }}>
-                              {formatToDDMMYYYY(item.date)}
-                            </span>
+                          <td className="cell-date">
+                            {formatToDDMMYYYY(item.date)}
                           </td>
                           <td className="cell-amount">
                             {formatINR(item.amount)}
@@ -1063,23 +1062,15 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                           <td className="cell-sno">
                             {expStartIndex + index + 1}
                           </td>
-                          <td>
-                            <span style={{ fontSize: "13px", fontWeight: 600 }}>
-                              {formatToDDMMYYYY(exp.date)}
-                            </span>
+                          <td className="cell-date">
+                            {formatToDDMMYYYY(exp.date)}
                           </td>
                           <td>
                             <span className="expense-name-tag">
                               {exp.expenseName}
                             </span>
                           </td>
-                          <td
-                            style={{
-                              fontFamily: "JetBrains Mono, monospace",
-                              fontSize: "13.5px",
-                              fontWeight: 600,
-                            }}
-                          >
+                          <td className="cell-amount">
                             {exp.quantity}
                           </td>
                           <td className="cell-amount">

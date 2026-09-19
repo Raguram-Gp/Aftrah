@@ -376,13 +376,7 @@ export const InteriorLabourContractView: React.FC<
                       className="clickable-client-row"
                     >
                       <td className="cell-sno">{startIndex + index + 1}</td>
-                      <td
-                        style={{
-                          whiteSpace: "nowrap",
-                          fontSize: "12px",
-                          color: "var(--text-secondary)",
-                        }}
-                      >
+                      <td className="cell-date">
                         {formatToDDMMYYYY(contract.date)}
                       </td>
                       <td>

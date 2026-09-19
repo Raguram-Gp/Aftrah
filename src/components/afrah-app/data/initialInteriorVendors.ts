@@ -2,14 +2,14 @@ import type { Vendor } from '../types';
 
 export const INITIAL_INTERIOR_VENDORS: Vendor[] = [
   {
-    id: 'int-vendor-1',
+    id: '9e4bd853-f63c-42f7-8489-343f41d61a50',
     sNo: 1,
     type: 'Hardware',
     createdAt: '2026-01-05',
     shops: [
       {
-        id: 'int-shop-1',
-        categoryId: 'int-vendor-1',
+        id: '63499bab-2100-4210-82bd-906efb734b6c',
+        categoryId: '9e4bd853-f63c-42f7-8489-343f41d61a50',
         sNo: 1,
         name: 'Hettich & Ebco Hardware Hub',
         phone: '+91 98401 22334',
@@ -17,8 +17,8 @@ export const INITIAL_INTERIOR_VENDORS: Vendor[] = [
         createdAt: '2026-01-08',
         transactions: [
           {
-            id: 'int-tx-1',
-            vendorId: 'int-shop-1',
+            id: 'f7e72ef5-3531-4587-a02a-c1a4bacd4e5c',
+            vendorId: '63499bab-2100-4210-82bd-906efb734b6c',
             sNo: 1,
             date: '2026-01-15',
             itemType: 'Tandem Box (8")',
@@ -31,8 +31,8 @@ export const INITIAL_INTERIOR_VENDORS: Vendor[] = [
             createdAt: '2026-01-15'
           },
           {
-            id: 'int-tx-2',
-            vendorId: 'int-shop-1',
+            id: '5364e1db-64c0-411e-a305-e93ff9586ea0',
+            vendorId: '63499bab-2100-4210-82bd-906efb734b6c',
             sNo: 2,
             date: '2026-01-22',
             itemType: 'Soft-close Hinges (Clip-on)',
@@ -49,14 +49,14 @@ export const INITIAL_INTERIOR_VENDORS: Vendor[] = [
     ]
   },
   {
-    id: 'int-vendor-2',
+    id: '7391596d-fcfd-45dd-b080-e6b22b596879',
     sNo: 2,
     type: 'Carpenter',
     createdAt: '2026-01-06',
     shops: [
       {
-        id: 'int-shop-2',
-        categoryId: 'int-vendor-2',
+        id: 'fba5d945-8144-4e46-b535-e98899b589a8',
+        categoryId: '7391596d-fcfd-45dd-b080-e6b22b596879',
         sNo: 1,
         name: 'Master Carpenter Team (Ibrahim & Co)',
         phone: '+91 98402 33445',
@@ -64,8 +64,8 @@ export const INITIAL_INTERIOR_VENDORS: Vendor[] = [
         createdAt: '2026-01-09',
         transactions: [
           {
-            id: 'int-tx-3',
-            vendorId: 'int-shop-2',
+            id: 'c7baf645-cdbf-4645-b3d0-a445993e71c9',
+            vendorId: 'fba5d945-8144-4e46-b535-e98899b589a8',
             sNo: 1,
             date: '2026-01-18',
             itemType: 'Wardrobe Box & Shutter Assembly Wages',
@@ -82,14 +82,14 @@ export const INITIAL_INTERIOR_VENDORS: Vendor[] = [
     ]
   },
   {
-    id: 'int-vendor-3',
+    id: '3c695f47-33f4-4c5b-bea3-0b841d34f4e3',
     sNo: 3,
     type: 'Plywoods',
     createdAt: '2026-01-07',
     shops: [
       {
-        id: 'int-shop-3',
-        categoryId: 'int-vendor-3',
+        id: '45de2aab-fb7c-4b64-b47a-353ff9cf1fd2',
+        categoryId: '3c695f47-33f4-4c5b-bea3-0b841d34f4e3',
         sNo: 1,
         name: 'Century & Green Plywoods Depot',
         phone: '+91 98403 44556',
@@ -97,8 +97,8 @@ export const INITIAL_INTERIOR_VENDORS: Vendor[] = [
         createdAt: '2026-01-10',
         transactions: [
           {
-            id: 'int-tx-4',
-            vendorId: 'int-shop-3',
+            id: '8a608c9b-e3d2-4af3-a7c0-2f3650b048a1',
+            vendorId: '45de2aab-fb7c-4b64-b47a-353ff9cf1fd2',
             sNo: 1,
             date: '2026-01-20',
             itemType: 'BWP Marine Ply (710 Grade 18mm)',
@@ -111,8 +111,8 @@ export const INITIAL_INTERIOR_VENDORS: Vendor[] = [
             createdAt: '2026-01-20'
           },
           {
-            id: 'int-tx-5',
-            vendorId: 'int-shop-3',
+            id: 'a7682dca-274b-4016-aaa7-55d7a25b6a10',
+            vendorId: '45de2aab-fb7c-4b64-b47a-353ff9cf1fd2',
             sNo: 2,
             date: '2026-02-02',
             itemType: 'HDHMR Action TESA Board 12mm',

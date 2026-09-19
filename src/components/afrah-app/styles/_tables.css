@@ -306,6 +306,13 @@ html.light .app2-table td {
   border-color: transparent;
 }
 
+.cell-date {
+  white-space: nowrap;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+}
+
 .cell-meta {
   font-size: var(--fs-2xs);
   font-weight: var(--fw-medium);

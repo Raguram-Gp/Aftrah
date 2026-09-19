@@ -2,7 +2,7 @@ import type { BrickCustomer } from '../types';
 
 export const INITIAL_BRICK_CUSTOMERS: BrickCustomer[] = [
   {
-    id: 'bc_01',
+    id: 'b7e1b5cc-53b8-4aff-a9e9-da009191bfac',
     sNo: 1,
     name: 'Kabibullah Rahman',
     phone: '+91 98410 23456',
@@ -12,8 +12,8 @@ export const INITIAL_BRICK_CUSTOMERS: BrickCustomer[] = [
     updatedAt: '2026-02-15T14:30:00.000Z',
     transactions: [
       {
-        id: 'btx_01',
-        customerId: 'bc_01',
+        id: '7e692795-6627-4797-9bb0-98a6359dac7b',
+        customerId: 'b7e1b5cc-53b8-4aff-a9e9-da009191bfac',
         sNo: 1,
         date: '2026-01-15',
         brickType: 'Red Chamber Bricks (1st Quality)',
@@ -27,8 +27,8 @@ export const INITIAL_BRICK_CUSTOMERS: BrickCustomer[] = [
         notes: 'First delivery batch of 5k chamber bricks'
       },
       {
-        id: 'btx_02',
-        customerId: 'bc_01',
+        id: 'b83bb231-2dfc-4ef9-b9f5-35bbc0032a3f',
+        customerId: 'b7e1b5cc-53b8-4aff-a9e9-da009191bfac',
         sNo: 2,
         date: '2026-02-10',
         brickType: 'Fly Ash Bricks',
@@ -44,7 +44,7 @@ export const INITIAL_BRICK_CUSTOMERS: BrickCustomer[] = [
     ]
   },
   {
-    id: 'bc_02',
+    id: '7e278d82-58fa-4412-b32c-eef5d87c08e0',
     sNo: 2,
     name: 'Murugan Builders & Promoters',
     phone: '+91 97890 11223',
@@ -54,8 +54,8 @@ export const INITIAL_BRICK_CUSTOMERS: BrickCustomer[] = [
     updatedAt: '2026-02-20T11:00:00.000Z',
     transactions: [
       {
-        id: 'btx_03',
-        customerId: 'bc_02',
+        id: 'ad1d0b93-ba02-420f-8f05-390fee380180',
+        customerId: '7e278d82-58fa-4412-b32c-eef5d87c08e0',
         sNo: 1,
         date: '2026-01-20',
         brickType: 'Red Chamber Bricks (1st Quality)',
@@ -69,8 +69,8 @@ export const INITIAL_BRICK_CUSTOMERS: BrickCustomer[] = [
         notes: '10,000 units delivered in two tippers'
       },
       {
-        id: 'btx_04',
-        customerId: 'bc_02',
+        id: 'ec40aa55-d196-45ff-9582-95bc9c032230',
+        customerId: '7e278d82-58fa-4412-b32c-eef5d87c08e0',
         sNo: 2,
         date: '2026-02-05',
         brickType: 'Solid Concrete Blocks (6 inch)',
@@ -86,7 +86,7 @@ export const INITIAL_BRICK_CUSTOMERS: BrickCustomer[] = [
     ]
   },
   {
-    id: 'bc_03',
+    id: '8339512a-8c53-498a-90e9-b7150c712c63',
     sNo: 3,
     name: 'Senthil Kumar (Alagar Villa)',
     phone: '+91 94433 78901',
@@ -96,8 +96,8 @@ export const INITIAL_BRICK_CUSTOMERS: BrickCustomer[] = [
     updatedAt: '2026-02-22T16:45:00.000Z',
     transactions: [
       {
-        id: 'btx_05',
-        customerId: 'bc_03',
+        id: '66f9ad36-d062-4822-80a4-3313bf52949b',
+        customerId: '8339512a-8c53-498a-90e9-b7150c712c63',
         sNo: 1,
         date: '2026-02-04',
         brickType: 'Wire Cut Bricks',
@@ -113,7 +113,7 @@ export const INITIAL_BRICK_CUSTOMERS: BrickCustomer[] = [
     ]
   },
   {
-    id: 'bc_04',
+    id: 'ce09f637-0a30-4336-9ae8-3a32fc3d6c7c',
     sNo: 4,
     name: 'Vasanth Civil Infrastructure',
     phone: '+91 98940 55667',
@@ -123,8 +123,8 @@ export const INITIAL_BRICK_CUSTOMERS: BrickCustomer[] = [
     updatedAt: '2026-02-28T09:10:00.000Z',
     transactions: [
       {
-        id: 'btx_06',
-        customerId: 'bc_04',
+        id: '8cf9221f-18ae-43fa-8fe5-717d3db60995',
+        customerId: 'ce09f637-0a30-4336-9ae8-3a32fc3d6c7c',
         sNo: 1,
         date: '2026-02-14',
         brickType: 'Solid Concrete Blocks (4 inch)',

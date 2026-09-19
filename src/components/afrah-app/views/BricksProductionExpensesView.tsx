@@ -506,49 +506,24 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                       {/* S NO */}
 
                       {/* S NO */}
-                      <td style={{ textAlign: 'center', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                      <td className="cell-sno">
                         {displaySNo}
                       </td>
 
                       {/* DATE */}
-                      <td style={{ whiteSpace: 'nowrap', color: 'var(--text-secondary)', fontWeight: 500 }}>
+                      <td className="cell-date">
                         {formatToDDMMYYYY(expense.date)}
                       </td>
 
                       {/* EXPENSES */}
-                      <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                          <span
-                            style={{
-                              padding: '2px 8px',
-                              borderRadius: '6px',
-                              fontSize: '12px',
-                              fontWeight: 700,
-                              background:
-                                expense.expenseName === 'Wood' || expense.expenseName === 'Soil'
-                                  ? 'rgba(245, 158, 11, 0.15)'
-                                  : expense.expenseName === 'Disel' || expense.expenseName === 'Oil'
-                                  ? 'rgba(239, 68, 68, 0.15)'
-                                  : expense.expenseName?.includes('rent')
-                                  ? 'rgba(59, 130, 246, 0.15)'
-                                  : 'rgba(226, 195, 153, 0.15)',
-                              color:
-                                expense.expenseName === 'Wood' || expense.expenseName === 'Soil'
-                                  ? '#fbbf24'
-                                  : expense.expenseName === 'Disel' || expense.expenseName === 'Oil'
-                                  ? '#f87171'
-                                  : expense.expenseName?.includes('rent')
-                                  ? '#60a5fa'
-                                  : 'var(--primary)'
-                            }}
-                          >
-                            {expense.expenseName || expense.category}
-                          </span>
-                        </div>
+                      <td>
+                        <span className="row-entity-name">
+                          {expense.expenseName || expense.category}
+                        </span>
                       </td>
 
                       {/* Quality (Quantity) */}
-                      <td style={{ textAlign: 'left', fontWeight: 600 }}>
+                      <td className="cell-amount">
                         {Number(expense.quantity || 0).toLocaleString('en-IN')}
                       </td>
 

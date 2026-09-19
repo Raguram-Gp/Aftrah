@@ -19,7 +19,7 @@ $$ LANGUAGE plpgsql;
 -- 1. INTERIOR VENDOR CATEGORIES (e.g. Hardware, Glass, Plywood)
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.interior_vendor_categories (
-    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     s_no INT NOT NULL DEFAULT 1,
     type TEXT NOT NULL,
     phone TEXT,
@@ -40,8 +40,8 @@ EXECUTE FUNCTION update_updated_at_column();
 -- 2. INTERIOR VENDORS / SHOPS (Individual supplier profiles)
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.interior_vendors (
-    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-    category_id TEXT NOT NULL REFERENCES public.interior_vendor_categories(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    category_id UUID NOT NULL REFERENCES public.interior_vendor_categories(id) ON DELETE CASCADE,
     s_no INT NOT NULL DEFAULT 1,
     name TEXT NOT NULL,
     phone TEXT,
@@ -63,13 +63,13 @@ EXECUTE FUNCTION update_updated_at_column();
 -- 3. INTERIOR VENDOR LEDGERS (Transactions, purchases, invoices)
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.interior_vendor_ledgers (
-    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-    vendor_id TEXT NOT NULL REFERENCES public.interior_vendors(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    vendor_id UUID NOT NULL REFERENCES public.interior_vendors(id) ON DELETE CASCADE,
     s_no INT NOT NULL DEFAULT 1,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     item_type TEXT NOT NULL,
     client_name TEXT,
-    client_id TEXT,
+    client_id UUID,
     quantity NUMERIC(12, 2) NOT NULL DEFAULT 1,
     rate NUMERIC(12, 2) NOT NULL DEFAULT 0,
     total_amount NUMERIC(14, 2) NOT NULL DEFAULT 0,

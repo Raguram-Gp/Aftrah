@@ -2,7 +2,7 @@ import type { LabourContract } from '../types';
 
 export const INITIAL_CONSTRUCTION_LABOUR_CONTRACTS: LabourContract[] = [
   {
-    id: 'c-contract-1',
+    id: '59285e66-8d10-4546-b168-b37dccdc6e16',
     sNo: 1,
     date: '2026-02-10',
     labourName: 'Arumugam & Co. (Centring & Shuttering)',
@@ -13,8 +13,8 @@ export const INITIAL_CONSTRUCTION_LABOUR_CONTRACTS: LabourContract[] = [
     createdAt: '2026-02-10',
     entries: [
       {
-        id: 'c-entry-1',
-        contractId: 'c-contract-1',
+        id: 'cab05131-c4bc-4cef-8e43-d7e0f526717a',
+        contractId: '59285e66-8d10-4546-b168-b37dccdc6e16',
         sNo: 1,
         date: '2026-02-12',
         workType: 'Centring & Shuttering',
@@ -25,8 +25,8 @@ export const INITIAL_CONSTRUCTION_LABOUR_CONTRACTS: LabourContract[] = [
         createdAt: '2026-02-12'
       },
       {
-        id: 'c-entry-2',
-        contractId: 'c-contract-1',
+        id: '02dc6a6a-b442-41b8-a10a-e530154bbabb',
+        contractId: '59285e66-8d10-4546-b168-b37dccdc6e16',
         sNo: 2,
         date: '2026-02-16',
         workType: 'Centring & Shuttering',
@@ -39,7 +39,7 @@ export const INITIAL_CONSTRUCTION_LABOUR_CONTRACTS: LabourContract[] = [
     ]
   },
   {
-    id: 'c-contract-2',
+    id: '29c773a0-9561-4796-9181-5275c9ab0d71',
     sNo: 2,
     date: '2026-02-14',
     labourName: 'Murugesan Mason Team (Brickwork & Masonry)',
@@ -50,8 +50,8 @@ export const INITIAL_CONSTRUCTION_LABOUR_CONTRACTS: LabourContract[] = [
     createdAt: '2026-02-14',
     entries: [
       {
-        id: 'c-entry-3',
-        contractId: 'c-contract-2',
+        id: '8ed5b388-a89e-42f2-b2f1-41a903507d95',
+        contractId: '29c773a0-9561-4796-9181-5275c9ab0d71',
         sNo: 1,
         date: '2026-02-17',
         workType: 'Masonry Work',
@@ -62,8 +62,8 @@ export const INITIAL_CONSTRUCTION_LABOUR_CONTRACTS: LabourContract[] = [
         createdAt: '2026-02-17'
       },
       {
-        id: 'c-entry-4',
-        contractId: 'c-contract-2',
+        id: '5392f095-046b-43d1-aaed-9c864e3e7094',
+        contractId: '29c773a0-9561-4796-9181-5275c9ab0d71',
         sNo: 2,
         date: '2026-02-21',
         workType: 'Masonry Work',
@@ -76,7 +76,7 @@ export const INITIAL_CONSTRUCTION_LABOUR_CONTRACTS: LabourContract[] = [
     ]
   },
   {
-    id: 'c-contract-3',
+    id: '56755419-92a7-40b0-937e-0cfe4a078188',
     sNo: 3,
     date: '2026-02-18',
     labourName: 'Selvam Steel Benders (Bar Bending & Reinforcement)',
@@ -87,8 +87,8 @@ export const INITIAL_CONSTRUCTION_LABOUR_CONTRACTS: LabourContract[] = [
     createdAt: '2026-02-18',
     entries: [
       {
-        id: 'c-entry-5',
-        contractId: 'c-contract-3',
+        id: 'ec1e1654-9302-4ace-85c1-15b67a0bc8dd',
+        contractId: '56755419-92a7-40b0-937e-0cfe4a078188',
         sNo: 1,
         date: '2026-02-19',
         workType: 'Bar Bending / Steel Work',

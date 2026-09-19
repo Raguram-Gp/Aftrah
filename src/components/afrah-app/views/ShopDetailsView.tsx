@@ -9,6 +9,7 @@ import {
   formatToDDMMYYYY,
   compareByDateDesc,
 } from "../components/DateInput";
+import { newId } from "@/lib/id";
 import {
   Wallet,
   TrendingDown,
@@ -302,7 +303,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
       await onAddTransaction(vendor.id, shop.id, txPayload);
     } else {
       const newTx: ShopTransaction = {
-        id: `tx-${Date.now()}`,
+        id: newId(),
         sNo: transactions.length + 1,
         ...txPayload,
       };
@@ -779,17 +780,10 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                         cursor: "default",
                       }}
                     >
-                      <td
-                        style={{
-                          fontFamily: "monospace",
-                          fontWeight: 600,
-                          color: "var(--text-secondary)",
-                          textAlign: "center",
-                        }}
-                      >
+                      <td className="cell-sno">
                         {startIndex + index + 1}
                       </td>
-                      <td className="col-divider">
+                      <td className="cell-date col-divider">
                         {formatToDDMMYYYY(tx.date)}
                       </td>
                       <td className="col-divider">
@@ -811,7 +805,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                                 background: "rgba(16, 185, 129, 0.15)",
                                 color: "#34d399",
                                 border: "1px solid rgba(52, 211, 153, 0.3)",
-                                fontSize: "11.5px",
+                                fontSize: "var(--fs-2xs)",
                                 fontWeight: 700,
                                 textTransform: "uppercase",
                                 letterSpacing: "0.04em",
@@ -826,7 +820,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                                 .trim() && (
                                 <span
                                   style={{
-                                    fontSize: "12px",
+                                    fontSize: "var(--fs-sm)",
                                     color: "var(--text-secondary)",
                                   }}
                                 >
@@ -846,7 +840,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                           <span
                             style={{
                               color: "var(--text-secondary)",
-                              fontSize: "11.5px",
+                              fontSize: "var(--fs-sm)",
                             }}
                           >
                             —
@@ -863,21 +857,14 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                             }}
                           >
                             <User size={12} color="var(--primary)" />
-                            <span
-                              style={{
-                                fontSize: "12.5px",
-                                fontWeight: 600,
-                                color: "var(--text-primary)",
-                              }}
-                            >
+                            <span className="row-entity-name">
                               {tx.clientName}
                             </span>
                           </div>
                         ) : (
                           <span
+                            className="cell-meta"
                             style={{
-                              color: "var(--text-secondary)",
-                              fontSize: "11.5px",
                               fontStyle: "italic",
                             }}
                           >
@@ -888,11 +875,8 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                         )}
                       </td>
                       <td
-                        className="col-metric"
+                        className="cell-amount col-metric"
                         style={{
-                          textAlign: "left",
-                          fontFamily: "JetBrains Mono, monospace",
-                          fontSize: "12px",
                           color:
                             !tx.quantity || isSettlement
                               ? "var(--text-secondary)"

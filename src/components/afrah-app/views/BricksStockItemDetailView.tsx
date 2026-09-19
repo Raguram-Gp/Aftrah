@@ -629,29 +629,19 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                         className="cursor-default"
                       >
                         {/* S NO */}
-                        <td style={{ textAlign: 'center', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                        <td className="cell-sno">
                           {displaySNo}
                         </td>
 
                         {/* DATE */}
-                        <td style={{ whiteSpace: 'nowrap', color: 'var(--text-secondary)', fontWeight: 500 }}>
+                        <td className="cell-date">
                           {formatToDDMMYYYY(entry.date)}
                         </td>
 
                         {/* For Raw Materials: ITEM Column matching handwritten sheet */}
                         {!isBricks && (
                           <td>
-                            <span
-                              style={{
-                                padding: '3px 8px',
-                                borderRadius: '5px',
-                                fontSize: '12px',
-                                fontWeight: 700,
-                                background: 'rgba(226, 195, 153, 0.15)',
-                                color: 'var(--primary)',
-                                border: '1px solid rgba(226, 195, 153, 0.25)'
-                              }}
-                            >
+                            <span className="row-entity-name">
                               {entry.item || item.item}
                             </span>
                           </td>

@@ -813,55 +813,25 @@ export const BricksCustomerDetailsView: React.FC<
                 paginatedTransactions.map((tx, idx) => {
                   return (
                     <tr key={tx.id} className="cursor-default">
-                      <td
-                        style={{
-                          fontFamily: "monospace",
-                          fontWeight: 600,
-                          color: "var(--text-secondary)",
-                          textAlign: "center",
-                        }}
-                      >
+                      <td className="cell-sno">
                         {startIndex + idx + 1}
                       </td>
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <span
-                          style={{ fontFamily: "monospace", fontSize: "12px" }}
-                        >
-                          {formatToDDMMYYYY(tx.date)}
-                        </span>
+                      <td className="cell-date">
+                        {formatToDDMMYYYY(tx.date)}
                       </td>
                       <td>
                         <div>
-                          <span
-                            style={{
-                              fontWeight: 600,
-                              color: "var(--text-primary)",
-                              fontSize: "13px",
-                            }}
-                          >
+                          <span className="row-entity-name">
                             {tx.brickType}
                           </span>
                           {tx.notes && (
-                            <span
-                              style={{
-                                display: "block",
-                                fontSize: "11px",
-                                color: "var(--text-secondary)",
-                                marginTop: "2px",
-                              }}
-                            >
+                            <span className="cell-meta" style={{ display: "block", marginTop: "2px" }}>
                               {tx.notes}
                             </span>
                           )}
                         </div>
                       </td>
-                      <td
-                        style={{
-                          textAlign: "left",
-                          fontFamily: "monospace",
-                          fontWeight: 600,
-                        }}
-                      >
+                      <td className="cell-amount">
                         {Number(tx.quantity).toLocaleString("en-IN")}
                       </td>
                       <td className="cell-amount">

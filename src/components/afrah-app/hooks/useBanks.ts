@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
+import { newId } from '@/lib/id';
 import type { BankAccount, BankTransaction } from '../types';
 import { INITIAL_BANKS } from '../data/initialBanks';
 import { compareByDateDesc } from '../utils/dateUtils';
@@ -89,7 +90,7 @@ export const useBanks = () => {
 
   // ADD BANK ACCOUNT
   const addBankAccount = async (accountData: Omit<BankAccount, 'id'>) => {
-    const tempId = `bank-${Date.now()}`;
+    const tempId = newId();
     const newAccount: BankAccount = {
       ...accountData,
       id: tempId,
@@ -205,7 +206,7 @@ export const useBanks = () => {
       ? (targetBank.balance || 0) + txData.amount
       : (targetBank.balance || 0) - txData.amount;
 
-    const tempTxId = `btx-${Date.now()}`;
+    const tempTxId = newId();
     const newTx: BankTransaction = {
       ...txData,
       id: tempTxId,

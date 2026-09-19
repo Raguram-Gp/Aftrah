@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
+import { newId } from '@/lib/id';
 import type { Client, AdvancePayment, ExpenseItem } from '../types';
 import { INITIAL_CLIENTS } from '../data/initialClients';
 import { compareByDateDesc } from '../utils/dateUtils';
@@ -108,7 +109,7 @@ export const useClients = () => {
 
   // ADD CLIENT
   const addClient = async (clientData: Omit<Client, 'id'>) => {
-    const tempId = `temp-${Date.now()}`;
+    const tempId = newId();
     const newClient: Client = {
       ...clientData,
       id: tempId,
@@ -209,7 +210,7 @@ export const useClients = () => {
     if (!targetClient) return;
 
     const sNo = (targetClient.advancePayments?.length || 0) + 1;
-    const tempId = `adv-${Date.now()}`;
+    const tempId = newId();
     const newPayment: AdvancePayment = {
       ...paymentData,
       id: tempId,
@@ -347,7 +348,7 @@ export const useClients = () => {
     if (!targetClient) return;
 
     const sNo = (targetClient.expenses?.length || 0) + 1;
-    const tempId = `exp-${Date.now()}`;
+    const tempId = newId();
     const newExpense: ExpenseItem = {
       ...expenseData,
       id: tempId,

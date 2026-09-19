@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
+import { newId } from '@/lib/id';
 import type { Vendor, VendorShop, ShopTransaction } from '../types';
 import { INITIAL_VENDORS } from '../data/initialVendors';
 import { compareByDateDesc } from '../utils/dateUtils';
@@ -119,7 +120,7 @@ export const useVendors = () => {
   // TIER 1: VENDOR CATEGORY CRUD
   const addCategory = async (catData: Omit<Vendor, 'id' | 'sNo'>) => {
     const sNo = vendors.length + 1;
-    const tempId = `vendor-${Date.now()}`;
+    const tempId = newId();
     const newCategory: Vendor = {
       ...catData,
       id: tempId,
@@ -220,7 +221,7 @@ export const useVendors = () => {
     if (!targetVendor) return;
 
     const sNo = (targetVendor.shops?.length || 0) + 1;
-    const tempId = `shop-${Date.now()}`;
+    const tempId = newId();
     const newShop: VendorShop = {
       ...shopData,
       id: tempId,
@@ -356,7 +357,7 @@ export const useVendors = () => {
     if (!targetShop) return;
 
     const sNo = (targetShop.transactions?.length || 0) + 1;
-    const tempId = `tx-${Date.now()}`;
+    const tempId = newId();
     const newTx: ShopTransaction = {
       ...txData,
       id: tempId,

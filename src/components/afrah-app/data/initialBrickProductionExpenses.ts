@@ -2,7 +2,7 @@ import type { BrickProductionExpense } from '../types';
 
 export const INITIAL_BRICK_PRODUCTION_EXPENSES: BrickProductionExpense[] = [
   {
-    id: 'bpe_01',
+    id: 'b3488c7a-100f-43c9-8e6f-bbb826cc2f6b',
     sNo: 1,
     date: '2026-03-01',
     category: 'Soil',
@@ -19,7 +19,7 @@ export const INITIAL_BRICK_PRODUCTION_EXPENSES: BrickProductionExpense[] = [
     updatedAt: '2026-03-01T09:00:00.000Z'
   },
   {
-    id: 'bpe_02',
+    id: '3abcbb6a-416a-4f64-b105-2e5d277d53f5',
     sNo: 2,
     date: '2026-02-28',
     category: 'Wood',
@@ -36,7 +36,7 @@ export const INITIAL_BRICK_PRODUCTION_EXPENSES: BrickProductionExpense[] = [
     updatedAt: '2026-02-28T09:30:00.000Z'
   },
   {
-    id: 'bpe_03',
+    id: '7dda9fae-b970-4177-9e41-2124cf14ce43',
     sNo: 3,
     date: '2026-02-27',
     category: 'Msand Tust',
@@ -53,7 +53,7 @@ export const INITIAL_BRICK_PRODUCTION_EXPENSES: BrickProductionExpense[] = [
     updatedAt: '2026-02-27T11:15:00.000Z'
   },
   {
-    id: 'bpe_04',
+    id: 'b6d5d3ae-be64-4361-8146-6992c978f0a6',
     sNo: 4,
     date: '2026-02-26',
     category: 'Disel',
@@ -70,7 +70,7 @@ export const INITIAL_BRICK_PRODUCTION_EXPENSES: BrickProductionExpense[] = [
     updatedAt: '2026-02-26T14:40:00.000Z'
   },
   {
-    id: 'bpe_05',
+    id: 'ad0fecbb-da5e-4ec3-8c27-08c100e9efcc',
     sNo: 5,
     date: '2026-02-25',
     category: 'Oil',
@@ -87,7 +87,7 @@ export const INITIAL_BRICK_PRODUCTION_EXPENSES: BrickProductionExpense[] = [
     updatedAt: '2026-02-25T08:20:00.000Z'
   },
   {
-    id: 'bpe_06',
+    id: 'bcd7e59b-d7f1-4574-b465-67a6985fb689',
     sNo: 6,
     date: '2026-02-24',
     category: 'Jcb - rent',
@@ -104,7 +104,7 @@ export const INITIAL_BRICK_PRODUCTION_EXPENSES: BrickProductionExpense[] = [
     updatedAt: '2026-02-24T17:00:00.000Z'
   },
   {
-    id: 'bpe_07',
+    id: '4e0c6ec1-7900-451b-97b2-902a92916c79',
     sNo: 7,
     date: '2026-02-22',
     category: 'Tractor - rent',
@@ -121,7 +121,7 @@ export const INITIAL_BRICK_PRODUCTION_EXPENSES: BrickProductionExpense[] = [
     updatedAt: '2026-02-22T10:00:00.000Z'
   },
   {
-    id: 'bpe_08',
+    id: '4cb9ef9c-1499-4419-8f25-aba68fe937ac',
     sNo: 8,
     date: '2026-02-20',
     category: 'Machine expense',

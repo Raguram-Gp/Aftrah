@@ -848,31 +848,14 @@ export const InteriorClientDetailsView: React.FC<
                           <td className="cell-sno">
                             {advStartIndex + index + 1}
                           </td>
-                          <td>{formatToDDMMYYYY(item.date)}</td>
+                          <td className="cell-date">{formatToDDMMYYYY(item.date)}</td>
                           <td>
-                            <span
-                              style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: "4px",
-                                padding: "2px 7px",
-                                borderRadius: "4px",
-                                background: "rgba(74, 222, 128, 0.12)",
-                                color: "#4ade80",
-                                fontSize: "11.5px",
-                                fontWeight: 600,
-                              }}
-                            >
+                            <span className="payment-mode-tag">
                               <CreditCard size={11} />
                               {item.mode}
                             </span>
                           </td>
-                          <td
-                            style={{
-                              color: "var(--text-secondary)",
-                              fontSize: "12px",
-                            }}
-                          >
+                          <td className="cell-meta">
                             {item.note || "—"}
                           </td>
                           <td className="cell-amount">
@@ -1157,25 +1140,11 @@ export const InteriorClientDetailsView: React.FC<
                                 >
                                   {groupIdx + 1}
                                 </span>
-                                <span
-                                  style={{
-                                    fontWeight: 800,
-                                    fontSize: "12.5px",
-                                    letterSpacing: "0.04em",
-                                    color: "var(--text-primary)",
-                                    textTransform: "uppercase",
-                                  }}
-                                >
+                                <span className="row-entity-name" style={{ letterSpacing: "0.04em", textTransform: "uppercase" }}>
                                   {group.category}
                                 </span>
                               </div>
-                              <span
-                                style={{
-                                  fontSize: "11.5px",
-                                  color: "var(--text-secondary)",
-                                  fontWeight: 600,
-                                }}
-                              >
+                              <span className="cell-meta" style={{ fontWeight: 600 }}>
                                 Subtotal:{" "}
                                 <strong className="cell-amount">
                                   {formatINR(group.subtotal)}
@@ -1189,45 +1158,18 @@ export const InteriorClientDetailsView: React.FC<
                         {group.items.map((exp, itemIdx) => {
                           return (
                             <tr key={exp.id} className="cursor-default">
-                              <td
-                                style={{
-                                  fontFamily: "monospace",
-                                  fontWeight: 600,
-                                  color: "var(--text-secondary)",
-                                  textAlign: "center",
-                                  fontSize: "12px",
-                                }}
-                              >
+                              <td className="cell-sno">
                                 {toRomanNumeral(itemIdx + 1)}
                               </td>
                               <td>
-                                <span
-                                  style={{
-                                    fontWeight: 600,
-                                    color: "var(--text-primary)",
-                                    fontSize: "13px",
-                                  }}
-                                >
+                                <span className="row-entity-name">
                                   {exp.expenseName}
                                 </span>
                               </td>
-                              <td
-                                style={{
-                                  textAlign: "left",
-                                  fontFamily: "monospace",
-                                  fontWeight: 600,
-                                }}
-                              >
+                              <td className="cell-amount">
                                 {exp.quantity}
                               </td>
-                              <td
-                                style={{
-                                  textAlign: "center",
-                                  color: "var(--text-secondary)",
-                                  fontSize: "12px",
-                                  fontWeight: 500,
-                                }}
-                              >
+                              <td className="cell-meta" style={{ textAlign: "center" }}>
                                 {exp.unit || "Sq.ft"}
                               </td>
                               <td className="cell-amount">
@@ -1271,11 +1213,10 @@ export const InteriorClientDetailsView: React.FC<
                         >
                           <td
                             colSpan={6}
+                            className="cell-meta"
                             style={{
                               textAlign: "right",
                               fontWeight: 700,
-                              fontSize: "11.5px",
-                              color: "var(--text-secondary)",
                               letterSpacing: "0.04em",
                             }}
                           >
@@ -1303,7 +1244,7 @@ export const InteriorClientDetailsView: React.FC<
                         style={{
                           textAlign: "right",
                           fontWeight: 900,
-                          fontSize: "13px",
+                          fontSize: "var(--fs-sm)",
                           letterSpacing: "0.06em",
                           color: "var(--text-primary)",
                           padding: "12px 16px",

@@ -429,9 +429,11 @@
 }
 
 .payment-mode-tag {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 4px 10px;
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-sm);
   font-weight: 700;
   border-radius: 6px;
   background: var(--surface-container, #1e2126);
@@ -443,7 +445,7 @@
   display: inline-flex;
   align-items: center;
   padding: 4px 12px;
-  font-size: var(--fs-xs);
+  font-size: var(--fs-sm);
   font-weight: 700;
   border-radius: 6px;
   background: rgba(226, 195, 153, 0.12);

@@ -19,7 +19,7 @@ $$ LANGUAGE plpgsql;
 -- 1. INTERIOR CLIENTS
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.interior_clients (
-    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     s_no INT NOT NULL DEFAULT 1,
     name TEXT NOT NULL,
     phone TEXT NOT NULL,
@@ -40,8 +40,8 @@ EXECUTE FUNCTION update_updated_at_column();
 -- 2. INTERIOR CLIENT ADVANCES
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.interior_client_advances (
-    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-    client_id TEXT NOT NULL REFERENCES public.interior_clients(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    client_id UUID NOT NULL REFERENCES public.interior_clients(id) ON DELETE CASCADE,
     s_no INT NOT NULL DEFAULT 1,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     amount NUMERIC(14, 2) NOT NULL DEFAULT 0,
@@ -57,8 +57,8 @@ CREATE INDEX IF NOT EXISTS idx_interior_adv_date ON public.interior_client_advan
 -- 3. INTERIOR CLIENT EXPENSES
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.interior_client_expenses (
-    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-    client_id TEXT NOT NULL REFERENCES public.interior_clients(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    client_id UUID NOT NULL REFERENCES public.interior_clients(id) ON DELETE CASCADE,
     s_no INT NOT NULL DEFAULT 1,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     category TEXT,
@@ -77,7 +77,7 @@ CREATE INDEX IF NOT EXISTS idx_interior_exp_date ON public.interior_client_expen
 -- 4. INTERIOR LABOUR CONTRACTS
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.interior_labour_contracts (
-    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     s_no INT NOT NULL DEFAULT 1,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     labour_name TEXT NOT NULL,
@@ -99,8 +99,8 @@ EXECUTE FUNCTION update_updated_at_column();
 -- 5. INTERIOR LABOUR ENTRIES
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.interior_labour_entries (
-    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-    contract_id TEXT NOT NULL REFERENCES public.interior_labour_contracts(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    contract_id UUID NOT NULL REFERENCES public.interior_labour_contracts(id) ON DELETE CASCADE,
     s_no INT NOT NULL DEFAULT 1,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     work_type TEXT NOT NULL,
@@ -118,7 +118,7 @@ CREATE INDEX IF NOT EXISTS idx_int_labour_entries_date ON public.interior_labour
 -- 6. CONSTRUCTION LABOUR CONTRACTS
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.construction_labour_contracts (
-    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     s_no INT NOT NULL DEFAULT 1,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     labour_name TEXT NOT NULL,
@@ -140,8 +140,8 @@ EXECUTE FUNCTION update_updated_at_column();
 -- 7. CONSTRUCTION LABOUR ENTRIES
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.construction_labour_entries (
-    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-    contract_id TEXT NOT NULL REFERENCES public.construction_labour_contracts(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    contract_id UUID NOT NULL REFERENCES public.construction_labour_contracts(id) ON DELETE CASCADE,
     s_no INT NOT NULL DEFAULT 1,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     work_type TEXT NOT NULL,
@@ -159,7 +159,7 @@ CREATE INDEX IF NOT EXISTS idx_const_labour_entries_date ON public.construction_
 -- 8. BRICK CUSTOMERS
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.brick_customers (
-    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     s_no INT NOT NULL DEFAULT 1,
     name TEXT NOT NULL,
     phone TEXT NOT NULL,
@@ -179,8 +179,8 @@ EXECUTE FUNCTION update_updated_at_column();
 -- 9. BRICK TRANSACTIONS (DISPATCH & PAYMENTS)
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.brick_transactions (
-    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-    customer_id TEXT NOT NULL REFERENCES public.brick_customers(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    customer_id UUID NOT NULL REFERENCES public.brick_customers(id) ON DELETE CASCADE,
     s_no INT NOT NULL DEFAULT 1,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     brick_type TEXT NOT NULL,
@@ -203,7 +203,7 @@ CREATE INDEX IF NOT EXISTS idx_brick_tx_date ON public.brick_transactions(date);
 -- 10. BRICK STOCK ITEMS (MASTER)
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.brick_stock_items (
-    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     s_no INT NOT NULL DEFAULT 1,
     item TEXT NOT NULL UNIQUE,
     stock_opening NUMERIC(14, 2) NOT NULL DEFAULT 0,
@@ -228,8 +228,8 @@ EXECUTE FUNCTION update_updated_at_column();
 -- 11. BRICK STOCK ENTRIES (DAILY MOVEMENTS)
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.brick_stock_entries (
-    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-    stock_item_id TEXT NOT NULL REFERENCES public.brick_stock_items(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    stock_item_id UUID NOT NULL REFERENCES public.brick_stock_items(id) ON DELETE CASCADE,
     s_no INT NOT NULL DEFAULT 1,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     item TEXT NOT NULL,
@@ -256,7 +256,7 @@ CREATE INDEX IF NOT EXISTS idx_brick_stock_entries_date ON public.brick_stock_en
 -- 12. BRICK PRODUCTION EXPENSES
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.brick_production_expenses (
-    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     s_no INT NOT NULL DEFAULT 1,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     category TEXT NOT NULL,

@@ -486,20 +486,20 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
                       <td className="cell-sno">
                         {startIndex + index + 1}
                       </td>
-                      <td style={{ whiteSpace: 'nowrap', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                      <td className="cell-date">
                         {formatToDDMMYYYY(entry.date)}
                       </td>
                       <td>
-                        <div className="flex-center">
+                        <div className="cell-entity">
                           <div className="afrah-app-user-avatar" style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', width: '28px', height: '28px' }}>
                             <Briefcase size={13} />
                           </div>
                           <div>
-                            <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '13.5px' }}>
+                            <span className="row-entity-name">
                               {entry.workType}
                             </span>
                             {entry.note && (
-                              <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                              <div className="cell-meta" style={{ marginTop: '2px' }}>
                                 {entry.note}
                               </div>
                             )}
@@ -514,7 +514,7 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
                             borderRadius: '999px',
                             background: 'rgba(96, 165, 250, 0.12)',
                             color: '#60a5fa',
-                            fontSize: '12px',
+                            fontSize: 'var(--fs-sm)',
                             fontWeight: 600
                           }}
                         >
