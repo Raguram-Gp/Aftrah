@@ -192,7 +192,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
     return trimmed === "" ? "__general__" : trimmed;
   };
 
-  // 1. Chronological running balances per client across ALL transactions of this shop
+  // 1. Chronological running balances across ALL transactions of this shop (global carry-forward)
   const { runningBalanceByTxId, clientOverallBalances } = useMemo(() => {
     // Sort all shop transactions chronologically (oldest to newest)
     const chronological = [...transactions].sort((a, b) => {
@@ -206,15 +206,21 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
     const runningBalances = new Map<string, number>();
     const clientAccumulator = new Map<string, number>();
 
+    // Single global running balance that carries forward across all clients
+    let globalRunningBalance = 0;
+
     for (const tx of chronological) {
       const key = getClientKey(tx.clientName);
-      const prevBal = clientAccumulator.get(key) || 0;
       const total = Number(tx.totalAmount) || 0;
       const paid = Number(tx.receivedAmount) || 0;
-      const currentBal = prevBal + total - paid;
 
-      clientAccumulator.set(key, currentBal);
-      runningBalances.set(tx.id, currentBal);
+      // Update global running balance (carries forward across all clients)
+      globalRunningBalance = globalRunningBalance + total - paid;
+      runningBalances.set(tx.id, globalRunningBalance);
+
+      // Still track per-client balances for the client filter dropdown labels
+      const prevClientBal = clientAccumulator.get(key) || 0;
+      clientAccumulator.set(key, prevClientBal + total - paid);
     }
 
     return {
@@ -1282,7 +1288,6 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                         {(() => {
                           const runningBal =
                             runningBalanceByTxId.get(tx.id) ?? tx.balanceAmount;
-                          const clientLabel = tx.clientName || "General Stock";
 
                           if (runningBal > 0) {
                             return (
@@ -1291,7 +1296,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                                   color: "var(--danger, #f87171)",
                                   fontWeight: 700,
                                 }}
-                                title={`Running balance for ${clientLabel}: ${formatINR(runningBal)}`}
+                                title={`Running balance: ${formatINR(runningBal)}`}
                               >
                                 {formatINR(runningBal)}
                               </span>
@@ -1304,7 +1309,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                                   color: "var(--info, #38bdf8)",
                                   fontWeight: 700,
                                 }}
-                                title={`Advance balance for ${clientLabel}: -${formatINR(Math.abs(runningBal))}`}
+                                title={`Advance balance: -${formatINR(Math.abs(runningBal))}`}
                               >
                                 - {formatINR(Math.abs(runningBal))}
                               </span>
@@ -1316,7 +1321,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                                 color: "var(--success, #34d399)",
                                 fontWeight: 600,
                               }}
-                              title={`Settled balance for ${clientLabel}: ₹0`}
+                              title={`Settled balance: ₹0`}
                             >
                               ₹0
                             </span>
