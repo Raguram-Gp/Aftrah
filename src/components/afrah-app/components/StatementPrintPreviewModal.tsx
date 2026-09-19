@@ -6,9 +6,10 @@ import {
   CreditCard,
   Layers,
 } from 'lucide-react';
-import type { StatementSnapshot } from '@/lib/statementSnapshot';
+import type { PdfBrand, StatementSnapshot } from '@/lib/statementSnapshot';
 import { defaultStatementBrand } from '@/lib/statementSnapshot';
 import { PrintPreviewShell } from './PrintPreviewShell';
+import { StatementBrandLockup } from '@/components/shared-statement/StatementBrandLockup';
 
 interface StatementPrintPreviewModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ interface StatementPrintPreviewModalProps {
   initialMode?: 'expenses' | 'advances' | 'statement';
   fromDate?: string;
   toDate?: string;
+  brand?: PdfBrand;
 }
 
 const formatInvoiceINR = (val: number) => {
@@ -39,6 +41,7 @@ function buildClientStatementPayload(args: {
   totalExpenses: number;
   totalAdvance: number;
   pendingBalance: number;
+  brand?: PdfBrand;
 }): StatementSnapshot {
   const {
     activeTab,
@@ -50,9 +53,10 @@ function buildClientStatementPayload(args: {
     totalExpenses,
     totalAdvance,
     pendingBalance,
+    brand: brandId = 'afrah',
   } = args;
 
-  const brand = defaultStatementBrand();
+  const brand = defaultStatementBrand(brandId);
   const formattedToday = formatToDDMMYYYY(new Date().toISOString().slice(0, 10));
   const dateLabel =
     fromDate && toDate
@@ -129,17 +133,18 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
   initialMode = 'expenses',
   fromDate,
   toDate,
+  brand: brandId = 'afrah',
 }) => {
   const [activeTab, setActiveTab] = useState<'expenses' | 'advances' | 'statement'>(initialMode);
   const [fontSizeScale] = useState<'normal' | 'large' | 'xlarge'>('large');
   const [showSNo] = useState(false);
   const [isFullWidth] = useState(false);
 
-  const brand = defaultStatementBrand();
-  const [companyName] = useState(brand.company);
-  const [companySub] = useState(brand.subtitle);
-  const [addressLine1] = useState(brand.address[0] ?? '');
-  const [addressLine2] = useState(brand.address[1] ?? '');
+  const brand = defaultStatementBrand(brandId);
+  const companyName = brand.company;
+  const companySub = brand.subtitle;
+  const addressLine1 = brand.address[0] ?? '';
+  const addressLine2 = brand.address[1] ?? '';
 
   React.useEffect(() => {
     if (isOpen) {
@@ -193,6 +198,7 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
     totalExpenses,
     totalAdvance,
     pendingBalance,
+    brand: brandId,
   });
 
   const tabPills = (
@@ -244,42 +250,12 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
         ref={printSheetRef}
       >
         <div className="statement-document-frame">
-          <div className="statement-header-row">
-            <div className="statement-logo-container">
-              <svg
-                className="statement-brand-mark"
-                width="42"
-                height="50"
-                viewBox="0 0 44 52"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  className="statement-logo-base"
-                  d="M 22 2 L 42 20 L 42 48 L 2 48 L 2 20 Z"
-                  fill="#1E293B"
-                  stroke="#C8A676"
-                  strokeWidth="2"
-                />
-                <path
-                  d="M 22 2 L 22 48 M 2 20 L 42 20 M 2 34 L 42 34 M 2 48 L 22 34 L 42 48 M 2 34 L 22 20 L 42 34 M 2 20 L 22 2 L 42 20"
-                  stroke="#E2C399"
-                  strokeWidth="1.5"
-                />
-                <circle cx="22" cy="2" r="2.5" fill="#E2C399" />
-              </svg>
-              <div className="statement-brand-copy">
-                <div className="statement-brand-title-text">{companyName}</div>
-                <div className="statement-brand-sub-text">{companySub}</div>
-              </div>
-            </div>
-
-            <div className="statement-address-container">
-              <div className="address-text-line">{addressLine1}</div>
-              <div className="address-text-line">{addressLine2}</div>
-            </div>
-          </div>
+          <StatementBrandLockup
+            brand={brandId}
+            companyName={companyName}
+            companySub={companySub}
+            address={[addressLine1, addressLine2]}
+          />
 
           <div className="statement-meta-row" style={{ fontSize: fontSizes.meta }}>
             <div className="meta-left">

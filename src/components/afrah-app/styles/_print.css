@@ -314,6 +314,15 @@
     flex-shrink: 0 !important;
   }
 
+  .statement-brand-logo {
+    height: 72px !important;
+    width: auto !important;
+    max-width: 180px !important;
+    background: #0b1220 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
   /* Isolate the A4 sheet: hide every body child except the preview portal.
      The preview is nested inside the app chrome, so hiding container/viewport
      children or .w-full ancestors would also hide the sheet. */
@@ -323,7 +332,8 @@
   }
 
   /* Force exact colors for the construction table header in print */
-  .statement-invoice-table th {
+  .statement-invoice-table th,
+  .quote-category-row td {
     background-color: #1e293b !important;
     color: #ffffff !important;
     -webkit-print-color-adjust: exact !important;
@@ -353,6 +363,27 @@
   .statement-brand-sub-text {
     fill: #333333 !important;
     color: #4b5563 !important;
+  }
+
+  .quote-terms-block {
+    background: #ffffff !important;
+    border-top-color: #000000 !important;
+  }
+
+  .quote-terms-heading,
+  .quote-terms-block p,
+  .quote-terms-line,
+  .quote-notes-row {
+    color: #111827 !important;
+  }
+
+  .quote-party-sub {
+    color: #4b5563 !important;
+  }
+
+  .quote-subtotal-row td {
+    background: #f8fafc !important;
+    color: #000000 !important;
   }
 
   .statement-logo-base {
@@ -682,6 +713,19 @@ html.light .statement-preview-viewport {
   display: block;
 }
 
+.statement-brand-logo {
+  height: 72px;
+  width: auto;
+  max-width: 180px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: #0b1220;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
 .statement-brand-copy {
   min-width: 0;
   flex: 1 1 auto;
@@ -930,6 +974,87 @@ html.light .statement-preview-viewport {
   color: #4ade80;
 }
 
+.quote-party-sub {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #9ca3af;
+}
+
+.quote-meta-right {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.quote-category-row td {
+  background: #1b202a;
+  color: var(--primary, #e2c399);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 8px 12px;
+}
+
+.quote-subtotal-row td {
+  background: #181c24;
+  font-weight: 800;
+  padding: 8px 12px;
+}
+
+.quote-terms-block {
+  border-top: 2px solid var(--border-stroke, #2e3440);
+  background: #161921;
+  padding: 10px 12px 12px;
+}
+
+.quote-terms-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 20px;
+}
+
+.quote-terms-heading {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary, #e2c399);
+  margin-bottom: 6px;
+}
+
+.quote-terms-block p,
+.quote-terms-line,
+.quote-notes-row {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #d1d5db;
+  font-weight: 600;
+}
+
+.quote-terms-block p + p {
+  margin-top: 6px;
+}
+
+.quote-terms-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 2px 0;
+}
+
+.quote-notes-row {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-stroke, #2e3440);
+  color: #9ca3af;
+}
+
 /* ==========================================================================
    PAPER VIEW MODE & LIGHT THEME SHEET STYLES
    ========================================================================== */
@@ -1102,5 +1227,59 @@ html.light .statement-final-reconciliation-row {
 [data-theme="light"] .statement-final-reconciliation-row .reconciliation-item,
 html.light .statement-final-reconciliation-row .reconciliation-item {
   color: #000000;
+}
+
+.statement-pdf-sheet.sheet-paper-mode .quote-party-sub,
+[data-theme="light"] .quote-party-sub,
+html.light .quote-party-sub {
+  color: #4b5563;
+}
+
+.statement-pdf-sheet.sheet-paper-mode .quote-category-row td,
+[data-theme="light"] .quote-category-row td,
+html.light .quote-category-row td {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+  border: 1px solid #000000;
+}
+
+.statement-pdf-sheet.sheet-paper-mode .quote-subtotal-row td,
+[data-theme="light"] .quote-subtotal-row td,
+html.light .quote-subtotal-row td {
+  background: #f8fafc;
+  color: #000000 !important;
+  border: 1px solid #000000;
+}
+
+.statement-pdf-sheet.sheet-paper-mode .quote-terms-block,
+[data-theme="light"] .quote-terms-block,
+html.light .quote-terms-block {
+  border-top: 2px solid #000000;
+  background: #ffffff;
+}
+
+.statement-pdf-sheet.sheet-paper-mode .quote-terms-heading,
+[data-theme="light"] .quote-terms-heading,
+html.light .quote-terms-heading {
+  color: #000000;
+}
+
+.statement-pdf-sheet.sheet-paper-mode .quote-terms-block p,
+.statement-pdf-sheet.sheet-paper-mode .quote-terms-line,
+.statement-pdf-sheet.sheet-paper-mode .quote-notes-row,
+[data-theme="light"] .quote-terms-block p,
+[data-theme="light"] .quote-terms-line,
+[data-theme="light"] .quote-notes-row,
+html.light .quote-terms-block p,
+html.light .quote-terms-line,
+html.light .quote-notes-row {
+  color: #111827;
+}
+
+.statement-pdf-sheet.sheet-paper-mode .quote-notes-row,
+[data-theme="light"] .quote-notes-row,
+html.light .quote-notes-row {
+  border-top-color: #000000;
+  color: #374151;
 }
 

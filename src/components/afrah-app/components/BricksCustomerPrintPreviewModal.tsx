@@ -42,7 +42,7 @@ function buildBrickCustomerPayload(args: {
     totalQuantity,
   } = args;
 
-  const brand = defaultStatementBrand();
+  const brand = defaultStatementBrand('bricks');
   const formattedToday = formatToDDMMYYYY(new Date().toISOString().slice(0, 10));
   const dateLabel =
     fromDate && toDate
@@ -153,6 +153,7 @@ export const BricksCustomerPrintPreviewModal: React.FC<BricksCustomerPrintPrevie
       title="Bricks Customer Statement"
       badgeLabel="Bricks Customer Statement"
       badgeIcon={<BrickWall size={16} color="var(--primary, #e2c399)" />}
+      brand="bricks"
       shareKind="brick_customer"
       shareEntityId={customer.id}
       shareTitle={customer.name}

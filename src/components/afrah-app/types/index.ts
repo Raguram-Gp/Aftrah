@@ -443,6 +443,8 @@ export interface InteriorClient {
   address: string;
   siteLocation?: string;
   projectScope?: string;
+  quoteDate?: string;
+  quoteNo?: string;
   createdAt?: string;
   updatedAt?: string;
   advancePayments?: InteriorAdvancePayment[];

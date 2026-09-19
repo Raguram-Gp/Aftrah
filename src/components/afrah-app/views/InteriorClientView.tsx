@@ -14,11 +14,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Printer,
-  X,
-  Building,
-  Sparkles,
-  Layers,
-  ArrowRight
+  X
 } from 'lucide-react';
 
 interface InteriorClientViewProps {
@@ -67,13 +63,8 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
     return '₹' + Number(val || 0).toLocaleString('en-IN');
   };
 
-  // Helper calculations for client financials
-  const getClientTotals = (client: InteriorClient) => {
-    const totalAdvance = (client.advancePayments || []).reduce((sum, a) => sum + (Number(a.amount) || 0), 0);
-    const totalExpenses = (client.expenses || []).reduce((sum, e) => sum + (Number(e.totalAmount) || 0), 0);
-    const balance = totalAdvance - totalExpenses;
-    return { totalAdvance, totalExpenses, balance };
-  };
+  const getEstimationAmount = (client: InteriorClient) =>
+    (client.expenses || []).reduce((sum, e) => sum + (Number(e.totalAmount) || 0), 0);
 
   // Filter Clients
   const filteredClients = useMemo(() => {
@@ -87,10 +78,10 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
     );
   }, [clients, searchQuery]);
 
-  // Aggregate stats
-  const totalAdvancesSum = filteredClients.reduce((sum, c) => sum + getClientTotals(c).totalAdvance, 0);
-  const totalExpensesSum = filteredClients.reduce((sum, c) => sum + getClientTotals(c).totalExpenses, 0);
-  const totalNetBalance = totalAdvancesSum - totalExpensesSum;
+  const totalEstimationAmount = filteredClients.reduce(
+    (sum, c) => sum + getEstimationAmount(c),
+    0,
+  );
 
   // Pagination computations
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage) || 1;
@@ -233,22 +224,16 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
             <p className="print-company-sub">Luxury Interiors, Modular Woodwork, Architectural Ceiling & Turnkey Execution</p>
           </div>
           <div className="print-badge-statement">
-            <span>INTERIOR CLIENTS DIRECTORY</span>
+            <span>INTERIOR QUOTATIONS</span>
           </div>
         </div>
 
         <div className="print-totals-summary-bar">
           <div className="print-total-item">
-            <span>Total Projects:</span> <strong>{filteredClients.length} Clients</strong>
+            <span>Total Quotations:</span> <strong>{filteredClients.length}</strong>
           </div>
           <div className="print-total-item">
-            <span>Total Advances Received:</span> <strong>{formatINR(totalAdvancesSum)}</strong>
-          </div>
-          <div className="print-total-item">
-            <span>Total Interior Expenses:</span> <strong>{formatINR(totalExpensesSum)}</strong>
-          </div>
-          <div className="print-total-item">
-            <span>Net Balance:</span> <strong style={{ color: totalNetBalance >= 0 ? '#15803d' : '#b91c1c' }}>{formatINR(totalNetBalance)}</strong>
+            <span>Estimation Amount:</span> <strong>{formatINR(totalEstimationAmount)}</strong>
           </div>
         </div>
       </div>
@@ -257,10 +242,10 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
         <button
           onClick={handlePrint}
           className="afrah-app-back-btn"
-          title="Preview and Print Statement"
+          title="Preview and Print Quotations"
         >
           <Printer size={15} />
-          <span>Print Preview / Statement</span>
+          <span>Print Preview / Quotations</span>
         </button>
       </div>
 
@@ -284,11 +269,11 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
                 <Paintbrush size={18} color="var(--primary)" />
               </div>
               <h1 className="afrah-app-section-title" style={{ letterSpacing: '0.02em' }}>
-                KAAB INTERIOR CLIENTS
+                KAAB INTERIOR QUOTATIONS
               </h1>
             </div>
             <span className="afrah-app-section-subtitle">
-              {filteredClients.length} {filteredClients.length === 1 ? 'project logged' : 'projects logged'} · Total Advances: <strong className="text-primary-gold">{formatINR(totalAdvancesSum)}</strong> · Click client row to view project ledger
+              {filteredClients.length} {filteredClients.length === 1 ? 'quotation' : 'quotations'} · Estimation Amount: <strong className="text-primary-gold">{formatINR(totalEstimationAmount)}</strong> · Click a row to open the quotation
             </span>
           </div>
 
@@ -384,9 +369,7 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
                 <th className="text-center" style={{ width: '45px' }}>S.NO</th>
                 <th>CLIENT / PROJECT</th>
                 <th>PHONE & ADDRESS</th>
-                <th>TOTAL ADVANCE</th>
-                <th>TOTAL EXPENSES</th>
-                <th>BALANCE</th>
+                <th>ESTIMATION AMOUNT</th>
                 <th className="no-print text-center" style={{ width: '70px' }}>ACTIONS</th>
               </tr>
             </thead>
@@ -394,18 +377,18 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
               {paginatedClients.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={5}
                     className="empty-state-cell"
                   >
                     <Paintbrush size={32} style={{ opacity: 0.3, margin: '0 auto 8px auto', display: 'block' }} />
                     {searchQuery
-                      ? 'No interior clients found matching your search.'
-                      : 'No interior clients added yet. Fill out the form on the right to add your first interior project.'}
+                      ? 'No quotations found matching your search.'
+                      : 'No quotations added yet. Fill out the form on the right to add your first quotation.'}
                   </td>
                 </tr>
               ) : (
                 paginatedClients.map((client, index) => {
-                  const { totalAdvance, totalExpenses, balance } = getClientTotals(client);
+                  const estimationAmount = getEstimationAmount(client);
 
                   return (
                     <tr
@@ -421,6 +404,11 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
                         <span className="row-client-name">
                           {client.name}
                         </span>
+                        {client.quoteNo && (
+                          <div className="cell-meta" style={{ marginTop: '3px' }}>
+                            {client.quoteNo}
+                          </div>
+                        )}
                       </td>
                       <td>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
@@ -436,16 +424,8 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
                           )}
                         </div>
                       </td>
-                      <td className="cell-amount is-positive">
-                        {formatINR(totalAdvance)}
-                      </td>
                       <td className="cell-amount is-primary">
-                        {formatINR(totalExpenses)}
-                      </td>
-                      <td>
-                        <span className={`cell-amount-pill ${balance >= 0 ? 'is-positive' : 'is-negative'}`}>
-                          {formatINR(balance)}
-                        </span>
+                        {formatINR(estimationAmount)}
                       </td>
                       <td className="no-print text-center" onClick={(e) => e.stopPropagation()}>
                         <div className="cell-actions">
@@ -602,7 +582,7 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
       <ConfirmDeleteModal
         isOpen={Boolean(deleteClientTarget)}
         title="Delete Interior Client"
-        message="Are you sure you want to delete this interior client? All associated advance payment receipts and site expense logs will be permanently deleted."
+        message="Are you sure you want to delete this quotation? All associated estimate items will be permanently deleted."
         itemName={deleteClientTarget ? `${deleteClientTarget.name} (${deleteClientTarget.phone})` : undefined}
         confirmText="Delete Client"
         isDeleting={isDeletingClient}
@@ -614,56 +594,39 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
       <ConfirmDeleteModal
         isOpen={isBulkDeleteOpen}
         title="Delete Selected Interior Clients"
-        message={`Are you sure you want to delete ${selectedClientIds.size} selected interior clients? All associated advance payments and expense logs will be permanently deleted.`}
+        message={`Are you sure you want to delete ${selectedClientIds.size} selected quotations? All associated estimate items will be permanently deleted.`}
         confirmText={`Delete ${selectedClientIds.size} Clients`}
         isDeleting={isBulkDeleting}
         onConfirm={handleConfirmBulkDelete}
         onClose={() => setIsBulkDeleteOpen(false)}
       />
 
-      {/* INTERIOR CLIENT DIRECTORY PRINT PREVIEW MODAL */}
+      {/* INTERIOR QUOTATIONS PRINT PREVIEW MODAL */}
       <TablePrintPreviewModal
         isOpen={isPrintPreviewOpen}
         onClose={() => setIsPrintPreviewOpen(false)}
         shareKind="interior_client"
-        shareTitle="Interior Clients Directory"
-        title="Interior Clients Directory"
-        badgeLabel="Interior Clients Directory"
+        shareTitle="Interior Quotations"
+        title="Interior Quotations"
+        badgeLabel="Interior Quotations"
         badgeIcon={<Paintbrush size={16} color="var(--primary, #e2c399)" />}
         companyName="KAAB INTERIOR · AFRAH CONSTRUCTIONS"
         companySub="LUXURY INTERIORS, MODULAR WOODWORK & TURNKEY EXECUTION"
-        metaTitle="DIRECTORY"
-        metaValue="INTERIOR PROJECTS CLIENT LIST"
-        highlightBanner={{
-          label: 'NET PROJECT PORTFOLIO BALANCE',
-          value: formatINR(totalNetBalance),
-          isNegative: totalNetBalance < 0,
-          color: totalNetBalance >= 0 ? '#16a34a' : '#ef4444'
-        }}
-        headers={['S.NO', 'CLIENT NAME', 'PHONE NUMBER', 'SITE / ADDRESS', 'TOTAL ESTIMATE', 'TOTAL ADVANCE', 'NET BALANCE']}
-        colAlignments={['center', 'left', 'center', 'left', 'right', 'right', 'right']}
-        colWidths={['55px', '220px', '130px', undefined, '140px', '140px', '150px']}
-        rows={filteredClients.map((c, idx) => {
-          const clientAdvance = c.totalAdvance || 0;
-          const clientExpenses = c.totalExpenses || 0;
-          const clientNet = clientAdvance - clientExpenses;
-          return [
-            idx + 1,
-            c.name.toUpperCase(),
-            c.phone || '-',
-            c.address || '-',
-            formatINR(clientExpenses),
-            formatINR(clientAdvance),
-            <strong key={c.id} style={{ color: clientNet >= 0 ? '#16a34a' : '#ef4444' }}>
-              {formatINR(clientNet)}
-            </strong>
-          ];
-        })}
+        metaTitle="QUOTATIONS"
+        metaValue="INTERIOR ESTIMATION LIST"
+        headers={['S.NO', 'CLIENT NAME', 'PHONE NUMBER', 'SITE / ADDRESS', 'ESTIMATION AMOUNT']}
+        colAlignments={['center', 'left', 'center', 'left', 'right']}
+        colWidths={['55px', '240px', '140px', undefined, '180px']}
+        rows={filteredClients.map((c, idx) => [
+          idx + 1,
+          c.name.toUpperCase(),
+          c.phone || '-',
+          c.address || '-',
+          formatINR(getEstimationAmount(c)),
+        ])}
         summaryItems={[
-          { label: 'Total Clients', value: `${filteredClients.length} Projects` },
-          { label: 'Total Advances', value: formatINR(totalAdvancesSum) },
-          { label: 'Total Expenses', value: formatINR(totalExpensesSum) },
-          { label: 'Net Balance', value: formatINR(totalNetBalance), highlightColor: totalNetBalance >= 0 ? '#16a34a' : '#ef4444' }
+          { label: 'Total Quotations', value: filteredClients.length },
+          { label: 'Estimation Amount', value: formatINR(totalEstimationAmount) },
         ]}
       />
     </div>

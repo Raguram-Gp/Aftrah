@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import type { InteriorClient, InteriorAdvancePayment, InteriorExpenseItem } from '../types';
 import { compareByDateDesc } from '../utils/dateUtils';
+import { nextInteriorQuoteNo } from '../utils/quoteNo';
 
 export const useInteriorClients = () => {
   const [interiorClients, setInteriorClients] = useState<InteriorClient[]>([]);
@@ -29,6 +30,8 @@ export const useInteriorClients = () => {
           address,
           site_location,
           project_scope,
+          quote_date,
+          quote_no,
           created_at,
           updated_at,
           interior_client_advances (
@@ -66,6 +69,8 @@ export const useInteriorClients = () => {
           address: c.address,
           siteLocation: c.site_location || '',
           projectScope: c.project_scope || '',
+          quoteDate: c.quote_date || (c.created_at ? String(c.created_at).slice(0, 10) : ''),
+          quoteNo: c.quote_no || '',
           createdAt: c.created_at,
           updatedAt: c.updated_at,
           advancePayments: (c.interior_client_advances || [])
@@ -117,6 +122,9 @@ export const useInteriorClients = () => {
       setError(null);
       const nextSNo = interiorClients.length + 1;
 
+      const quoteDate = clientData.quoteDate || new Date().toISOString().slice(0, 10);
+      const quoteNo = clientData.quoteNo?.trim() || nextInteriorQuoteNo(interiorClients, quoteDate);
+
       const { data, error: insertError } = await supabase
         .from('interior_clients')
         .insert({
@@ -126,6 +134,8 @@ export const useInteriorClients = () => {
           address: clientData.address,
           site_location: clientData.siteLocation || null,
           project_scope: clientData.projectScope || null,
+          quote_date: quoteDate,
+          quote_no: quoteNo,
         })
         .select()
         .single();
@@ -136,6 +146,8 @@ export const useInteriorClients = () => {
         ...clientData,
         id: data.id,
         sNo: data.s_no,
+        quoteDate: data.quote_date || quoteDate,
+        quoteNo: data.quote_no || quoteNo,
         createdAt: data.created_at,
         updatedAt: data.updated_at,
         advancePayments: [],
@@ -163,6 +175,8 @@ export const useInteriorClients = () => {
           address: updatedClient.address,
           site_location: updatedClient.siteLocation || null,
           project_scope: updatedClient.projectScope || null,
+          quote_date: updatedClient.quoteDate || new Date().toISOString().slice(0, 10),
+          quote_no: updatedClient.quoteNo?.trim() || nextInteriorQuoteNo(interiorClients, updatedClient.quoteDate),
         })
         .eq('id', updatedClient.id);
 

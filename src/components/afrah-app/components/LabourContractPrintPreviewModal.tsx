@@ -61,7 +61,7 @@ export const LabourContractPrintPreviewModal: React.FC<LabourContractPrintPrevie
   musterRows.push(['', '', 'TOTAL', String(totalDays), '', formatInvoiceINR(paidAmount)]);
 
   const sharePayload: StatementSnapshot = {
-    ...defaultStatementBrand(),
+    ...defaultStatementBrand(contractType === 'interior' ? 'kaab' : 'afrah'),
     party: {
       name: contract.labourName.toUpperCase(),
       phone: contract.phone,
@@ -90,6 +90,7 @@ export const LabourContractPrintPreviewModal: React.FC<LabourContractPrintPrevie
       title={contractType === 'construction' ? 'Labour Muster Roll Statement' : 'Interior Labour Statement'}
       badgeLabel={contractType === 'construction' ? 'Labour Muster Roll' : 'Interior Labour Statement'}
       badgeIcon={<HardHat size={16} color="var(--primary, #e2c399)" />}
+      brand={contractType === 'interior' ? 'kaab' : 'afrah'}
       shareKind={contractType === 'interior' ? 'interior_labour_contract' : 'labour_contract'}
       shareEntityId={contract.id}
       shareTitle={contract.labourName}

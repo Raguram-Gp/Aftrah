@@ -16,7 +16,8 @@ import {
   ChevronDown,
   ChevronUp,
   X,
-  HardHat
+  HardHat,
+  FileText
 } from 'lucide-react';
 import type { BricksSubTab, InteriorSubTab } from '../types';
 
@@ -399,7 +400,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                 )}
               </button>
 
-              {/* Sub-items below KAAB INTERIOR: Clients, Client directory, Vendor, Interior Labour Contract */}
+              {/* Sub-items below KAAB INTERIOR: Clients, Quotations, Vendor, Interior Labour Contract */}
               {(!isCollapsed ? isInteriorExpanded : false) && (
                 <div className="afrah-app-nav-sublist">
                   {/* Option 1: Clients */}
@@ -422,7 +423,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                     <span className="afrah-app-subbadge-count">{interiorLedgerClientsCount}</span>
                   </button>
 
-                  {/* Option 2: Client directory */}
+                  {/* Option 2: Quotations */}
                   <button
                     onClick={() => {
                       if (onSelectInteriorSubTab) {
@@ -433,11 +434,11 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                       onCloseMobile();
                     }}
                     className={`afrah-app-nav-subitem ${activeTab === 'kaab_interior' && activeInteriorSubTab === 'directory' ? 'active' : ''}`}
-                    title="Client directory"
+                    title="Quotations"
                   >
                     <div className="afrah-app-nav-left">
-                      <Users size={14} className="nav-icon" />
-                      <span className="nav-label">Client directory</span>
+                      <FileText size={14} className="nav-icon" />
+                      <span className="nav-label">Quotations</span>
                     </div>
                     <span className="afrah-app-subbadge-count">{interiorClientsCount}</span>
                   </button>

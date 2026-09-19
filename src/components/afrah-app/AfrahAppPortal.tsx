@@ -723,6 +723,7 @@ const AfrahAppShell: React.FC = () => {
                   vendor={selectedInteriorVendor}
                   shop={selectedInteriorShop}
                   clientOptions={interiorClients.map((c) => c.name)}
+                  brand="kaab"
                   onBack={() => navigate({ selectedInteriorShopId: null })}
                   onUpdateShop={(updated) => updateInteriorVendorShop(selectedInteriorVendor.id, updated)}
                   onAddTransaction={addInteriorShopTransaction}

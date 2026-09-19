@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { StatementSnapshot } from '@/lib/statementSnapshot';
+import { StatementBrandLockup } from './StatementBrandLockup';
 import '../afrah-app/styles/_print.css';
 
 const FONT_META = '18px';
@@ -24,71 +25,12 @@ export function SharedStatementSheet({ payload }: SharedStatementSheetProps) {
   return (
     <div className="statement-pdf-sheet sheet-paper-mode">
       <div className="statement-document-frame">
-        <div className="statement-header-row">
-          <div className="statement-logo-container">
-            <svg
-              className="statement-construction-svg"
-              width="360"
-              height="54"
-              viewBox="0 0 380 64"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden
-            >
-              <g transform="translate(4, 5)">
-                <path
-                  className="statement-logo-base"
-                  d="M 22 2 L 42 20 L 42 48 L 2 48 L 2 20 Z"
-                  fill="#1E293B"
-                  stroke="#C8A676"
-                  strokeWidth="2"
-                />
-                <path
-                  d="M 22 2 L 22 48 M 2 20 L 42 20 M 2 34 L 42 34 M 2 48 L 22 34 L 42 48 M 2 34 L 22 20 L 42 34 M 2 20 L 22 2 L 42 20"
-                  stroke="#E2C399"
-                  strokeWidth="1.5"
-                />
-                <circle cx="22" cy="2" r="2.5" fill="#E2C399" />
-              </g>
-
-              <g transform="translate(56, 26)">
-                <text
-                  className="statement-brand-title"
-                  x="0"
-                  y="0"
-                  fontFamily="'Plus Jakarta Sans', Arial, Helvetica, sans-serif"
-                  fontSize="21"
-                  fontWeight="900"
-                  letterSpacing="1"
-                  fill="currentColor"
-                >
-                  {company}
-                </text>
-                <text
-                  className="statement-brand-sub"
-                  x="0"
-                  y="15"
-                  fontFamily="'Plus Jakarta Sans', Arial, Helvetica, sans-serif"
-                  fontSize="9.5"
-                  fontWeight="700"
-                  letterSpacing="0.8"
-                  fill="#C8A676"
-                >
-                  {subtitle}
-                </text>
-                <rect x="0" y="20" width="280" height="2.5" fill="#C8A676" />
-              </g>
-            </svg>
-          </div>
-
-          <div className="statement-address-container">
-            {address.map((line, index) => (
-              <div key={index} className="address-text-line">
-                {line}
-              </div>
-            ))}
-          </div>
-        </div>
+        <StatementBrandLockup
+          brand={payload.brand ?? 'afrah'}
+          companyName={company}
+          companySub={subtitle}
+          address={address}
+        />
 
         <div className="statement-meta-row" style={{ fontSize: FONT_META }}>
           <div className="meta-left">

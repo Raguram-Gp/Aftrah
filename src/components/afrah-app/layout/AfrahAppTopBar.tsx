@@ -10,6 +10,7 @@ import {
   Boxes,
   ChevronRight,
   HardHat,
+  FileText,
   LogOut
 } from 'lucide-react';
 import type {
@@ -205,8 +206,8 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
                   </>
                 ) : (
                   <>
-                    <Users size={14} color="var(--primary)" />
-                    <span>Client Directory</span>
+                    <FileText size={14} color="var(--primary)" />
+                    <span>Quotations</span>
                   </>
                 )}
               </span>
@@ -391,9 +392,13 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
             <span className="stat-label">
               Total Interior Labour: <strong style={{ color: '#38bdf8' }}>{interiorLabourContractsCount}</strong>
             </span>
+          ) : activeInteriorSubTab === 'clients' ? (
+            <span className="stat-label">
+              Total Clients: <strong className="text-primary-gold">{interiorLedgerClientsCount}</strong>
+            </span>
           ) : (
             <span className="stat-label">
-              Total Interior Projects: <strong className="text-primary-gold">{interiorClientsCount}</strong>
+              Total Quotations: <strong className="text-primary-gold">{interiorClientsCount}</strong>
             </span>
           )
         ) : activeTab === 'vendor' ? (

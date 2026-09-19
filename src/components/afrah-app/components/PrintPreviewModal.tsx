@@ -5,7 +5,9 @@ import {
   X,
   Building2
 } from 'lucide-react';
-import type { StatementKind, StatementSnapshot } from '@/lib/statementSnapshot';
+import type { PdfBrand, StatementKind, StatementSnapshot } from '@/lib/statementSnapshot';
+import { pdfBrandFromKind } from '@/lib/statementSnapshot';
+import { StatementBrandLockup } from '@/components/shared-statement/StatementBrandLockup';
 import { createStatementShare } from '@/lib/statementShare';
 import {
   buildStatementShareMessage,
@@ -26,6 +28,7 @@ export interface PrintPreviewModalProps {
   title?: string;
   badgeLabel?: string;
   badgeIcon?: React.ReactNode;
+  brand?: PdfBrand;
   companyName?: string;
   companySub?: string;
   addressLine1?: string;
@@ -47,8 +50,9 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
   title = 'Statement PDF Preview',
   badgeLabel,
   badgeIcon,
-  companyName = 'AFRAH CONSTRUCTIONS',
-  companySub = 'CIVIL CONSTRUCTION & ARCHITECTURAL WORKS',
+  brand,
+  companyName,
+  companySub,
   addressLine1 = '32/2 Sps Complex, Alaguseenivasan Mahal Opp,',
   addressLine2 = 'Main road, Chinnamanur, Theni - 625 515.',
   tabs,
@@ -196,43 +200,12 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
             ref={printSheetRef}
           >
             <div className="statement-document-frame">
-              {/* BRAND HEADER ROW: CONSTRUCTION LOGO (Left) & STORE ADDRESS (Right) */}
-              <div className="statement-header-row">
-                <div className="statement-logo-container">
-                  <svg
-                    className="statement-brand-mark"
-                    width="42"
-                    height="50"
-                    viewBox="0 0 44 52"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      className="statement-logo-base"
-                      d="M 22 2 L 42 20 L 42 48 L 2 48 L 2 20 Z"
-                      fill="#1E293B"
-                      stroke="#C8A676"
-                      strokeWidth="2"
-                    />
-                    <path
-                      d="M 22 2 L 22 48 M 2 20 L 42 20 M 2 34 L 42 34 M 2 48 L 22 34 L 42 48 M 2 34 L 22 20 L 42 34 M 2 20 L 22 2 L 42 20"
-                      stroke="#E2C399"
-                      strokeWidth="1.5"
-                    />
-                    <circle cx="22" cy="2" r="2.5" fill="#E2C399" />
-                  </svg>
-                  <div className="statement-brand-copy">
-                    <div className="statement-brand-title-text">{companyName}</div>
-                    <div className="statement-brand-sub-text">{companySub}</div>
-                  </div>
-                </div>
-
-                <div className="statement-address-container">
-                  <div className="address-text-line">{addressLine1}</div>
-                  <div className="address-text-line">{addressLine2}</div>
-                </div>
-              </div>
+              <StatementBrandLockup
+                brand={brand ?? pdfBrandFromKind(shareKind)}
+                companyName={companyName}
+                companySub={companySub}
+                address={[addressLine1, addressLine2]}
+              />
 
               {/* SHEET CONTENT SLOT */}
               {children}

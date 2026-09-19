@@ -3,7 +3,7 @@ import type { Vendor, VendorShop, ShopTransaction } from '../types';
 import { formatToDDMMYYYY } from './DateInput';
 import { PrintPreviewModal } from './PrintPreviewModal';
 import { Store } from 'lucide-react';
-import type { StatementSnapshot } from '@/lib/statementSnapshot';
+import type { PdfBrand, StatementSnapshot } from '@/lib/statementSnapshot';
 import { defaultStatementBrand } from '@/lib/statementSnapshot';
 
 interface ShopPrintPreviewModalProps {
@@ -17,6 +17,7 @@ interface ShopPrintPreviewModalProps {
   totalPurchase: number;
   totalReceived: number;
   totalBalance: number;
+  brand?: PdfBrand;
 }
 
 export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
@@ -29,7 +30,8 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
   toDate,
   totalPurchase,
   totalReceived,
-  totalBalance
+  totalBalance,
+  brand: brandId = 'afrah',
 }) => {
   if (!isOpen) return null;
 
@@ -55,22 +57,17 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
   const ledgerRows: string[][] =
     transactions.length === 0
       ? [['—', '—', '—', 'No transaction records found for this vendor shop.', '', '', '', '', '']]
-      : transactions.map((tx, index) => {
-          let itemDescription = tx.itemType.toUpperCase();
-          if (tx.clientName) itemDescription += ` · Client/Site: ${tx.clientName}`;
-
-          return [
-            String(index + 1),
-            formatToDDMMYYYY(tx.date),
-            '-',
-            itemDescription,
-            tx.quantity ? String(tx.quantity) : '-',
-            tx.rate ? `₹${tx.rate}` : '-',
-            formatInvoiceINR(tx.totalAmount),
-            formatInvoiceINR(tx.receivedAmount),
-            formatInvoiceINR(tx.balanceAmount),
-          ];
-        });
+      : transactions.map((tx, index) => [
+          String(index + 1),
+          formatToDDMMYYYY(tx.date),
+          '-',
+          tx.itemType.toUpperCase(),
+          tx.quantity ? String(tx.quantity) : '-',
+          tx.rate ? `₹${tx.rate}` : '-',
+          formatInvoiceINR(tx.totalAmount),
+          formatInvoiceINR(tx.receivedAmount),
+          formatInvoiceINR(tx.balanceAmount),
+        ]);
 
   ledgerRows.push([
     '',
@@ -85,7 +82,7 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
   ]);
 
   const sharePayload: StatementSnapshot = {
-    ...defaultStatementBrand(),
+    ...defaultStatementBrand(brandId),
     party: {
       name: shop.name.toUpperCase(),
       phone: shop.phone,
@@ -114,6 +111,7 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
       title="Vendor Supplier Statement"
       badgeLabel="Vendor Supplier Statement"
       badgeIcon={<Store size={16} color="var(--primary, #e2c399)" />}
+      brand={brandId}
       shareKind="shop"
       shareEntityId={shop.id}
       shareTitle={shop.name}
@@ -195,11 +193,6 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
                     }}
                   >
                     <div>{tx.itemType}</div>
-                    {tx.clientName && (
-                      <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--primary, #e2c399)' }}>
-                        Client/Site: {tx.clientName}
-                      </div>
-                    )}
                   </td>
                   <td className="statement-cell" style={{ fontWeight: 600 }}>
                     {tx.quantity || '-'}

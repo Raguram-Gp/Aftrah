@@ -9,6 +9,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
     address: 'Uthamapalayam',
     siteLocation: 'Quote No: Q/04.04.2026 · First Floor',
     projectScope: 'Materials of 16mm MDF with Mica lamination and 6mm Back-panel ply with PVC edgeband along with Handles and Hardwares',
+    quoteDate: '2026-04-04',
+    quoteNo: 'Q/2026/001',
     createdAt: '2026-04-04',
     updatedAt: '2026-04-20',
     advancePayments: [
@@ -319,6 +321,8 @@ export const INITIAL_INTERIOR_CLIENTS: InteriorClient[] = [
     address: 'Plot #45, Anna Nagar 2nd Street, Madurai',
     siteLocation: 'Duplex Penthouse',
     projectScope: 'Wardrobes, TV Unit, Wallpaper & Designer Glass Partitions',
+    quoteDate: '2026-08-15',
+    quoteNo: 'Q/2026/002',
     createdAt: '2026-08-15',
     updatedAt: '2026-08-28',
     advancePayments: [

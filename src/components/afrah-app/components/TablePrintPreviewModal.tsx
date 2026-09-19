@@ -1,8 +1,8 @@
 import React from 'react';
 import { PrintPreviewModal } from './PrintPreviewModal';
 import { FileSpreadsheet } from 'lucide-react';
-import type { StatementKind, StatementSnapshot } from '@/lib/statementSnapshot';
-import { defaultStatementBrand } from '@/lib/statementSnapshot';
+import type { PdfBrand, StatementKind, StatementSnapshot } from '@/lib/statementSnapshot';
+import { defaultStatementBrand, pdfBrandFromKind } from '@/lib/statementSnapshot';
 
 export interface TablePrintPreviewModalProps {
   isOpen: boolean;
@@ -38,6 +38,7 @@ export interface TablePrintPreviewModalProps {
   };
   children?: React.ReactNode;
   shareKind?: StatementKind;
+  brand?: PdfBrand;
   shareEntityId?: string | null;
   shareTitle?: string;
 }
@@ -72,8 +73,9 @@ function buildTableSharePayload(args: {
   totalRow?: TablePrintPreviewModalProps['totalRow'];
   summaryItems?: TablePrintPreviewModalProps['summaryItems'];
   highlightBanner?: TablePrintPreviewModalProps['highlightBanner'];
+  brand?: PdfBrand;
 }): StatementSnapshot {
-  const brand = defaultStatementBrand();
+  const brand = defaultStatementBrand(args.brand ?? 'afrah');
 
   const summary: StatementSnapshot['summary'] = [
     ...(args.summaryItems?.map((item) => ({
@@ -138,8 +140,8 @@ export const TablePrintPreviewModal: React.FC<TablePrintPreviewModalProps> = ({
   title,
   badgeLabel,
   badgeIcon,
-  companyName = 'AFRAH CONSTRUCTIONS',
-  companySub = 'CIVIL CONSTRUCTION, MATERIALS PROCUREMENT & FINANCIAL ERP',
+  companyName,
+  companySub,
   metaTitle,
   metaValue,
   dateText,
@@ -155,9 +157,11 @@ export const TablePrintPreviewModal: React.FC<TablePrintPreviewModalProps> = ({
   shareKind,
   shareEntityId,
   shareTitle,
+  brand,
 }) => {
   if (!isOpen) return null;
 
+  const resolvedBrand = brand ?? pdfBrandFromKind(shareKind);
   const today = new Date().toLocaleDateString('en-IN', {
     day: '2-digit',
     month: 'short',
@@ -179,6 +183,7 @@ export const TablePrintPreviewModal: React.FC<TablePrintPreviewModalProps> = ({
           totalRow,
           summaryItems,
           highlightBanner,
+          brand: resolvedBrand,
         })
       : undefined;
 
@@ -189,6 +194,7 @@ export const TablePrintPreviewModal: React.FC<TablePrintPreviewModalProps> = ({
       title={title}
       badgeLabel={badgeLabel || title}
       badgeIcon={badgeIcon || <FileSpreadsheet size={16} color="var(--primary, #e2c399)" />}
+      brand={resolvedBrand}
       companyName={companyName}
       companySub={companySub}
       shareKind={shareKind}

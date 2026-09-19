@@ -1227,6 +1227,7 @@ export const InteriorClientLedgerDetailsView: React.FC<InteriorClientLedgerDetai
         advancePayments={filteredAdvance}
         expenses={filteredExpenses}
         initialMode={previewMode}
+        brand="kaab"
       />
     </div>
   );

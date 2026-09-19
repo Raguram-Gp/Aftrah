@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import type { PdfBrand } from "@/lib/statementSnapshot";
 import type { Vendor, VendorShop, ShopTransaction } from "../types";
 import { VENDOR_MATERIAL_PRESETS, COMMON_MATERIAL_PRESETS } from "../types";
 import { SearchableExpenseSelect } from "../components/SearchableExpenseSelect";
@@ -54,6 +55,7 @@ interface ShopDetailsViewProps {
     shopId: string,
     txIds: string[],
   ) => Promise<any>;
+  brand?: PdfBrand;
 }
 
 export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
@@ -66,6 +68,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
   onUpdateTransaction,
   onDeleteTransaction,
   onDeleteMultipleShopTransactions,
+  brand = "afrah",
 }) => {
   const transactions = shop.transactions || [];
   const [searchQuery, setSearchQuery] = useState("");
@@ -1217,6 +1220,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
         totalPurchase={totalPurchase}
         totalReceived={totalReceived}
         totalBalance={totalBalance}
+        brand={brand}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import type {
   InteriorClient,
   InteriorAdvancePayment,
@@ -12,27 +12,22 @@ import {
 } from "../types";
 import { SearchableExpenseSelect } from "../components/SearchableExpenseSelect";
 import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
-import { DateFilterBar } from "../components/DateFilterBar";
 import { TableFormPopover } from "../components/TableFormPopover";
 import { InteriorClientPrintPreviewModal } from "../components/InteriorClientPrintPreviewModal";
+import { resolveInteriorQuoteNo } from "../utils/quoteNo";
 import {
   DateInput,
   isValidDate,
   formatToYYYYMMDD,
-  compareByDateDesc,
+  formatToDDMMYYYY,
 } from "../components/DateInput";
 import {
-  Wallet,
   TrendingDown,
-  Scale,
   Plus,
   Pencil,
   Trash2,
   Printer,
   X,
-  Sparkles,
-  Layers,
-  FileText,
 } from "lucide-react";
 
 interface InteriorClientDetailsViewProps {
@@ -92,7 +87,7 @@ export const InteriorClientDetailsView: React.FC<
 > = ({
   client,
   onBack: _onBack,
-  onUpdateClient: _onUpdateClient,
+  onUpdateClient,
   onAddAdvance: _onAddAdvance,
   onUpdateAdvance: _onUpdateAdvance,
   onDeleteAdvance: _onDeleteAdvance,
@@ -102,12 +97,15 @@ export const InteriorClientDetailsView: React.FC<
   onDeleteExpense,
   onDeleteMultipleExpenses,
 }) => {
-    const advancePayments = client.advancePayments || [];
     const expenses = client.expenses || [];
 
     // ===================== SITE EXPENSES (ESTIMATE) STATE =====================
-    const [expFromDate, setExpFromDate] = useState("");
-    const [expToDate, setExpToDate] = useState("");
+    const defaultQuoteDate =
+      client.quoteDate ||
+      client.createdAt?.slice(0, 10) ||
+      new Date().toISOString().slice(0, 10);
+    const [quoteDate, setQuoteDate] = useState(defaultQuoteDate);
+    const [quoteNo, setQuoteNo] = useState(() => resolveInteriorQuoteNo(client));
     const [selectedExpIds, setSelectedExpIds] = useState<Set<string>>(new Set());
 
     // Add Expense Modal State
@@ -152,29 +150,36 @@ export const InteriorClientDetailsView: React.FC<
       );
     };
 
-    // ===================== ADVANCE COMPUTATIONS =====================
-    const totalAdvanceAmount = advancePayments.reduce(
-      (sum, item) => sum + (Number(item.amount) || 0),
-      0,
+    // ===================== ESTIMATION =====================
+    useEffect(() => {
+      setQuoteDate(
+        client.quoteDate ||
+          client.createdAt?.slice(0, 10) ||
+          new Date().toISOString().slice(0, 10),
+      );
+      setQuoteNo(resolveInteriorQuoteNo(client));
+    }, [client.id, client.quoteDate, client.quoteNo, client.createdAt, client.sNo]);
+
+    const handleQuoteDateChange = async (next: string) => {
+      setQuoteDate(next);
+      const iso = formatToYYYYMMDD(next) || next;
+      if (!iso || iso.length < 10) return;
+      await onUpdateClient({ ...client, quoteDate: iso, quoteNo });
+    };
+
+    const handleQuoteNoBlur = async () => {
+      const next = quoteNo.trim() || resolveInteriorQuoteNo(client);
+      setQuoteNo(next);
+      if (next === (client.quoteNo || "").trim()) return;
+      await onUpdateClient({ ...client, quoteDate, quoteNo: next });
+    };
+
+    const sortedExpenses = useMemo(
+      () => [...expenses].sort((a, b) => (a.sNo || 0) - (b.sNo || 0)),
+      [expenses],
     );
 
-    // ===================== EXPENSES FILTERING & SEGREGATION =====================
-    const filteredExpenses = useMemo(() => {
-      let list = expenses;
-      if (expFromDate) {
-        const fromISO = formatToYYYYMMDD(expFromDate);
-        list = list.filter((e) => formatToYYYYMMDD(e.date) >= fromISO);
-      }
-      if (expToDate) {
-        const toISO = formatToYYYYMMDD(expToDate);
-        list = list.filter((e) => formatToYYYYMMDD(e.date) <= toISO);
-      }
-      return [...list].sort((a, b) =>
-        compareByDateDesc(a.date, b.date, a.sNo, b.sNo),
-      );
-    }, [expenses, expFromDate, expToDate]);
-
-    const totalExpensesAmount = filteredExpenses.reduce(
+    const totalExpensesAmount = sortedExpenses.reduce(
       (sum, item) => sum + (Number(item.totalAmount) || 0),
       0,
     );
@@ -188,7 +193,7 @@ export const InteriorClientDetailsView: React.FC<
       }[] = [];
       const categoryMap = new Map<string, InteriorExpenseItem[]>();
 
-      filteredExpenses.forEach((exp) => {
+      sortedExpenses.forEach((exp) => {
         const cat = exp.category || "OTHER WORK";
         if (!categoryMap.has(cat)) {
           categoryMap.set(cat, []);
@@ -219,11 +224,11 @@ export const InteriorClientDetailsView: React.FC<
       });
 
       return groups;
-    }, [filteredExpenses]);
+    }, [sortedExpenses]);
 
     const isAllExpSelected =
-      filteredExpenses.length > 0 &&
-      filteredExpenses.every((item) => selectedExpIds.has(item.id));
+      sortedExpenses.length > 0 &&
+      sortedExpenses.every((item) => selectedExpIds.has(item.id));
 
     const isSomeExpSelected = selectedExpIds.size > 0 && !isAllExpSelected;
 
@@ -231,7 +236,7 @@ export const InteriorClientDetailsView: React.FC<
       if (isAllExpSelected) {
         setSelectedExpIds(new Set());
       } else {
-        setSelectedExpIds(new Set(filteredExpenses.map((e) => e.id)));
+        setSelectedExpIds(new Set(sortedExpenses.map((e) => e.id)));
       }
     };
 
@@ -244,9 +249,6 @@ export const InteriorClientDetailsView: React.FC<
         return next;
       });
     };
-
-    // Overall Financial Balance
-    const netBalance = totalAdvanceAmount - totalExpensesAmount;
 
     // ===================== EXPENSE HANDLERS =====================
     const calculatedNewExpTotal =
@@ -409,44 +411,21 @@ export const InteriorClientDetailsView: React.FC<
             </div>
 
             <div className="print-meta-box">
-              <span className="print-meta-title">ESTIMATE & PAYMENT TERMS</span>
+              <span className="print-meta-title">QUOTATION</span>
               <div className="print-meta-sub">
-                Date:{" "}
-                {new Date().toLocaleDateString("en-IN", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
+                Quote No: {quoteNo} · Date: {formatToDDMMYYYY(quoteDate)}
               </div>
-              <div
-                className="print-meta-val"
-                style={{
-                  marginTop: "4px",
-                  color: netBalance >= 0 ? "#15803d" : "#b91c1c",
-                }}
-              >
-                Balance Due: {formatINR(Math.abs(netBalance))}
+              <div className="print-meta-val" style={{ marginTop: "4px" }}>
+                Estimation Amount: {formatINR(totalExpensesAmount)}
               </div>
             </div>
           </div>
 
           <div className="print-totals-summary-bar">
             <div className="print-total-item">
-              <span>Estimate Total (Works):</span>{" "}
+              <span>Estimation Amount:</span>{" "}
               <strong style={{ color: "#b45309" }}>
                 {formatINR(totalExpensesAmount)}
-              </strong>
-            </div>
-            <div className="print-total-item">
-              <span>Total Advance Received:</span>{" "}
-              <strong style={{ color: "#15803d" }}>
-                {formatINR(totalAdvanceAmount)}
-              </strong>
-            </div>
-            <div className="print-total-item">
-              <span>Net Balance:</span>{" "}
-              <strong style={{ color: netBalance >= 0 ? "#15803d" : "#b91c1c" }}>
-                {formatINR(netBalance)}
               </strong>
             </div>
           </div>
@@ -458,10 +437,10 @@ export const InteriorClientDetailsView: React.FC<
             <button
               onClick={handlePrint}
               className="afrah-app-back-btn"
-              title="Preview and Print Statement"
+              title="Preview and Print Quotation"
             >
               <Printer size={15} />
-              <span>Print Preview / Statement</span>
+              <span>Print Preview / Quotation</span>
             </button>
           </div>
 
@@ -474,45 +453,13 @@ export const InteriorClientDetailsView: React.FC<
             </div>
 
             <div className="client-unified-card-item metric-item">
-              <div className="metric-icon-wrap green">
-                <Wallet size={24} />
-              </div>
-              <div>
-                <span className="metric-label">TOTAL ADVANCE RECEIVED</span>
-                <span className="metric-value green">
-                  {formatINR(totalAdvanceAmount)}
-                </span>
-              </div>
-            </div>
-
-            <div className="client-unified-card-item metric-item">
               <div className="metric-icon-wrap gold">
                 <TrendingDown size={24} />
               </div>
               <div>
-                <span className="metric-label">TOTAL ESTIMATE AMOUNT</span>
+                <span className="metric-label">ESTIMATION AMOUNT</span>
                 <span className="metric-value gold">
                   {formatINR(totalExpensesAmount)}
-                </span>
-              </div>
-            </div>
-
-            <div className="client-unified-card-item metric-item">
-              <div
-                className={`metric-icon-wrap ${netBalance >= 0 ? "green" : "red"}`}
-              >
-                <Scale size={24} />
-              </div>
-              <div>
-                <span className="metric-label">
-                  {netBalance >= 0
-                    ? "SURPLUS / UNUSED ADVANCE"
-                    : "OUTSTANDING BALANCE DUE"}
-                </span>
-                <span
-                  className={`metric-value ${netBalance >= 0 ? "green" : "red"}`}
-                >
-                  {formatINR(Math.abs(netBalance))}
                 </span>
               </div>
             </div>
@@ -527,8 +474,8 @@ export const InteriorClientDetailsView: React.FC<
                 ESTIMATE FOR INTERIOR WORKS
               </h2>
               <span className="afrah-app-section-subtitle">
-                {filteredExpenses.length} items across{" "}
-                {groupedExpenses.length} sections · Total:{" "}
+                {sortedExpenses.length} items across{" "}
+                {groupedExpenses.length} sections · Estimation Amount:{" "}
                 <strong className="text-primary-gold">
                   {formatINR(totalExpensesAmount)}
                 </strong>
@@ -667,20 +614,34 @@ export const InteriorClientDetailsView: React.FC<
             </TableFormPopover>
           </div>
 
-          <DateFilterBar
-            fromDate={expFromDate}
-            toDate={expToDate}
-            onFromDateChange={setExpFromDate}
-            onToDateChange={setExpToDate}
-            onClearDates={() => {
-              setExpFromDate("");
-              setExpToDate("");
-            }}
-            selectedCount={selectedExpIds.size}
-            onBulkDelete={() => setIsBulkDeleteExpOpen(true)}
-          />
+          <div className="table-filter-toolbar no-print">
+            <div className="filter-toolbar-left">
+              <div className="date-filter-group">
+                <div className="date-filter-item">
+                  <label className="date-filter-label">Quote No</label>
+                  <input
+                    type="text"
+                    value={quoteNo}
+                    onChange={(e) => setQuoteNo(e.target.value)}
+                    onBlur={handleQuoteNoBlur}
+                    className="afrah-app-input"
+                    placeholder="Q/2026/001"
+                    style={{ minWidth: "140px" }}
+                  />
+                </div>
+                <div className="date-filter-item">
+                  <label className="date-filter-label">Quotation Date</label>
+                  <DateInput
+                    required
+                    value={quoteDate}
+                    onChange={handleQuoteDateChange}
+                    className="afrah-app-input"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
 
-          {/* SEGREGATED TABLE MATCHING PDF COLUMNS: SI.No | Particulars | Qty | Per | Rate | Amount */}
           <div className="afrah-app-table-container">
             <table className="afrah-app-table">
               <thead>
@@ -720,9 +681,7 @@ export const InteriorClientDetailsView: React.FC<
                         color: "var(--text-secondary)",
                       }}
                     >
-                      {expFromDate || expToDate
-                        ? "No matching items found for filter."
-                        : 'No interior estimate items recorded yet. Click "Add Item" above.'}
+                      {'No interior estimate items recorded yet. Click "Add Item" above.'}
                     </td>
                   </tr>
                 ) : (
@@ -865,7 +824,7 @@ export const InteriorClientDetailsView: React.FC<
                         padding: "12px 16px",
                       }}
                     >
-                      FINAL TOTAL:
+                      ESTIMATION AMOUNT:
                     </td>
                     <td
                       className="cell-amount"
@@ -1042,7 +1001,7 @@ export const InteriorClientDetailsView: React.FC<
         <ConfirmDeleteModal
           isOpen={Boolean(deleteExpTarget)}
           title="Delete Estimate Item"
-          message="Are you sure you want to delete this estimate item? The project total and balance will be recalculated."
+          message="Are you sure you want to delete this estimate item? The estimation amount will be recalculated."
           itemName={
             deleteExpTarget
               ? `${deleteExpTarget.category ? `[${deleteExpTarget.category}] ` : ""}${deleteExpTarget.expenseName} (${formatINR(deleteExpTarget.totalAmount)})`
@@ -1068,11 +1027,8 @@ export const InteriorClientDetailsView: React.FC<
         <InteriorClientPrintPreviewModal
           isOpen={isPrintPreviewOpen}
           onClose={() => setIsPrintPreviewOpen(false)}
-          client={client}
-          advancePayments={advancePayments}
-          expenses={filteredExpenses}
-          fromDate={expFromDate}
-          toDate={expToDate}
+          client={{ ...client, quoteDate, quoteNo }}
+          expenses={sortedExpenses}
         />
       </div>
     );
