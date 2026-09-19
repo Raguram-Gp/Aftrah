@@ -89,6 +89,9 @@ export const PrintPreviewShell: React.FC<PrintPreviewShellProps> = ({
               <Building2 size={16} color="var(--primary, #e2c399)" />
               <span>{badge}</span>
             </div>
+          </div>
+
+          <div className="preview-toolbar-center">
             {extraToolbarLeft}
           </div>
 
