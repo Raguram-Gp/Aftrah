@@ -507,11 +507,11 @@ const AfrahAppShell: React.FC = () => {
           navigate({
             activeTab: tab,
             ...(tab === 'kaab_interior' &&
-            (subTab === 'clients' || subTab === 'directory' || subTab === 'vendor' || subTab === 'labour_contract')
+              (subTab === 'clients' || subTab === 'directory' || subTab === 'vendor' || subTab === 'labour_contract')
               ? { activeInteriorSubTab: subTab as InteriorSubTab }
               : {}),
             ...(tab === 'kabibullah_bricks' &&
-            (subTab === 'directory' || subTab === 'expenses' || subTab === 'stock')
+              (subTab === 'directory' || subTab === 'expenses' || subTab === 'stock')
               ? { activeBricksSubTab: subTab as BricksSubTab }
               : {}),
             ...CLEARED_ENTITY_IDS,
@@ -946,9 +946,9 @@ const AfrahAppShell: React.FC = () => {
                 <EntityNotFound
                   entityLabel="vendor"
                   backLabel="Go to Vendors"
-                    onBack={() => {
-                      navigate({ selectedVendorId: null, selectedShopId: null });
-                    }}
+                  onBack={() => {
+                    navigate({ selectedVendorId: null, selectedShopId: null });
+                  }}
                 />
               )
             ) : selectedVendor ? (
@@ -965,9 +965,9 @@ const AfrahAppShell: React.FC = () => {
               <EntityNotFound
                 entityLabel="vendor"
                 backLabel="Go to Vendors"
-                    onBack={() => {
-                      navigate({ selectedVendorId: null, selectedShopId: null });
-                    }}
+                onBack={() => {
+                  navigate({ selectedVendorId: null, selectedShopId: null });
+                }}
               />
             ) : (
               /* VENDOR CATEGORIES LIST (Bricks, Hardware, M.Sand...) */
@@ -1008,9 +1008,6 @@ const AfrahAppShell: React.FC = () => {
               <div className="afrah-app-section-header">
                 <div>
                   <h1 className="afrah-app-section-title">CLIENT NAME LIST</h1>
-                  <span className="afrah-app-section-subtitle">
-                    {filteredClients.length} {filteredClients.length === 1 ? 'record' : 'records'} · Click row to view details
-                  </span>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
@@ -1254,8 +1251,8 @@ const AfrahAppShell: React.FC = () => {
       {isEditModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
           <div
-              className="afrah-app-modal-container modal-w-md"
-              onClick={(e) => e.stopPropagation()}
+            className="afrah-app-modal-container modal-w-md"
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
               <div className="flex-center">

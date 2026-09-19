@@ -152,9 +152,6 @@ export const InteriorVendorView: React.FC<InteriorVendorViewProps> = ({
         <div className="afrah-app-section-header">
           <div>
             <h1 className="afrah-app-section-title">VENDOR CATEGORIES</h1>
-            <span className="afrah-app-section-subtitle">
-              {filteredVendors.length} {filteredVendors.length === 1 ? 'category' : 'categories'} · Click a row to view shops
-            </span>
           </div>
 
           <div className="flex-center-10">
@@ -356,8 +353,8 @@ export const InteriorVendorView: React.FC<InteriorVendorViewProps> = ({
       {isEditModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
           <div
-              className="afrah-app-modal-container modal-w-sm"
-              onClick={(e) => e.stopPropagation()}
+            className="afrah-app-modal-container modal-w-sm"
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
               <div className="flex-center">

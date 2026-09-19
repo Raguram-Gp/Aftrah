@@ -134,9 +134,6 @@ export const VendorView: React.FC<VendorViewProps> = ({
         <div className="afrah-app-section-header">
           <div>
             <h1 className="afrah-app-section-title">Vendor Categories</h1>
-            <span className="afrah-app-section-subtitle">
-              {filteredVendors.length} {filteredVendors.length === 1 ? 'category' : 'categories'} · Click a row to view shops
-            </span>
           </div>
 
           <div className="flex-center-10">
@@ -338,8 +335,8 @@ export const VendorView: React.FC<VendorViewProps> = ({
       {isEditModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
           <div
-              className="afrah-app-modal-container modal-w-sm"
-              onClick={(e) => e.stopPropagation()}
+            className="afrah-app-modal-container modal-w-sm"
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
               <div className="flex-center">

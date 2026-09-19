@@ -162,9 +162,6 @@ export const InteriorClientLedgerView: React.FC<InteriorClientLedgerViewProps> =
       <div className="afrah-app-section-header">
         <div>
           <h1 className="afrah-app-section-title">CLIENT NAME LIST</h1>
-          <span className="afrah-app-section-subtitle">
-            {filteredClients.length} {filteredClients.length === 1 ? 'record' : 'records'} · Click row to view details
-          </span>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>

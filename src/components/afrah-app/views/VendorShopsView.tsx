@@ -180,9 +180,6 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
           <div className="afrah-app-section-header">
             <div>
               <h1 className="afrah-app-section-title">{vendor.type.toUpperCase()} · SHOPS LIST</h1>
-              <span className="afrah-app-section-subtitle">
-                {filteredShops.length} {filteredShops.length === 1 ? 'shop' : 'shops'} · Click a shop to view line-item transaction ledger
-              </span>
             </div>
 
             <div className="flex-center-10">
