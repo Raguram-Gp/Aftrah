@@ -53,8 +53,10 @@ interface AfrahAppTopBarProps {
   onNavigateConstructionLabourRoot?: () => void;
   onNavigateInteriorRoot?: (subTab?: InteriorSubTab) => void;
   onNavigateInteriorVendorRoot?: () => void;
+  onNavigateInteriorVendorCategory?: () => void;
   onNavigateInteriorLabourContractRoot?: () => void;
   onNavigateVendorRoot: () => void;
+  onNavigateVendorCategory?: () => void;
   onNavigateBricksRoot?: (subTab?: BricksSubTab) => void;
   isLiveDb: boolean;
 }
@@ -89,8 +91,10 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
   onNavigateConstructionLabourRoot,
   onNavigateInteriorRoot,
   onNavigateInteriorVendorRoot,
+  onNavigateInteriorVendorCategory,
   onNavigateInteriorLabourContractRoot,
   onNavigateVendorRoot,
+  onNavigateVendorCategory,
   onNavigateBricksRoot,
   isLiveDb
 }) => {
@@ -204,7 +208,9 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
                 <>
                   <ChevronRight size={14} color="var(--text-secondary)" />
                   <button
-                    onClick={onNavigateInteriorVendorRoot}
+                    onClick={() => {
+                      if (selectedInteriorShop) onNavigateInteriorVendorCategory?.();
+                    }}
                     className={selectedInteriorShop ? 'afrah-app-breadcrumb-link' : 'afrah-app-breadcrumb-active'}
                   >
                     {selectedInteriorVendor.type}
@@ -244,7 +250,9 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
                 <>
                   <ChevronRight size={14} color="var(--text-secondary)" />
                   <button
-                    onClick={onNavigateVendorRoot}
+                    onClick={() => {
+                      if (selectedShop) onNavigateVendorCategory?.();
+                    }}
                     className={selectedShop ? 'afrah-app-breadcrumb-link' : 'afrah-app-breadcrumb-active'}
                   >
                     {selectedVendor.type}

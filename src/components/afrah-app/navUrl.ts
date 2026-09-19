@@ -175,6 +175,47 @@ export const parseNavState = (): NavState => {
   return nav;
 };
 
+export const CLEARED_ENTITY_IDS: Pick<
+  NavState,
+  | 'selectedClientId'
+  | 'selectedConstructionLabourContractId'
+  | 'selectedInteriorClientId'
+  | 'selectedInteriorVendorId'
+  | 'selectedInteriorShopId'
+  | 'selectedLabourContractId'
+  | 'selectedVendorId'
+  | 'selectedShopId'
+  | 'selectedBrickCustomerId'
+  | 'selectedStockItemId'
+> = {
+  selectedClientId: null,
+  selectedConstructionLabourContractId: null,
+  selectedInteriorClientId: null,
+  selectedInteriorVendorId: null,
+  selectedInteriorShopId: null,
+  selectedLabourContractId: null,
+  selectedVendorId: null,
+  selectedShopId: null,
+  selectedBrickCustomerId: null,
+  selectedStockItemId: null,
+};
+
+export const pathFromLocation = (): string =>
+  (typeof window === 'undefined' ? APP_BASE : window.location.pathname).replace(/\/+$/, '') || '/';
+
+export const writeNavPath = (path: string, mode: 'push' | 'replace'): void => {
+  if (typeof window === 'undefined') return;
+  const current = pathFromLocation();
+  const next = path.replace(/\/+$/, '');
+  const extras = Boolean(window.location.hash) || Boolean(window.location.search);
+  if (current === next && !extras) return;
+  if (mode === 'replace') {
+    window.history.replaceState({ afrahNav: true }, '', path);
+  } else {
+    window.history.pushState({ afrahNav: true }, '', path);
+  }
+};
+
 export const buildNavPath = (state: NavState): string => {
   const segments: string[] = [APP_BASE, TAB_TO_SEGMENT[state.activeTab]];
 

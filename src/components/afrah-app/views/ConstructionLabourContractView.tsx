@@ -389,7 +389,7 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
                         </span>
                       </td>
                       <td className="nowrap">
-                        <span className="cell-amount">
+                        <span className={`cell-amount ${balance > 0 ? 'is-warning' : 'is-positive'}`}>
                           {formatINR(balance)}
                         </span>
                       </td>

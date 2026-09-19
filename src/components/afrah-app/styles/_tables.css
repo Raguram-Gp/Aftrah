@@ -269,20 +269,38 @@ html.light .app2-table td {
   font-size: var(--fs-sm);
   font-weight: var(--fw-black);
   white-space: nowrap;
-  color: #000;
+  color: var(--text-primary);
   text-align: left;
 }
 
 .afrah-app-table .cell-amount,
 .app2-table .cell-amount,
 .afrah-app-table td.cell-amount,
-.app2-table td.cell-amount,
-.cell-amount.is-primary,
-.cell-amount.is-positive,
-.cell-amount.is-negative,
-.cell-amount.is-warning {
-  color: #000;
+.app2-table td.cell-amount {
+  color: var(--text-primary);
   text-align: left;
+}
+
+.cell-amount.is-primary {
+  color: var(--text-primary);
+}
+
+.afrah-app-table .cell-amount.is-positive,
+.app2-table .cell-amount.is-positive,
+.cell-amount.is-positive {
+  color: #4ade80;
+}
+
+.afrah-app-table .cell-amount.is-negative,
+.app2-table .cell-amount.is-negative,
+.cell-amount.is-negative {
+  color: #f87171;
+}
+
+.afrah-app-table .cell-amount.is-warning,
+.app2-table .cell-amount.is-warning,
+.cell-amount.is-warning {
+  color: #f59e0b;
 }
 
 .cell-amount-pill {
@@ -294,16 +312,26 @@ html.light .app2-table td {
   font-weight: var(--fw-black);
   white-space: nowrap;
   border: 1px solid transparent;
-  color: #000;
+  color: var(--text-primary);
   text-align: left;
 }
 
-.cell-amount-pill.is-positive,
-.cell-amount-pill.is-negative,
+.cell-amount-pill.is-positive {
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+.cell-amount-pill.is-negative {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
 .cell-amount-pill.is-warning {
-  background: transparent;
-  color: #000;
-  border-color: transparent;
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.25);
 }
 
 .cell-date {
