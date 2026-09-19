@@ -655,7 +655,7 @@ export const BricksCustomerDetailsView: React.FC<
                 </th>
                 <th style={{ width: "105px" }}>DATE</th>
                 <th>BRICK TYPE / DESCRIPTION</th>
-                <th className="text-right" style={{ width: "90px" }}>
+                <th style={{ width: "90px" }}>
                   QTY
                 </th>
                 <th style={{ width: "90px" }}>
@@ -743,7 +743,7 @@ export const BricksCustomerDetailsView: React.FC<
                       </td>
                       <td
                         style={{
-                          textAlign: "right",
+                          textAlign: "left",
                           fontFamily: "monospace",
                           fontWeight: 600,
                         }}

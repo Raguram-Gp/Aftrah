@@ -319,7 +319,21 @@ html.light .app2-table td {
   gap: 4px;
 }
 
-/* Column separators — vendor tables only (hairline) */
+.afrah-app-table.has-col-separators {
+  table-layout: fixed;
+  min-width: 1140px;
+}
+
+/* Equal-width numeric columns on the vendor shop ledger */
+.afrah-app-table.has-col-separators th.col-metric,
+.afrah-app-table.has-col-separators td.col-metric {
+  width: 108px;
+  min-width: 108px;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+/* Column separators — vendor shop ledger (hairline) */
 .afrah-app-table.has-col-separators th:not(:last-child),
 .afrah-app-table.has-col-separators td:not(:last-child),
 .app2-table.has-col-separators th:not(:last-child),
@@ -336,25 +350,6 @@ html.light .afrah-app-table.has-col-separators td:not(:last-child),
 html.light .app2-table.has-col-separators th:not(:last-child),
 html.light .app2-table.has-col-separators td:not(:last-child) {
   border-right-color: #EBE4D8;
-}
-
-/* Darker grouping line after date, description, and client columns */
-.afrah-app-table .col-divider,
-.app2-table .col-divider,
-.afrah-app-table.has-col-separators .col-divider,
-.app2-table.has-col-separators .col-divider {
-  border-right: 1px solid rgba(196, 184, 164, 0.78);
-}
-
-[data-theme="light"] .afrah-app-table .col-divider,
-[data-theme="light"] .app2-table .col-divider,
-[data-theme="light"] .afrah-app-table.has-col-separators .col-divider,
-[data-theme="light"] .app2-table.has-col-separators .col-divider,
-html.light .afrah-app-table .col-divider,
-html.light .app2-table .col-divider,
-html.light .afrah-app-table.has-col-separators .col-divider,
-html.light .app2-table.has-col-separators .col-divider {
-  border-right-color: #B9AFA0;
 }
 
 /* ============================================

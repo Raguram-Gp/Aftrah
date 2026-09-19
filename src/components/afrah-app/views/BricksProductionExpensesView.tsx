@@ -376,7 +376,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                 <th className="text-center" style={{ width: '60px' }}>S NO</th>
                 <th style={{ width: '110px' }}>DATE</th>
                 <th>EXPENSES</th>
-                <th className="text-right" style={{ width: '110px' }}>Quality</th>
+                <th style={{ width: '110px' }}>Quality</th>
                 <th style={{ width: '110px' }}>Rate</th>
                 <th style={{ width: '130px' }}>Total</th>
                 <th className="no-print text-center" style={{ width: '90px' }}>EDIT / DELETE</th>
@@ -445,7 +445,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                       </td>
 
                       {/* Quality (Quantity) */}
-                      <td style={{ textAlign: 'right', fontWeight: 600 }}>
+                      <td style={{ textAlign: 'left', fontWeight: 600 }}>
                         {Number(expense.quantity || 0).toLocaleString('en-IN')}
                       </td>
 

@@ -913,7 +913,7 @@ export const InteriorClientDetailsView: React.FC<
                       SI.No
                     </th>
                     <th>Particulars</th>
-                    <th className="text-right" style={{ width: "60px" }}>
+                    <th style={{ width: "60px" }}>
                       Qty
                     </th>
                     <th className="text-center" style={{ width: "60px" }}>
@@ -1048,7 +1048,7 @@ export const InteriorClientDetailsView: React.FC<
                               </td>
                               <td
                                 style={{
-                                  textAlign: "right",
+                                  textAlign: "left",
                                   fontFamily: "monospace",
                                   fontWeight: 600,
                                 }}

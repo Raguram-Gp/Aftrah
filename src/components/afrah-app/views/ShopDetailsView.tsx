@@ -363,9 +363,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
     const rate = parseOptionalNumber(editTxRate);
     const received = parseOptionalNumber(editTxReceived);
     const total =
-      editTxTotal.trim() === ""
-        ? qty * rate
-        : parseOptionalNumber(editTxTotal);
+      editTxTotal.trim() === "" ? qty * rate : parseOptionalNumber(editTxTotal);
     const balance = total - received;
     const date = isValidDate(editTxDate)
       ? editTxDate
@@ -752,8 +750,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                       <div
                         className="total-amount-display"
                         style={{
-                          color:
-                            calculatedBalance > 0 ? "#f87171" : "#4ade80",
+                          color: calculatedBalance > 0 ? "#f87171" : "#4ade80",
                         }}
                       >
                         {formatINR(calculatedBalance)}
@@ -790,14 +787,20 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
             <thead>
               <tr>
                 <th style={{ width: "45px", textAlign: "center" }}>S.NO</th>
-                <th className="col-divider">DATE</th>
-                <th className="col-divider">TYPE / ITEM DESCRIPTION</th>
-                <th className="col-divider">CLIENT / SITE TAG</th>
-                <th className="text-right">QTY</th>
-                <th>RATE</th>
-                <th>TOTAL</th>
-                <th>PAID</th>
-                <th>BALANCE</th>
+                <th className="col-divider" style={{ width: "104px" }}>
+                  DATE
+                </th>
+                <th className="col-divider" style={{ width: "220px" }}>
+                  TYPE / ITEM DESCRIPTION
+                </th>
+                <th className="col-divider" style={{ width: "180px" }}>
+                  CLIENT / SITE TAG
+                </th>
+                <th className="col-metric">QTY</th>
+                <th className="col-metric">RATE</th>
+                <th className="col-metric">TOTAL</th>
+                <th className="col-metric">PAID</th>
+                <th className="col-metric">BALANCE</th>
                 <th
                   className="no-print"
                   style={{ width: "70px", textAlign: "center" }}
@@ -845,7 +848,9 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                       >
                         {startIndex + index + 1}
                       </td>
-                      <td className="col-divider">{formatToDDMMYYYY(tx.date)}</td>
+                      <td className="col-divider">
+                        {formatToDDMMYYYY(tx.date)}
+                      </td>
                       <td className="col-divider">
                         {isSettlement ? (
                           <div
@@ -942,8 +947,9 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                         )}
                       </td>
                       <td
+                        className="col-metric"
                         style={{
-                          textAlign: "right",
+                          textAlign: "left",
                           fontFamily: "JetBrains Mono, monospace",
                           fontSize: "12px",
                           color:
@@ -954,16 +960,16 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                       >
                         {tx.quantity ? tx.quantity : "—"}
                       </td>
-                      <td className="cell-amount">
+                      <td className="cell-amount col-metric">
                         {tx.rate ? formatINR(tx.rate) : "—"}
                       </td>
-                      <td className="cell-amount">
+                      <td className="cell-amount col-metric">
                         {tx.totalAmount ? formatINR(tx.totalAmount) : "—"}
                       </td>
-                      <td className="cell-amount">
+                      <td className="cell-amount col-metric">
                         {formatINR(tx.receivedAmount)}
                       </td>
-                      <td className="cell-amount">
+                      <td className="cell-amount col-metric">
                         {isSettlement ? (
                           <span>- {formatINR(tx.receivedAmount)}</span>
                         ) : (

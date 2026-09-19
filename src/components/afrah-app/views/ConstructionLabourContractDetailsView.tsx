@@ -367,7 +367,7 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
                   <th className="text-center" style={{ width: '55px' }}>S.NO</th>
                   <th style={{ width: '105px' }}>DATE</th>
                   <th>WORK TYPE</th>
-                  <th className="text-center" style={{ width: '85px' }}>DAYS</th>
+                  <th style={{ width: '85px' }}>DAYS</th>
                   <th style={{ width: '130px' }}>SALARY / DAY</th>
                   <th style={{ width: '130px' }}>TOTAL AMOUNT</th>
                   <th style={{ width: '80px', textAlign: 'center' }} className="no-print">ACTIONS</th>
@@ -406,7 +406,7 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
                           </div>
                         </div>
                       </td>
-                      <td className="text-center">
+                      <td>
                         <span
                           style={{
                             display: 'inline-block',

@@ -445,10 +445,10 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                   <tr>
                     <th className="text-center" style={{ width: '60px' }}>S NO</th>
                     <th style={{ width: '120px' }}>DATE</th>
-                    <th className="text-right">STOCK OPENING</th>
-                    <th className="text-right">CURRENT PRODUCTION</th>
-                    <th className="text-right">SALES</th>
-                    <th className="text-right">PENDING STOCK</th>
+                    <th>STOCK OPENING</th>
+                    <th>CURRENT PRODUCTION</th>
+                    <th>SALES</th>
+                    <th>PENDING STOCK</th>
                     <th className="no-print text-center" style={{ width: '90px' }}>EDIT / DELETE</th>
                   </tr>
                 ) : (
@@ -457,9 +457,9 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                     <th className="text-center" style={{ width: '60px' }}>S NO</th>
                     <th style={{ width: '110px' }}>DATE</th>
                     <th style={{ width: '110px' }}>ITEM</th>
-                    <th className="text-right">STOCK OPENING</th>
-                    <th className="text-right">MATERIAL USAGE ({unitLabel})</th>
-                    <th className="text-right">PENDING STOCK</th>
+                    <th>STOCK OPENING</th>
+                    <th>MATERIAL USAGE ({unitLabel})</th>
+                    <th>PENDING STOCK</th>
                     <th className="no-print text-center" style={{ width: '90px' }}>EDIT / DELETE</th>
                   </tr>
                 )}
@@ -519,7 +519,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                         )}
 
                         {/* STOCK OPENING */}
-                        <td style={{ textAlign: 'right', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                        <td style={{ textAlign: 'left', fontWeight: 600, color: 'var(--text-secondary)' }}>
                           {Number(openingVal).toLocaleString('en-IN')}
                         </td>
 
@@ -528,7 +528,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                             {/* CURRENT PRODUCTION (Bricks only) */}
                             <td
                               style={{
-                                textAlign: 'right',
+                                textAlign: 'left',
                                 fontWeight: 700,
                                 color: prodVal > 0 ? '#3b82f6' : 'var(--text-secondary)'
                               }}
@@ -539,7 +539,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                             {/* SALES (Bricks only) */}
                             <td
                               style={{
-                                textAlign: 'right',
+                                textAlign: 'left',
                                 fontWeight: 700,
                                 color: salesVal > 0 ? '#f87171' : 'var(--text-secondary)'
                               }}
@@ -551,7 +551,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                           /* MATERIAL USAGE (Soil, Msand, Wood, Diesel) */
                           <td
                             style={{
-                              textAlign: 'right',
+                              textAlign: 'left',
                               fontWeight: 700,
                               color: usageVal > 0 ? '#f87171' : 'var(--text-secondary)'
                             }}
@@ -563,7 +563,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                       {/* PENDING STOCK */}
                       <td
                         style={{
-                          textAlign: 'right',
+                          textAlign: 'left',
                           fontWeight: 800,
                           color: 'var(--text-primary)'
                         }}

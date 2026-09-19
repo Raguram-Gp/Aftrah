@@ -216,7 +216,7 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
 
           {/* Table matching handwritten sketch: S.NO, NAME, PHONE, ADDRESS + Pending Balance + Actions */}
           <div className="afrah-app-table-container">
-            <table className="afrah-app-table has-col-separators">
+            <table className="afrah-app-table">
               <thead>
                 <tr>
                   <th className="text-center" style={{ width: '50px' }}>S.NO</th>

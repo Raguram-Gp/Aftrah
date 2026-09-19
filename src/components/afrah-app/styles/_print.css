@@ -183,7 +183,7 @@
 
   .afrah-app-table.has-col-separators th:not(:last-child),
   .afrah-app-table.has-col-separators td:not(:last-child) {
-    border-right: 1px solid #D1D5DB !important;
+    border-right: 1px solid #E8E4DC !important;
   }
 
   .client-details-side-by-side-grid {

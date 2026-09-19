@@ -158,8 +158,8 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
               <tr>
                 <th className="text-center" style={{ width: '70px' }}>S NO</th>
                 <th style={{ width: '30%', paddingLeft: '16px' }}>ITEM</th>
-                <th style={{ width: '35%', textAlign: 'right', paddingRight: '24px' }}>TOTAL SALES / USAGE</th>
-                <th style={{ width: '35%', textAlign: 'right', paddingRight: '24px' }}>PENDING STOCK</th>
+                <th style={{ width: '35%', textAlign: 'left', paddingLeft: '16px' }}>TOTAL SALES / USAGE</th>
+                <th style={{ width: '35%', textAlign: 'left', paddingLeft: '16px' }}>PENDING STOCK</th>
               </tr>
             </thead>
             <tbody>
@@ -210,11 +210,11 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
                       {/* TOTAL SALES / USAGE */}
                       <td
                         style={{
-                          textAlign: 'right',
+                          textAlign: 'left',
                           fontWeight: 'var(--fw-bold)',
                           color: '#f87171',
                           fontSize: 'var(--fs-sm)',
-                          paddingRight: '24px'
+                          paddingLeft: '16px'
                         }}
                       >
                         {Number(item.sales || 0).toLocaleString('en-IN')} Units
@@ -223,11 +223,11 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
                       {/* PENDING STOCK */}
                       <td
                         style={{
-                          textAlign: 'right',
+                          textAlign: 'left',
                           fontWeight: 'var(--fw-black)',
                           color: 'var(--text-primary)',
                           fontSize: 'var(--fs-sm)',
-                          paddingRight: '24px'
+                          paddingLeft: '16px'
                         }}
                       >
                         {Number(item.pendingStock || 0).toLocaleString('en-IN')} Units

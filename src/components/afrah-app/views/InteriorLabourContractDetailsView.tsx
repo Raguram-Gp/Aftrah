@@ -326,7 +326,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                   <th className="text-center" style={{ width: '55px' }}>S.NO</th>
                   <th style={{ width: '105px' }}>DATE</th>
                   <th>WORK TYPE</th>
-                  <th className="text-center" style={{ width: '85px' }}>DAYS</th>
+                  <th style={{ width: '85px' }}>DAYS</th>
                   <th style={{ width: '130px' }}>SALARY / DAY</th>
                   <th style={{ width: '130px' }}>TOTAL AMOUNT</th>
                   <th className="text-center" style={{ width: '80px' }}>ACTIONS</th>
@@ -365,7 +365,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                           </div>
                         </div>
                       </td>
-                      <td className="text-center">
+                      <td>
                         <span
                           style={{
                             display: 'inline-block',
