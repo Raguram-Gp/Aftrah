@@ -219,7 +219,7 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
   };
 
   return (
-    <div style={{ width: '100%', maxWidth: '100%' }}>
+    <div className="w-full">
       {/* PRINT-ONLY STATEMENT HEADER */}
       <div className="print-only-statement-header">
         <div className="print-brand-row">
@@ -249,10 +249,10 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
       </div>
 
       {/* CLIENT LIST TABLE */}
-      <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
+      <section className="afrah-app-table-section w-full">
         <div className="afrah-app-section-header no-print">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div className="flex-center-10">
               <div
                 style={{
                   width: '32px',
@@ -272,12 +272,12 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
               </h1>
             </div>
             <span className="afrah-app-section-subtitle">
-              {filteredClients.length} {filteredClients.length === 1 ? 'project logged' : 'projects logged'} · Total Advances: <strong style={{ color: 'var(--primary)' }}>{formatINR(totalAdvancesSum)}</strong> · Click client row to view project ledger
+              {filteredClients.length} {filteredClients.length === 1 ? 'project logged' : 'projects logged'} · Total Advances: <strong className="text-primary-gold">{formatINR(totalAdvancesSum)}</strong> · Click client row to view project ledger
             </span>
           </div>
 
           {/* Search, Bulk Actions & Print */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <div className="flex-center-wrap-10">
             <div className="afrah-app-search-wrapper">
               <Search size={14} className="afrah-app-search-icon" />
               <input
@@ -325,13 +325,13 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
           <table className="afrah-app-table">
             <thead>
               <tr>
-                <th style={{ width: '45px', textAlign: 'center' }}>S.NO</th>
+                <th className="text-center" style={{ width: '45px' }}>S.NO</th>
                 <th>CLIENT / PROJECT</th>
                 <th>PHONE & ADDRESS</th>
-                <th style={{ textAlign: 'right' }}>TOTAL ADVANCE</th>
-                <th style={{ textAlign: 'right' }}>TOTAL EXPENSES</th>
-                <th style={{ textAlign: 'right' }}>BALANCE</th>
-                <th className="no-print" style={{ width: '70px', textAlign: 'center' }}>ACTIONS</th>
+                <th className="text-right">TOTAL ADVANCE</th>
+                <th className="text-right">TOTAL EXPENSES</th>
+                <th className="text-right">BALANCE</th>
+                <th className="no-print text-center" style={{ width: '70px' }}>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
@@ -339,7 +339,7 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
                 <tr>
                   <td
                     colSpan={7}
-                    style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}
+                    className="empty-state-cell"
                   >
                     <Paintbrush size={32} style={{ opacity: 0.3, margin: '0 auto 8px auto', display: 'block' }} />
                     {searchQuery
@@ -358,81 +358,41 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
                       className="clickable-client-row"
                       style={{ cursor: 'pointer' }}
                     >
-                      <td
-                        style={{
-                          fontFamily: 'monospace',
-                          fontWeight: 600,
-                          color: 'var(--text-secondary)',
-                          textAlign: 'center'
-                        }}
-                      >
+                      <td className="cell-sno">
                         {startIndex + index + 1}
                       </td>
                       <td>
-                        <span className="row-client-name" style={{ fontWeight: 750, color: 'var(--text-primary)', fontSize: '15px' }}>
+                        <span className="row-client-name">
                           {client.name}
                         </span>
                       </td>
                       <td>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '13px', fontWeight: 600 }}>
+                          <div className="cell-icon-text" style={{ gap: '5px' }}>
                             <Phone size={12} color="var(--primary)" />
-                            <span>{client.phone}</span>
+                            <span className="cell-phone">{client.phone}</span>
                           </div>
                           {client.address && (
-                            <div
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '5px',
-                                fontSize: '12.5px',
-                                color: 'var(--text-secondary)'
-                              }}
-                            >
+                            <div className="cell-icon-text is-muted" style={{ gap: '5px' }}>
                               <MapPin size={11} />
-                              <span>{client.address}</span>
+                              <span className="cell-meta">{client.address}</span>
                             </div>
                           )}
                         </div>
                       </td>
-                      <td
-                        style={{
-                          textAlign: 'right',
-                          fontFamily: 'monospace',
-                          fontWeight: 700,
-                          color: '#4ade80'
-                        }}
-                      >
+                      <td className="cell-amount is-positive text-right">
                         {formatINR(totalAdvance)}
                       </td>
-                      <td
-                        style={{
-                          textAlign: 'right',
-                          fontFamily: 'monospace',
-                          fontWeight: 700,
-                          color: 'var(--primary)'
-                        }}
-                      >
+                      <td className="cell-amount is-primary text-right">
                         {formatINR(totalExpenses)}
                       </td>
-                      <td style={{ textAlign: 'right' }}>
-                        <span
-                          style={{
-                            display: 'inline-block',
-                            padding: '3px 8px',
-                            borderRadius: '5px',
-                            fontWeight: 800,
-                            fontFamily: 'monospace',
-                            fontSize: '12px',
-                            background: balance >= 0 ? 'rgba(74, 222, 128, 0.15)' : 'rgba(248, 113, 113, 0.15)',
-                            color: balance >= 0 ? '#4ade80' : '#f87171'
-                          }}
-                        >
+                      <td className="text-right">
+                        <span className={`cell-amount-pill ${balance >= 0 ? 'is-positive' : 'is-negative'}`} style={{ padding: '3px 8px', borderRadius: '5px', fontSize: 'var(--fs-2xs)' }}>
                           {formatINR(balance)}
                         </span>
                       </td>
-                      <td className="no-print" style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <td className="no-print text-center" onClick={(e) => e.stopPropagation()}>
+                        <div className="cell-actions">
                           <button
                             onClick={(e) => handleOpenEdit(client, e)}
                             className="afrah-app-action-btn afrah-app-edit-btn"
@@ -523,9 +483,9 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
       {/* ADD INTERIOR CLIENT MODAL */}
       {isAddModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '480px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="afrah-app-modal-container modal-w-lg" onClick={(e) => e.stopPropagation()}>
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Plus size={18} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Add Interior Client</h3>
               </div>
@@ -583,8 +543,7 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
                 <button
                   type="submit"
                   disabled={!isAddValid}
-                  className="btn-theme-primary"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  className="btn-theme-primary flex-center-6"
                 >
                   <Plus size={15} strokeWidth={2.5} />
                   <span>Add Client</span>
@@ -598,9 +557,9 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
       {/* EDIT CLIENT MODAL */}
       {isEditModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '480px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="afrah-app-modal-container modal-w-lg" onClick={(e) => e.stopPropagation()}>
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={18} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Interior Client</h3>
               </div>

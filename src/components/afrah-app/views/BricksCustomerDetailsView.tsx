@@ -1,9 +1,15 @@
-import React, { useState, useMemo } from 'react';
-import type { BrickCustomer, BrickTransaction } from '../types';
-import { PREDEFINED_BRICK_TYPES } from '../types';
-import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
-import { DateFilterBar } from '../components/DateFilterBar';
-import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
+import React, { useState, useMemo } from "react";
+import type { BrickCustomer, BrickTransaction } from "../types";
+import { PREDEFINED_BRICK_TYPES } from "../types";
+import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
+import { DateFilterBar } from "../components/DateFilterBar";
+import {
+  DateInput,
+  isValidDate,
+  formatToDDMMYYYY,
+  formatToYYYYMMDD,
+  compareByDateDesc,
+} from "../components/DateInput";
 import {
   ArrowLeft,
   BrickWall,
@@ -25,32 +31,43 @@ import {
   CheckCircle2,
   Printer,
   CheckSquare,
-  Square
-} from 'lucide-react';
+  Square,
+} from "lucide-react";
 
 interface BricksCustomerDetailsViewProps {
   customer: BrickCustomer;
   onBack: () => void;
   onUpdateCustomer: (updatedCustomer: BrickCustomer) => Promise<any>;
-  onAddTransaction: (customerId: string, txData: Omit<BrickTransaction, 'id' | 'sNo'>) => Promise<any>;
-  onUpdateTransaction: (customerId: string, txData: BrickTransaction) => Promise<any>;
+  onAddTransaction: (
+    customerId: string,
+    txData: Omit<BrickTransaction, "id" | "sNo">,
+  ) => Promise<any>;
+  onUpdateTransaction: (
+    customerId: string,
+    txData: BrickTransaction,
+  ) => Promise<any>;
   onDeleteTransaction: (customerId: string, txId: string) => Promise<any>;
-  onDeleteMultipleTransactions?: (customerId: string, txIds: string[]) => Promise<any>;
+  onDeleteMultipleTransactions?: (
+    customerId: string,
+    txIds: string[],
+  ) => Promise<any>;
 }
 
-export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps> = ({
+export const BricksCustomerDetailsView: React.FC<
+  BricksCustomerDetailsViewProps
+> = ({
   customer,
   onBack,
   onUpdateCustomer,
   onAddTransaction,
   onUpdateTransaction,
   onDeleteTransaction,
-  onDeleteMultipleTransactions
+  onDeleteMultipleTransactions,
 }) => {
   const transactions = customer.transactions || [];
-  const [searchQuery, setSearchQuery] = useState('');
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [selectedTxIds, setSelectedTxIds] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -61,61 +78,74 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
 
   // Add Transaction Modal State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [txDate, setTxDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [txDate, setTxDate] = useState(() =>
+    new Date().toISOString().slice(0, 10),
+  );
   const [txBrickType, setTxBrickType] = useState(PREDEFINED_BRICK_TYPES[0]);
-  const [customBrickType, setCustomBrickType] = useState('');
-  const [txQuantity, setTxQuantity] = useState('');
-  const [txRate, setTxRate] = useState('');
-  const [txPaid, setTxPaid] = useState('0');
-  const [txSiteLocation, setTxSiteLocation] = useState('');
-  const [txVehicleNumber, setTxVehicleNumber] = useState('');
-  const [txDriverPhone, setTxDriverPhone] = useState('');
-  const [txNotes, setTxNotes] = useState('');
+  const [customBrickType, setCustomBrickType] = useState("");
+  const [txQuantity, setTxQuantity] = useState("");
+  const [txRate, setTxRate] = useState("");
+  const [txPaid, setTxPaid] = useState("0");
+  const [txSiteLocation, setTxSiteLocation] = useState("");
+  const [txVehicleNumber, setTxVehicleNumber] = useState("");
+  const [txDriverPhone, setTxDriverPhone] = useState("");
+  const [txNotes, setTxNotes] = useState("");
 
   // Edit Transaction Modal State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingTxId, setEditingTxId] = useState<string | null>(null);
-  const [editTxDate, setEditTxDate] = useState('');
-  const [editTxBrickType, setEditTxBrickType] = useState('');
-  const [editCustomBrickType, setEditCustomBrickType] = useState('');
-  const [editTxQuantity, setEditTxQuantity] = useState('');
-  const [editTxRate, setEditTxRate] = useState('');
-  const [editTxPaid, setEditTxPaid] = useState('');
-  const [editTxSiteLocation, setEditTxSiteLocation] = useState('');
-  const [editTxVehicleNumber, setEditTxVehicleNumber] = useState('');
-  const [editTxDriverPhone, setEditTxDriverPhone] = useState('');
-  const [editTxNotes, setEditTxNotes] = useState('');
+  const [editTxDate, setEditTxDate] = useState("");
+  const [editTxBrickType, setEditTxBrickType] = useState("");
+  const [editCustomBrickType, setEditCustomBrickType] = useState("");
+  const [editTxQuantity, setEditTxQuantity] = useState("");
+  const [editTxRate, setEditTxRate] = useState("");
+  const [editTxPaid, setEditTxPaid] = useState("");
+  const [editTxSiteLocation, setEditTxSiteLocation] = useState("");
+  const [editTxVehicleNumber, setEditTxVehicleNumber] = useState("");
+  const [editTxDriverPhone, setEditTxDriverPhone] = useState("");
+  const [editTxNotes, setEditTxNotes] = useState("");
 
   // Delete Single Transaction Modal State
-  const [deleteTxTarget, setDeleteTxTarget] = useState<BrickTransaction | null>(null);
+  const [deleteTxTarget, setDeleteTxTarget] = useState<BrickTransaction | null>(
+    null,
+  );
   const [isDeletingTx, setIsDeletingTx] = useState(false);
 
   // Auto-calculated totals for Add Modal
-  const calculatedTotal = (parseFloat(txQuantity) || 0) * (parseFloat(txRate) || 0);
-  const calculatedBalance = Math.max(0, calculatedTotal - (parseFloat(txPaid) || 0));
+  const calculatedTotal =
+    (parseFloat(txQuantity) || 0) * (parseFloat(txRate) || 0);
+  const calculatedBalance = Math.max(
+    0,
+    calculatedTotal - (parseFloat(txPaid) || 0),
+  );
 
   // Auto-calculated totals for Edit Modal
-  const editCalculatedTotal = (parseFloat(editTxQuantity) || 0) * (parseFloat(editTxRate) || 0);
-  const editCalculatedBalance = Math.max(0, editCalculatedTotal - (parseFloat(editTxPaid) || 0));
+  const editCalculatedTotal =
+    (parseFloat(editTxQuantity) || 0) * (parseFloat(editTxRate) || 0);
+  const editCalculatedBalance = Math.max(
+    0,
+    editCalculatedTotal - (parseFloat(editTxPaid) || 0),
+  );
 
   // Validations
   const isAddValid =
     isValidDate(txDate) &&
-    (txBrickType !== 'Custom / Other' || customBrickType.trim().length > 0) &&
+    (txBrickType !== "Custom / Other" || customBrickType.trim().length > 0) &&
     parseFloat(txQuantity) > 0 &&
     parseFloat(txRate) > 0 &&
-    txPaid !== '';
+    txPaid !== "";
 
   const isEditValid =
     isValidDate(editTxDate) &&
-    (editTxBrickType !== 'Custom / Other' || editCustomBrickType.trim().length > 0) &&
+    (editTxBrickType !== "Custom / Other" ||
+      editCustomBrickType.trim().length > 0) &&
     parseFloat(editTxQuantity) > 0 &&
     parseFloat(editTxRate) > 0 &&
-    editTxPaid !== '';
+    editTxPaid !== "";
 
   // Currency format
   const formatINR = (val: number) => {
-    return '₹' + Number(val || 0).toLocaleString('en-IN');
+    return "₹" + Number(val || 0).toLocaleString("en-IN");
   };
 
   // Filter transactions by search query AND date range
@@ -146,25 +176,45 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
           String(tx.quantity).includes(q) ||
           String(tx.totalAmount).includes(q) ||
           String(tx.balanceAmount).includes(q) ||
-          String(tx.sNo).includes(q)
+          String(tx.sNo).includes(q),
       );
     }
 
-    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
+    return [...list].sort((a, b) =>
+      compareByDateDesc(a.date, b.date, a.sNo, b.sNo),
+    );
   }, [transactions, searchQuery, fromDate, toDate]);
 
   // Metrics for filtered selection
   const totalOrders = filteredTransactions.length;
-  const totalQuantity = filteredTransactions.reduce((sum, tx) => sum + (Number(tx.quantity) || 0), 0);
-  const totalAmount = filteredTransactions.reduce((sum, tx) => sum + (Number(tx.totalAmount) || 0), 0);
-  const totalPaid = filteredTransactions.reduce((sum, tx) => sum + (Number(tx.paidAmount) || 0), 0);
-  const totalBalance = filteredTransactions.reduce((sum, tx) => sum + (Number(tx.balanceAmount) || 0), 0);
+  const totalQuantity = filteredTransactions.reduce(
+    (sum, tx) => sum + (Number(tx.quantity) || 0),
+    0,
+  );
+  const totalAmount = filteredTransactions.reduce(
+    (sum, tx) => sum + (Number(tx.totalAmount) || 0),
+    0,
+  );
+  const totalPaid = filteredTransactions.reduce(
+    (sum, tx) => sum + (Number(tx.paidAmount) || 0),
+    0,
+  );
+  const totalBalance = filteredTransactions.reduce(
+    (sum, tx) => sum + (Number(tx.balanceAmount) || 0),
+    0,
+  );
 
   // Pagination computations
   const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage) || 1;
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, filteredTransactions.length);
-  const paginatedTransactions = filteredTransactions.slice(startIndex, endIndex);
+  const endIndex = Math.min(
+    startIndex + itemsPerPage,
+    filteredTransactions.length,
+  );
+  const paginatedTransactions = filteredTransactions.slice(
+    startIndex,
+    endIndex,
+  );
 
   const pageNumbers = useMemo(() => {
     const pages: number[] = [];
@@ -179,8 +229,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
     filteredTransactions.length > 0 &&
     filteredTransactions.every((tx) => selectedTxIds.has(tx.id));
 
-  const isSomeSelected =
-    selectedTxIds.size > 0 && !isAllSelected;
+  const isSomeSelected = selectedTxIds.size > 0 && !isAllSelected;
 
   const handleToggleSelectAll = () => {
     if (isAllSelected) {
@@ -209,7 +258,10 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
     setIsBulkDeleting(true);
     try {
       if (onDeleteMultipleTransactions) {
-        await onDeleteMultipleTransactions(customer.id, Array.from(selectedTxIds));
+        await onDeleteMultipleTransactions(
+          customer.id,
+          Array.from(selectedTxIds),
+        );
       } else {
         for (const id of selectedTxIds) {
           await onDeleteTransaction(customer.id, id);
@@ -231,14 +283,14 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
   const resetAddForm = () => {
     setTxDate(new Date().toISOString().slice(0, 10));
     setTxBrickType(PREDEFINED_BRICK_TYPES[0]);
-    setCustomBrickType('');
-    setTxQuantity('');
-    setTxRate('');
-    setTxPaid('0');
-    setTxSiteLocation('');
-    setTxVehicleNumber('');
-    setTxDriverPhone('');
-    setTxNotes('');
+    setCustomBrickType("");
+    setTxQuantity("");
+    setTxRate("");
+    setTxPaid("0");
+    setTxSiteLocation("");
+    setTxVehicleNumber("");
+    setTxDriverPhone("");
+    setTxNotes("");
   };
 
   // Submit Add Transaction
@@ -247,7 +299,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
     if (!isAddValid) return;
 
     const finalBrickType =
-      txBrickType === 'Custom / Other' ? customBrickType.trim() : txBrickType;
+      txBrickType === "Custom / Other" ? customBrickType.trim() : txBrickType;
 
     await onAddTransaction(customer.id, {
       date: txDate,
@@ -260,7 +312,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
       siteLocation: txSiteLocation.trim() || undefined,
       vehicleNumber: txVehicleNumber.trim() || undefined,
       driverPhone: txDriverPhone.trim() || undefined,
-      notes: txNotes.trim() || undefined
+      notes: txNotes.trim() || undefined,
     });
 
     setIsAddModalOpen(false);
@@ -275,19 +327,19 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
 
     if (PREDEFINED_BRICK_TYPES.includes(tx.brickType)) {
       setEditTxBrickType(tx.brickType);
-      setEditCustomBrickType('');
+      setEditCustomBrickType("");
     } else {
-      setEditTxBrickType('Custom / Other');
+      setEditTxBrickType("Custom / Other");
       setEditCustomBrickType(tx.brickType);
     }
 
     setEditTxQuantity(String(tx.quantity));
     setEditTxRate(String(tx.rate));
     setEditTxPaid(String(tx.paidAmount));
-    setEditTxSiteLocation(tx.siteLocation || '');
-    setEditTxVehicleNumber(tx.vehicleNumber || '');
-    setEditTxDriverPhone(tx.driverPhone || '');
-    setEditTxNotes(tx.notes || '');
+    setEditTxSiteLocation(tx.siteLocation || "");
+    setEditTxVehicleNumber(tx.vehicleNumber || "");
+    setEditTxDriverPhone(tx.driverPhone || "");
+    setEditTxNotes(tx.notes || "");
     setIsEditModalOpen(true);
   };
 
@@ -297,7 +349,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
     if (!isEditValid || !editingTxId) return;
 
     const finalBrickType =
-      editTxBrickType === 'Custom / Other'
+      editTxBrickType === "Custom / Other"
         ? editCustomBrickType.trim()
         : editTxBrickType;
 
@@ -316,7 +368,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
       siteLocation: editTxSiteLocation.trim() || undefined,
       vehicleNumber: editTxVehicleNumber.trim() || undefined,
       driverPhone: editTxDriverPhone.trim() || undefined,
-      notes: editTxNotes.trim() || undefined
+      notes: editTxNotes.trim() || undefined,
     });
 
     setIsEditModalOpen(false);
@@ -342,7 +394,9 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
         <div className="print-brand-row">
           <div>
             <h1 className="print-company-name">AFRAH CONSTRUCTIONS</h1>
-            <p className="print-company-sub">Civil Construction, Materials Procurement & Financial ERP</p>
+            <p className="print-company-sub">
+              Civil Construction, Materials Procurement & Financial ERP
+            </p>
           </div>
           <div className="print-badge-statement">
             <span>KABIBULLAH BRICKS STATEMENT</span>
@@ -352,7 +406,9 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
         <div className="print-meta-grid">
           <div className="print-meta-box">
             <span className="print-meta-title">CUSTOMER DETAILS</span>
-            <div className="print-meta-val"><strong>{customer.name}</strong></div>
+            <div className="print-meta-val">
+              <strong>{customer.name}</strong>
+            </div>
             <div className="print-meta-sub">Phone: {customer.phone}</div>
             <div className="print-meta-sub">Address: {customer.address}</div>
           </div>
@@ -360,10 +416,32 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
           <div className="print-meta-box">
             <span className="print-meta-title">STATEMENT SUMMARY</span>
             <div className="print-meta-sub">
-              Period: <strong>{fromDate && toDate ? `${fromDate} to ${toDate}` : fromDate ? `From ${fromDate}` : toDate ? `Up to ${toDate}` : 'All Recorded Transactions'}</strong>
+              Period:{" "}
+              <strong>
+                {fromDate && toDate
+                  ? `${fromDate} to ${toDate}`
+                  : fromDate
+                    ? `From ${fromDate}`
+                    : toDate
+                      ? `Up to ${toDate}`
+                      : "All Recorded Transactions"}
+              </strong>
             </div>
-            <div className="print-meta-sub">Generated: {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
-            <div className="print-meta-val" style={{ marginTop: '4px', color: totalBalance > 0 ? '#b91c1c' : '#15803d' }}>
+            <div className="print-meta-sub">
+              Generated:{" "}
+              {new Date().toLocaleDateString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })}
+            </div>
+            <div
+              className="print-meta-val"
+              style={{
+                marginTop: "4px",
+                color: totalBalance > 0 ? "#b91c1c" : "#15803d",
+              }}
+            >
               Balance Due: {formatINR(totalBalance)}
             </div>
           </div>
@@ -372,23 +450,40 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
         {/* Print Summary Totals Row */}
         <div className="print-totals-summary-bar">
           <div className="print-total-item">
-            <span>Total Deliveries:</span> <strong>{totalOrders} Batches ({totalQuantity.toLocaleString('en-IN')} units)</strong>
+            <span>Total Deliveries:</span>{" "}
+            <strong>
+              {totalOrders} Batches ({totalQuantity.toLocaleString("en-IN")}{" "}
+              units)
+            </strong>
           </div>
           <div className="print-total-item">
-            <span>Total Billing:</span> <strong>{formatINR(totalAmount)}</strong>
+            <span>Total Billing:</span>{" "}
+            <strong>{formatINR(totalAmount)}</strong>
           </div>
           <div className="print-total-item">
             <span>Total Paid:</span> <strong>{formatINR(totalPaid)}</strong>
           </div>
           <div className="print-total-item">
-            <span>Outstanding Balance:</span> <strong style={{ color: totalBalance > 0 ? '#b91c1c' : '#15803d' }}>{formatINR(totalBalance)}</strong>
+            <span>Outstanding Balance:</span>{" "}
+            <strong style={{ color: totalBalance > 0 ? "#b91c1c" : "#15803d" }}>
+              {formatINR(totalBalance)}
+            </strong>
           </div>
         </div>
       </div>
 
       {/* Screen Header Bar */}
       <div className="client-details-header no-print">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '12px' }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: "8px",
+            flexWrap: "wrap",
+            gap: "12px",
+          }}
+        >
           <button
             onClick={onBack}
             className="afrah-app-back-btn"
@@ -399,7 +494,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
             <span>Back to Customers</span>
           </button>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="flex-center-10">
             <button
               onClick={handlePrint}
               className="afrah-app-back-btn"
@@ -415,7 +510,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                 setIsAddModalOpen(true);
               }}
               className="btn-theme-primary"
-              style={{ height: '38px', padding: '0 16px', fontSize: '13px' }}
+              style={{ height: "38px", padding: "0 16px", fontSize: "13px" }}
             >
               <Plus size={16} strokeWidth={2.5} />
               <span>New Brick Delivery</span>
@@ -426,7 +521,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
         <div className="client-unified-summary-card">
           <div className="client-unified-card-item client-info-item">
             <h1 className="client-unified-name-title">
-              <span className="client-unified-label">Customer Name :</span>{' '}
+              <span className="client-unified-label">Customer Name :</span>{" "}
               <span className="client-unified-name">{customer.name}</span>
             </h1>
           </div>
@@ -437,7 +532,9 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
             </div>
             <div>
               <span className="metric-label">TOTAL BILLING</span>
-              <span className="metric-value gold">{formatINR(totalAmount)}</span>
+              <span className="metric-value gold">
+                {formatINR(totalAmount)}
+              </span>
             </div>
           </div>
 
@@ -452,14 +549,18 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
           </div>
 
           <div className="client-unified-card-item metric-item">
-            <div className={`metric-icon-wrap ${totalBalance > 0 ? 'red' : 'green'}`}>
+            <div
+              className={`metric-icon-wrap ${totalBalance > 0 ? "red" : "green"}`}
+            >
               <Scale size={24} />
             </div>
             <div>
               <span className="metric-label">
-                {totalBalance > 0 ? 'OUTSTANDING BALANCE' : 'FULLY SETTLED'}
+                {totalBalance > 0 ? "OUTSTANDING BALANCE" : "FULLY SETTLED"}
               </span>
-              <span className={`metric-value ${totalBalance > 0 ? 'red' : 'green'}`}>
+              <span
+                className={`metric-value ${totalBalance > 0 ? "red" : "green"}`}
+              >
                 {formatINR(totalBalance)}
               </span>
             </div>
@@ -480,8 +581,8 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
           setCurrentPage(1);
         }}
         onClearDates={() => {
-          setFromDate('');
-          setToDate('');
+          setFromDate("");
+          setToDate("");
           setCurrentPage(1);
         }}
         selectedCount={selectedTxIds.size}
@@ -491,19 +592,26 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
       />
 
       {/* Transactions Section */}
-      <section className="afrah-app-table-section" style={{ minHeight: 'auto' }}>
+      <section
+        className="afrah-app-table-section"
+        style={{ minHeight: "auto" }}
+      >
         <div className="afrah-app-section-header no-print">
           <div>
-            <h2 className="afrah-app-section-title" style={{ fontSize: '16px' }}>
+            <h2
+              className="afrah-app-section-title"
+              style={{ fontSize: "16px" }}
+            >
               DELIVERY & PAYMENT LEDGER
             </h2>
             <span className="afrah-app-section-subtitle">
-              {filteredTransactions.length} {filteredTransactions.length === 1 ? 'entry' : 'entries'} recorded
-              {(fromDate || toDate) && ' (filtered by date)'}
+              {filteredTransactions.length}{" "}
+              {filteredTransactions.length === 1 ? "entry" : "entries"} recorded
+              {(fromDate || toDate) && " (filtered by date)"}
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="flex-center-10">
             <div className="afrah-app-search-wrapper">
               <Search size={14} className="afrah-app-search-icon" />
               <input
@@ -524,7 +632,12 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                 setIsAddModalOpen(true);
               }}
               className="btn-theme-primary"
-              style={{ height: '36px', padding: '0 14px', fontSize: '12.5px', whiteSpace: 'nowrap' }}
+              style={{
+                height: "36px",
+                padding: "0 14px",
+                fontSize: "12.5px",
+                whiteSpace: "nowrap",
+              }}
             >
               <Plus size={15} />
               <span>Add Entry</span>
@@ -537,57 +650,79 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
           <table className="afrah-app-table">
             <thead>
               <tr>
-                <th style={{ width: '48px', textAlign: 'center' }}>S.NO</th>
-                <th style={{ width: '105px' }}>DATE</th>
+                <th className="text-center" style={{ width: "48px" }}>
+                  S.NO
+                </th>
+                <th style={{ width: "105px" }}>DATE</th>
                 <th>BRICK TYPE / DESCRIPTION</th>
-                <th style={{ width: '90px', textAlign: 'right' }}>QTY</th>
-                <th style={{ width: '90px', textAlign: 'right' }}>RATE (₹)</th>
-                <th style={{ width: '120px', textAlign: 'right' }}>TOTAL (₹)</th>
-                <th style={{ width: '120px', textAlign: 'right' }}>PAID (₹)</th>
-                <th style={{ width: '120px', textAlign: 'right' }}>BALANCE (₹)</th>
-                <th className="no-print" style={{ width: '75px', textAlign: 'center' }}>ACTIONS</th>
+                <th className="text-right" style={{ width: "90px" }}>
+                  QTY
+                </th>
+                <th className="text-right" style={{ width: "90px" }}>
+                  RATE (₹)
+                </th>
+                <th className="text-right" style={{ width: "120px" }}>
+                  TOTAL (₹)
+                </th>
+                <th className="text-right" style={{ width: "120px" }}>
+                  PAID (₹)
+                </th>
+                <th className="text-right" style={{ width: "120px" }}>
+                  BALANCE (₹)
+                </th>
+                <th
+                  className="no-print"
+                  style={{ width: "75px", textAlign: "center" }}
+                >
+                  ACTIONS
+                </th>
               </tr>
             </thead>
             <tbody>
               {paginatedTransactions.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan={9}
-                    style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}
-                  >
-                    <BrickWall size={32} style={{ opacity: 0.3, margin: '0 auto 8px auto', display: 'block' }} />
+                  <td colSpan={9} className="empty-state-cell">
+                    <BrickWall
+                      size={32}
+                      style={{
+                        opacity: 0.3,
+                        margin: "0 auto 8px auto",
+                        display: "block",
+                      }}
+                    />
                     {searchQuery || fromDate || toDate
-                      ? 'No matching ledger transactions found for the selected filter.'
+                      ? "No matching ledger transactions found for the selected filter."
                       : 'No delivery entries logged for this customer yet. Click "New Brick Delivery" above.'}
                   </td>
                 </tr>
               ) : (
                 paginatedTransactions.map((tx, idx) => {
                   return (
-                    <tr
-                      key={tx.id}
-                      style={{ cursor: 'default' }}
-                    >
+                    <tr key={tx.id} className="cursor-default">
                       <td
                         style={{
-                          fontFamily: 'monospace',
+                          fontFamily: "monospace",
                           fontWeight: 600,
-                          color: 'var(--text-secondary)',
-                          textAlign: 'center'
+                          color: "var(--text-secondary)",
+                          textAlign: "center",
                         }}
                       >
                         {startIndex + idx + 1}
                       </td>
-                      <td style={{ whiteSpace: 'nowrap' }}>
-                        <span style={{ fontFamily: 'monospace', fontSize: '12px' }}>{formatToDDMMYYYY(tx.date)}</span>
+                      <td style={{ whiteSpace: "nowrap" }}>
+                        <span
+                          style={{ fontFamily: "monospace", fontSize: "12px" }}
+                        >
+                          {formatToDDMMYYYY(tx.date)}
+                        </span>
                       </td>
                       <td>
                         <div>
                           <span
                             style={{
                               fontWeight: 600,
-                              color: 'var(--text-primary)',
-                              fontSize: '13px'
+                              color: "var(--text-primary)",
+                              fontSize: "13px",
                             }}
                           >
                             {tx.brickType}
@@ -595,10 +730,10 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                           {tx.notes && (
                             <span
                               style={{
-                                display: 'block',
-                                fontSize: '11px',
-                                color: 'var(--text-secondary)',
-                                marginTop: '2px'
+                                display: "block",
+                                fontSize: "11px",
+                                color: "var(--text-secondary)",
+                                marginTop: "2px",
                               }}
                             >
                               {tx.notes}
@@ -606,69 +741,98 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                           )}
                         </div>
                       </td>
-                      <td style={{ textAlign: 'right', fontFamily: 'monospace', fontWeight: 600 }}>
-                        {Number(tx.quantity).toLocaleString('en-IN')}
+                      <td
+                        style={{
+                          textAlign: "right",
+                          fontFamily: "monospace",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {Number(tx.quantity).toLocaleString("en-IN")}
                       </td>
-                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--text-secondary)' }}>
-                      ₹{Number(tx.rate).toFixed(2)}
-                    </td>
-                    <td style={{ textAlign: 'right', fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-primary)' }}>
-                      {formatINR(tx.totalAmount)}
-                    </td>
-                    <td style={{ textAlign: 'right', fontFamily: 'monospace', color: '#4ade80', fontWeight: 600 }}>
-                      {formatINR(tx.paidAmount)}
-                    </td>
-                    <td style={{ textAlign: 'right' }}>
-                      <span
+                      <td
                         style={{
-                          display: 'inline-block',
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                          fontWeight: 700,
-                          fontFamily: 'monospace',
-                          fontSize: '12px',
-                          background:
-                            (tx.balanceAmount || 0) > 0
-                              ? 'rgba(239, 68, 68, 0.12)'
-                              : 'rgba(34, 197, 94, 0.12)',
-                          color: (tx.balanceAmount || 0) > 0 ? '#f87171' : '#4ade80'
+                          textAlign: "right",
+                          fontFamily: "monospace",
+                          color: "var(--text-secondary)",
                         }}
                       >
-                        {formatINR(tx.balanceAmount)}
-                      </span>
-                    </td>
-                    <td style={{ textAlign: 'center' }}>
-                      <div
+                        ₹{Number(tx.rate).toFixed(2)}
+                      </td>
+                      <td
                         style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '4px'
+                          textAlign: "right",
+                          fontFamily: "monospace",
+                          fontWeight: 600,
+                          color: "var(--text-primary)",
                         }}
                       >
-                        <button
-                          onClick={() => handleOpenEdit(tx)}
-                          className="afrah-app-action-btn afrah-app-edit-btn"
-                          title="Edit Transaction"
-                          aria-label="Edit Transaction"
+                        {formatINR(tx.totalAmount)}
+                      </td>
+                      <td
+                        style={{
+                          textAlign: "right",
+                          fontFamily: "monospace",
+                          color: "#4ade80",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {formatINR(tx.paidAmount)}
+                      </td>
+                      <td className="text-right">
+                        <span
+                          style={{
+                            display: "inline-block",
+                            padding: "2px 6px",
+                            borderRadius: "4px",
+                            fontWeight: 700,
+                            fontFamily: "monospace",
+                            fontSize: "12px",
+                            background:
+                              (tx.balanceAmount || 0) > 0
+                                ? "rgba(239, 68, 68, 0.12)"
+                                : "rgba(34, 197, 94, 0.12)",
+                            color:
+                              (tx.balanceAmount || 0) > 0
+                                ? "#f87171"
+                                : "#4ade80",
+                          }}
                         >
-                          <Pencil size={13} />
-                        </button>
-                        <button
-                          onClick={() => setDeleteTxTarget(tx)}
-                          className="afrah-app-action-btn afrah-app-delete-btn"
-                          title="Delete Transaction"
-                          aria-label="Delete Transaction"
+                          {formatINR(tx.balanceAmount)}
+                        </span>
+                      </td>
+                      <td className="text-center">
+                        <div
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "4px",
+                          }}
                         >
-                          <Trash2 size={13} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
+                          <button
+                            onClick={() => handleOpenEdit(tx)}
+                            className="afrah-app-action-btn afrah-app-edit-btn"
+                            title="Edit Transaction"
+                            aria-label="Edit Transaction"
+                          >
+                            <Pencil size={13} />
+                          </button>
+                          <button
+                            onClick={() => setDeleteTxTarget(tx)}
+                            className="afrah-app-action-btn afrah-app-delete-btn"
+                            title="Delete Transaction"
+                            aria-label="Delete Transaction"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
           </table>
         </div>
 
@@ -677,7 +841,8 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
           <div className="afrah-app-pagination-bar">
             <div className="afrah-app-pagination-left">
               <span className="afrah-app-pagination-info">
-                Showing <strong>{startIndex + 1}</strong>–<strong>{endIndex}</strong> of{' '}
+                Showing <strong>{startIndex + 1}</strong>–
+                <strong>{endIndex}</strong> of{" "}
                 <strong>{filteredTransactions.length}</strong>
               </span>
 
@@ -715,7 +880,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   <button
                     key={p}
                     onClick={() => setCurrentPage(p)}
-                    className={`afrah-app-page-num-btn ${currentPage === p ? 'active' : ''}`}
+                    className={`afrah-app-page-num-btn ${currentPage === p ? "active" : ""}`}
                   >
                     {p}
                   </button>
@@ -723,7 +888,9 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
               </div>
 
               <button
-                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
                 disabled={currentPage === totalPages}
                 className="afrah-app-page-nav-btn"
                 title="Next Page"
@@ -738,16 +905,21 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
 
       {/* ADD TRANSACTION MODAL */}
       {isAddModalOpen && (
-        <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
+        <div
+          className="afrah-app-modal-overlay"
+          onClick={() => setIsAddModalOpen(false)}
+        >
           <div
             className="afrah-app-modal-container"
-            style={{ maxWidth: '580px' }}
+            style={{ maxWidth: "580px" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <BrickWall size={17} color="var(--primary)" />
-                <h3 className="afrah-app-modal-title">New Brick Delivery Entry</h3>
+                <h3 className="afrah-app-modal-title">
+                  New Brick Delivery Entry
+                </h3>
               </div>
               <button
                 onClick={() => setIsAddModalOpen(false)}
@@ -760,7 +932,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
 
             <form onSubmit={handleAddSubmit}>
               <div className="afrah-app-modal-body">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="grid-2">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Date *</label>
                     <DateInput
@@ -787,9 +959,11 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   </div>
                 </div>
 
-                {txBrickType === 'Custom / Other' && (
+                {txBrickType === "Custom / Other" && (
                   <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Specify Custom Brick Type *</label>
+                    <label className="afrah-app-label">
+                      Specify Custom Brick Type *
+                    </label>
                     <input
                       type="text"
                       required
@@ -801,9 +975,11 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   </div>
                 )}
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="grid-2">
                   <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Site / Delivery Location</label>
+                    <label className="afrah-app-label">
+                      Site / Delivery Location
+                    </label>
                     <input
                       type="text"
                       placeholder="e.g. Site #4, Anna Nagar"
@@ -826,9 +1002,17 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                 </div>
 
                 {/* Calculation Fields */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', gap: '14px' }}>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr 1.2fr",
+                    gap: "14px",
+                  }}
+                >
                   <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Quantity (Units) *</label>
+                    <label className="afrah-app-label">
+                      Quantity (Units) *
+                    </label>
                     <input
                       type="number"
                       step="any"
@@ -842,7 +1026,9 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   </div>
 
                   <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Rate per Unit (₹) *</label>
+                    <label className="afrah-app-label">
+                      Rate per Unit (₹) *
+                    </label>
                     <input
                       type="number"
                       step="any"
@@ -859,16 +1045,16 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                     <label className="afrah-app-label">Calculated Total</label>
                     <div
                       style={{
-                        height: '42px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '0 12px',
-                        background: 'var(--surface-container-low, #141618)',
-                        border: '1px solid var(--border-stroke, #232730)',
-                        borderRadius: '8px',
+                        height: "42px",
+                        display: "flex",
+                        alignItems: "center",
+                        padding: "0 12px",
+                        background: "var(--surface-container-low, #141618)",
+                        border: "1px solid var(--border-stroke, #232730)",
+                        borderRadius: "8px",
                         fontWeight: 700,
-                        fontFamily: 'monospace',
-                        color: 'var(--primary)'
+                        fontFamily: "monospace",
+                        color: "var(--primary)",
                       }}
                     >
                       {formatINR(calculatedTotal)}
@@ -876,9 +1062,11 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="grid-2">
                   <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Amount Paid / Advance (₹) *</label>
+                    <label className="afrah-app-label">
+                      Amount Paid / Advance (₹) *
+                    </label>
                     <input
                       type="number"
                       step="any"
@@ -892,19 +1080,21 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   </div>
 
                   <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Pending Balance (₹)</label>
+                    <label className="afrah-app-label">
+                      Pending Balance (₹)
+                    </label>
                     <div
                       style={{
-                        height: '42px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '0 12px',
-                        background: 'var(--surface-container-low, #141618)',
-                        border: '1px solid var(--border-stroke, #232730)',
-                        borderRadius: '8px',
+                        height: "42px",
+                        display: "flex",
+                        alignItems: "center",
+                        padding: "0 12px",
+                        background: "var(--surface-container-low, #141618)",
+                        border: "1px solid var(--border-stroke, #232730)",
+                        borderRadius: "8px",
                         fontWeight: 700,
-                        fontFamily: 'monospace',
-                        color: calculatedBalance > 0 ? '#f87171' : '#4ade80'
+                        fontFamily: "monospace",
+                        color: calculatedBalance > 0 ? "#f87171" : "#4ade80",
                       }}
                     >
                       {formatINR(calculatedBalance)}
@@ -936,7 +1126,11 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   type="submit"
                   disabled={!isAddValid}
                   className="btn-theme-primary"
-                  style={{ minWidth: '130px', height: '40px', fontSize: '13px' }}
+                  style={{
+                    minWidth: "130px",
+                    height: "40px",
+                    fontSize: "13px",
+                  }}
                 >
                   <Plus size={16} strokeWidth={2.5} />
                   <span>Save Delivery</span>
@@ -949,16 +1143,21 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
 
       {/* EDIT TRANSACTION MODAL */}
       {isEditModalOpen && (
-        <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
+        <div
+          className="afrah-app-modal-overlay"
+          onClick={() => setIsEditModalOpen(false)}
+        >
           <div
             className="afrah-app-modal-container"
-            style={{ maxWidth: '580px' }}
+            style={{ maxWidth: "580px" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={17} color="var(--primary)" />
-                <h3 className="afrah-app-modal-title">Edit Brick Delivery Entry</h3>
+                <h3 className="afrah-app-modal-title">
+                  Edit Brick Delivery Entry
+                </h3>
               </div>
               <button
                 onClick={() => setIsEditModalOpen(false)}
@@ -971,7 +1170,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
 
             <form onSubmit={handleSaveEdit}>
               <div className="afrah-app-modal-body">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="grid-2">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Date *</label>
                     <DateInput
@@ -998,9 +1197,11 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   </div>
                 </div>
 
-                {editTxBrickType === 'Custom / Other' && (
+                {editTxBrickType === "Custom / Other" && (
                   <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Specify Custom Brick Type *</label>
+                    <label className="afrah-app-label">
+                      Specify Custom Brick Type *
+                    </label>
                     <input
                       type="text"
                       required
@@ -1011,9 +1212,11 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   </div>
                 )}
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="grid-2">
                   <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Site / Delivery Location</label>
+                    <label className="afrah-app-label">
+                      Site / Delivery Location
+                    </label>
                     <input
                       type="text"
                       value={editTxSiteLocation}
@@ -1033,7 +1236,13 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', gap: '14px' }}>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr 1.2fr",
+                    gap: "14px",
+                  }}
+                >
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Quantity *</label>
                     <input
@@ -1048,7 +1257,9 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   </div>
 
                   <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Rate per Unit (₹) *</label>
+                    <label className="afrah-app-label">
+                      Rate per Unit (₹) *
+                    </label>
                     <input
                       type="number"
                       step="any"
@@ -1064,16 +1275,16 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                     <label className="afrah-app-label">Calculated Total</label>
                     <div
                       style={{
-                        height: '42px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '0 12px',
-                        background: 'var(--surface-container-low, #141618)',
-                        border: '1px solid var(--border-stroke, #232730)',
-                        borderRadius: '8px',
+                        height: "42px",
+                        display: "flex",
+                        alignItems: "center",
+                        padding: "0 12px",
+                        background: "var(--surface-container-low, #141618)",
+                        border: "1px solid var(--border-stroke, #232730)",
+                        borderRadius: "8px",
                         fontWeight: 700,
-                        fontFamily: 'monospace',
-                        color: 'var(--primary)'
+                        fontFamily: "monospace",
+                        color: "var(--primary)",
                       }}
                     >
                       {formatINR(editCalculatedTotal)}
@@ -1081,9 +1292,11 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="grid-2">
                   <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Amount Paid / Advance (₹) *</label>
+                    <label className="afrah-app-label">
+                      Amount Paid / Advance (₹) *
+                    </label>
                     <input
                       type="number"
                       step="any"
@@ -1096,19 +1309,22 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   </div>
 
                   <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Pending Balance (₹)</label>
+                    <label className="afrah-app-label">
+                      Pending Balance (₹)
+                    </label>
                     <div
                       style={{
-                        height: '42px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '0 12px',
-                        background: 'var(--surface-container-low, #141618)',
-                        border: '1px solid var(--border-stroke, #232730)',
-                        borderRadius: '8px',
+                        height: "42px",
+                        display: "flex",
+                        alignItems: "center",
+                        padding: "0 12px",
+                        background: "var(--surface-container-low, #141618)",
+                        border: "1px solid var(--border-stroke, #232730)",
+                        borderRadius: "8px",
                         fontWeight: 700,
-                        fontFamily: 'monospace',
-                        color: editCalculatedBalance > 0 ? '#f87171' : '#4ade80'
+                        fontFamily: "monospace",
+                        color:
+                          editCalculatedBalance > 0 ? "#f87171" : "#4ade80",
                       }}
                     >
                       {formatINR(editCalculatedBalance)}
@@ -1139,7 +1355,11 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
                   type="submit"
                   disabled={!isEditValid}
                   className="btn-theme-primary"
-                  style={{ minWidth: '130px', height: '40px', fontSize: '13px' }}
+                  style={{
+                    minWidth: "130px",
+                    height: "40px",
+                    fontSize: "13px",
+                  }}
                 >
                   <CheckCircle2 size={16} strokeWidth={2.5} />
                   <span>Update Entry</span>
@@ -1155,7 +1375,11 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
         isOpen={Boolean(deleteTxTarget)}
         title="Delete Delivery Entry"
         message="Are you sure you want to delete this delivery entry? The customer's balance will automatically be recalculated."
-        itemName={deleteTxTarget ? `${deleteTxTarget.brickType} (${deleteTxTarget.date})` : undefined}
+        itemName={
+          deleteTxTarget
+            ? `${deleteTxTarget.brickType} (${deleteTxTarget.date})`
+            : undefined
+        }
         confirmText="Delete Entry"
         isDeleting={isDeletingTx}
         onConfirm={handleConfirmDeleteTx}

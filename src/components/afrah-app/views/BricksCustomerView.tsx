@@ -230,7 +230,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
   };
 
   return (
-    <div style={{ width: '100%', maxWidth: '100%' }}>
+    <div className="w-full">
       {/* PRINT-ONLY HEADER */}
       <div className="print-only-statement-header">
         <div className="print-brand-row">
@@ -257,10 +257,10 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
       </div>
 
       {/* VIEW BRICKS CUSTOMER TABLE */}
-      <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
+      <section className="afrah-app-table-section w-full">
         <div className="afrah-app-section-header no-print">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div className="flex-center-10">
               <div
                 style={{
                   width: '32px',
@@ -285,7 +285,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
           </div>
 
           {/* Quick Search & Print / Add Actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <div className="flex-center-wrap-10">
             <div className="afrah-app-search-wrapper">
               <Search size={14} className="afrah-app-search-icon" />
               <input
@@ -312,8 +312,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
             <button
               type="button"
               onClick={() => setIsAddModalOpen(true)}
-              className="btn-theme-primary"
-              style={{ height: '36px', padding: '0 16px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              className="btn-theme-primary btn-add"
             >
               <Plus size={15} strokeWidth={2.5} />
               <span>Add Details</span>
@@ -326,12 +325,12 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
           <table className="afrah-app-table">
             <thead>
               <tr>
-                <th style={{ width: '55px', textAlign: 'center' }}>S.NO</th>
+                <th className="text-center" style={{ width: '55px' }}>S.NO</th>
                 <th>NAME</th>
                 <th style={{ width: '150px' }}>PHONE</th>
-                <th style={{ width: '140px', textAlign: 'right' }}>BALANCE</th>
+                <th className="text-right" style={{ width: '140px' }}>BALANCE</th>
                 <th>ADDRESS</th>
-                <th className="no-print" style={{ width: '90px', textAlign: 'center' }}>EDIT / DELETE</th>
+                <th className="no-print text-center" style={{ width: '90px' }}>EDIT / DELETE</th>
               </tr>
             </thead>
             <tbody>
@@ -361,73 +360,34 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                       className="clickable-client-row"
                       title="Click to view brick deliveries, ledger and payments"
                     >
-                      <td
-                        style={{
-                          fontFamily: 'monospace',
-                          fontWeight: 600,
-                          color: 'var(--text-secondary)',
-                          textAlign: 'center'
-                        }}
-                      >
+                      <td className="cell-sno">
                         {startIndex + index + 1}
                       </td>
                       <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div className="cell-entity">
                           <div className="afrah-app-user-avatar" style={{ background: 'rgba(226, 195, 153, 0.15)', color: 'var(--primary)' }}>
                             {customer.name.charAt(0).toUpperCase()}
                           </div>
                           <div>
-                            <span
-                              className="row-entity-name"
-                              style={{
-                                color: 'var(--text-primary)',
-                                fontSize: '15px',
-                                fontWeight: 750,
-                                display: 'block'
-                              }}
-                            >
+                            <span className="row-entity-name" style={{ display: 'block' }}>
                               {customer.name}
                             </span>
-                            <span
-                              style={{
-                                fontSize: '12px',
-                                fontWeight: 500,
-                                color: 'var(--text-secondary)'
-                              }}
-                            >
+                            <span className="cell-meta">
                               {(customer.transactions || []).length} {((customer.transactions || []).length === 1) ? 'delivery order' : 'delivery orders'}
                             </span>
                           </div>
                         </div>
                       </td>
-                      <td style={{ whiteSpace: 'nowrap' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <td className="nowrap">
+                        <div className="cell-icon-text">
                           <Phone size={13} color="var(--primary)" />
-                          <span style={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 600 }}>
+                          <span className="cell-phone">
                             {customer.phone}
                           </span>
                         </div>
                       </td>
                       <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
-                        <span
-                          style={{
-                            display: 'inline-block',
-                            padding: '4px 10px',
-                            borderRadius: '6px',
-                            fontWeight: 800,
-                            fontFamily: 'JetBrains Mono, monospace',
-                            fontSize: '14px',
-                            background:
-                              currentBalance > 0
-                                ? 'rgba(239, 68, 68, 0.12)'
-                                : 'rgba(34, 197, 94, 0.12)',
-                            color: currentBalance > 0 ? '#f87171' : '#4ade80',
-                            border: `1px solid ${currentBalance > 0
-                              ? 'rgba(239, 68, 68, 0.25)'
-                              : 'rgba(34, 197, 94, 0.25)'
-                              }`
-                          }}
-                        >
+                        <span className={`cell-amount-pill ${currentBalance > 0 ? 'is-negative' : 'is-positive'}`}>
                           {formatINR(currentBalance)}
                         </span>
                       </td>
@@ -443,7 +403,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                           <MapPin size={13} color="var(--primary)" style={{ marginTop: '2px', flexShrink: 0 }} />
                           <span
                             style={{
-                              fontSize: '12.5px',
+                              fontSize: 'var(--fs-2xs)',
                               lineHeight: 1.4,
                               display: '-webkit-box',
                               WebkitLineClamp: 2,
@@ -455,7 +415,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                           </span>
                         </div>
                       </td>
-                      <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+                      <td className="text-center" onClick={(e) => e.stopPropagation()}>
                         <div
                           style={{
                             display: 'inline-flex',
@@ -561,12 +521,11 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
       {isAddModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
           <div
-            className="afrah-app-modal-container"
-            style={{ maxWidth: '460px' }}
-            onClick={(e) => e.stopPropagation()}
+              className="afrah-app-modal-container modal-w-md"
+              onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Plus size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Add Details</h3>
               </div>
@@ -635,8 +594,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                 <button
                   type="submit"
                   disabled={!isAddValid}
-                  className="btn-theme-primary"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  className="btn-theme-primary flex-center-6"
                 >
                   <Plus size={15} strokeWidth={2.5} />
                   <span>Add Details</span>
@@ -651,12 +609,11 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
       {isEditModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
           <div
-            className="afrah-app-modal-container"
-            style={{ maxWidth: '460px' }}
-            onClick={(e) => e.stopPropagation()}
+              className="afrah-app-modal-container modal-w-md"
+              onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Bricks Customer</h3>
               </div>
@@ -722,8 +679,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                 <button
                   type="submit"
                   disabled={!isEditValid}
-                  className="btn-theme-primary"
-                  style={{ minWidth: '120px', height: '40px', fontSize: '13px' }}
+                  className="btn-theme-primary btn-secondary-lg"
                 >
                   <Check size={16} strokeWidth={2.5} />
                   <span>Submit</span>

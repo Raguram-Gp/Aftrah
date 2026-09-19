@@ -169,7 +169,7 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
           <span>Back to All Vendor Categories</span>
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="flex-center">
           <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Selected Trade:</span>
           <span className="section-total-badge" style={{ fontWeight: 700, color: 'var(--primary)' }}>
             {vendor.type}
@@ -177,9 +177,9 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
         </div>
       </div>
 
-      <div style={{ width: '100%', maxWidth: '100%' }}>
+      <div className="w-full">
         {/* VENDOR SHOPS LIST */}
-        <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
+        <section className="afrah-app-table-section w-full">
           <div className="afrah-app-section-header">
             <div>
               <h1 className="afrah-app-section-title">{vendor.type.toUpperCase()} · SHOPS LIST</h1>
@@ -188,7 +188,7 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
               </span>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div className="flex-center-10">
               <div className="afrah-app-search-wrapper">
                 <Search size={14} className="afrah-app-search-icon" />
                 <input
@@ -206,8 +206,7 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
               <button
                 type="button"
                 onClick={() => setIsAddModalOpen(true)}
-                className="btn-theme-primary"
-                style={{ height: '36px', padding: '0 16px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              className="btn-theme-primary btn-add"
               >
                 <Plus size={15} strokeWidth={2.5} />
                 <span>Add Details</span>
@@ -220,18 +219,18 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
             <table className="afrah-app-table">
               <thead>
                 <tr>
-                  <th style={{ width: '50px', textAlign: 'center' }}>S.NO</th>
+                  <th className="text-center" style={{ width: '50px' }}>S.NO</th>
                   <th>NAME (SUPPLIER / SHOP)</th>
                   <th style={{ width: '155px' }}>PHONE</th>
                   <th>ADDRESS</th>
-                  <th style={{ width: '135px', textAlign: 'right' }}>PENDING DUES</th>
-                  <th style={{ width: '80px', textAlign: 'center' }}>ACTIONS</th>
+                  <th className="text-right" style={{ width: '135px' }}>PENDING DUES</th>
+                  <th className="text-center" style={{ width: '80px' }}>ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedShops.length === 0 ? (
                   <tr>
-                    <td colSpan={6} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
+                    <td colSpan={6} className="empty-state-cell">
                       {searchQuery ? 'No matching shops found.' : `No shops registered under ${vendor.type} yet. Click "+ Add Details" to register one.`}
                     </td>
                   </tr>
@@ -244,45 +243,38 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
                         onClick={() => onSelectShop(shop)}
                         className="clickable-client-row"
                       >
-                        <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
+                        <td className="cell-sno">
                           {startIndex + index + 1}
                         </td>
                         <td>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <div className="cell-entity">
                             <div className="afrah-app-user-avatar" style={{ background: 'rgba(226, 195, 153, 0.15)', color: 'var(--primary)' }}>
                               <Store size={14} />
                             </div>
-                            <span className="row-entity-name" style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 750 }}>
+                            <span className="row-entity-name">
                               {shop.name}
                             </span>
                           </div>
                         </td>
-                        <td style={{ whiteSpace: 'nowrap' }}>
-                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                        <td className="nowrap">
+                          <div className="cell-icon-text">
                             <Phone size={13} color="var(--primary)" />
-                            <span style={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 600 }}>{shop.phone}</span>
+                            <span className="cell-phone">{shop.phone}</span>
                           </div>
                         </td>
                         <td>
-                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)' }}>
+                          <div className="cell-icon-text is-muted">
                             <MapPin size={13} color="var(--primary)" />
-                            <span style={{ fontSize: '13.5px', fontWeight: 500 }}>{shop.address}</span>
+                            <span className="cell-address">{shop.address}</span>
                           </div>
                         </td>
-                        <td style={{ textAlign: 'right' }}>
-                          <span
-                            style={{
-                              fontFamily: 'JetBrains Mono, monospace',
-                              fontWeight: 800,
-                              fontSize: '14px',
-                              color: pending > 0 ? '#f87171' : '#4ade80'
-                            }}
-                          >
+                        <td className="text-right">
+                          <span className={`cell-amount ${pending > 0 ? 'is-negative' : 'is-positive'}`}>
                             {formatINR(pending)}
                           </span>
                         </td>
-                        <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                          <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                        <td className="text-center" onClick={(e) => e.stopPropagation()}>
+                          <div className="cell-actions">
                             <button
                               onClick={(e) => handleOpenEdit(shop, e)}
                               className="afrah-app-action-btn afrah-app-edit-btn"
@@ -374,12 +366,11 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
         {isAddModalOpen && (
           <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
             <div
-              className="afrah-app-modal-container"
-              style={{ maxWidth: '460px' }}
+              className="afrah-app-modal-container modal-w-md"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="afrah-app-modal-header">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="flex-center">
                   <Plus size={17} color="var(--primary)" />
                   <h3 className="afrah-app-modal-title">Add Details</h3>
                 </div>
@@ -447,8 +438,7 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
                   <button
                     type="submit"
                     disabled={!isAddFormValid}
-                    className="btn-theme-primary"
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                    className="btn-theme-primary flex-center-6"
                   >
                     <Plus size={15} strokeWidth={2.5} />
                     <span>Add Details</span>
@@ -463,12 +453,11 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
         {isEditModalOpen && (
           <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
             <div
-              className="afrah-app-modal-container"
-              style={{ maxWidth: '460px' }}
+              className="afrah-app-modal-container modal-w-md"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="afrah-app-modal-header">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="flex-center">
                   <Pencil size={17} color="var(--primary)" />
                   <h3 className="afrah-app-modal-title">Edit Shop Information</h3>
                 </div>

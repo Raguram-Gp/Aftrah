@@ -1,0 +1,170 @@
+/* ==========================================================================
+   KABIBULLAH BRICKS SUB-NAVIGATION & ACCORDION STYLES
+   ========================================================================== */
+
+.afrah-app-nav-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.afrah-app-division-header {
+  border: 1px solid var(--border-stroke, #2a2e37);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  font-weight: var(--fw-bold);
+  transition: all 0.2s ease;
+  margin-bottom: 2px;
+  color: var(--text-primary);
+}
+
+.afrah-app-division-header:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(226, 195, 153, 0.3);
+}
+
+.afrah-app-division-header.division-active {
+  border-color: rgba(226, 195, 153, 0.35);
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid var(--primary, #e2c399);
+}
+
+[data-theme="light"] .afrah-app-division-header {
+  border-color: #E2E8F0;
+  background: #F8FAFC;
+  color: #1E293B;
+}
+
+[data-theme="light"] .afrah-app-division-header:hover {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+}
+
+[data-theme="light"] .afrah-app-division-header.division-active {
+  border-color: #CBD5E1;
+  background: #F8FAFC;
+  border-left: 3px solid #d97706;
+}
+
+.afrah-app-nav-sublist {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-left: 14px;
+  padding-left: 10px;
+  border-left: 2px solid var(--border-stroke, #232730);
+  margin-top: 4px;
+  margin-bottom: 6px;
+}
+
+.afrah-app-nav-subitem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.afrah-app-nav-subitem:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.afrah-app-nav-subitem.active {
+  color: var(--primary, #e2c399);
+  background: rgba(226, 195, 153, 0.12);
+  border: 1px solid rgba(226, 195, 153, 0.25);
+  font-weight: var(--fw-semibold);
+}
+
+[data-theme="light"] .afrah-app-nav-subitem.active {
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FDE68A;
+}
+
+.afrah-app-subbadge-count {
+  font-size: var(--fs-4xs);
+  font-weight: var(--fw-bold);
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(226, 195, 153, 0.15);
+  color: var(--primary);
+}
+
+[data-theme="light"] .afrah-app-subbadge-count {
+  background: #E2E8F0;
+  color: #0F172A;
+}
+
+/* Sub-navigation bar at top of Kabibullah Bricks views */
+.afrah-app-subnav-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 32px 0 32px;
+  background: transparent;
+  border-bottom: 1px solid var(--border-stroke, #232730);
+  flex-wrap: wrap;
+}
+
+.afrah-app-subnav-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 8px 8px 0 0;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.afrah-app-subnav-pill-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.afrah-app-subnav-pill-btn.active {
+  color: var(--primary, #e2c399);
+  background: rgba(226, 195, 153, 0.08);
+  border-bottom: 2px solid var(--primary, #e2c399);
+}
+
+[data-theme="light"] .afrah-app-subnav-pill-btn.active {
+  color: #92400E;
+  background: rgba(254, 243, 199, 0.5);
+  border-bottom: 2px solid #D97706;
+}
+
+.afrah-app-subnav-counter {
+  font-size: var(--fs-3xs);
+  font-weight: var(--fw-bold);
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+}
+
+.afrah-app-subnav-pill-btn.active .afrah-app-subnav-counter {
+  background: rgba(226, 195, 153, 0.2);
+  color: var(--primary);
+}
+
+[data-theme="light"] .afrah-app-subnav-pill-btn.active .afrah-app-subnav-counter {
+  background: #FDE68A;
+  color: #92400E;
+}

@@ -1,8 +1,13 @@
-import React, { useState, useMemo } from 'react';
-import type { LabourContract } from '../types';
-import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
-import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
-import { DateInput, isValidDate, formatToDDMMYYYY, compareByDateDesc } from '../components/DateInput';
+import React, { useState, useMemo } from "react";
+import type { LabourContract } from "../types";
+import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
+import { SearchableExpenseSelect } from "../components/SearchableExpenseSelect";
+import {
+  DateInput,
+  isValidDate,
+  formatToDDMMYYYY,
+  compareByDateDesc,
+} from "../components/DateInput";
 import {
   HardHat,
   Search,
@@ -16,47 +21,58 @@ import {
   X,
   IndianRupee,
   Wallet,
-  Scale
-} from 'lucide-react';
+  Scale,
+} from "lucide-react";
 
 interface InteriorLabourContractViewProps {
   contracts: LabourContract[];
   onSelectContract: (contract: LabourContract) => void;
-  onAddContract: (contractData: Omit<LabourContract, 'id' | 'sNo'>) => Promise<any> | void;
+  onAddContract: (
+    contractData: Omit<LabourContract, "id" | "sNo">,
+  ) => Promise<any> | void;
   onUpdateContract: (updated: LabourContract) => Promise<any> | void;
   onDeleteContract: (id: string) => Promise<any> | void;
   siteOptions?: string[];
 }
 
-export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProps> = ({
+export const InteriorLabourContractView: React.FC<
+  InteriorLabourContractViewProps
+> = ({
   contracts,
   onSelectContract,
   onAddContract,
   onUpdateContract,
   onDeleteContract,
-  siteOptions = ['Palayam', 'A.R. Rahman Villa - Kitchen', 'Dr. Vikramaditya Reddy Site', 'Green Meadows Apt']
+  siteOptions = [
+    "Palayam",
+    "A.R. Rahman Villa - Kitchen",
+    "Dr. Vikramaditya Reddy Site",
+    "Green Meadows Apt",
+  ],
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // Add Modal State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = new Date().toISOString().split("T")[0];
   const [addDate, setAddDate] = useState(todayStr);
-  const [addLabourName, setAddLabourName] = useState('');
-  const [addSiteName, setAddSiteName] = useState('');
-  const [addLabourCharge, setAddLabourCharge] = useState('45000');
-  const [addPhone, setAddPhone] = useState('');
+  const [addLabourName, setAddLabourName] = useState("");
+  const [addSiteName, setAddSiteName] = useState("");
+  const [addLabourCharge, setAddLabourCharge] = useState("45000");
+  const [addPhone, setAddPhone] = useState("");
 
   // Edit Modal State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingContractId, setEditingContractId] = useState<string | null>(null);
-  const [editDate, setEditDate] = useState('');
-  const [editLabourName, setEditLabourName] = useState('');
-  const [editSiteName, setEditSiteName] = useState('');
-  const [editLabourCharge, setEditLabourCharge] = useState('');
-  const [editPhone, setEditPhone] = useState('');
+  const [editingContractId, setEditingContractId] = useState<string | null>(
+    null,
+  );
+  const [editDate, setEditDate] = useState("");
+  const [editLabourName, setEditLabourName] = useState("");
+  const [editSiteName, setEditSiteName] = useState("");
+  const [editLabourCharge, setEditLabourCharge] = useState("");
+  const [editPhone, setEditPhone] = useState("");
 
   // Delete Modals
   const [deleteTarget, setDeleteTarget] = useState<LabourContract | null>(null);
@@ -64,13 +80,16 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
 
   // Format Currency
   const formatINR = (val: number) => {
-    return '₹' + Number(val || 0).toLocaleString('en-IN');
+    return "₹" + Number(val || 0).toLocaleString("en-IN");
   };
 
   // Helper calculations for each contract
   const getContractBalance = (contract: LabourContract) => {
     const charge = Number(contract.labourCharge || 45000);
-    const paid = (contract.entries || []).reduce((sum, e) => sum + (Number(e.totalAmount) || 0), 0);
+    const paid = (contract.entries || []).reduce(
+      (sum, e) => sum + (Number(e.totalAmount) || 0),
+      0,
+    );
     return charge - paid;
   };
 
@@ -99,16 +118,21 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
             c.siteName.toLowerCase().includes(q) ||
             c.phone.includes(q) ||
             c.date.includes(q) ||
-            formatToDDMMYYYY(c.date).includes(q)
+            formatToDDMMYYYY(c.date).includes(q),
         )
       : contracts;
-    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
+    return [...list].sort((a, b) =>
+      compareByDateDesc(a.date, b.date, a.sNo, b.sNo),
+    );
   }, [contracts, searchQuery]);
 
   // Pagination computations
   const totalPages = Math.ceil(filteredContracts.length / itemsPerPage) || 1;
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, filteredContracts.length);
+  const endIndex = Math.min(
+    startIndex + itemsPerPage,
+    filteredContracts.length,
+  );
   const paginatedContracts = filteredContracts.slice(startIndex, endIndex);
 
   const pageNumbers = useMemo(() => {
@@ -130,13 +154,13 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
       siteName: addSiteName.trim(),
       labourCharge: parseFloat(addLabourCharge) || 45000,
       phone: addPhone.trim(),
-      entries: []
+      entries: [],
     });
 
-    setAddLabourName('');
-    setAddSiteName('');
-    setAddLabourCharge('45000');
-    setAddPhone('');
+    setAddLabourName("");
+    setAddSiteName("");
+    setAddLabourCharge("45000");
+    setAddPhone("");
     setIsAddModalOpen(false);
     setCurrentPage(1);
   };
@@ -166,7 +190,7 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
         labourName: editLabourName.trim(),
         siteName: editSiteName.trim(),
         labourCharge: parseFloat(editLabourCharge) || 45000,
-        phone: editPhone.trim()
+        phone: editPhone.trim(),
       });
     }
 
@@ -187,18 +211,20 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
   };
 
   return (
-    <div style={{ width: '100%', maxWidth: '100%' }}>
+    <div className="w-full">
       {/* LABOUR CONTRACTS LIST */}
-      <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
+      <section className="afrah-app-table-section w-full">
         <div className="afrah-app-section-header">
           <div>
             <h1 className="afrah-app-section-title">LABOUR CONTRACTS</h1>
             <span className="afrah-app-section-subtitle">
-              {filteredContracts.length} {filteredContracts.length === 1 ? 'record' : 'records'} · Click a row to view ledger & payments
+              {filteredContracts.length}{" "}
+              {filteredContracts.length === 1 ? "record" : "records"} · Click a
+              row to view ledger & payments
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="flex-center-10">
             <div className="afrah-app-search-wrapper">
               <Search size={14} className="afrah-app-search-icon" />
               <input
@@ -216,8 +242,7 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
             <button
               type="button"
               onClick={() => setIsAddModalOpen(true)}
-              className="btn-theme-primary"
-              style={{ height: '36px', padding: '0 16px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              className="btn-theme-primary btn-add"
             >
               <Plus size={15} strokeWidth={2.5} />
               <span>Add Details</span>
@@ -230,21 +255,27 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
           <table className="afrah-app-table">
             <thead>
               <tr>
-                <th style={{ width: '55px', textAlign: 'center' }}>S.NO</th>
-                <th style={{ width: '105px' }}>DATE</th>
+                <th className="text-center" style={{ width: "55px" }}>
+                  S.NO
+                </th>
+                <th style={{ width: "105px" }}>DATE</th>
                 <th>LABOUR NAME</th>
                 <th>CONSTRUCTION SITE NAME</th>
-                <th style={{ width: '140px' }}>PHONE</th>
-                <th style={{ width: '135px' }}>LABOUR CHARGE</th>
-                <th style={{ width: '140px' }}>REMAINING AMOUNT</th>
-                <th style={{ width: '80px', textAlign: 'center' }}>ACTIONS</th>
+                <th style={{ width: "140px" }}>PHONE</th>
+                <th style={{ width: "135px" }}>LABOUR CHARGE</th>
+                <th style={{ width: "140px" }}>REMAINING AMOUNT</th>
+                <th className="text-center" style={{ width: "80px" }}>
+                  ACTIONS
+                </th>
               </tr>
             </thead>
             <tbody>
               {paginatedContracts.length === 0 ? (
                 <tr>
-                  <td colSpan={8} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
-                    {searchQuery ? 'No matching labour contracts found.' : 'No labour contracts added yet. Click "+ Add Details" to create one.'}
+                  <td colSpan={8} className="empty-state-cell">
+                    {searchQuery
+                      ? "No matching labour contracts found."
+                      : 'No labour contracts added yet. Click "+ Add Details" to create one.'}
                   </td>
                 </tr>
               ) : (
@@ -257,60 +288,66 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
                       onClick={() => onSelectContract(contract)}
                       className="clickable-client-row"
                     >
-                      <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
-                        {startIndex + index + 1}
-                      </td>
-                      <td style={{ whiteSpace: 'nowrap', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                      <td className="cell-sno">{startIndex + index + 1}</td>
+                      <td
+                        style={{
+                          whiteSpace: "nowrap",
+                          fontSize: "12px",
+                          color: "var(--text-secondary)",
+                        }}
+                      >
                         {formatToDDMMYYYY(contract.date)}
                       </td>
                       <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <div className="afrah-app-user-avatar" style={{ background: 'rgba(226, 195, 153, 0.15)', color: 'var(--primary)' }}>
+                        <div className="cell-entity">
+                          <div
+                            className="afrah-app-user-avatar"
+                            style={{
+                              background: "rgba(226, 195, 153, 0.15)",
+                              color: "var(--primary)",
+                            }}
+                          >
                             <HardHat size={14} />
                           </div>
-                          <div>
-                            <span className="row-entity-name" style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 750 }}>
-                              {contract.labourName}
-                            </span>
-                          </div>
+                          <span className="row-entity-name">
+                            {contract.labourName}
+                          </span>
                         </div>
                       </td>
                       <td>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--text-primary)' }}>
+                        <div className="cell-icon-text">
                           <MapPin size={13} color="var(--primary)" />
-                          <span style={{ fontSize: '13.5px', fontWeight: 600 }}>{contract.siteName}</span>
+                          <span
+                            className="cell-address"
+                            style={{ fontWeight: "var(--fw-semibold)" }}
+                          >
+                            {contract.siteName}
+                          </span>
                         </div>
                       </td>
-                      <td style={{ whiteSpace: 'nowrap' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <td className="nowrap">
+                        <div className="cell-icon-text">
                           <Phone size={13} color="var(--primary)" />
-                          <span style={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 600 }}>{contract.phone}</span>
+                          <span className="cell-phone">{contract.phone}</span>
                         </div>
                       </td>
                       <td>
-                        <strong style={{ color: 'var(--primary)', fontSize: '14.5px', fontWeight: 800, fontFamily: 'JetBrains Mono, monospace' }}>
+                        <strong className="cell-amount is-primary">
                           {formatINR(charge)}
                         </strong>
                       </td>
                       <td>
                         <span
-                          style={{
-                            display: 'inline-block',
-                            padding: '4px 10px',
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                            fontWeight: 800,
-                            fontFamily: 'JetBrains Mono, monospace',
-                            background: balance > 0 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)',
-                            color: balance > 0 ? '#f87171' : '#4ade80',
-                            border: `1px solid ${balance > 0 ? 'rgba(239, 68, 68, 0.25)' : 'rgba(34, 197, 94, 0.25)'}`
-                          }}
+                          className={`cell-amount-pill ${balance > 0 ? "is-negative" : "is-positive"}`}
                         >
                           {formatINR(balance)}
                         </span>
                       </td>
-                      <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                      <td
+                        className="text-center"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="cell-actions">
                           <button
                             onClick={(e) => handleOpenEdit(contract, e)}
                             className="afrah-app-action-btn afrah-app-edit-btn"
@@ -343,7 +380,9 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
           <div className="afrah-app-pagination-bar">
             <div className="afrah-app-pagination-left">
               <span className="afrah-app-pagination-info">
-                Showing <strong>{startIndex + 1}</strong>–<strong>{endIndex}</strong> of <strong>{filteredContracts.length}</strong>
+                Showing <strong>{startIndex + 1}</strong>–
+                <strong>{endIndex}</strong> of{" "}
+                <strong>{filteredContracts.length}</strong>
               </span>
 
               <div className="afrah-app-rows-selector">
@@ -379,7 +418,7 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
                   <button
                     key={p}
                     onClick={() => setCurrentPage(p)}
-                    className={`afrah-app-page-num-btn ${currentPage === p ? 'active' : ''}`}
+                    className={`afrah-app-page-num-btn ${currentPage === p ? "active" : ""}`}
                   >
                     {p}
                   </button>
@@ -387,7 +426,9 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
               </div>
 
               <button
-                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
                 disabled={currentPage === totalPages}
                 className="afrah-app-page-nav-btn"
                 title="Next Page"
@@ -401,14 +442,16 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
 
       {/* Add Details Modal */}
       {isAddModalOpen && (
-        <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
+        <div
+          className="afrah-app-modal-overlay"
+          onClick={() => setIsAddModalOpen(false)}
+        >
           <div
-            className="afrah-app-modal-container"
-            style={{ maxWidth: '460px' }}
+            className="afrah-app-modal-container modal-w-md"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Plus size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Add Details</h3>
               </div>
@@ -446,7 +489,9 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
 
                 {/* Searchable Construction Site Name Dropdown */}
                 <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Construction Site Name *</label>
+                  <label className="afrah-app-label">
+                    Construction Site Name *
+                  </label>
                   <SearchableExpenseSelect
                     value={addSiteName}
                     onChange={setAddSiteName}
@@ -458,7 +503,9 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
                 </div>
 
                 <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Total Amount (Labour Charge) (₹) *</label>
+                  <label className="afrah-app-label">
+                    Total Amount (Labour Charge) (₹) *
+                  </label>
                   <input
                     type="number"
                     step="any"
@@ -500,8 +547,7 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
                 <button
                   type="submit"
                   disabled={!isAddFormValid}
-                  className="btn-theme-primary"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  className="btn-theme-primary flex-center-6"
                 >
                   <Plus size={15} strokeWidth={2.5} />
                   <span>Add Details</span>
@@ -514,14 +560,16 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
 
       {/* Edit Labour Contract Modal */}
       {isEditModalOpen && (
-        <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
+        <div
+          className="afrah-app-modal-overlay"
+          onClick={() => setIsEditModalOpen(false)}
+        >
           <div
-            className="afrah-app-modal-container"
-            style={{ maxWidth: '460px' }}
+            className="afrah-app-modal-container modal-w-md"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Labour Contract</h3>
               </div>
@@ -557,7 +605,9 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
                 </div>
 
                 <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Construction Site Name *</label>
+                  <label className="afrah-app-label">
+                    Construction Site Name *
+                  </label>
                   <SearchableExpenseSelect
                     value={editSiteName}
                     onChange={setEditSiteName}
@@ -569,7 +619,9 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
                 </div>
 
                 <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Total Amount (Labour Charge) (₹) *</label>
+                  <label className="afrah-app-label">
+                    Total Amount (Labour Charge) (₹) *
+                  </label>
                   <input
                     type="number"
                     step="any"
@@ -618,7 +670,11 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
         isOpen={Boolean(deleteTarget)}
         title="Delete Labour Contract"
         message="Are you sure you want to delete this labour contract record? All associated wage records and work logs will be removed."
-        itemName={deleteTarget ? `${deleteTarget.labourName} (${deleteTarget.siteName})` : undefined}
+        itemName={
+          deleteTarget
+            ? `${deleteTarget.labourName} (${deleteTarget.siteName})`
+            : undefined
+        }
         confirmText="Delete Contract"
         isDeleting={isDeleting}
         onConfirm={handleConfirmDelete}

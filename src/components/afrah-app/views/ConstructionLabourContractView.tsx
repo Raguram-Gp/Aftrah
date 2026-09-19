@@ -201,9 +201,9 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
   };
 
   return (
-    <div style={{ width: '100%', maxWidth: '100%' }}>
+    <div className="w-full">
       {/* LABOUR CONTRACTS LIST */}
-      <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
+      <section className="afrah-app-table-section w-full">
         <div className="afrah-app-section-header">
           <div>
             <h1 className="afrah-app-section-title">CONSTRUCTION LABOUR CONTRACTS</h1>
@@ -212,7 +212,7 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="flex-center-10">
             <div className="afrah-app-search-wrapper">
               <Search size={14} className="afrah-app-search-icon" />
               <input
@@ -230,8 +230,7 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
             <button
               type="button"
               onClick={() => setIsAddModalOpen(true)}
-              className="btn-theme-primary"
-              style={{ height: '36px', padding: '0 16px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              className="btn-theme-primary btn-add"
             >
               <Plus size={15} strokeWidth={2.5} />
               <span>Add Details</span>
@@ -244,19 +243,19 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
           <table className="afrah-app-table">
             <thead>
               <tr>
-                <th style={{ width: '55px', textAlign: 'center' }}>S.NO</th>
+                <th className="text-center" style={{ width: '55px' }}>S.NO</th>
                 <th>CONTRACTOR / LABOUR NAME</th>
                 <th>CONSTRUCTION SITE NAME</th>
                 <th style={{ width: '140px' }}>PHONE</th>
                 <th style={{ width: '135px' }}>LABOUR CHARGE</th>
                 <th style={{ width: '140px' }}>REMAINING AMOUNT</th>
-                <th style={{ width: '80px', textAlign: 'center' }}>ACTIONS</th>
+                <th className="text-center" style={{ width: '80px' }}>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
               {paginatedContracts.length === 0 ? (
                 <tr>
-                  <td colSpan={7} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
+                  <td colSpan={7} className="empty-state-cell">
                     {searchQuery ? 'No matching construction labour contracts found.' : 'No construction labour contracts added yet. Click "+ Add Details" to create one.'}
                   </td>
                 </tr>
@@ -270,11 +269,11 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
                       onClick={() => onSelectContract(contract)}
                       className="clickable-client-row"
                     >
-                      <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
+                      <td className="cell-sno">
                         {startIndex + index + 1}
                       </td>
                       <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div className="cell-entity">
                           <div
                             className="afrah-app-user-avatar"
                             style={{
@@ -285,44 +284,35 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
                           >
                             {contract.labourName.charAt(0).toUpperCase()}
                           </div>
-                          <div>
-                            <span className="row-entity-name" style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 750 }}>
-                              {contract.labourName}
-                            </span>
-                          </div>
+                          <span className="row-entity-name">
+                            {contract.labourName}
+                          </span>
                         </div>
                       </td>
                       <td>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)' }}>
+                        <div className="cell-icon-text is-muted">
                           <MapPin size={13} color="#f59e0b" />
-                          <span style={{ fontSize: '13.5px', fontWeight: 600 }}>{contract.siteName}</span>
+                          <span className="cell-address" style={{ fontWeight: 'var(--fw-semibold)' }}>{contract.siteName}</span>
                         </div>
                       </td>
-                      <td style={{ whiteSpace: 'nowrap' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <td className="nowrap">
+                        <div className="cell-icon-text">
                           <Phone size={13} color="var(--primary)" />
-                          <span style={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 600 }}>{contract.phone}</span>
+                          <span className="cell-phone">{contract.phone}</span>
                         </div>
                       </td>
-                      <td style={{ whiteSpace: 'nowrap' }}>
-                        <span style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: '14.5px', fontFamily: 'JetBrains Mono, monospace' }}>
+                      <td className="nowrap">
+                        <span className="cell-amount">
                           {formatINR(charge)}
                         </span>
                       </td>
-                      <td style={{ whiteSpace: 'nowrap' }}>
-                        <span
-                          style={{
-                            fontWeight: 800,
-                            fontSize: '14.5px',
-                            fontFamily: 'JetBrains Mono, monospace',
-                            color: balance > 0 ? '#f59e0b' : '#4ade80'
-                          }}
-                        >
+                      <td className="nowrap">
+                        <span className={`cell-amount ${balance > 0 ? 'is-warning' : 'is-positive'}`}>
                           {formatINR(balance)}
                         </span>
                       </td>
-                      <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                      <td className="text-center" onClick={(e) => e.stopPropagation()}>
+                        <div className="cell-actions">
                           <button
                             onClick={(e) => handleOpenEdit(contract, e)}
                             className="afrah-app-action-btn afrah-app-edit-btn"
@@ -419,12 +409,11 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
       {isAddModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
           <div
-            className="afrah-app-modal-container"
-            style={{ maxWidth: '480px' }}
-            onClick={(e) => e.stopPropagation()}
+              className="afrah-app-modal-container modal-w-lg"
+              onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Plus size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Add Details</h3>
               </div>
@@ -515,8 +504,7 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
                 <button
                   type="submit"
                   disabled={!isAddFormValid}
-                  className="btn-theme-primary"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  className="btn-theme-primary flex-center-6"
                 >
                   <Plus size={15} strokeWidth={2.5} />
                   <span>Add Details</span>
@@ -531,12 +519,11 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
       {isEditModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
           <div
-            className="afrah-app-modal-container"
-            style={{ maxWidth: '480px' }}
-            onClick={(e) => e.stopPropagation()}
+              className="afrah-app-modal-container modal-w-lg"
+              onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={17} color="#f59e0b" />
                 <h3 className="afrah-app-modal-title">Edit Contract Details</h3>
               </div>
@@ -618,8 +605,7 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
                 <button
                   type="submit"
                   disabled={!isEditFormValid}
-                  className="btn-theme-primary"
-                  style={{ minWidth: '120px', height: '40px', fontSize: '13px' }}
+                  className="btn-theme-primary btn-secondary-lg"
                 >
                   Save Changes
                 </button>

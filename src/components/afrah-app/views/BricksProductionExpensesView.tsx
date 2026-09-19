@@ -277,7 +277,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
   };
 
   return (
-    <div style={{ width: '100%', maxWidth: '100%' }}>
+    <div className="w-full">
       {/* PRINT-ONLY HEADER */}
       <div className="print-only-statement-header">
         <div className="print-brand-row">
@@ -304,10 +304,10 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
       </div>
 
       {/* PRODUCTION EXPENSES TABLE (Matching sketch: S NO | DATE | EXPENSES | Quality | Rate | Total) */}
-      <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
+      <section className="afrah-app-table-section w-full">
         <div className="afrah-app-section-header no-print">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div className="flex-center-10">
               <div
                 style={{
                   width: '32px',
@@ -328,12 +328,12 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
             </div>
             <span className="afrah-app-section-subtitle">
               {filteredExpenses.length} {filteredExpenses.length === 1 ? 'expense entry' : 'expense entries'} · Total Production Spend:{' '}
-              <strong style={{ color: '#f87171' }}>{formatINR(totalProductionExpenses)}</strong>
+              <strong className="text-negative">{formatINR(totalProductionExpenses)}</strong>
             </span>
           </div>
 
           {/* Search, Bulk Delete, & Print Actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <div className="flex-center-wrap-10">
             <div className="afrah-app-search-wrapper">
               <Search size={14} className="afrah-app-search-icon" />
               <input
@@ -360,8 +360,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
             <button
               type="button"
               onClick={() => setIsAddModalOpen(true)}
-              className="btn-theme-primary"
-              style={{ height: '36px', padding: '0 16px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              className="btn-theme-primary btn-add"
             >
               <Plus size={15} strokeWidth={2.5} />
               <span>Add Details</span>
@@ -374,28 +373,22 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
           <table className="afrah-app-table">
             <thead>
               <tr>
-                <th style={{ width: '60px', textAlign: 'center' }}>S NO</th>
+                <th className="text-center" style={{ width: '60px' }}>S NO</th>
                 <th style={{ width: '110px' }}>DATE</th>
                 <th>EXPENSES</th>
-                <th style={{ width: '110px', textAlign: 'right' }}>Quality</th>
-                <th style={{ width: '110px', textAlign: 'right' }}>Rate</th>
-                <th style={{ width: '130px', textAlign: 'right' }}>Total</th>
-                <th className="no-print" style={{ width: '90px', textAlign: 'center' }}>EDIT / DELETE</th>
+                <th className="text-right" style={{ width: '110px' }}>Quality</th>
+                <th className="text-right" style={{ width: '110px' }}>Rate</th>
+                <th className="text-right" style={{ width: '130px' }}>Total</th>
+                <th className="no-print text-center" style={{ width: '90px' }}>EDIT / DELETE</th>
               </tr>
             </thead>
             <tbody>
               {paginatedExpenses.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="afrah-app-empty-cell">
-                    <div className="empty-state-wrap">
-                      <Flame size={28} className="empty-icon" color="var(--text-secondary)" style={{ opacity: 0.5 }} />
-                      <span className="empty-text">No production expense records found</span>
-                      <span className="empty-subtext">
-                        {searchQuery
-                          ? 'No entries match your search query.'
-                          : 'Use the "Add details" form on the right to record new production expenses.'}
-                      </span>
-                    </div>
+                  <td colSpan={7} className="empty-state-cell">
+                    {searchQuery
+                      ? 'No matching production expense records found.'
+                      : 'No production expense records found. Use the "Add details" form on the right to record new ones.'}
                   </td>
                 </tr>
               ) : (
@@ -405,7 +398,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                   return (
                     <tr
                       key={expense.id}
-                      style={{ cursor: 'default' }}
+                      className="cursor-default"
                     >
                       {/* S NO */}
 
@@ -467,7 +460,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                       </td>
 
                       {/* Actions: Edit & Delete */}
-                      <td className="no-print" style={{ textAlign: 'center' }}>
+                      <td className="no-print text-center">
                         <div
                           style={{
                             display: 'inline-flex',
@@ -511,7 +504,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
             <div className="afrah-app-pagination-left">
               <span className="afrah-app-pagination-info">
                 Showing <strong>{startIndex + 1}</strong>–<strong>{endIndex}</strong> of{' '}
-                <strong>{filteredExpenses.length}</strong> | Total: <strong style={{ color: '#f87171' }}>{formatINR(filteredTotalProductionExpenses)}</strong>
+                <strong>{filteredExpenses.length}</strong> | Total: <strong className="text-negative">{formatINR(filteredTotalProductionExpenses)}</strong>
               </span>
 
               <div className="afrah-app-rows-selector">
@@ -573,12 +566,11 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
       {isAddModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
           <div
-            className="afrah-app-modal-container"
-            style={{ maxWidth: '460px' }}
-            onClick={(e) => e.stopPropagation()}
+              className="afrah-app-modal-container modal-w-md"
+              onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Plus size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Add Details</h3>
               </div>
@@ -694,8 +686,7 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                 <button
                   type="submit"
                   disabled={!isAddValid}
-                  className="btn-theme-primary"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  className="btn-theme-primary flex-center-6"
                 >
                   <Plus size={15} strokeWidth={2.5} />
                   <span>Add Details</span>
@@ -709,9 +700,9 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
       {/* EDIT MODAL */}
       {isEditModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
-          <div className="afrah-app-modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '440px' }}>
+          <div className="afrah-app-modal-card modal-w-sm" onClick={(e) => e.stopPropagation()}>
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={16} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Production Expense</h3>
               </div>

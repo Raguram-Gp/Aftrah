@@ -1,11 +1,17 @@
-import React, { useState, useMemo } from 'react';
-import type { Client, AdvancePayment, ExpenseItem, Expense } from '../types';
-import { PAYMENT_MODES } from '../types';
-import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
-import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
-import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
-import { showToast } from '../layout/ToastContainer';
-import { StatementPrintPreviewModal } from '../components/StatementPrintPreviewModal';
+import React, { useState, useMemo } from "react";
+import type { Client, AdvancePayment, ExpenseItem, Expense } from "../types";
+import { PAYMENT_MODES } from "../types";
+import { SearchableExpenseSelect } from "../components/SearchableExpenseSelect";
+import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
+import {
+  DateInput,
+  isValidDate,
+  formatToDDMMYYYY,
+  formatToYYYYMMDD,
+  compareByDateDesc,
+} from "../components/DateInput";
+import { showToast } from "../layout/ToastContainer";
+import { StatementPrintPreviewModal } from "../components/StatementPrintPreviewModal";
 import {
   CreditCard,
   Receipt,
@@ -18,19 +24,32 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  Printer
-} from 'lucide-react';
+  Printer,
+} from "lucide-react";
 
 interface ClientDetailsViewProps {
   client: Client;
   onBack?: () => void;
-  onUpdateClient: (id: string, updates: Partial<Client>) => Promise<Client | null>;
-  onAddAdvance: (payment: Omit<AdvancePayment, 'id' | 'createdAt'>) => Promise<AdvancePayment | null>;
-  onUpdateAdvance: (id: string, updates: Partial<AdvancePayment>) => Promise<AdvancePayment | null>;
+  onUpdateClient: (
+    id: string,
+    updates: Partial<Client>,
+  ) => Promise<Client | null>;
+  onAddAdvance: (
+    payment: Omit<AdvancePayment, "id" | "createdAt">,
+  ) => Promise<AdvancePayment | null>;
+  onUpdateAdvance: (
+    id: string,
+    updates: Partial<AdvancePayment>,
+  ) => Promise<AdvancePayment | null>;
   onDeleteAdvance: (id: string) => Promise<boolean>;
   onDeleteMultipleAdvancePayments: (ids: string[]) => Promise<boolean>;
-  onAddExpense: (expense: Omit<Expense, 'id' | 'createdAt'>) => Promise<Expense | null>;
-  onUpdateExpense: (id: string, updates: Partial<Expense>) => Promise<Expense | null>;
+  onAddExpense: (
+    expense: Omit<Expense, "id" | "createdAt">,
+  ) => Promise<Expense | null>;
+  onUpdateExpense: (
+    id: string,
+    updates: Partial<Expense>,
+  ) => Promise<Expense | null>;
   onDeleteExpense: (id: string) => Promise<boolean>;
   onDeleteMultipleExpenses: (ids: string[]) => Promise<boolean>;
 }
@@ -46,12 +65,12 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   onAddExpense,
   onUpdateExpense,
   onDeleteExpense,
-  onDeleteMultipleExpenses
+  onDeleteMultipleExpenses,
 }) => {
   // Advance Payments State
   const advancePayments = client.advancePayments || [];
-  const [advFromDate, setAdvFromDate] = useState('');
-  const [advToDate, setAdvToDate] = useState('');
+  const [advFromDate, setAdvFromDate] = useState("");
+  const [advToDate, setAdvToDate] = useState("");
   const [selectedAdvIds, setSelectedAdvIds] = useState<Set<string>>(new Set());
   const [isBulkDeleteAdvOpen, setIsBulkDeleteAdvOpen] = useState(false);
   const [isBulkDeletingAdv, setIsBulkDeletingAdv] = useState(false);
@@ -60,21 +79,23 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
   // Add Advance Modal State (Add Details - I)
   const [isAddAdvModalOpen, setIsAddAdvModalOpen] = useState(false);
-  const [advDate, setAdvDate] = useState(() => new Date().toISOString().slice(0, 10));
-  const [advAmount, setAdvAmount] = useState('');
+  const [advDate, setAdvDate] = useState(() =>
+    new Date().toISOString().slice(0, 10),
+  );
+  const [advAmount, setAdvAmount] = useState("");
   const [advMode, setAdvMode] = useState(PAYMENT_MODES[0]);
 
   // Edit Advance Modal State
   const [isEditAdvModalOpen, setIsEditAdvModalOpen] = useState(false);
   const [editingAdvId, setEditingAdvId] = useState<string | null>(null);
-  const [editAdvDate, setEditAdvDate] = useState('');
-  const [editAdvAmount, setEditAdvAmount] = useState('');
+  const [editAdvDate, setEditAdvDate] = useState("");
+  const [editAdvAmount, setEditAdvAmount] = useState("");
   const [editAdvMode, setEditAdvMode] = useState(PAYMENT_MODES[0]);
 
   // Expenses State
   const expenses = client.expenses || [];
-  const [expFromDate, setExpFromDate] = useState('');
-  const [expToDate, setExpToDate] = useState('');
+  const [expFromDate, setExpFromDate] = useState("");
+  const [expToDate, setExpToDate] = useState("");
   const [selectedExpIds, setSelectedExpIds] = useState<Set<string>>(new Set());
   const [isBulkDeleteExpOpen, setIsBulkDeleteExpOpen] = useState(false);
   const [isBulkDeletingExp, setIsBulkDeletingExp] = useState(false);
@@ -83,23 +104,29 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
   // Add Expense Modal State (Add Details - IInd)
   const [isAddExpModalOpen, setIsAddExpModalOpen] = useState(false);
-  const [expDate, setExpDate] = useState(() => new Date().toISOString().slice(0, 10));
-  const [expName, setExpName] = useState('');
-  const [expQuantity, setExpQuantity] = useState('');
-  const [expRate, setExpRate] = useState('');
+  const [expDate, setExpDate] = useState(() =>
+    new Date().toISOString().slice(0, 10),
+  );
+  const [expName, setExpName] = useState("");
+  const [expQuantity, setExpQuantity] = useState("");
+  const [expRate, setExpRate] = useState("");
 
   // Edit Expense Modal State
   const [isEditExpModalOpen, setIsEditExpModalOpen] = useState(false);
   const [editingExpId, setEditingExpId] = useState<string | null>(null);
-  const [editExpDate, setEditExpDate] = useState('');
-  const [editExpName, setEditExpName] = useState('');
-  const [editExpQuantity, setEditExpQuantity] = useState('');
-  const [editExpRate, setEditExpRate] = useState('');
+  const [editExpDate, setEditExpDate] = useState("");
+  const [editExpName, setEditExpName] = useState("");
+  const [editExpQuantity, setEditExpQuantity] = useState("");
+  const [editExpRate, setEditExpRate] = useState("");
 
   // Delete Confirmation Modal States
-  const [deleteAdvTarget, setDeleteAdvTarget] = useState<AdvancePayment | null>(null);
+  const [deleteAdvTarget, setDeleteAdvTarget] = useState<AdvancePayment | null>(
+    null,
+  );
   const [isDeletingAdv, setIsDeletingAdv] = useState(false);
-  const [deleteExpTarget, setDeleteExpTarget] = useState<ExpenseItem | null>(null);
+  const [deleteExpTarget, setDeleteExpTarget] = useState<ExpenseItem | null>(
+    null,
+  );
   const [isDeletingExp, setIsDeletingExp] = useState(false);
 
   // Auto-calculated total amounts for expenses
@@ -119,7 +146,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       const toISO = formatToYYYYMMDD(advToDate);
       list = list.filter((p) => formatToYYYYMMDD(p.date) <= toISO);
     }
-    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
+    return [...list].sort((a, b) =>
+      compareByDateDesc(a.date, b.date, a.sNo, b.sNo),
+    );
   }, [advancePayments, advFromDate, advToDate]);
 
   const filteredExpenses = useMemo(() => {
@@ -132,7 +161,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       const toISO = formatToYYYYMMDD(expToDate);
       list = list.filter((e) => formatToYYYYMMDD(e.date) <= toISO);
     }
-    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
+    return [...list].sort((a, b) =>
+      compareByDateDesc(a.date, b.date, a.sNo, b.sNo),
+    );
   }, [expenses, expFromDate, expToDate]);
 
   // Advance Multi-select handlers
@@ -165,7 +196,10 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
     setIsBulkDeletingAdv(true);
     try {
       if (onDeleteMultipleAdvancePayments) {
-        await onDeleteMultipleAdvancePayments(client.id, Array.from(selectedAdvIds));
+        await onDeleteMultipleAdvancePayments(
+          client.id,
+          Array.from(selectedAdvIds),
+        );
       } else if (onDeleteAdvance) {
         for (const id of selectedAdvIds) {
           await onDeleteAdvance(client.id, id);
@@ -173,9 +207,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       }
       setSelectedAdvIds(new Set());
       setIsBulkDeleteAdvOpen(false);
-      showToast('Selected advance payments deleted!', 'success');
+      showToast("Selected advance payments deleted!", "success");
     } catch (err) {
-      showToast('Failed to delete advance payments', 'error');
+      showToast("Failed to delete advance payments", "error");
     } finally {
       setIsBulkDeletingAdv(false);
     }
@@ -219,9 +253,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       }
       setSelectedExpIds(new Set());
       setIsBulkDeleteExpOpen(false);
-      showToast('Selected expenses deleted!', 'success');
+      showToast("Selected expenses deleted!", "success");
     } catch (err) {
-      showToast('Failed to delete expenses', 'error');
+      showToast("Failed to delete expenses", "error");
     } finally {
       setIsBulkDeletingExp(false);
     }
@@ -229,16 +263,20 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
   // Statement Print Preview Modal State
   const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
-  const [previewMode, setPreviewMode] = useState<'expenses' | 'advances' | 'statement'>('expenses');
+  const [previewMode, setPreviewMode] = useState<
+    "expenses" | "advances" | "statement"
+  >("expenses");
 
   // Print Statement Handler - opens preview modal before printing
-  const handleOpenPrintPreview = (mode: 'expenses' | 'advances' | 'statement' = 'statement') => {
+  const handleOpenPrintPreview = (
+    mode: "expenses" | "advances" | "statement" = "statement",
+  ) => {
     setPreviewMode(mode);
     setIsPrintPreviewOpen(true);
   };
 
   const handlePrint = () => {
-    handleOpenPrintPreview('statement');
+    handleOpenPrintPreview("statement");
   };
 
   // Validation
@@ -282,20 +320,20 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
           sNo: advancePayments.length + 1,
           date: advDate,
           amount: parseFloat(advAmount),
-          mode: advMode
+          mode: advMode,
         };
         onUpdateClient({
           ...client,
-          advancePayments: [...advancePayments, newPayment]
+          advancePayments: [...advancePayments, newPayment],
         });
       }
 
-      setAdvAmount('');
+      setAdvAmount("");
       setIsAddAdvModalOpen(false);
       setAdvCurrentPage(1);
-      showToast('Advance payment recorded successfully!', 'success');
+      showToast("Advance payment recorded successfully!", "success");
     } catch (err) {
-      showToast('Failed to record advance payment', 'error');
+      showToast("Failed to record advance payment", "error");
     }
   };
 
@@ -319,26 +357,26 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         sNo: advancePayments.find((p) => p.id === editingAdvId)?.sNo || 1,
         date: editAdvDate,
         amount: parseFloat(editAdvAmount),
-        mode: editAdvMode
+        mode: editAdvMode,
       };
 
       if (onUpdateAdvance) {
         await onUpdateAdvance(client.id, updatedPayment);
       } else {
         const updated = advancePayments.map((p) =>
-          p.id === editingAdvId ? updatedPayment : p
+          p.id === editingAdvId ? updatedPayment : p,
         );
         onUpdateClient({
           ...client,
-          advancePayments: updated
+          advancePayments: updated,
         });
       }
 
       setIsEditAdvModalOpen(false);
       setEditingAdvId(null);
-      showToast('Advance payment updated!', 'success');
+      showToast("Advance payment updated!", "success");
     } catch (err) {
-      showToast('Failed to update advance payment', 'error');
+      showToast("Failed to update advance payment", "error");
     }
   };
 
@@ -355,12 +393,12 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
           .map((p, index) => ({ ...p, sNo: index + 1 }));
         onUpdateClient({
           ...client,
-          advancePayments: updated
+          advancePayments: updated,
         });
       }
-      showToast('Advance payment deleted!', 'success');
+      showToast("Advance payment deleted!", "success");
     } catch (err) {
-      showToast('Failed to delete advance payment', 'error');
+      showToast("Failed to delete advance payment", "error");
     } finally {
       setIsDeletingAdv(false);
       setDeleteAdvTarget(null);
@@ -389,22 +427,22 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
           expenseName: expName.trim(),
           quantity: parseFloat(expQuantity),
           rate: parseFloat(expRate),
-          totalAmount: expTotalAmount
+          totalAmount: expTotalAmount,
         };
         onUpdateClient({
           ...client,
-          expenses: [...expenses, newExpense]
+          expenses: [...expenses, newExpense],
         });
       }
 
-      setExpName('');
-      setExpQuantity('');
-      setExpRate('');
+      setExpName("");
+      setExpQuantity("");
+      setExpRate("");
       setIsAddExpModalOpen(false);
       setExpCurrentPage(1);
-      showToast('Site expense recorded successfully!', 'success');
+      showToast("Site expense recorded successfully!", "success");
     } catch (err) {
-      showToast('Failed to record site expense', 'error');
+      showToast("Failed to record site expense", "error");
     }
   };
 
@@ -431,26 +469,26 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         expenseName: editExpName.trim(),
         quantity: parseFloat(editExpQuantity),
         rate: parseFloat(editExpRate),
-        totalAmount: editExpTotalAmount
+        totalAmount: editExpTotalAmount,
       };
 
       if (onUpdateExpense) {
         await onUpdateExpense(client.id, updatedExpense);
       } else {
         const updated = expenses.map((exp) =>
-          exp.id === editingExpId ? updatedExpense : exp
+          exp.id === editingExpId ? updatedExpense : exp,
         );
         onUpdateClient({
           ...client,
-          expenses: updated
+          expenses: updated,
         });
       }
 
       setIsEditExpModalOpen(false);
       setEditingExpId(null);
-      showToast('Site expense updated!', 'success');
+      showToast("Site expense updated!", "success");
     } catch (err) {
-      showToast('Failed to update site expense', 'error');
+      showToast("Failed to update site expense", "error");
     }
   };
 
@@ -467,12 +505,12 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
           .map((exp, index) => ({ ...exp, sNo: index + 1 }));
         onUpdateClient({
           ...client,
-          expenses: updated
+          expenses: updated,
         });
       }
-      showToast('Site expense deleted!', 'success');
+      showToast("Site expense deleted!", "success");
     } catch (err) {
-      showToast('Failed to delete site expense', 'error');
+      showToast("Failed to delete site expense", "error");
     } finally {
       setIsDeletingExp(false);
       setDeleteExpTarget(null);
@@ -480,19 +518,29 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   };
 
   // Totals calculations
-  const totalAdvance = advancePayments.reduce((sum, p) => sum + (p.amount || 0), 0);
-  const totalExpenses = expenses.reduce((sum, exp) => sum + (exp.totalAmount || 0), 0);
+  const totalAdvance = advancePayments.reduce(
+    (sum, p) => sum + (p.amount || 0),
+    0,
+  );
+  const totalExpenses = expenses.reduce(
+    (sum, exp) => sum + (exp.totalAmount || 0),
+    0,
+  );
   const balance = totalAdvance - totalExpenses;
 
   // Format currency
   const formatINR = (val: number) => {
-    return '₹' + Number(val || 0).toLocaleString('en-IN');
+    return "₹" + Number(val || 0).toLocaleString("en-IN");
   };
 
   // Advance Payments Pagination Computations
-  const advTotalPages = Math.ceil(filteredAdvance.length / advItemsPerPage) || 1;
+  const advTotalPages =
+    Math.ceil(filteredAdvance.length / advItemsPerPage) || 1;
   const advStartIndex = (advCurrentPage - 1) * advItemsPerPage;
-  const advEndIndex = Math.min(advStartIndex + advItemsPerPage, filteredAdvance.length);
+  const advEndIndex = Math.min(
+    advStartIndex + advItemsPerPage,
+    filteredAdvance.length,
+  );
   const paginatedAdvance = filteredAdvance.slice(advStartIndex, advEndIndex);
 
   const advPageNumbers = useMemo(() => {
@@ -504,9 +552,13 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   }, [advCurrentPage, advTotalPages]);
 
   // Expenses Pagination Computations
-  const expTotalPages = Math.ceil(filteredExpenses.length / expItemsPerPage) || 1;
+  const expTotalPages =
+    Math.ceil(filteredExpenses.length / expItemsPerPage) || 1;
   const expStartIndex = (expCurrentPage - 1) * expItemsPerPage;
-  const expEndIndex = Math.min(expStartIndex + expItemsPerPage, filteredExpenses.length);
+  const expEndIndex = Math.min(
+    expStartIndex + expItemsPerPage,
+    filteredExpenses.length,
+  );
   const paginatedExpenses = filteredExpenses.slice(expStartIndex, expEndIndex);
 
   const expPageNumbers = useMemo(() => {
@@ -524,7 +576,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         <div className="print-brand-row">
           <div>
             <h1 className="print-company-name">AFRAH CONSTRUCTIONS</h1>
-            <p className="print-company-sub">Civil Construction, Materials Procurement & Financial ERP</p>
+            <p className="print-company-sub">
+              Civil Construction, Materials Procurement & Financial ERP
+            </p>
           </div>
           <div className="print-badge-statement">
             <span>CLIENT ACCOUNT STATEMENT</span>
@@ -534,30 +588,59 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         <div className="print-meta-grid">
           <div className="print-meta-box">
             <span className="print-meta-title">CLIENT DETAILS</span>
-            <div className="print-meta-val"><strong>{client.name}</strong></div>
+            <div className="print-meta-val">
+              <strong>{client.name}</strong>
+            </div>
             <div className="print-meta-sub">Phone: {client.phone}</div>
-            <div className="print-meta-sub">Site / Address: {client.address}</div>
+            <div className="print-meta-sub">
+              Site / Address: {client.address}
+            </div>
           </div>
 
           <div className="print-meta-box">
             <span className="print-meta-title">FINANCIAL SUMMARY</span>
-            <div className="print-meta-sub">Total Advances: <strong>{formatINR(totalAdvance)}</strong></div>
-            <div className="print-meta-sub">Total Expenses: <strong>{formatINR(totalExpenses)}</strong></div>
-            <div className="print-meta-val" style={{ marginTop: '4px', color: balance >= 0 ? '#15803d' : '#b91c1c' }}>
-              {balance >= 0 ? `Net Balance: ${formatINR(balance)}` : `Overdue Deficit: ${formatINR(Math.abs(balance))}`}
+            <div className="print-meta-sub">
+              Total Advances: <strong>{formatINR(totalAdvance)}</strong>
+            </div>
+            <div className="print-meta-sub">
+              Total Expenses: <strong>{formatINR(totalExpenses)}</strong>
+            </div>
+            <div
+              className="print-meta-val"
+              style={{
+                marginTop: "4px",
+                color: balance >= 0 ? "#15803d" : "#b91c1c",
+              }}
+            >
+              {balance >= 0
+                ? `Net Balance: ${formatINR(balance)}`
+                : `Overdue Deficit: ${formatINR(Math.abs(balance))}`}
             </div>
           </div>
         </div>
 
         <div className="print-totals-summary-bar">
           <div className="print-total-item">
-            <span>Advance Payments:</span> <strong>{filteredAdvance.length} Entries ({formatINR(totalAdvance)})</strong>
+            <span>Advance Payments:</span>{" "}
+            <strong>
+              {filteredAdvance.length} Entries ({formatINR(totalAdvance)})
+            </strong>
           </div>
           <div className="print-total-item">
-            <span>Site Expenses:</span> <strong>{filteredExpenses.length} Entries ({formatINR(totalExpenses)})</strong>
+            <span>Site Expenses:</span>{" "}
+            <strong>
+              {filteredExpenses.length} Entries ({formatINR(totalExpenses)})
+            </strong>
           </div>
           <div className="print-total-item">
-            <span>Statement Date:</span> <strong>{new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</strong>
+            <span>Statement Date:</span>{" "}
+            <strong>
+              {new Date().toLocaleDateString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })}
+            </strong>
           </div>
         </div>
       </div>
@@ -566,7 +649,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       <div className="client-details-header no-print">
         <div className="client-details-top-actions">
           <button
-            onClick={() => handleOpenPrintPreview('statement')}
+            onClick={() => handleOpenPrintPreview("statement")}
             className="afrah-app-back-btn"
             title="Preview and Print Client Statement"
           >
@@ -580,7 +663,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
           {/* Client Name & Contact */}
           <div className="client-unified-card-item client-info-item">
             <h1 className="client-unified-name-title">
-              <span className="client-unified-label">Client Name :</span>{' '}
+              <span className="client-unified-label">Client Name :</span>{" "}
               <span className="client-unified-name">{client.name}</span>
             </h1>
           </div>
@@ -592,7 +675,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
             </div>
             <div>
               <span className="metric-label">TOTAL ADVANCE</span>
-              <span className="metric-value gold">{formatINR(totalAdvance)}</span>
+              <span className="metric-value gold">
+                {formatINR(totalAdvance)}
+              </span>
             </div>
           </div>
 
@@ -603,20 +688,26 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
             </div>
             <div>
               <span className="metric-label">TOTAL EXPENSE</span>
-              <span className="metric-value blue">{formatINR(totalExpenses)}</span>
+              <span className="metric-value blue">
+                {formatINR(totalExpenses)}
+              </span>
             </div>
           </div>
 
           {/* Remaining Amount */}
           <div className="client-unified-card-item metric-item">
-            <div className={`metric-icon-wrap ${balance >= 0 ? 'green' : 'red'}`}>
+            <div
+              className={`metric-icon-wrap ${balance >= 0 ? "green" : "red"}`}
+            >
               <Scale size={24} />
             </div>
             <div>
               <span className="metric-label">
-                {balance >= 0 ? 'REMAINING AMOUNT' : 'DEFICIT OVERDUE'}
+                {balance >= 0 ? "REMAINING AMOUNT" : "DEFICIT OVERDUE"}
               </span>
-              <span className={`metric-value ${balance >= 0 ? 'green' : 'red'}`}>
+              <span
+                className={`metric-value ${balance >= 0 ? "green" : "red"}`}
+              >
                 {formatINR(Math.abs(balance))}
               </span>
             </div>
@@ -626,21 +717,26 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
       {/* Combined ledger card: Advance Payments | Site Expenses */}
       <section className="afrah-app-table-section client-ledger-split-card">
-      <div className="client-details-side-by-side-grid">
-        {/* COLUMN 1: ADVANCE PAYMENTS */}
-        <div className="details-column-panel">
+        <div className="client-details-side-by-side-grid">
+          {/* COLUMN 1: ADVANCE PAYMENTS */}
+          <div className="details-column-panel">
             <div className="afrah-app-section-header no-print">
               <div>
                 <h2 className="afrah-app-section-title">Advance Payments</h2>
                 <span className="afrah-app-section-subtitle">
-                  {(advFromDate || advToDate) && ' (filtered)'}
+                  {(advFromDate || advToDate) && " (filtered)"}
                 </span>
               </div>
 
               <button
                 onClick={() => setIsAddAdvModalOpen(true)}
                 className="btn-theme-primary"
-                style={{ height: '34px', padding: '0 12px', fontSize: '12px', whiteSpace: 'nowrap' }}
+                style={{
+                  height: "34px",
+                  padding: "0 12px",
+                  fontSize: "12px",
+                  whiteSpace: "nowrap",
+                }}
               >
                 <Plus size={14} />
                 <span>Add Advance</span>
@@ -651,34 +747,56 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               <table className="afrah-app-table">
                 <thead>
                   <tr>
-                    <th style={{ width: '45px', textAlign: 'center' }}>S.NO</th>
+                    <th className="text-center" style={{ width: "45px" }}>
+                      S.NO
+                    </th>
                     <th>DATE</th>
                     <th>AMOUNT</th>
                     <th>PAYMENT MODE</th>
-                    <th className="no-print" style={{ width: '70px', textAlign: 'center' }}>ACTIONS</th>
+                    <th
+                      className="no-print text-center"
+                      style={{ width: "70px" }}
+                    >
+                      ACTIONS
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {paginatedAdvance.length === 0 ? (
                     <tr>
-                      <td colSpan={5} style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--text-secondary)' }}>
-                        {advFromDate || advToDate ? 'No matching advance payments.' : 'No advance payments added yet.'}
+                      <td
+                        colSpan={5}
+                        style={{
+                          textAlign: "center",
+                          padding: "32px 16px",
+                          color: "var(--text-secondary)",
+                        }}
+                      >
+                        {advFromDate || advToDate
+                          ? "No matching advance payments."
+                          : "No advance payments added yet."}
                       </td>
                     </tr>
                   ) : (
                     paginatedAdvance.map((item, index) => {
                       return (
-                        <tr
-                          key={item.id}
-                          style={{ cursor: 'default' }}
-                        >
-                          <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
+                        <tr key={item.id} className="cursor-default">
+                          <td className="cell-sno">
                             {advStartIndex + index + 1}
                           </td>
                           <td>
-                            <span style={{ fontSize: '13px', fontWeight: 600 }}>{formatToDDMMYYYY(item.date)}</span>
+                            <span style={{ fontSize: "13px", fontWeight: 600 }}>
+                              {formatToDDMMYYYY(item.date)}
+                            </span>
                           </td>
-                          <td style={{ fontWeight: 800, fontSize: '14.5px', color: 'var(--primary)', fontFamily: 'JetBrains Mono, monospace' }}>
+                          <td
+                            style={{
+                              fontWeight: 800,
+                              fontSize: "14.5px",
+                              color: "var(--text-primary)",
+                              fontFamily: "JetBrains Mono, monospace",
+                            }}
+                          >
                             {formatINR(item.amount)}
                           </td>
                           <td>
@@ -686,8 +804,11 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                               {item.mode}
                             </span>
                           </td>
-                          <td className="no-print" style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <td
+                            className="no-print text-center"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <div className="flex-center-4">
                               <button
                                 onClick={() => handleOpenEditAdv(item)}
                                 className="afrah-app-action-btn afrah-app-edit-btn"
@@ -717,7 +838,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               <div className="afrah-app-pagination-bar compact no-print">
                 <div className="afrah-app-pagination-left">
                   <span className="afrah-app-pagination-info">
-                    {advStartIndex + 1}–{advEndIndex} of {filteredAdvance.length}
+                    {advStartIndex + 1}–{advEndIndex} of{" "}
+                    {filteredAdvance.length}
                   </span>
                   <div className="afrah-app-rows-selector">
                     <select
@@ -748,14 +870,16 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       <button
                         key={p}
                         onClick={() => setAdvCurrentPage(p)}
-                        className={`afrah-app-page-num-btn ${advCurrentPage === p ? 'active' : ''}`}
+                        className={`afrah-app-page-num-btn ${advCurrentPage === p ? "active" : ""}`}
                       >
                         {p}
                       </button>
                     ))}
                   </div>
                   <button
-                    onClick={() => setAdvCurrentPage((p) => Math.min(advTotalPages, p + 1))}
+                    onClick={() =>
+                      setAdvCurrentPage((p) => Math.min(advTotalPages, p + 1))
+                    }
                     disabled={advCurrentPage === advTotalPages}
                     className="afrah-app-page-nav-btn"
                   >
@@ -764,22 +888,27 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 </div>
               </div>
             )}
-        </div>
+          </div>
 
-        {/* COLUMN 2: SITE EXPENSES */}
-        <div className="details-column-panel">
+          {/* COLUMN 2: SITE EXPENSES */}
+          <div className="details-column-panel">
             <div className="afrah-app-section-header no-print">
               <div>
                 <h2 className="afrah-app-section-title">Site Expenses</h2>
                 <span className="afrah-app-section-subtitle">
-                  {(expFromDate || expToDate) && ' (filtered)'}
+                  {(expFromDate || expToDate) && " (filtered)"}
                 </span>
               </div>
 
               <button
                 onClick={() => setIsAddExpModalOpen(true)}
                 className="btn-theme-primary"
-                style={{ height: '34px', padding: '0 12px', fontSize: '12px', whiteSpace: 'nowrap' }}
+                style={{
+                  height: "34px",
+                  padding: "0 12px",
+                  fontSize: "12px",
+                  whiteSpace: "nowrap",
+                }}
               >
                 <Plus size={14} />
                 <span>Add Expense</span>
@@ -790,51 +919,88 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               <table className="afrah-app-table">
                 <thead>
                   <tr>
-                    <th style={{ width: '45px', textAlign: 'center' }}>S.NO</th>
+                    <th className="text-center" style={{ width: "45px" }}>
+                      S.NO
+                    </th>
                     <th>DATE</th>
                     <th>EXPENSE NAME</th>
                     <th>QTY</th>
                     <th>RATE</th>
                     <th>TOTAL</th>
-                    <th className="no-print" style={{ width: '70px', textAlign: 'center' }}>ACTIONS</th>
+                    <th
+                      className="no-print text-center"
+                      style={{ width: "70px" }}
+                    >
+                      ACTIONS
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {paginatedExpenses.length === 0 ? (
                     <tr>
-                      <td colSpan={7} style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--text-secondary)' }}>
-                        {expFromDate || expToDate ? 'No matching expenses found.' : 'No expenses logged yet.'}
+                      <td
+                        colSpan={7}
+                        style={{
+                          textAlign: "center",
+                          padding: "32px 16px",
+                          color: "var(--text-secondary)",
+                        }}
+                      >
+                        {expFromDate || expToDate
+                          ? "No matching expenses found."
+                          : "No expenses logged yet."}
                       </td>
                     </tr>
                   ) : (
                     paginatedExpenses.map((exp, index) => {
                       return (
-                        <tr
-                          key={exp.id}
-                          style={{ cursor: 'default' }}
-                        >
-                          <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
+                        <tr key={exp.id} className="cursor-default">
+                          <td className="cell-sno">
                             {expStartIndex + index + 1}
                           </td>
                           <td>
-                            <span style={{ fontSize: '13px', fontWeight: 600 }}>{formatToDDMMYYYY(exp.date)}</span>
+                            <span style={{ fontSize: "13px", fontWeight: 600 }}>
+                              {formatToDDMMYYYY(exp.date)}
+                            </span>
                           </td>
                           <td>
                             <span className="expense-name-tag">
                               {exp.expenseName}
                             </span>
                           </td>
-                          <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '13.5px', fontWeight: 600 }}>
+                          <td
+                            style={{
+                              fontFamily: "JetBrains Mono, monospace",
+                              fontSize: "13.5px",
+                              fontWeight: 600,
+                            }}
+                          >
                             {exp.quantity}
                           </td>
-                          <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '13.5px', fontWeight: 600 }}>
+                          <td
+                            style={{
+                              fontFamily: "JetBrains Mono, monospace",
+                              fontSize: "13.5px",
+                              fontWeight: 600,
+                            }}
+                          >
                             {formatINR(exp.rate)}
                           </td>
-                          <td style={{ fontWeight: 800, fontSize: '14.5px', color: 'var(--primary)', fontFamily: 'JetBrains Mono, monospace' }}>
+                          <td
+                            style={{
+                              fontWeight: 800,
+                              fontSize: "14.5px",
+                              color: "var(--text-primary)",
+                              fontFamily: "JetBrains Mono, monospace",
+                            }}
+                          >
                             {formatINR(exp.totalAmount)}
                           </td>
-                          <td className="no-print" style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <td
+                            className="no-print text-center"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <div className="flex-center-4">
                               <button
                                 onClick={() => handleOpenEditExp(exp)}
                                 className="afrah-app-action-btn afrah-app-edit-btn"
@@ -864,7 +1030,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               <div className="afrah-app-pagination-bar compact no-print">
                 <div className="afrah-app-pagination-left">
                   <span className="afrah-app-pagination-info">
-                    {expStartIndex + 1}–{expEndIndex} of {filteredExpenses.length}
+                    {expStartIndex + 1}–{expEndIndex} of{" "}
+                    {filteredExpenses.length}
                   </span>
                   <div className="afrah-app-rows-selector">
                     <select
@@ -895,14 +1062,16 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       <button
                         key={p}
                         onClick={() => setExpCurrentPage(p)}
-                        className={`afrah-app-page-num-btn ${expCurrentPage === p ? 'active' : ''}`}
+                        className={`afrah-app-page-num-btn ${expCurrentPage === p ? "active" : ""}`}
                       >
                         {p}
                       </button>
                     ))}
                   </div>
                   <button
-                    onClick={() => setExpCurrentPage((p) => Math.min(expTotalPages, p + 1))}
+                    onClick={() =>
+                      setExpCurrentPage((p) => Math.min(expTotalPages, p + 1))
+                    }
                     disabled={expCurrentPage === expTotalPages}
                     className="afrah-app-page-nav-btn"
                   >
@@ -911,20 +1080,29 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 </div>
               </div>
             )}
+          </div>
         </div>
-      </div>
       </section>
 
       {/* MODAL 1: ADD ADVANCE PAYMENT */}
       {isAddAdvModalOpen && (
-        <div className="afrah-app-modal-overlay" onClick={() => setIsAddAdvModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
+        <div
+          className="afrah-app-modal-overlay"
+          onClick={() => setIsAddAdvModalOpen(false)}
+        >
+          <div
+            className="afrah-app-modal-container modal-w-sm"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Receipt size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Add Advance Payment</h3>
               </div>
-              <button onClick={() => setIsAddAdvModalOpen(false)} className="afrah-app-modal-close-btn">
+              <button
+                onClick={() => setIsAddAdvModalOpen(false)}
+                className="afrah-app-modal-close-btn"
+              >
                 <X size={18} />
               </button>
             </div>
@@ -968,10 +1146,18 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 </div>
               </div>
               <div className="afrah-app-modal-footer">
-                <button type="button" onClick={() => setIsAddAdvModalOpen(false)} className="afrah-app-back-btn">
+                <button
+                  type="button"
+                  onClick={() => setIsAddAdvModalOpen(false)}
+                  className="afrah-app-back-btn"
+                >
                   Cancel
                 </button>
-                <button type="submit" disabled={!isAdvValid} className="btn-theme-primary">
+                <button
+                  type="submit"
+                  disabled={!isAdvValid}
+                  className="btn-theme-primary"
+                >
                   <Plus size={16} />
                   <span>Add Advance</span>
                 </button>
@@ -983,14 +1169,23 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
       {/* MODAL 2: EDIT ADVANCE PAYMENT */}
       {isEditAdvModalOpen && (
-        <div className="afrah-app-modal-overlay" onClick={() => setIsEditAdvModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
+        <div
+          className="afrah-app-modal-overlay"
+          onClick={() => setIsEditAdvModalOpen(false)}
+        >
+          <div
+            className="afrah-app-modal-container modal-w-sm"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Advance Payment</h3>
               </div>
-              <button onClick={() => setIsEditAdvModalOpen(false)} className="afrah-app-modal-close-btn">
+              <button
+                onClick={() => setIsEditAdvModalOpen(false)}
+                className="afrah-app-modal-close-btn"
+              >
                 <X size={18} />
               </button>
             </div>
@@ -1033,10 +1228,18 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 </div>
               </div>
               <div className="afrah-app-modal-footer">
-                <button type="button" onClick={() => setIsEditAdvModalOpen(false)} className="afrah-app-back-btn">
+                <button
+                  type="button"
+                  onClick={() => setIsEditAdvModalOpen(false)}
+                  className="afrah-app-back-btn"
+                >
                   Cancel
                 </button>
-                <button type="submit" disabled={!isEditAdvValid} className="btn-theme-primary">
+                <button
+                  type="submit"
+                  disabled={!isEditAdvValid}
+                  className="btn-theme-primary"
+                >
                   <span>Save Changes</span>
                 </button>
               </div>
@@ -1047,14 +1250,23 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
       {/* MODAL 3: ADD EXPENSE */}
       {isAddExpModalOpen && (
-        <div className="afrah-app-modal-overlay" onClick={() => setIsAddExpModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '460px' }} onClick={(e) => e.stopPropagation()}>
+        <div
+          className="afrah-app-modal-overlay"
+          onClick={() => setIsAddExpModalOpen(false)}
+        >
+          <div
+            className="afrah-app-modal-container modal-w-md"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <CreditCard size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Add Site Expense</h3>
               </div>
-              <button onClick={() => setIsAddExpModalOpen(false)} className="afrah-app-modal-close-btn">
+              <button
+                onClick={() => setIsAddExpModalOpen(false)}
+                className="afrah-app-modal-close-btn"
+              >
                 <X size={18} />
               </button>
             </div>
@@ -1077,7 +1289,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     placeholder="Select or type custom expense..."
                   />
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="grid-2-12">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Quantity *</label>
                     <input
@@ -1106,17 +1318,27 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   </div>
                 </div>
                 <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Total Calculated (₹)</label>
+                  <label className="afrah-app-label">
+                    Total Calculated (₹)
+                  </label>
                   <div className="total-amount-display">
                     {formatINR(expTotalAmount)}
                   </div>
                 </div>
               </div>
               <div className="afrah-app-modal-footer">
-                <button type="button" onClick={() => setIsAddExpModalOpen(false)} className="afrah-app-back-btn">
+                <button
+                  type="button"
+                  onClick={() => setIsAddExpModalOpen(false)}
+                  className="afrah-app-back-btn"
+                >
                   Cancel
                 </button>
-                <button type="submit" disabled={!isExpValid} className="btn-theme-primary">
+                <button
+                  type="submit"
+                  disabled={!isExpValid}
+                  className="btn-theme-primary"
+                >
                   <Plus size={16} />
                   <span>Add Expense</span>
                 </button>
@@ -1128,14 +1350,23 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
       {/* MODAL 4: EDIT EXPENSE */}
       {isEditExpModalOpen && (
-        <div className="afrah-app-modal-overlay" onClick={() => setIsEditExpModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '460px' }} onClick={(e) => e.stopPropagation()}>
+        <div
+          className="afrah-app-modal-overlay"
+          onClick={() => setIsEditExpModalOpen(false)}
+        >
+          <div
+            className="afrah-app-modal-container modal-w-md"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Site Expense</h3>
               </div>
-              <button onClick={() => setIsEditExpModalOpen(false)} className="afrah-app-modal-close-btn">
+              <button
+                onClick={() => setIsEditExpModalOpen(false)}
+                className="afrah-app-modal-close-btn"
+              >
                 <X size={18} />
               </button>
             </div>
@@ -1157,7 +1388,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     onChange={(val) => setEditExpName(val)}
                   />
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="grid-2-12">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Quantity *</label>
                     <input
@@ -1184,17 +1415,27 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   </div>
                 </div>
                 <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Total Calculated (₹)</label>
+                  <label className="afrah-app-label">
+                    Total Calculated (₹)
+                  </label>
                   <div className="total-amount-display">
                     {formatINR(editExpTotalAmount)}
                   </div>
                 </div>
               </div>
               <div className="afrah-app-modal-footer">
-                <button type="button" onClick={() => setIsEditExpModalOpen(false)} className="afrah-app-back-btn">
+                <button
+                  type="button"
+                  onClick={() => setIsEditExpModalOpen(false)}
+                  className="afrah-app-back-btn"
+                >
                   Cancel
                 </button>
-                <button type="submit" disabled={!isEditExpValid} className="btn-theme-primary">
+                <button
+                  type="submit"
+                  disabled={!isEditExpValid}
+                  className="btn-theme-primary"
+                >
                   <span>Save Changes</span>
                 </button>
               </div>
@@ -1208,7 +1449,11 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         isOpen={Boolean(deleteAdvTarget)}
         title="Delete Advance Payment"
         message="Are you sure you want to delete this client advance payment? This will update the client ledger and outstanding balance immediately."
-        itemName={deleteAdvTarget ? `${deleteAdvTarget.date} — ${formatINR(deleteAdvTarget.amount)} (${deleteAdvTarget.mode})` : undefined}
+        itemName={
+          deleteAdvTarget
+            ? `${deleteAdvTarget.date} — ${formatINR(deleteAdvTarget.amount)} (${deleteAdvTarget.mode})`
+            : undefined
+        }
         confirmText="Delete Payment"
         isDeleting={isDeletingAdv}
         onConfirm={handleConfirmDeleteAdvance}
@@ -1231,7 +1476,11 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         isOpen={Boolean(deleteExpTarget)}
         title="Delete Site Expense"
         message="Are you sure you want to delete this expense record? The client's financial totals will be recalculated."
-        itemName={deleteExpTarget ? `${deleteExpTarget.date} — ${deleteExpTarget.expenseName} (${formatINR(deleteExpTarget.totalAmount)})` : undefined}
+        itemName={
+          deleteExpTarget
+            ? `${deleteExpTarget.date} — ${deleteExpTarget.expenseName} (${formatINR(deleteExpTarget.totalAmount)})`
+            : undefined
+        }
         confirmText="Delete Expense"
         isDeleting={isDeletingExp}
         onConfirm={handleConfirmDeleteExpense}
@@ -1257,8 +1506,20 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         advancePayments={filteredAdvance}
         expenses={filteredExpenses}
         initialMode={previewMode}
-        fromDate={previewMode === 'expenses' ? expFromDate : previewMode === 'advances' ? advFromDate : undefined}
-        toDate={previewMode === 'expenses' ? expToDate : previewMode === 'advances' ? advToDate : undefined}
+        fromDate={
+          previewMode === "expenses"
+            ? expFromDate
+            : previewMode === "advances"
+              ? advFromDate
+              : undefined
+        }
+        toDate={
+          previewMode === "expenses"
+            ? expToDate
+            : previewMode === "advances"
+              ? advToDate
+              : undefined
+        }
       />
     </div>
   );

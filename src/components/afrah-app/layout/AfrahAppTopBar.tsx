@@ -110,8 +110,7 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
             <>
               <button
                 onClick={onNavigateHome}
-                className="afrah-app-breadcrumb-link"
-                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                className="afrah-app-breadcrumb-link flex-center"
               >
                 <Users size={16} color="var(--primary)" />
                 <span>Clients</span>
@@ -130,8 +129,7 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
             <>
               <button
                 onClick={() => onNavigateConstructionLabourRoot && onNavigateConstructionLabourRoot()}
-                className="afrah-app-breadcrumb-link"
-                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                className="afrah-app-breadcrumb-link flex-center"
               >
                 <HardHat size={16} color="#f59e0b" />
                 <span>Construction Labour Contract</span>
@@ -150,8 +148,7 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
             <>
               <button
                 onClick={() => onNavigateInteriorRoot && onNavigateInteriorRoot(activeInteriorSubTab)}
-                className="afrah-app-breadcrumb-link"
-                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                className="afrah-app-breadcrumb-link flex-center"
               >
                 <Paintbrush size={16} color="var(--primary)" />
                 <span>KAAB INTERIOR</span>
@@ -237,8 +234,7 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
             <>
               <button
                 onClick={onNavigateVendorRoot}
-                className="afrah-app-breadcrumb-link"
-                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                className="afrah-app-breadcrumb-link flex-center"
               >
                 <Truck size={16} color="var(--primary)" />
                 <span>Vendor</span>
@@ -266,7 +262,7 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
               )}
             </>
           ) : activeTab === 'banks' ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="flex-center">
               <Landmark size={16} color="var(--primary)" />
               <span className="afrah-app-breadcrumb-active">Bank Details</span>
             </div>
@@ -274,8 +270,7 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
             <>
               <button
                 onClick={() => onNavigateBricksRoot && onNavigateBricksRoot(activeBricksSubTab)}
-                className="afrah-app-breadcrumb-link"
-                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                className="afrah-app-breadcrumb-link flex-center"
               >
                 <BrickWall size={16} color="var(--primary)" />
                 <span>Kabibullah bricks</span>
@@ -340,37 +335,37 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
         </div>
 
         {activeTab === 'clients' ? (
-          <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-            Total Clients: <strong style={{ color: 'var(--primary)' }}>{clientsCount}</strong>
+          <span className="stat-label">
+            Total Clients: <strong className="text-primary-gold">{clientsCount}</strong>
           </span>
         ) : activeTab === 'construction_labour' ? (
-          <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+          <span className="stat-label">
             Total Construction Labour: <strong style={{ color: '#f59e0b' }}>{constructionLabourContractsCount}</strong>
           </span>
         ) : activeTab === 'kaab_interior' ? (
           activeInteriorSubTab === 'vendor' ? (
-            <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-              KAAB INTERIOR · <strong style={{ color: 'var(--primary)' }}>Vendor Directory</strong>
+            <span className="stat-label">
+              KAAB INTERIOR · <strong className="text-primary-gold">Vendor Directory</strong>
             </span>
           ) : activeInteriorSubTab === 'labour_contract' ? (
-            <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+            <span className="stat-label">
               Total Interior Labour: <strong style={{ color: '#38bdf8' }}>{interiorLabourContractsCount}</strong>
             </span>
           ) : (
-            <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-              Total Interior Projects: <strong style={{ color: 'var(--primary)' }}>{interiorClientsCount}</strong>
+            <span className="stat-label">
+              Total Interior Projects: <strong className="text-primary-gold">{interiorClientsCount}</strong>
             </span>
           )
         ) : activeTab === 'vendor' ? (
-          <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-            Total Categories: <strong style={{ color: 'var(--primary)' }}>{vendorsCount}</strong>
+          <span className="stat-label">
+            Total Categories: <strong className="text-primary-gold">{vendorsCount}</strong>
           </span>
         ) : activeTab === 'banks' ? (
-          <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-            Total Banks: <strong style={{ color: 'var(--primary)' }}>{banksCount}</strong>
+          <span className="stat-label">
+            Total Banks: <strong className="text-primary-gold">{banksCount}</strong>
           </span>
         ) : selectedBrickCustomer ? (
-          <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+          <span className="stat-label">
             Outstanding Balance:{' '}
             <strong
               style={{
@@ -381,17 +376,17 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
             </strong>
           </span>
         ) : activeBricksSubTab === 'expenses' ? (
-          <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-            Total Expenses Recorded: <strong style={{ color: '#f87171' }}>{brickExpensesCount}</strong>
+          <span className="stat-label">
+            Total Expenses Recorded: <strong className="text-negative">{brickExpensesCount}</strong>
           </span>
         ) : activeBricksSubTab === 'stock' ? (
-          <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+          <span className="stat-label">
             Total Yard Stock: <strong style={{ color: '#60a5fa' }}>{Number(brickStockUnits).toLocaleString('en-IN')} Units</strong>
           </span>
         ) : (
-          <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+          <span className="stat-label">
             Total Bricks Customers:{' '}
-            <strong style={{ color: 'var(--primary)' }}>{brickCustomersCount}</strong>
+            <strong className="text-primary-gold">{brickCustomersCount}</strong>
           </span>
         )}
       </div>

@@ -111,7 +111,6 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
   const isConstructionActive =
     activeTab === 'clients' ||
     activeTab === 'vendor' ||
-    activeTab === 'banks' ||
     activeTab === 'construction_labour';
 
   return (
@@ -163,7 +162,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
         <div className="afrah-app-sidebar-nav">
           <nav className="afrah-app-nav-list">
 
-            {/* 1. AFRAH CONSTRUCTION (Boxed Division with Sub-items) */}
+            {/* AFRAH CONSTRUCTION (Boxed Division with Sub-items) */}
             <div className="afrah-app-nav-group">
               <button
                 onClick={() => {
@@ -180,7 +179,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                 <div className="afrah-app-nav-left">
                   <Building2 size={17} className="nav-icon" />
                   {!isCollapsed && (
-                    <span className="nav-label" style={{ fontWeight: 600, letterSpacing: '0.04em' }}>
+                    <span className="nav-label">
                       CONSTRUCTION
                     </span>
                   )}
@@ -198,7 +197,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                 )}
               </button>
 
-              {/* Sub-items below AFRAH CONSTRUCTION: Clients, Vendor, Bank details, Construction Labour Contract */}
+              {/* Sub-items: Clients, Vendor, Construction Labour Contract */}
               {(!isCollapsed ? isConstructionExpanded : false) && (
                 <div className="afrah-app-nav-sublist">
                   {/* Option A: Clients */}
@@ -235,25 +234,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                     )}
                   </button>
 
-                  {/* Option C: Bank details */}
-                  <button
-                    onClick={() => {
-                      onSelectTab('banks');
-                      onCloseMobile();
-                    }}
-                    className={`afrah-app-nav-subitem ${activeTab === 'banks' ? 'active' : ''}`}
-                    title="Bank details"
-                  >
-                    <div className="afrah-app-nav-left">
-                      <Landmark size={14} className="nav-icon" />
-                      <span className="nav-label">Bank details</span>
-                    </div>
-                    {banksCount > 0 && (
-                      <span className="afrah-app-subbadge-count">{banksCount}</span>
-                    )}
-                  </button>
-
-                  {/* Option D: Construction Labour Contract */}
+                  {/* Option C: Construction Labour Contract */}
                   <button
                     onClick={() => {
                       onSelectTab('construction_labour');
@@ -277,7 +258,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
             </div>
 
             {/* 3. KABIBULLAH BRICKS (Boxed Division with Sub-items) */}
-            <div className="afrah-app-nav-group" style={{ marginTop: '6px' }}>
+            <div className="afrah-app-nav-group mt-6">
               <button
                 onClick={() => {
                   if (isCollapsed) {
@@ -293,7 +274,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                 <div className="afrah-app-nav-left">
                   <BrickWall size={17} className="nav-icon" />
                   {!isCollapsed && (
-                    <span className="nav-label" style={{ fontWeight: 600, letterSpacing: '0.04em' }}>
+                    <span className="nav-label">
                       KABIBULLAH BRICKS
                     </span>
                   )}
@@ -382,7 +363,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
             </div>
 
             {/* 4. KAAB INTERIOR (Boxed Division with Sub-items) */}
-            <div className="afrah-app-nav-group" style={{ marginTop: '6px' }}>
+            <div className="afrah-app-nav-group mt-6">
               <button
                 onClick={() => {
                   if (isCollapsed) {
@@ -398,7 +379,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                 <div className="afrah-app-nav-left">
                   <Paintbrush size={17} className="nav-icon" />
                   {!isCollapsed && (
-                    <span className="nav-label" style={{ fontWeight: 600, letterSpacing: '0.04em' }}>
+                    <span className="nav-label">
                       KAAB INTERIOR
                     </span>
                   )}
@@ -484,6 +465,34 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                   </button>
                 </div>
               )}
+            </div>
+
+            {/* Top-level: Bank details (last) */}
+            <div className="afrah-app-nav-group mt-6">
+              <button
+                onClick={() => {
+                  onSelectTab('banks');
+                  onCloseMobile();
+                }}
+                className={`afrah-app-nav-item afrah-app-division-header ${activeTab === 'banks' ? 'division-active' : ''}`}
+                title="Bank details"
+              >
+                <div className="afrah-app-nav-left">
+                  <Landmark size={17} className="nav-icon" />
+                  {!isCollapsed && (
+                    <span className="nav-label">
+                      BANK DETAILS
+                    </span>
+                  )}
+                </div>
+                {!isCollapsed ? (
+                  banksCount > 0 ? (
+                    <span className="afrah-app-subbadge-count">{banksCount}</span>
+                  ) : null
+                ) : (
+                  <span className="afrah-app-badge-dot" />
+                )}
+              </button>
             </div>
 
           </nav>

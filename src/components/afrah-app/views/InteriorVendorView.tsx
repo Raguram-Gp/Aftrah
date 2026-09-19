@@ -145,9 +145,9 @@ export const InteriorVendorView: React.FC<InteriorVendorViewProps> = ({
   };
 
   return (
-    <div style={{ width: '100%', maxWidth: '100%' }}>
+    <div className="w-full">
       {/* VENDOR CATEGORIES LIST */}
-      <section className="afrah-app-table-section" style={{ width: '100%', maxWidth: '100%' }}>
+      <section className="afrah-app-table-section w-full">
         <div className="afrah-app-section-header">
           <div>
             <h1 className="afrah-app-section-title">VENDOR CATEGORIES</h1>
@@ -156,7 +156,7 @@ export const InteriorVendorView: React.FC<InteriorVendorViewProps> = ({
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="flex-center-10">
             <div className="afrah-app-search-wrapper">
               <Search size={14} className="afrah-app-search-icon" />
               <input
@@ -174,8 +174,7 @@ export const InteriorVendorView: React.FC<InteriorVendorViewProps> = ({
             <button
               type="button"
               onClick={() => setIsAddModalOpen(true)}
-              className="btn-theme-primary"
-              style={{ height: '36px', padding: '0 16px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              className="btn-theme-primary btn-add"
             >
               <Plus size={15} strokeWidth={2.5} />
               <span>Add Details</span>
@@ -188,16 +187,16 @@ export const InteriorVendorView: React.FC<InteriorVendorViewProps> = ({
           <table className="afrah-app-table">
             <thead>
               <tr>
-                <th style={{ width: '60px', textAlign: 'center' }}>S.NO</th>
+                <th className="text-center" style={{ width: '60px' }}>S.NO</th>
                 <th>TYPE (TRADE / MATERIAL)</th>
-                <th style={{ width: '130px', textAlign: 'center' }}>SHOPS COUNT</th>
-                <th style={{ width: '85px', textAlign: 'center' }}>ACTIONS</th>
+                <th className="text-center" style={{ width: '130px' }}>SHOPS COUNT</th>
+                <th className="text-center" style={{ width: '85px' }}>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
               {paginatedVendors.length === 0 ? (
                 <tr>
-                  <td colSpan={4} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
+                  <td colSpan={4} className="empty-state-cell">
                     {searchQuery ? 'No matching vendor categories.' : 'No vendor categories found. Click "+ Add Details" to create one.'}
                   </td>
                 </tr>
@@ -210,28 +209,26 @@ export const InteriorVendorView: React.FC<InteriorVendorViewProps> = ({
                       onClick={() => onSelectVendor(vendor)}
                       className="clickable-client-row"
                     >
-                      <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
+                      <td className="cell-sno">
                         {startIndex + index + 1}
                       </td>
                       <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div className="cell-entity">
                           <div className="afrah-app-user-avatar" style={{ background: 'rgba(226, 195, 153, 0.15)', color: 'var(--primary)' }}>
                             {getCategoryIcon(vendor.type)}
                           </div>
-                          <div>
-                            <span className="row-entity-name" style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 750 }}>
-                              {vendor.type}
-                            </span>
-                          </div>
+                          <span className="row-entity-name">
+                            {vendor.type}
+                          </span>
                         </div>
                       </td>
-                      <td style={{ textAlign: 'center' }}>
-                        <span className="section-total-badge" style={{ fontSize: '12.5px', fontWeight: 700, padding: '3px 10px' }}>
+                      <td className="text-center">
+                        <span className="section-total-badge" style={{ fontSize: 'var(--fs-2xs)', fontWeight: 'var(--fw-bold)', padding: '3px 10px' }}>
                           {shopsCount} {shopsCount === 1 ? 'shop' : 'shops'}
                         </span>
                       </td>
-                      <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                      <td className="text-center" onClick={(e) => e.stopPropagation()}>
+                        <div className="cell-actions">
                           <button
                             onClick={() => handleOpenEdit(vendor, {} as any)}
                             className="afrah-app-action-btn afrah-app-edit-btn"
@@ -323,12 +320,11 @@ export const InteriorVendorView: React.FC<InteriorVendorViewProps> = ({
       {isAddModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
           <div
-            className="afrah-app-modal-container"
-            style={{ maxWidth: '440px' }}
-            onClick={(e) => e.stopPropagation()}
+              className="afrah-app-modal-container modal-w-sm"
+              onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Plus size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Add Details</h3>
               </div>
@@ -371,8 +367,7 @@ export const InteriorVendorView: React.FC<InteriorVendorViewProps> = ({
                 <button
                   type="submit"
                   disabled={!isAddFormValid}
-                  className="btn-theme-primary"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  className="btn-theme-primary flex-center-6"
                 >
                   <Plus size={15} strokeWidth={2.5} />
                   <span>Add Details</span>
@@ -387,12 +382,11 @@ export const InteriorVendorView: React.FC<InteriorVendorViewProps> = ({
       {isEditModalOpen && (
         <div className="afrah-app-modal-overlay" onClick={() => setIsEditModalOpen(false)}>
           <div
-            className="afrah-app-modal-container"
-            style={{ maxWidth: '440px' }}
-            onClick={(e) => e.stopPropagation()}
+              className="afrah-app-modal-container modal-w-sm"
+              onClick={(e) => e.stopPropagation()}
           >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={17} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Vendor Category</h3>
               </div>

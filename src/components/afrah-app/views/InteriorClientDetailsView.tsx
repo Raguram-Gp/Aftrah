@@ -1,16 +1,26 @@
-import React, { useState, useMemo } from 'react';
-import type { InteriorClient, InteriorAdvancePayment, InteriorExpenseItem } from '../types';
+import React, { useState, useMemo } from "react";
+import type {
+  InteriorClient,
+  InteriorAdvancePayment,
+  InteriorExpenseItem,
+} from "../types";
 import {
   INTERIOR_CATEGORIES,
   INTERIOR_UNITS,
   PREDEFINED_INTERIOR_ITEMS,
   PREDEFINED_INTERIOR_EXPENSES,
-  PAYMENT_MODES
-} from '../types';
-import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
-import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
-import { DateFilterBar } from '../components/DateFilterBar';
-import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
+  PAYMENT_MODES,
+} from "../types";
+import { SearchableExpenseSelect } from "../components/SearchableExpenseSelect";
+import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
+import { DateFilterBar } from "../components/DateFilterBar";
+import {
+  DateInput,
+  isValidDate,
+  formatToDDMMYYYY,
+  formatToYYYYMMDD,
+  compareByDateDesc,
+} from "../components/DateInput";
 import {
   ArrowLeft,
   Wallet,
@@ -24,33 +34,51 @@ import {
   CreditCard,
   Sparkles,
   Layers,
-  FileText
-} from 'lucide-react';
+  FileText,
+} from "lucide-react";
 
 interface InteriorClientDetailsViewProps {
   client: InteriorClient;
   onBack: () => void;
   onUpdateClient: (updatedClient: InteriorClient) => Promise<any>;
-  onAddAdvance: (clientId: string, advData: Omit<InteriorAdvancePayment, 'id' | 'sNo'>) => Promise<any>;
-  onUpdateAdvance: (clientId: string, advData: InteriorAdvancePayment) => Promise<any>;
+  onAddAdvance: (
+    clientId: string,
+    advData: Omit<InteriorAdvancePayment, "id" | "sNo">,
+  ) => Promise<any>;
+  onUpdateAdvance: (
+    clientId: string,
+    advData: InteriorAdvancePayment,
+  ) => Promise<any>;
   onDeleteAdvance: (clientId: string, advId: string) => Promise<any>;
-  onDeleteMultipleAdvancePayments?: (clientId: string, advIds: string[]) => Promise<any>;
-  onAddExpense: (clientId: string, expData: Omit<InteriorExpenseItem, 'id' | 'sNo'>) => Promise<any>;
-  onUpdateExpense: (clientId: string, expData: InteriorExpenseItem) => Promise<any>;
+  onDeleteMultipleAdvancePayments?: (
+    clientId: string,
+    advIds: string[],
+  ) => Promise<any>;
+  onAddExpense: (
+    clientId: string,
+    expData: Omit<InteriorExpenseItem, "id" | "sNo">,
+  ) => Promise<any>;
+  onUpdateExpense: (
+    clientId: string,
+    expData: InteriorExpenseItem,
+  ) => Promise<any>;
   onDeleteExpense: (clientId: string, expId: string) => Promise<any>;
-  onDeleteMultipleExpenses?: (clientId: string, expIds: string[]) => Promise<any>;
+  onDeleteMultipleExpenses?: (
+    clientId: string,
+    expIds: string[],
+  ) => Promise<any>;
 }
 
 // Convert numbers to Roman numerals for PDF-style item numbering
 const toRomanNumeral = (num: number): string => {
   const romanMap: [number, string][] = [
-    [10, 'x'],
-    [9, 'ix'],
-    [5, 'v'],
-    [4, 'iv'],
-    [1, 'i']
+    [10, "x"],
+    [9, "ix"],
+    [5, "v"],
+    [4, "iv"],
+    [1, "i"],
   ];
-  let result = '';
+  let result = "";
   let n = num;
   for (const [val, roman] of romanMap) {
     while (n >= val) {
@@ -61,7 +89,9 @@ const toRomanNumeral = (num: number): string => {
   return result || String(num);
 };
 
-export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps> = ({
+export const InteriorClientDetailsView: React.FC<
+  InteriorClientDetailsViewProps
+> = ({
   client,
   onBack,
   onUpdateClient,
@@ -72,71 +102,87 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
   onAddExpense,
   onUpdateExpense,
   onDeleteExpense,
-  onDeleteMultipleExpenses
+  onDeleteMultipleExpenses,
 }) => {
   const advancePayments = client.advancePayments || [];
   const expenses = client.expenses || [];
 
   // ===================== ADVANCE PAYMENTS STATE =====================
-  const [advFromDate, setAdvFromDate] = useState('');
-  const [advToDate, setAdvToDate] = useState('');
+  const [advFromDate, setAdvFromDate] = useState("");
+  const [advToDate, setAdvToDate] = useState("");
   const [advCurrentPage, setAdvCurrentPage] = useState(1);
   const [advItemsPerPage, setAdvItemsPerPage] = useState(10);
   const [selectedAdvIds, setSelectedAdvIds] = useState<Set<string>>(new Set());
 
   // Add Advance Modal
   const [isAddAdvModalOpen, setIsAddAdvModalOpen] = useState(false);
-  const [newAdvDate, setNewAdvDate] = useState(() => new Date().toISOString().slice(0, 10));
-  const [newAdvAmount, setNewAdvAmount] = useState('');
+  const [newAdvDate, setNewAdvDate] = useState(() =>
+    new Date().toISOString().slice(0, 10),
+  );
+  const [newAdvAmount, setNewAdvAmount] = useState("");
   const [newAdvMode, setNewAdvMode] = useState(PAYMENT_MODES[0]);
-  const [newAdvNote, setNewAdvNote] = useState('');
+  const [newAdvNote, setNewAdvNote] = useState("");
 
   // Edit Advance Modal
   const [isEditAdvModalOpen, setIsEditAdvModalOpen] = useState(false);
   const [editingAdvId, setEditingAdvId] = useState<string | null>(null);
-  const [editAdvDate, setEditAdvDate] = useState('');
-  const [editAdvAmount, setEditAdvAmount] = useState('');
-  const [editAdvMode, setEditAdvMode] = useState('');
-  const [editAdvNote, setEditAdvNote] = useState('');
+  const [editAdvDate, setEditAdvDate] = useState("");
+  const [editAdvAmount, setEditAdvAmount] = useState("");
+  const [editAdvMode, setEditAdvMode] = useState("");
+  const [editAdvNote, setEditAdvNote] = useState("");
 
   // Delete Advance Modals
-  const [deleteAdvTarget, setDeleteAdvTarget] = useState<InteriorAdvancePayment | null>(null);
+  const [deleteAdvTarget, setDeleteAdvTarget] =
+    useState<InteriorAdvancePayment | null>(null);
   const [isDeletingAdv, setIsDeletingAdv] = useState(false);
   const [isBulkDeleteAdvOpen, setIsBulkDeleteAdvOpen] = useState(false);
   const [isBulkDeletingAdv, setIsBulkDeletingAdv] = useState(false);
 
   // ===================== SITE EXPENSES (ESTIMATE) STATE =====================
-  const [expFromDate, setExpFromDate] = useState('');
-  const [expToDate, setExpToDate] = useState('');
+  const [expFromDate, setExpFromDate] = useState("");
+  const [expToDate, setExpToDate] = useState("");
   const [selectedExpIds, setSelectedExpIds] = useState<Set<string>>(new Set());
 
   // Add Expense Modal State
   const [isAddExpModalOpen, setIsAddExpModalOpen] = useState(false);
-  const [newExpDate, setNewExpDate] = useState(() => new Date().toISOString().slice(0, 10));
-  const [newExpCategory, setNewExpCategory] = useState<string>(INTERIOR_CATEGORIES[0]);
-  const [newExpParticulars, setNewExpParticulars] = useState('');
-  const [newExpQuantity, setNewExpQuantity] = useState('1');
-  const [newExpUnit, setNewExpUnit] = useState<string>('Sq.ft');
-  const [newExpRate, setNewExpRate] = useState('');
+  const [newExpDate, setNewExpDate] = useState(() =>
+    new Date().toISOString().slice(0, 10),
+  );
+  const [newExpCategory, setNewExpCategory] = useState<string>(
+    INTERIOR_CATEGORIES[0],
+  );
+  const [newExpParticulars, setNewExpParticulars] = useState("");
+  const [newExpQuantity, setNewExpQuantity] = useState("1");
+  const [newExpUnit, setNewExpUnit] = useState<string>("Sq.ft");
+  const [newExpRate, setNewExpRate] = useState("");
 
   // Edit Expense Modal State
   const [isEditExpModalOpen, setIsEditExpModalOpen] = useState(false);
   const [editingExpId, setEditingExpId] = useState<string | null>(null);
-  const [editExpDate, setEditExpDate] = useState('');
-  const [editExpCategory, setEditExpCategory] = useState<string>(INTERIOR_CATEGORIES[0]);
-  const [editExpParticulars, setEditExpParticulars] = useState('');
-  const [editExpQuantity, setEditExpQuantity] = useState('');
-  const [editExpUnit, setEditExpUnit] = useState('Sq.ft');
-  const [editExpRate, setEditExpRate] = useState('');
+  const [editExpDate, setEditExpDate] = useState("");
+  const [editExpCategory, setEditExpCategory] = useState<string>(
+    INTERIOR_CATEGORIES[0],
+  );
+  const [editExpParticulars, setEditExpParticulars] = useState("");
+  const [editExpQuantity, setEditExpQuantity] = useState("");
+  const [editExpUnit, setEditExpUnit] = useState("Sq.ft");
+  const [editExpRate, setEditExpRate] = useState("");
 
   // Delete Expense Modals State
-  const [deleteExpTarget, setDeleteExpTarget] = useState<InteriorExpenseItem | null>(null);
+  const [deleteExpTarget, setDeleteExpTarget] =
+    useState<InteriorExpenseItem | null>(null);
   const [isDeletingExp, setIsDeletingExp] = useState(false);
   const [isBulkDeleteExpOpen, setIsBulkDeleteExpOpen] = useState(false);
   const [isBulkDeletingExp, setIsBulkDeletingExp] = useState(false);
 
   const formatINR = (val: number) => {
-    return '₹' + Number(val || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return (
+      "₹" +
+      Number(val || 0).toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+    );
   };
 
   // ===================== ADVANCE FILTERING & COMPUTATIONS =====================
@@ -150,14 +196,23 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
       const toISO = formatToYYYYMMDD(advToDate);
       list = list.filter((a) => formatToYYYYMMDD(a.date) <= toISO);
     }
-    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
+    return [...list].sort((a, b) =>
+      compareByDateDesc(a.date, b.date, a.sNo, b.sNo),
+    );
   }, [advancePayments, advFromDate, advToDate]);
 
-  const totalAdvanceAmount = filteredAdvance.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const totalAdvanceAmount = filteredAdvance.reduce(
+    (sum, item) => sum + (Number(item.amount) || 0),
+    0,
+  );
 
-  const advTotalPages = Math.ceil(filteredAdvance.length / advItemsPerPage) || 1;
+  const advTotalPages =
+    Math.ceil(filteredAdvance.length / advItemsPerPage) || 1;
   const advStartIndex = (advCurrentPage - 1) * advItemsPerPage;
-  const advEndIndex = Math.min(advStartIndex + advItemsPerPage, filteredAdvance.length);
+  const advEndIndex = Math.min(
+    advStartIndex + advItemsPerPage,
+    filteredAdvance.length,
+  );
   const paginatedAdvance = filteredAdvance.slice(advStartIndex, advEndIndex);
 
   const isAllAdvSelected =
@@ -195,18 +250,27 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
       const toISO = formatToYYYYMMDD(expToDate);
       list = list.filter((e) => formatToYYYYMMDD(e.date) <= toISO);
     }
-    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
+    return [...list].sort((a, b) =>
+      compareByDateDesc(a.date, b.date, a.sNo, b.sNo),
+    );
   }, [expenses, expFromDate, expToDate]);
 
-  const totalExpensesAmount = filteredExpenses.reduce((sum, item) => sum + (Number(item.totalAmount) || 0), 0);
+  const totalExpensesAmount = filteredExpenses.reduce(
+    (sum, item) => sum + (Number(item.totalAmount) || 0),
+    0,
+  );
 
   // Group filtered expenses by Category matching the PDF structure
   const groupedExpenses = useMemo(() => {
-    const groups: { category: string; items: InteriorExpenseItem[]; subtotal: number }[] = [];
+    const groups: {
+      category: string;
+      items: InteriorExpenseItem[];
+      subtotal: number;
+    }[] = [];
     const categoryMap = new Map<string, InteriorExpenseItem[]>();
 
     filteredExpenses.forEach((exp) => {
-      const cat = exp.category || 'OTHER WORK';
+      const cat = exp.category || "OTHER WORK";
       if (!categoryMap.has(cat)) {
         categoryMap.set(cat, []);
       }
@@ -217,7 +281,10 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
     INTERIOR_CATEGORIES.forEach((cat) => {
       if (categoryMap.has(cat)) {
         const items = categoryMap.get(cat)!;
-        const subtotal = items.reduce((sum, item) => sum + (Number(item.totalAmount) || 0), 0);
+        const subtotal = items.reduce(
+          (sum, item) => sum + (Number(item.totalAmount) || 0),
+          0,
+        );
         groups.push({ category: cat, items, subtotal });
         categoryMap.delete(cat);
       }
@@ -225,7 +292,10 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
 
     // 2. Any additional custom categories created by the user
     categoryMap.forEach((items, cat) => {
-      const subtotal = items.reduce((sum, item) => sum + (Number(item.totalAmount) || 0), 0);
+      const subtotal = items.reduce(
+        (sum, item) => sum + (Number(item.totalAmount) || 0),
+        0,
+      );
       groups.push({ category: cat, items, subtotal });
     });
 
@@ -269,21 +339,24 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
       date: newAdvDate,
       amount: parseFloat(newAdvAmount),
       mode: newAdvMode,
-      note: newAdvNote.trim() || undefined
+      note: newAdvNote.trim() || undefined,
     });
 
-    setNewAdvAmount('');
-    setNewAdvNote('');
+    setNewAdvAmount("");
+    setNewAdvNote("");
     setIsAddAdvModalOpen(false);
   };
 
-  const handleOpenEditAdv = (item: InteriorAdvancePayment, e: React.MouseEvent) => {
+  const handleOpenEditAdv = (
+    item: InteriorAdvancePayment,
+    e: React.MouseEvent,
+  ) => {
     e.stopPropagation();
     setEditingAdvId(item.id);
     setEditAdvDate(item.date);
     setEditAdvAmount(String(item.amount));
     setEditAdvMode(item.mode);
-    setEditAdvNote(item.note || '');
+    setEditAdvNote(item.note || "");
     setIsEditAdvModalOpen(true);
   };
 
@@ -298,7 +371,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
       date: editAdvDate,
       amount: parseFloat(editAdvAmount),
       mode: editAdvMode,
-      note: editAdvNote.trim() || undefined
+      note: editAdvNote.trim() || undefined,
     });
 
     setIsEditAdvModalOpen(false);
@@ -328,7 +401,10 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
     setIsBulkDeletingAdv(true);
     try {
       if (onDeleteMultipleAdvancePayments) {
-        await onDeleteMultipleAdvancePayments(client.id, Array.from(selectedAdvIds));
+        await onDeleteMultipleAdvancePayments(
+          client.id,
+          Array.from(selectedAdvIds),
+        );
       } else {
         for (const id of selectedAdvIds) {
           await onDeleteAdvance(client.id, id);
@@ -342,7 +418,8 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
   };
 
   // ===================== EXPENSE HANDLERS =====================
-  const calculatedNewExpTotal = (parseFloat(newExpQuantity) || 0) * (parseFloat(newExpRate) || 0);
+  const calculatedNewExpTotal =
+    (parseFloat(newExpQuantity) || 0) * (parseFloat(newExpRate) || 0);
   const isAddExpValid =
     isValidDate(newExpDate) &&
     newExpParticulars.trim().length > 0 &&
@@ -350,11 +427,15 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
     parseFloat(newExpRate) >= 0;
 
   // Preset Selection auto-fill
-  const handleSelectPreset = (presetItem: (typeof PREDEFINED_INTERIOR_ITEMS)[0]) => {
+  const handleSelectPreset = (
+    presetItem: (typeof PREDEFINED_INTERIOR_ITEMS)[0],
+  ) => {
     setNewExpCategory(presetItem.category);
     setNewExpParticulars(presetItem.particulars);
     setNewExpUnit(presetItem.unit);
-    setNewExpRate(presetItem.defaultRate > 0 ? String(presetItem.defaultRate) : '');
+    setNewExpRate(
+      presetItem.defaultRate > 0 ? String(presetItem.defaultRate) : "",
+    );
   };
 
   const handleAddExpSubmit = async (e: React.FormEvent) => {
@@ -365,36 +446,45 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
     const rate = parseFloat(newExpRate);
     await onAddExpense(client.id, {
       date: newExpDate,
-      category: newExpCategory.trim() || 'OTHER WORK',
+      category: newExpCategory.trim() || "OTHER WORK",
       expenseName: newExpParticulars.trim(),
       quantity: qty,
-      unit: newExpUnit.trim() || 'Sq.ft',
+      unit: newExpUnit.trim() || "Sq.ft",
       rate: rate,
-      totalAmount: qty * rate
+      totalAmount: qty * rate,
     });
 
-    setNewExpParticulars('');
-    setNewExpQuantity('1');
-    setNewExpRate('');
+    setNewExpParticulars("");
+    setNewExpQuantity("1");
+    setNewExpRate("");
     setIsAddExpModalOpen(false);
   };
 
-  const handleOpenEditExp = (item: InteriorExpenseItem, e: React.MouseEvent) => {
+  const handleOpenEditExp = (
+    item: InteriorExpenseItem,
+    e: React.MouseEvent,
+  ) => {
     e.stopPropagation();
     setEditingExpId(item.id);
     setEditExpDate(item.date);
     setEditExpCategory(item.category || INTERIOR_CATEGORIES[0]);
     setEditExpParticulars(item.expenseName);
     setEditExpQuantity(String(item.quantity));
-    setEditExpUnit(item.unit || 'Sq.ft');
+    setEditExpUnit(item.unit || "Sq.ft");
     setEditExpRate(String(item.rate));
     setIsEditExpModalOpen(true);
   };
 
-  const calculatedEditExpTotal = (parseFloat(editExpQuantity) || 0) * (parseFloat(editExpRate) || 0);
+  const calculatedEditExpTotal =
+    (parseFloat(editExpQuantity) || 0) * (parseFloat(editExpRate) || 0);
   const handleSaveEditExp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingExpId || parseFloat(editExpQuantity) <= 0 || parseFloat(editExpRate) < 0) return;
+    if (
+      !editingExpId ||
+      parseFloat(editExpQuantity) <= 0 ||
+      parseFloat(editExpRate) < 0
+    )
+      return;
 
     const qty = parseFloat(editExpQuantity);
     const rate = parseFloat(editExpRate);
@@ -403,12 +493,12 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
       clientId: client.id,
       sNo: 1,
       date: editExpDate,
-      category: editExpCategory.trim() || 'OTHER WORK',
+      category: editExpCategory.trim() || "OTHER WORK",
       expenseName: editExpParticulars.trim(),
       quantity: qty,
-      unit: editExpUnit.trim() || 'Sq.ft',
+      unit: editExpUnit.trim() || "Sq.ft",
       rate: rate,
-      totalAmount: qty * rate
+      totalAmount: qty * rate,
     });
 
     setIsEditExpModalOpen(false);
@@ -463,7 +553,8 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
           <div>
             <h1 className="print-company-name">ESTIMATE FOR INTERIOR WORKS</h1>
             <p className="print-company-sub">
-              Materials of 16mm MDF with Mica lamination and 6mm Back-panel ply with PVC edgeband along with Handles and Hardwares etc.
+              Materials of 16mm MDF with Mica lamination and 6mm Back-panel ply
+              with PVC edgeband along with Handles and Hardwares etc.
             </p>
           </div>
           <div className="print-badge-statement">
@@ -474,14 +565,31 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
         <div className="print-meta-grid">
           <div className="print-meta-box">
             <span className="print-meta-title">TO / CLIENT</span>
-            <div className="print-meta-val"><strong>{client.name}</strong></div>
-            <div className="print-meta-sub">Phone: {client.phone} · Address: {client.address}</div>
+            <div className="print-meta-val">
+              <strong>{client.name}</strong>
+            </div>
+            <div className="print-meta-sub">
+              Phone: {client.phone} · Address: {client.address}
+            </div>
           </div>
 
           <div className="print-meta-box">
             <span className="print-meta-title">ESTIMATE & PAYMENT TERMS</span>
-            <div className="print-meta-sub">Date: {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
-            <div className="print-meta-val" style={{ marginTop: '4px', color: netBalance >= 0 ? '#15803d' : '#b91c1c' }}>
+            <div className="print-meta-sub">
+              Date:{" "}
+              {new Date().toLocaleDateString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })}
+            </div>
+            <div
+              className="print-meta-val"
+              style={{
+                marginTop: "4px",
+                color: netBalance >= 0 ? "#15803d" : "#b91c1c",
+              }}
+            >
               Balance Due: {formatINR(Math.abs(netBalance))}
             </div>
           </div>
@@ -489,20 +597,38 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
 
         <div className="print-totals-summary-bar">
           <div className="print-total-item">
-            <span>Estimate Total (Works):</span> <strong style={{ color: '#b45309' }}>{formatINR(totalExpensesAmount)}</strong>
+            <span>Estimate Total (Works):</span>{" "}
+            <strong style={{ color: "#b45309" }}>
+              {formatINR(totalExpensesAmount)}
+            </strong>
           </div>
           <div className="print-total-item">
-            <span>Total Advance Received:</span> <strong style={{ color: '#15803d' }}>{formatINR(totalAdvanceAmount)}</strong>
+            <span>Total Advance Received:</span>{" "}
+            <strong style={{ color: "#15803d" }}>
+              {formatINR(totalAdvanceAmount)}
+            </strong>
           </div>
           <div className="print-total-item">
-            <span>Net Balance:</span> <strong style={{ color: netBalance >= 0 ? '#15803d' : '#b91c1c' }}>{formatINR(netBalance)}</strong>
+            <span>Net Balance:</span>{" "}
+            <strong style={{ color: netBalance >= 0 ? "#15803d" : "#b91c1c" }}>
+              {formatINR(netBalance)}
+            </strong>
           </div>
         </div>
       </div>
 
       {/* Screen Header Bar */}
       <div className="client-details-header no-print">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '12px' }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: "8px",
+            flexWrap: "wrap",
+            gap: "12px",
+          }}
+        >
           <button onClick={onBack} className="afrah-app-back-btn">
             <ArrowLeft size={16} />
             <span>Back to KAAB INTERIOR</span>
@@ -521,7 +647,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
         <div className="client-unified-summary-card">
           <div className="client-unified-card-item client-info-item">
             <h1 className="client-unified-name-title">
-              <span className="client-unified-label">Client Name :</span>{' '}
+              <span className="client-unified-label">Client Name :</span>{" "}
               <span className="client-unified-name">{client.name}</span>
             </h1>
           </div>
@@ -532,7 +658,9 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
             </div>
             <div>
               <span className="metric-label">TOTAL ADVANCE RECEIVED</span>
-              <span className="metric-value green">{formatINR(totalAdvanceAmount)}</span>
+              <span className="metric-value green">
+                {formatINR(totalAdvanceAmount)}
+              </span>
             </div>
           </div>
 
@@ -542,19 +670,27 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
             </div>
             <div>
               <span className="metric-label">TOTAL ESTIMATE AMOUNT</span>
-              <span className="metric-value gold">{formatINR(totalExpensesAmount)}</span>
+              <span className="metric-value gold">
+                {formatINR(totalExpensesAmount)}
+              </span>
             </div>
           </div>
 
           <div className="client-unified-card-item metric-item">
-            <div className={`metric-icon-wrap ${netBalance >= 0 ? 'green' : 'red'}`}>
+            <div
+              className={`metric-icon-wrap ${netBalance >= 0 ? "green" : "red"}`}
+            >
               <Scale size={24} />
             </div>
             <div>
               <span className="metric-label">
-                {netBalance >= 0 ? 'SURPLUS / UNUSED ADVANCE' : 'OUTSTANDING BALANCE DUE'}
+                {netBalance >= 0
+                  ? "SURPLUS / UNUSED ADVANCE"
+                  : "OUTSTANDING BALANCE DUE"}
               </span>
-              <span className={`metric-value ${netBalance >= 0 ? 'green' : 'red'}`}>
+              <span
+                className={`metric-value ${netBalance >= 0 ? "green" : "red"}`}
+              >
                 {formatINR(netBalance)}
               </span>
             </div>
@@ -564,113 +700,141 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
 
       {/* Combined ledger card: Advance Payments | Interior Expenses */}
       <section className="afrah-app-table-section client-ledger-split-card">
-      <div className="client-details-side-by-side-grid">
-        {/* ================= COLUMN 1: ADVANCE PAYMENTS (LEFT AS IS) ================= */}
-        <div className="details-column-panel">
+        <div className="client-details-side-by-side-grid">
+          {/* ================= COLUMN 1: ADVANCE PAYMENTS (LEFT AS IS) ================= */}
+          <div className="details-column-panel">
             <div className="afrah-app-section-header no-print">
               <div>
-                <h2 className="afrah-app-section-title">ADVANCE PAYMENT RECEIPTS</h2>
+                <h2 className="afrah-app-section-title">
+                  ADVANCE PAYMENT RECEIPTS
+                </h2>
                 <span className="afrah-app-section-subtitle">
-                  {filteredAdvance.length} {filteredAdvance.length === 1 ? 'receipt' : 'receipts'} · Total: <strong style={{ color: '#4ade80' }}>{formatINR(totalAdvanceAmount)}</strong>
+                  {filteredAdvance.length}{" "}
+                  {filteredAdvance.length === 1 ? "receipt" : "receipts"} ·
+                  Total:{" "}
+                  <strong style={{ color: "#4ade80" }}>
+                    {formatINR(totalAdvanceAmount)}
+                  </strong>
                 </span>
               </div>
 
               <button
                 onClick={() => {
                   setNewAdvDate(new Date().toISOString().slice(0, 10));
-                  setNewAdvAmount('');
+                  setNewAdvAmount("");
                   setNewAdvMode(PAYMENT_MODES[0]);
-                  setNewAdvNote('');
+                  setNewAdvNote("");
                   setIsAddAdvModalOpen(true);
                 }}
                 className="btn-theme-primary"
-                style={{ height: '36px', padding: '0 14px', fontSize: '12.5px' }}
+                style={{
+                  height: "36px",
+                  padding: "0 14px",
+                  fontSize: "12.5px",
+                }}
               >
                 <Plus size={15} />
                 <span>Add Advance</span>
               </button>
             </div>
 
-          <DateFilterBar
-            fromDate={advFromDate}
-            toDate={advToDate}
-            onFromDateChange={setAdvFromDate}
-            onToDateChange={setAdvToDate}
-            onClearDates={() => {
-              setAdvFromDate('');
-              setAdvToDate('');
-            }}
-            selectedCount={selectedAdvIds.size}
-            onBulkDelete={() => setIsBulkDeleteAdvOpen(true)}
-          />
+            <DateFilterBar
+              fromDate={advFromDate}
+              toDate={advToDate}
+              onFromDateChange={setAdvFromDate}
+              onToDateChange={setAdvToDate}
+              onClearDates={() => {
+                setAdvFromDate("");
+                setAdvToDate("");
+              }}
+              selectedCount={selectedAdvIds.size}
+              onBulkDelete={() => setIsBulkDeleteAdvOpen(true)}
+            />
 
             <div className="afrah-app-table-container">
               <table className="afrah-app-table">
                 <thead>
                   <tr>
-                    <th style={{ width: '45px', textAlign: 'center' }}>S.NO</th>
+                    <th className="text-center" style={{ width: "45px" }}>
+                      S.NO
+                    </th>
                     <th>DATE</th>
                     <th>PAYMENT MODE</th>
                     <th>NOTE / MILESTONE</th>
-                    <th style={{ textAlign: 'right' }}>AMOUNT (₹)</th>
-                    <th className="no-print" style={{ width: '70px', textAlign: 'center' }}>ACTIONS</th>
+                    <th className="text-right">AMOUNT (₹)</th>
+                    <th
+                      className="no-print text-center"
+                      style={{ width: "70px" }}
+                    >
+                      ACTIONS
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {paginatedAdvance.length === 0 ? (
                     <tr>
-                      <td colSpan={6} style={{ textAlign: 'center', padding: '36px 16px', color: 'var(--text-secondary)' }}>
+                      <td
+                        colSpan={6}
+                        style={{
+                          textAlign: "center",
+                          padding: "36px 16px",
+                          color: "var(--text-secondary)",
+                        }}
+                      >
                         {advFromDate || advToDate
-                          ? 'No matching advance receipts found for filter.'
+                          ? "No matching advance receipts found for filter."
                           : 'No advance receipts logged yet. Click "Add Advance" above.'}
                       </td>
                     </tr>
                   ) : (
                     paginatedAdvance.map((item, index) => {
                       return (
-                        <tr
-                          key={item.id}
-                          style={{ cursor: 'default' }}
-                        >
-                          <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center' }}>
+                        <tr key={item.id} className="cursor-default">
+                          <td className="cell-sno">
                             {advStartIndex + index + 1}
                           </td>
-                          <td>
-                            {formatToDDMMYYYY(item.date)}
-                          </td>
+                          <td>{formatToDDMMYYYY(item.date)}</td>
                           <td>
                             <span
                               style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                                padding: '2px 7px',
-                                borderRadius: '4px',
-                                background: 'rgba(74, 222, 128, 0.12)',
-                                color: '#4ade80',
-                                fontSize: '11.5px',
-                                fontWeight: 600
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "4px",
+                                padding: "2px 7px",
+                                borderRadius: "4px",
+                                background: "rgba(74, 222, 128, 0.12)",
+                                color: "#4ade80",
+                                fontSize: "11.5px",
+                                fontWeight: 600,
                               }}
                             >
                               <CreditCard size={11} />
                               {item.mode}
                             </span>
                           </td>
-                          <td style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>
-                            {item.note || '—'}
+                          <td
+                            style={{
+                              color: "var(--text-secondary)",
+                              fontSize: "12px",
+                            }}
+                          >
+                            {item.note || "—"}
                           </td>
                           <td
                             style={{
-                              textAlign: 'right',
-                              fontFamily: 'monospace',
+                              textAlign: "right",
+                              fontFamily: "monospace",
                               fontWeight: 700,
-                              color: '#4ade80'
+                              color: "#4ade80",
                             }}
                           >
                             {formatINR(item.amount)}
                           </td>
-                          <td className="no-print" style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <td
+                            className="no-print text-center"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <div className="flex-center-4">
                               <button
                                 onClick={(e) => handleOpenEditAdv(item, e)}
                                 className="afrah-app-action-btn afrah-app-edit-btn"
@@ -694,15 +858,21 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                 </tbody>
               </table>
             </div>
-        </div>
+          </div>
 
-        {/* ================= COLUMN 2: ESTIMATE FOR INTERIOR WORKS (SEGREGATED AS IN PDF) ================= */}
-        <div className="details-column-panel">
+          {/* ================= COLUMN 2: ESTIMATE FOR INTERIOR WORKS (SEGREGATED AS IN PDF) ================= */}
+          <div className="details-column-panel">
             <div className="afrah-app-section-header no-print">
               <div>
-                <h2 className="afrah-app-section-title">ESTIMATE FOR INTERIOR WORKS</h2>
+                <h2 className="afrah-app-section-title">
+                  ESTIMATE FOR INTERIOR WORKS
+                </h2>
                 <span className="afrah-app-section-subtitle">
-                  {filteredExpenses.length} items across {groupedExpenses.length} sections · Total: <strong style={{ color: 'var(--primary)' }}>{formatINR(totalExpensesAmount)}</strong>
+                  {filteredExpenses.length} items across{" "}
+                  {groupedExpenses.length} sections · Total:{" "}
+                  <strong className="text-primary-gold">
+                    {formatINR(totalExpensesAmount)}
+                  </strong>
                 </span>
               </div>
 
@@ -710,53 +880,79 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                 onClick={() => {
                   setNewExpDate(new Date().toISOString().slice(0, 10));
                   setNewExpCategory(INTERIOR_CATEGORIES[0]);
-                  setNewExpParticulars('');
-                  setNewExpQuantity('1');
-                  setNewExpUnit('Sq.ft');
-                  setNewExpRate('');
+                  setNewExpParticulars("");
+                  setNewExpQuantity("1");
+                  setNewExpUnit("Sq.ft");
+                  setNewExpRate("");
                   setIsAddExpModalOpen(true);
                 }}
                 className="btn-theme-primary"
-                style={{ height: '36px', padding: '0 14px', fontSize: '12.5px' }}
+                style={{
+                  height: "36px",
+                  padding: "0 14px",
+                  fontSize: "12.5px",
+                }}
               >
                 <Plus size={15} />
                 <span>Add Item</span>
               </button>
             </div>
 
-          <DateFilterBar
-            fromDate={expFromDate}
-            toDate={expToDate}
-            onFromDateChange={setExpFromDate}
-            onToDateChange={setExpToDate}
-            onClearDates={() => {
-              setExpFromDate('');
-              setExpToDate('');
-            }}
-            selectedCount={selectedExpIds.size}
-            onBulkDelete={() => setIsBulkDeleteExpOpen(true)}
-          />
+            <DateFilterBar
+              fromDate={expFromDate}
+              toDate={expToDate}
+              onFromDateChange={setExpFromDate}
+              onToDateChange={setExpToDate}
+              onClearDates={() => {
+                setExpFromDate("");
+                setExpToDate("");
+              }}
+              selectedCount={selectedExpIds.size}
+              onBulkDelete={() => setIsBulkDeleteExpOpen(true)}
+            />
 
             {/* SEGREGATED TABLE MATCHING PDF COLUMNS: SI.No | Particulars | Qty | Per | Rate | Amount */}
             <div className="afrah-app-table-container">
               <table className="afrah-app-table">
                 <thead>
                   <tr>
-                    <th style={{ width: '50px', textAlign: 'center' }}>SI.No</th>
+                    <th className="text-center" style={{ width: "50px" }}>
+                      SI.No
+                    </th>
                     <th>Particulars</th>
-                    <th style={{ width: '60px', textAlign: 'right' }}>Qty</th>
-                    <th style={{ width: '60px', textAlign: 'center' }}>Per</th>
-                    <th style={{ width: '90px', textAlign: 'right' }}>Rate</th>
-                    <th style={{ width: '115px', textAlign: 'right' }}>Amount</th>
-                    <th className="no-print" style={{ width: '65px', textAlign: 'center' }}>Actions</th>
+                    <th className="text-right" style={{ width: "60px" }}>
+                      Qty
+                    </th>
+                    <th className="text-center" style={{ width: "60px" }}>
+                      Per
+                    </th>
+                    <th className="text-right" style={{ width: "90px" }}>
+                      Rate
+                    </th>
+                    <th className="text-right" style={{ width: "115px" }}>
+                      Amount
+                    </th>
+                    <th
+                      className="no-print"
+                      style={{ width: "65px", textAlign: "center" }}
+                    >
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {groupedExpenses.length === 0 ? (
                     <tr>
-                      <td colSpan={7} style={{ textAlign: 'center', padding: '36px 16px', color: 'var(--text-secondary)' }}>
+                      <td
+                        colSpan={7}
+                        style={{
+                          textAlign: "center",
+                          padding: "36px 16px",
+                          color: "var(--text-secondary)",
+                        }}
+                      >
                         {expFromDate || expToDate
-                          ? 'No matching items found for filter.'
+                          ? "No matching items found for filter."
                           : 'No interior estimate items recorded yet. Click "Add Item" above.'}
                       </td>
                     </tr>
@@ -768,26 +964,37 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                           <td
                             colSpan={7}
                             style={{
-                              background: 'var(--surface-container-high, #1e2126)',
-                              padding: '8px 14px',
-                              borderTop: groupIdx > 0 ? '1px solid var(--border-stroke, #2d3139)' : undefined,
-                              borderBottom: '1px solid var(--border-stroke, #2d3139)'
+                              background:
+                                "var(--surface-container-high, #1e2126)",
+                              padding: "8px 14px",
+                              borderTop:
+                                groupIdx > 0
+                                  ? "1px solid var(--border-stroke, #2d3139)"
+                                  : undefined,
+                              borderBottom:
+                                "1px solid var(--border-stroke, #2d3139)",
                             }}
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <div className="flex-center">
                                 <span
                                   style={{
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    width: '20px',
-                                    height: '20px',
-                                    borderRadius: '4px',
-                                    background: 'rgba(226, 195, 153, 0.15)',
-                                    color: 'var(--primary)',
-                                    fontSize: '11px',
-                                    fontWeight: 800
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    width: "20px",
+                                    height: "20px",
+                                    borderRadius: "4px",
+                                    background: "rgba(226, 195, 153, 0.15)",
+                                    color: "var(--primary)",
+                                    fontSize: "11px",
+                                    fontWeight: 800,
                                   }}
                                 >
                                   {groupIdx + 1}
@@ -795,17 +1002,31 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                                 <span
                                   style={{
                                     fontWeight: 800,
-                                    fontSize: '12.5px',
-                                    letterSpacing: '0.04em',
-                                    color: 'var(--text-primary)',
-                                    textTransform: 'uppercase'
+                                    fontSize: "12.5px",
+                                    letterSpacing: "0.04em",
+                                    color: "var(--text-primary)",
+                                    textTransform: "uppercase",
                                   }}
                                 >
                                   {group.category}
                                 </span>
                               </div>
-                              <span style={{ fontSize: '11.5px', color: 'var(--text-secondary)', fontWeight: 600 }}>
-                                Subtotal: <strong style={{ color: 'var(--primary)', fontFamily: 'monospace' }}>{formatINR(group.subtotal)}</strong>
+                              <span
+                                style={{
+                                  fontSize: "11.5px",
+                                  color: "var(--text-secondary)",
+                                  fontWeight: 600,
+                                }}
+                              >
+                                Subtotal:{" "}
+                                <strong
+                                  style={{
+                                    color: "var(--primary)",
+                                    fontFamily: "monospace",
+                                  }}
+                                >
+                                  {formatINR(group.subtotal)}
+                                </strong>
                               </span>
                             </div>
                           </td>
@@ -814,54 +1035,72 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                         {/* ITEMS UNDER THIS CATEGORY */}
                         {group.items.map((exp, itemIdx) => {
                           return (
-                            <tr
-                              key={exp.id}
-                              style={{ cursor: 'default' }}
-                            >
+                            <tr key={exp.id} className="cursor-default">
                               <td
                                 style={{
-                                  fontFamily: 'monospace',
+                                  fontFamily: "monospace",
                                   fontWeight: 600,
-                                  color: 'var(--text-secondary)',
-                                  textAlign: 'center',
-                                  fontSize: '12px'
+                                  color: "var(--text-secondary)",
+                                  textAlign: "center",
+                                  fontSize: "12px",
                                 }}
                               >
                                 {toRomanNumeral(itemIdx + 1)}
                               </td>
                               <td>
-                                <span style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '13px' }}>
+                                <span
+                                  style={{
+                                    fontWeight: 600,
+                                    color: "var(--text-primary)",
+                                    fontSize: "13px",
+                                  }}
+                                >
                                   {exp.expenseName}
                                 </span>
                               </td>
-                              <td style={{ textAlign: 'right', fontFamily: 'monospace', fontWeight: 600 }}>
+                              <td
+                                style={{
+                                  textAlign: "right",
+                                  fontFamily: "monospace",
+                                  fontWeight: 600,
+                                }}
+                              >
                                 {exp.quantity}
                               </td>
                               <td
                                 style={{
-                                  textAlign: 'center',
-                                  color: 'var(--text-secondary)',
-                                  fontSize: '12px',
-                                  fontWeight: 500
+                                  textAlign: "center",
+                                  color: "var(--text-secondary)",
+                                  fontSize: "12px",
+                                  fontWeight: 500,
                                 }}
                               >
-                                {exp.unit || 'Sq.ft'}
-                              </td>
-                              <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--text-secondary)' }}>
-                                {Number(exp.rate || 0).toLocaleString('en-IN')}
+                                {exp.unit || "Sq.ft"}
                               </td>
                               <td
                                 style={{
-                                  textAlign: 'right',
-                                  fontFamily: 'monospace',
+                                  textAlign: "right",
+                                  fontFamily: "monospace",
+                                  color: "var(--text-secondary)",
+                                }}
+                              >
+                                {Number(exp.rate || 0).toLocaleString("en-IN")}
+                              </td>
+                              <td
+                                style={{
+                                  textAlign: "right",
+                                  fontFamily: "monospace",
                                   fontWeight: 700,
-                                  color: 'var(--primary)'
+                                  color: "var(--primary)",
                                 }}
                               >
                                 {formatINR(exp.totalAmount)}
                               </td>
-                              <td className="no-print" style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                              <td
+                                className="no-print text-center"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <div className="flex-center-4">
                                   <button
                                     onClick={(e) => handleOpenEditExp(exp, e)}
                                     className="afrah-app-action-btn afrah-app-edit-btn"
@@ -883,17 +1122,32 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                         })}
 
                         {/* SECTION SUBTOTAL ROW */}
-                        <tr style={{ background: 'rgba(255, 255, 255, 0.02)', borderBottom: '1px solid var(--border-stroke, #2d3139)' }}>
-                          <td colSpan={6} style={{ textAlign: 'right', fontWeight: 700, fontSize: '11.5px', color: 'var(--text-secondary)', letterSpacing: '0.04em' }}>
+                        <tr
+                          style={{
+                            background: "rgba(255, 255, 255, 0.02)",
+                            borderBottom:
+                              "1px solid var(--border-stroke, #2d3139)",
+                          }}
+                        >
+                          <td
+                            colSpan={6}
+                            style={{
+                              textAlign: "right",
+                              fontWeight: 700,
+                              fontSize: "11.5px",
+                              color: "var(--text-secondary)",
+                              letterSpacing: "0.04em",
+                            }}
+                          >
                             TOTAL ({group.category}):
                           </td>
                           <td
                             style={{
-                              textAlign: 'right',
+                              textAlign: "right",
                               fontWeight: 800,
-                              fontFamily: 'monospace',
-                              fontSize: '13px',
-                              color: 'var(--primary)'
+                              fontFamily: "monospace",
+                              fontSize: "13px",
+                              color: "var(--primary)",
                             }}
                           >
                             {formatINR(group.subtotal)}
@@ -908,31 +1162,31 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                   {groupedExpenses.length > 0 && (
                     <tr
                       style={{
-                        background: 'rgba(226, 195, 153, 0.12)',
-                        borderTop: '2px solid var(--primary)'
+                        background: "rgba(226, 195, 153, 0.12)",
+                        borderTop: "2px solid var(--primary)",
                       }}
                     >
                       <td
                         colSpan={6}
                         style={{
-                          textAlign: 'right',
+                          textAlign: "right",
                           fontWeight: 900,
-                          fontSize: '13px',
-                          letterSpacing: '0.06em',
-                          color: 'var(--text-primary)',
-                          padding: '12px 16px'
+                          fontSize: "13px",
+                          letterSpacing: "0.06em",
+                          color: "var(--text-primary)",
+                          padding: "12px 16px",
                         }}
                       >
                         FINAL TOTAL:
                       </td>
                       <td
                         style={{
-                          textAlign: 'right',
+                          textAlign: "right",
                           fontWeight: 900,
-                          fontFamily: 'monospace',
-                          fontSize: '15px',
-                          color: 'var(--primary)',
-                          padding: '12px 16px'
+                          fontFamily: "monospace",
+                          fontSize: "15px",
+                          color: "var(--primary)",
+                          padding: "12px 16px",
                         }}
                       >
                         {formatINR(totalExpensesAmount)}
@@ -943,20 +1197,31 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                 </tbody>
               </table>
             </div>
+          </div>
         </div>
-      </div>
       </section>
 
       {/* ================= MODALS: ADD & EDIT ADVANCE ================= */}
       {isAddAdvModalOpen && (
-        <div className="afrah-app-modal-overlay" onClick={() => setIsAddAdvModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
+        <div
+          className="afrah-app-modal-overlay"
+          onClick={() => setIsAddAdvModalOpen(false)}
+        >
+          <div
+            className="afrah-app-modal-container modal-w-sm"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Plus size={18} color="var(--primary)" />
-                <h3 className="afrah-app-modal-title">Record Advance Receipt</h3>
+                <h3 className="afrah-app-modal-title">
+                  Record Advance Receipt
+                </h3>
               </div>
-              <button onClick={() => setIsAddAdvModalOpen(false)} className="afrah-app-modal-close-btn">
+              <button
+                onClick={() => setIsAddAdvModalOpen(false)}
+                className="afrah-app-modal-close-btn"
+              >
                 <X size={18} />
               </button>
             </div>
@@ -984,7 +1249,11 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                     value={newAdvAmount}
                     onChange={(e) => setNewAdvAmount(e.target.value)}
                     className="afrah-app-input"
-                    style={{ fontSize: '15px', fontWeight: 700, color: '#4ade80' }}
+                    style={{
+                      fontSize: "15px",
+                      fontWeight: 700,
+                      color: "#4ade80",
+                    }}
                   />
                 </div>
 
@@ -1004,7 +1273,9 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                 </div>
 
                 <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Note / Milestone Description</label>
+                  <label className="afrah-app-label">
+                    Note / Milestone Description
+                  </label>
                   <input
                     type="text"
                     placeholder="e.g. 50% Advance on confirmation & PO"
@@ -1016,10 +1287,18 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
               </div>
 
               <div className="afrah-app-modal-footer">
-                <button type="button" onClick={() => setIsAddAdvModalOpen(false)} className="afrah-app-back-btn">
+                <button
+                  type="button"
+                  onClick={() => setIsAddAdvModalOpen(false)}
+                  className="afrah-app-back-btn"
+                >
                   Cancel
                 </button>
-                <button type="submit" disabled={!isAddAdvValid} className="btn-theme-primary">
+                <button
+                  type="submit"
+                  disabled={!isAddAdvValid}
+                  className="btn-theme-primary"
+                >
                   <span>Save Advance</span>
                 </button>
               </div>
@@ -1029,14 +1308,23 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
       )}
 
       {isEditAdvModalOpen && (
-        <div className="afrah-app-modal-overlay" onClick={() => setIsEditAdvModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '440px' }} onClick={(e) => e.stopPropagation()}>
+        <div
+          className="afrah-app-modal-overlay"
+          onClick={() => setIsEditAdvModalOpen(false)}
+        >
+          <div
+            className="afrah-app-modal-container modal-w-sm"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={18} color="var(--primary)" />
                 <h3 className="afrah-app-modal-title">Edit Advance Receipt</h3>
               </div>
-              <button onClick={() => setIsEditAdvModalOpen(false)} className="afrah-app-modal-close-btn">
+              <button
+                onClick={() => setIsEditAdvModalOpen(false)}
+                className="afrah-app-modal-close-btn"
+              >
                 <X size={18} />
               </button>
             </div>
@@ -1093,10 +1381,18 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
               </div>
 
               <div className="afrah-app-modal-footer">
-                <button type="button" onClick={() => setIsEditAdvModalOpen(false)} className="afrah-app-back-btn">
+                <button
+                  type="button"
+                  onClick={() => setIsEditAdvModalOpen(false)}
+                  className="afrah-app-back-btn"
+                >
                   Cancel
                 </button>
-                <button type="submit" disabled={!editAdvAmount || parseFloat(editAdvAmount) <= 0} className="btn-theme-primary">
+                <button
+                  type="submit"
+                  disabled={!editAdvAmount || parseFloat(editAdvAmount) <= 0}
+                  className="btn-theme-primary"
+                >
                   <span>Save Changes</span>
                 </button>
               </div>
@@ -1107,21 +1403,33 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
 
       {/* ================= MODALS: ADD & EDIT EXPENSE / ESTIMATE ITEM ================= */}
       {isAddExpModalOpen && (
-        <div className="afrah-app-modal-overlay" onClick={() => setIsAddExpModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '520px' }} onClick={(e) => e.stopPropagation()}>
+        <div
+          className="afrah-app-modal-overlay"
+          onClick={() => setIsAddExpModalOpen(false)}
+        >
+          <div
+            className="afrah-app-modal-container"
+            style={{ maxWidth: "520px" }}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Plus size={18} color="var(--primary)" />
-                <h3 className="afrah-app-modal-title">Add Interior Estimate Item</h3>
+                <h3 className="afrah-app-modal-title">
+                  Add Interior Estimate Item
+                </h3>
               </div>
-              <button onClick={() => setIsAddExpModalOpen(false)} className="afrah-app-modal-close-btn">
+              <button
+                onClick={() => setIsAddExpModalOpen(false)}
+                className="afrah-app-modal-close-btn"
+              >
                 <X size={18} />
               </button>
             </div>
 
             <form onSubmit={handleAddExpSubmit}>
               <div className="afrah-app-modal-body">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="grid-2-12">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Date *</label>
                     <DateInput
@@ -1133,7 +1441,9 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                   </div>
 
                   <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Category / Room Section *</label>
+                    <label className="afrah-app-label">
+                      Category / Room Section *
+                    </label>
                     <SearchableExpenseSelect
                       value={newExpCategory}
                       onChange={(val) => setNewExpCategory(val)}
@@ -1145,12 +1455,17 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                 </div>
 
                 <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Particulars (Item Description) *</label>
+                  <label className="afrah-app-label">
+                    Particulars (Item Description) *
+                  </label>
                   <SearchableExpenseSelect
                     value={newExpParticulars}
                     onChange={(val) => {
                       setNewExpParticulars(val);
-                      const matched = PREDEFINED_INTERIOR_ITEMS.find((p) => p.particulars.toLowerCase() === val.toLowerCase());
+                      const matched = PREDEFINED_INTERIOR_ITEMS.find(
+                        (p) =>
+                          p.particulars.toLowerCase() === val.toLowerCase(),
+                      );
                       if (matched) {
                         setNewExpCategory(matched.category);
                         setNewExpUnit(matched.unit);
@@ -1165,7 +1480,13 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                   />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr 1fr",
+                    gap: "10px",
+                  }}
+                >
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Qty *</label>
                     <input
@@ -1218,10 +1539,18 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
               </div>
 
               <div className="afrah-app-modal-footer">
-                <button type="button" onClick={() => setIsAddExpModalOpen(false)} className="afrah-app-back-btn">
+                <button
+                  type="button"
+                  onClick={() => setIsAddExpModalOpen(false)}
+                  className="afrah-app-back-btn"
+                >
                   Cancel
                 </button>
-                <button type="submit" disabled={!isAddExpValid} className="btn-theme-primary">
+                <button
+                  type="submit"
+                  disabled={!isAddExpValid}
+                  className="btn-theme-primary"
+                >
                   <span>Save Item</span>
                 </button>
               </div>
@@ -1231,21 +1560,33 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
       )}
 
       {isEditExpModalOpen && (
-        <div className="afrah-app-modal-overlay" onClick={() => setIsEditExpModalOpen(false)}>
-          <div className="afrah-app-modal-container" style={{ maxWidth: '520px' }} onClick={(e) => e.stopPropagation()}>
+        <div
+          className="afrah-app-modal-overlay"
+          onClick={() => setIsEditExpModalOpen(false)}
+        >
+          <div
+            className="afrah-app-modal-container"
+            style={{ maxWidth: "520px" }}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="afrah-app-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="flex-center">
                 <Pencil size={18} color="var(--primary)" />
-                <h3 className="afrah-app-modal-title">Edit Interior Estimate Item</h3>
+                <h3 className="afrah-app-modal-title">
+                  Edit Interior Estimate Item
+                </h3>
               </div>
-              <button onClick={() => setIsEditExpModalOpen(false)} className="afrah-app-modal-close-btn">
+              <button
+                onClick={() => setIsEditExpModalOpen(false)}
+                className="afrah-app-modal-close-btn"
+              >
                 <X size={18} />
               </button>
             </div>
 
             <form onSubmit={handleSaveEditExp}>
               <div className="afrah-app-modal-body">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="grid-2-12">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Date *</label>
                     <DateInput
@@ -1257,7 +1598,9 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                   </div>
 
                   <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Category / Room Section *</label>
+                    <label className="afrah-app-label">
+                      Category / Room Section *
+                    </label>
                     <SearchableExpenseSelect
                       value={editExpCategory}
                       onChange={(val) => setEditExpCategory(val)}
@@ -1269,12 +1612,17 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                 </div>
 
                 <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Particulars (Item Description) *</label>
+                  <label className="afrah-app-label">
+                    Particulars (Item Description) *
+                  </label>
                   <SearchableExpenseSelect
                     value={editExpParticulars}
                     onChange={(val) => {
                       setEditExpParticulars(val);
-                      const matched = PREDEFINED_INTERIOR_ITEMS.find((p) => p.particulars.toLowerCase() === val.toLowerCase());
+                      const matched = PREDEFINED_INTERIOR_ITEMS.find(
+                        (p) =>
+                          p.particulars.toLowerCase() === val.toLowerCase(),
+                      );
                       if (matched) {
                         setEditExpCategory(matched.category);
                         setEditExpUnit(matched.unit);
@@ -1289,7 +1637,13 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
                   />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr 1fr",
+                    gap: "10px",
+                  }}
+                >
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Qty *</label>
                     <input
@@ -1341,10 +1695,18 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
               </div>
 
               <div className="afrah-app-modal-footer">
-                <button type="button" onClick={() => setIsEditExpModalOpen(false)} className="afrah-app-back-btn">
+                <button
+                  type="button"
+                  onClick={() => setIsEditExpModalOpen(false)}
+                  className="afrah-app-back-btn"
+                >
                   Cancel
                 </button>
-                <button type="submit" disabled={!editExpParticulars || parseFloat(editExpRate) < 0} className="btn-theme-primary">
+                <button
+                  type="submit"
+                  disabled={!editExpParticulars || parseFloat(editExpRate) < 0}
+                  className="btn-theme-primary"
+                >
                   <span>Save Changes</span>
                 </button>
               </div>
@@ -1358,7 +1720,11 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
         isOpen={Boolean(deleteAdvTarget)}
         title="Delete Advance Receipt"
         message="Are you sure you want to delete this advance receipt? The client's project balance will be updated immediately."
-        itemName={deleteAdvTarget ? `${deleteAdvTarget.date} — ${formatINR(deleteAdvTarget.amount)} (${deleteAdvTarget.mode})` : undefined}
+        itemName={
+          deleteAdvTarget
+            ? `${deleteAdvTarget.date} — ${formatINR(deleteAdvTarget.amount)} (${deleteAdvTarget.mode})`
+            : undefined
+        }
         confirmText="Delete Receipt"
         isDeleting={isDeletingAdv}
         onConfirm={handleConfirmDeleteAdv}
@@ -1380,7 +1746,11 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
         isOpen={Boolean(deleteExpTarget)}
         title="Delete Estimate Item"
         message="Are you sure you want to delete this estimate item? The project total and balance will be recalculated."
-        itemName={deleteExpTarget ? `${deleteExpTarget.category ? `[${deleteExpTarget.category}] ` : ''}${deleteExpTarget.expenseName} (${formatINR(deleteExpTarget.totalAmount)})` : undefined}
+        itemName={
+          deleteExpTarget
+            ? `${deleteExpTarget.category ? `[${deleteExpTarget.category}] ` : ""}${deleteExpTarget.expenseName} (${formatINR(deleteExpTarget.totalAmount)})`
+            : undefined
+        }
         confirmText="Delete Item"
         isDeleting={isDeletingExp}
         onConfirm={handleConfirmDeleteExp}

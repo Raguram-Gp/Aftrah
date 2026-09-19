@@ -83,6 +83,32 @@ html.dark {
   --margin-desktop: 80px;
   --margin-mobile: 20px;
   --section-gap: 160px;
+
+  /* Typography Scale — anchored to client list (20px row name) */
+  --fs-3xl: 32px;   /* hero metric, big total */
+  --fs-2xl: 26px;   /* large metric, page hero number */
+  --fs-xl: 22px;    /* card balance, big emphasis */
+  --fs-lg: 20px;    /* table row primary text (client name — reference) */
+  --fs-md: 18px;    /* table row secondary data, body large */
+  --fs-base: 16px;  /* section title, button, emphasis */
+  --fs-sm: 14px;    /* input, body, button label */
+  --fs-xs: 13px;    /* label, mono data, caption */
+  --fs-2xs: 12px;   /* small caption, secondary meta */
+  --fs-3xs: 11px;   /* badge, micro label */
+  --fs-4xs: 10px;   /* sub-badge, print micro meta */
+
+  /* Font Weights */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-heavy: 750;
+  --fw-black: 800;
+
+  /* Modal widths */
+  --modal-w-sm: 440px;
+  --modal-w-md: 460px;
+  --modal-w-lg: 480px;
 }
 
 /* --- CSS Custom Properties (Light Theme — Editorial Architectural Alabaster) --- */
@@ -270,6 +296,26 @@ input, textarea, select {
   font-weight: 400;
   line-height: 140%;
 }
+
+/* --- App Typography Utilities (token-backed, theme-agnostic) --- */
+.text-3xl { font-size: var(--fs-3xl); }
+.text-2xl { font-size: var(--fs-2xl); }
+.text-xl { font-size: var(--fs-xl); }
+.text-lg { font-size: var(--fs-lg); }
+.text-md { font-size: var(--fs-md); }
+.text-base { font-size: var(--fs-base); }
+.text-sm { font-size: var(--fs-sm); }
+.text-xs { font-size: var(--fs-xs); }
+.text-2xs { font-size: var(--fs-2xs); }
+.text-3xs { font-size: var(--fs-3xs); }
+.text-4xs { font-size: var(--fs-4xs); }
+
+.fw-regular { font-weight: var(--fw-regular); }
+.fw-medium { font-weight: var(--fw-medium); }
+.fw-semibold { font-weight: var(--fw-semibold); }
+.fw-bold { font-weight: var(--fw-bold); }
+.fw-heavy { font-weight: var(--fw-heavy); }
+.fw-black { font-weight: var(--fw-black); }
 
 /* --- Color Utility Classes --- */
 .text-primary-gold { color: var(--primary); }
