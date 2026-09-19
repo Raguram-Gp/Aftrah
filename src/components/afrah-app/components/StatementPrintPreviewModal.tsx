@@ -90,27 +90,27 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
   // Active font sizing classes or styles
   const fontSizes = {
     normal: {
-      body: '13px',
-      th: '13px',
-      meta: '13px',
-      title: '14px',
-      total: '14.5px',
+      body: '18px',
+      th: '18px',
+      meta: '18px',
+      title: '18px',
+      total: '18px',
       padding: '7px 10px'
     },
     large: {
-      body: '14.5px',
-      th: '14.5px',
-      meta: '14.5px',
-      title: '15.5px',
-      total: '16px',
+      body: '18px',
+      th: '18px',
+      meta: '18px',
+      title: '18px',
+      total: '18px',
       padding: '9px 12px'
     },
     xlarge: {
-      body: '16px',
-      th: '16px',
-      meta: '15.5px',
-      title: '17px',
-      total: '17.5px',
+      body: '18px',
+      th: '18px',
+      meta: '18px',
+      title: '18px',
+      total: '18px',
       padding: '11px 14px'
     }
   }[fontSizeScale];
@@ -142,8 +142,8 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
                 onClick={() => setActiveTab('expenses')}
                 title="Purchase / Expense Details"
               >
-                <FileText size={13} />
-                <span>Purchases ({expenses.length})</span>
+                <FileText size={14} />
+                <span>Purchase Details ({expenses.length})</span>
               </button>
 
               <button
@@ -152,8 +152,8 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
                 onClick={() => setActiveTab('advances')}
                 title="Advance Payments"
               >
-                <CreditCard size={13} />
-                <span>Advances ({advancePayments.length})</span>
+                <CreditCard size={14} />
+                <span>Advance Payments ({advancePayments.length})</span>
               </button>
 
               <button
@@ -162,8 +162,8 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
                 onClick={() => setActiveTab('statement')}
                 title="Complete Client Statement"
               >
-                <Layers size={13} />
-                <span>Statement</span>
+                <Layers size={14} />
+                <span>Complete Statement</span>
               </button>
             </div>
           </div>
@@ -178,7 +178,7 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
                 title="Preview with active app construction theme"
               >
                 <Moon size={12} />
-                <span>Theme</span>
+                <span>Theme View</span>
               </button>
               <button
                 type="button"
@@ -187,7 +187,7 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
                 title="Preview exact white paper print layout"
               >
                 <SunMedium size={12} />
-                <span>Paper</span>
+                <span>Paper View</span>
               </button>
             </div>
 
@@ -198,8 +198,8 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
               onClick={handleTriggerPrint}
               title="Print directly or save as PDF"
             >
-              <Printer size={14} />
-              <span>Print / PDF</span>
+              <Printer size={15} />
+              <span>Print / Save PDF</span>
             </button>
 
             {/* Close Button on the first row */}
@@ -209,7 +209,7 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
               onClick={onClose}
               title="Close Preview"
             >
-              <X size={16} />
+              <X size={17} />
             </button>
           </div>
         </div>
