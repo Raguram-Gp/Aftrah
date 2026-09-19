@@ -139,11 +139,6 @@ export const BricksCustomerPrintPreviewModal: React.FC<BricksCustomerPrintPrevie
                         {tx.notes}
                       </div>
                     )}
-                    {tx.siteLocation && (
-                      <div style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-secondary, #94a3b8)' }}>
-                        Site: {tx.siteLocation}
-                      </div>
-                    )}
                   </td>
                   <td className="statement-cell" style={{ fontWeight: 600 }}>
                     {tx.quantity ? tx.quantity.toLocaleString('en-IN') : '-'}

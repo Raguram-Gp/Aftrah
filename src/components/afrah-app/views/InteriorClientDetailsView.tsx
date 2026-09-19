@@ -105,1118 +105,1118 @@ export const InteriorClientDetailsView: React.FC<
   onDeleteExpense,
   onDeleteMultipleExpenses,
 }) => {
-  const advancePayments = client.advancePayments || [];
-  const expenses = client.expenses || [];
+    const advancePayments = client.advancePayments || [];
+    const expenses = client.expenses || [];
 
-  // ===================== ADVANCE PAYMENTS STATE =====================
-  const [advFromDate, setAdvFromDate] = useState("");
-  const [advToDate, setAdvToDate] = useState("");
-  const [advCurrentPage, setAdvCurrentPage] = useState(1);
-  const [advItemsPerPage, setAdvItemsPerPage] = useState(10);
-  const [selectedAdvIds, setSelectedAdvIds] = useState<Set<string>>(new Set());
+    // ===================== ADVANCE PAYMENTS STATE =====================
+    const [advFromDate, setAdvFromDate] = useState("");
+    const [advToDate, setAdvToDate] = useState("");
+    const [advCurrentPage, setAdvCurrentPage] = useState(1);
+    const [advItemsPerPage, setAdvItemsPerPage] = useState(10);
+    const [selectedAdvIds, setSelectedAdvIds] = useState<Set<string>>(new Set());
 
-  // Add Advance Modal
-  const [isAddAdvModalOpen, setIsAddAdvModalOpen] = useState(false);
-  const [newAdvDate, setNewAdvDate] = useState(() =>
-    new Date().toISOString().slice(0, 10),
-  );
-  const [newAdvAmount, setNewAdvAmount] = useState("");
-  const [newAdvMode, setNewAdvMode] = useState(PAYMENT_MODES[0]);
-  const [newAdvNote, setNewAdvNote] = useState("");
-
-  // Edit Advance Modal
-  const [isEditAdvModalOpen, setIsEditAdvModalOpen] = useState(false);
-  const [editingAdvId, setEditingAdvId] = useState<string | null>(null);
-  const [editAdvDate, setEditAdvDate] = useState("");
-  const [editAdvAmount, setEditAdvAmount] = useState("");
-  const [editAdvMode, setEditAdvMode] = useState("");
-  const [editAdvNote, setEditAdvNote] = useState("");
-
-  // Delete Advance Modals
-  const [deleteAdvTarget, setDeleteAdvTarget] =
-    useState<InteriorAdvancePayment | null>(null);
-  const [isDeletingAdv, setIsDeletingAdv] = useState(false);
-  const [isBulkDeleteAdvOpen, setIsBulkDeleteAdvOpen] = useState(false);
-  const [isBulkDeletingAdv, setIsBulkDeletingAdv] = useState(false);
-
-  // ===================== SITE EXPENSES (ESTIMATE) STATE =====================
-  const [expFromDate, setExpFromDate] = useState("");
-  const [expToDate, setExpToDate] = useState("");
-  const [selectedExpIds, setSelectedExpIds] = useState<Set<string>>(new Set());
-
-  // Add Expense Modal State
-  const [isAddExpModalOpen, setIsAddExpModalOpen] = useState(false);
-  const [newExpDate, setNewExpDate] = useState(() =>
-    new Date().toISOString().slice(0, 10),
-  );
-  const [newExpCategory, setNewExpCategory] = useState<string>(
-    INTERIOR_CATEGORIES[0],
-  );
-  const [newExpParticulars, setNewExpParticulars] = useState("");
-  const [newExpQuantity, setNewExpQuantity] = useState("1");
-  const [newExpUnit, setNewExpUnit] = useState<string>("Sq.ft");
-  const [newExpRate, setNewExpRate] = useState("");
-
-  // Edit Expense Modal State
-  const [isEditExpModalOpen, setIsEditExpModalOpen] = useState(false);
-  const [editingExpId, setEditingExpId] = useState<string | null>(null);
-  const [editExpDate, setEditExpDate] = useState("");
-  const [editExpCategory, setEditExpCategory] = useState<string>(
-    INTERIOR_CATEGORIES[0],
-  );
-  const [editExpParticulars, setEditExpParticulars] = useState("");
-  const [editExpQuantity, setEditExpQuantity] = useState("");
-  const [editExpUnit, setEditExpUnit] = useState("Sq.ft");
-  const [editExpRate, setEditExpRate] = useState("");
-
-  // Delete Expense Modals State
-  const [deleteExpTarget, setDeleteExpTarget] =
-    useState<InteriorExpenseItem | null>(null);
-  const [isDeletingExp, setIsDeletingExp] = useState(false);
-  const [isBulkDeleteExpOpen, setIsBulkDeleteExpOpen] = useState(false);
-  const [isBulkDeletingExp, setIsBulkDeletingExp] = useState(false);
-
-  const formatINR = (val: number) => {
-    return (
-      "₹" +
-      Number(val || 0).toLocaleString("en-IN", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })
+    // Add Advance Modal
+    const [isAddAdvModalOpen, setIsAddAdvModalOpen] = useState(false);
+    const [newAdvDate, setNewAdvDate] = useState(() =>
+      new Date().toISOString().slice(0, 10),
     );
-  };
+    const [newAdvAmount, setNewAdvAmount] = useState("");
+    const [newAdvMode, setNewAdvMode] = useState(PAYMENT_MODES[0]);
+    const [newAdvNote, setNewAdvNote] = useState("");
 
-  // ===================== ADVANCE FILTERING & COMPUTATIONS =====================
-  const filteredAdvance = useMemo(() => {
-    let list = advancePayments;
-    if (advFromDate) {
-      const fromISO = formatToYYYYMMDD(advFromDate);
-      list = list.filter((a) => formatToYYYYMMDD(a.date) >= fromISO);
-    }
-    if (advToDate) {
-      const toISO = formatToYYYYMMDD(advToDate);
-      list = list.filter((a) => formatToYYYYMMDD(a.date) <= toISO);
-    }
-    return [...list].sort((a, b) =>
-      compareByDateDesc(a.date, b.date, a.sNo, b.sNo),
+    // Edit Advance Modal
+    const [isEditAdvModalOpen, setIsEditAdvModalOpen] = useState(false);
+    const [editingAdvId, setEditingAdvId] = useState<string | null>(null);
+    const [editAdvDate, setEditAdvDate] = useState("");
+    const [editAdvAmount, setEditAdvAmount] = useState("");
+    const [editAdvMode, setEditAdvMode] = useState("");
+    const [editAdvNote, setEditAdvNote] = useState("");
+
+    // Delete Advance Modals
+    const [deleteAdvTarget, setDeleteAdvTarget] =
+      useState<InteriorAdvancePayment | null>(null);
+    const [isDeletingAdv, setIsDeletingAdv] = useState(false);
+    const [isBulkDeleteAdvOpen, setIsBulkDeleteAdvOpen] = useState(false);
+    const [isBulkDeletingAdv, setIsBulkDeletingAdv] = useState(false);
+
+    // ===================== SITE EXPENSES (ESTIMATE) STATE =====================
+    const [expFromDate, setExpFromDate] = useState("");
+    const [expToDate, setExpToDate] = useState("");
+    const [selectedExpIds, setSelectedExpIds] = useState<Set<string>>(new Set());
+
+    // Add Expense Modal State
+    const [isAddExpModalOpen, setIsAddExpModalOpen] = useState(false);
+    const [newExpDate, setNewExpDate] = useState(() =>
+      new Date().toISOString().slice(0, 10),
     );
-  }, [advancePayments, advFromDate, advToDate]);
-
-  const totalAdvanceAmount = filteredAdvance.reduce(
-    (sum, item) => sum + (Number(item.amount) || 0),
-    0,
-  );
-
-  const advTotalPages =
-    Math.ceil(filteredAdvance.length / advItemsPerPage) || 1;
-  const advStartIndex = (advCurrentPage - 1) * advItemsPerPage;
-  const advEndIndex = Math.min(
-    advStartIndex + advItemsPerPage,
-    filteredAdvance.length,
-  );
-  const paginatedAdvance = filteredAdvance.slice(advStartIndex, advEndIndex);
-
-  const isAllAdvSelected =
-    filteredAdvance.length > 0 &&
-    filteredAdvance.every((item) => selectedAdvIds.has(item.id));
-
-  const isSomeAdvSelected = selectedAdvIds.size > 0 && !isAllAdvSelected;
-
-  const handleToggleSelectAllAdv = () => {
-    if (isAllAdvSelected) {
-      setSelectedAdvIds(new Set());
-    } else {
-      setSelectedAdvIds(new Set(filteredAdvance.map((a) => a.id)));
-    }
-  };
-
-  const handleToggleSelectAdvRow = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setSelectedAdvIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
-  // ===================== EXPENSES FILTERING & SEGREGATION =====================
-  const filteredExpenses = useMemo(() => {
-    let list = expenses;
-    if (expFromDate) {
-      const fromISO = formatToYYYYMMDD(expFromDate);
-      list = list.filter((e) => formatToYYYYMMDD(e.date) >= fromISO);
-    }
-    if (expToDate) {
-      const toISO = formatToYYYYMMDD(expToDate);
-      list = list.filter((e) => formatToYYYYMMDD(e.date) <= toISO);
-    }
-    return [...list].sort((a, b) =>
-      compareByDateDesc(a.date, b.date, a.sNo, b.sNo),
+    const [newExpCategory, setNewExpCategory] = useState<string>(
+      INTERIOR_CATEGORIES[0],
     );
-  }, [expenses, expFromDate, expToDate]);
+    const [newExpParticulars, setNewExpParticulars] = useState("");
+    const [newExpQuantity, setNewExpQuantity] = useState("1");
+    const [newExpUnit, setNewExpUnit] = useState<string>("Sq.ft");
+    const [newExpRate, setNewExpRate] = useState("");
 
-  const totalExpensesAmount = filteredExpenses.reduce(
-    (sum, item) => sum + (Number(item.totalAmount) || 0),
-    0,
-  );
+    // Edit Expense Modal State
+    const [isEditExpModalOpen, setIsEditExpModalOpen] = useState(false);
+    const [editingExpId, setEditingExpId] = useState<string | null>(null);
+    const [editExpDate, setEditExpDate] = useState("");
+    const [editExpCategory, setEditExpCategory] = useState<string>(
+      INTERIOR_CATEGORIES[0],
+    );
+    const [editExpParticulars, setEditExpParticulars] = useState("");
+    const [editExpQuantity, setEditExpQuantity] = useState("");
+    const [editExpUnit, setEditExpUnit] = useState("Sq.ft");
+    const [editExpRate, setEditExpRate] = useState("");
 
-  // Group filtered expenses by Category matching the PDF structure
-  const groupedExpenses = useMemo(() => {
-    const groups: {
-      category: string;
-      items: InteriorExpenseItem[];
-      subtotal: number;
-    }[] = [];
-    const categoryMap = new Map<string, InteriorExpenseItem[]>();
+    // Delete Expense Modals State
+    const [deleteExpTarget, setDeleteExpTarget] =
+      useState<InteriorExpenseItem | null>(null);
+    const [isDeletingExp, setIsDeletingExp] = useState(false);
+    const [isBulkDeleteExpOpen, setIsBulkDeleteExpOpen] = useState(false);
+    const [isBulkDeletingExp, setIsBulkDeletingExp] = useState(false);
 
-    filteredExpenses.forEach((exp) => {
-      const cat = exp.category || "OTHER WORK";
-      if (!categoryMap.has(cat)) {
-        categoryMap.set(cat, []);
+    const formatINR = (val: number) => {
+      return (
+        "₹" +
+        Number(val || 0).toLocaleString("en-IN", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
+      );
+    };
+
+    // ===================== ADVANCE FILTERING & COMPUTATIONS =====================
+    const filteredAdvance = useMemo(() => {
+      let list = advancePayments;
+      if (advFromDate) {
+        const fromISO = formatToYYYYMMDD(advFromDate);
+        list = list.filter((a) => formatToYYYYMMDD(a.date) >= fromISO);
       }
-      categoryMap.get(cat)!.push(exp);
-    });
+      if (advToDate) {
+        const toISO = formatToYYYYMMDD(advToDate);
+        list = list.filter((a) => formatToYYYYMMDD(a.date) <= toISO);
+      }
+      return [...list].sort((a, b) =>
+        compareByDateDesc(a.date, b.date, a.sNo, b.sNo),
+      );
+    }, [advancePayments, advFromDate, advToDate]);
 
-    // 1. Defined categories in ordered sequence
-    INTERIOR_CATEGORIES.forEach((cat) => {
-      if (categoryMap.has(cat)) {
-        const items = categoryMap.get(cat)!;
+    const totalAdvanceAmount = filteredAdvance.reduce(
+      (sum, item) => sum + (Number(item.amount) || 0),
+      0,
+    );
+
+    const advTotalPages =
+      Math.ceil(filteredAdvance.length / advItemsPerPage) || 1;
+    const advStartIndex = (advCurrentPage - 1) * advItemsPerPage;
+    const advEndIndex = Math.min(
+      advStartIndex + advItemsPerPage,
+      filteredAdvance.length,
+    );
+    const paginatedAdvance = filteredAdvance.slice(advStartIndex, advEndIndex);
+
+    const isAllAdvSelected =
+      filteredAdvance.length > 0 &&
+      filteredAdvance.every((item) => selectedAdvIds.has(item.id));
+
+    const isSomeAdvSelected = selectedAdvIds.size > 0 && !isAllAdvSelected;
+
+    const handleToggleSelectAllAdv = () => {
+      if (isAllAdvSelected) {
+        setSelectedAdvIds(new Set());
+      } else {
+        setSelectedAdvIds(new Set(filteredAdvance.map((a) => a.id)));
+      }
+    };
+
+    const handleToggleSelectAdvRow = (id: string, e: React.MouseEvent) => {
+      e.stopPropagation();
+      setSelectedAdvIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(id)) next.delete(id);
+        else next.add(id);
+        return next;
+      });
+    };
+
+    // ===================== EXPENSES FILTERING & SEGREGATION =====================
+    const filteredExpenses = useMemo(() => {
+      let list = expenses;
+      if (expFromDate) {
+        const fromISO = formatToYYYYMMDD(expFromDate);
+        list = list.filter((e) => formatToYYYYMMDD(e.date) >= fromISO);
+      }
+      if (expToDate) {
+        const toISO = formatToYYYYMMDD(expToDate);
+        list = list.filter((e) => formatToYYYYMMDD(e.date) <= toISO);
+      }
+      return [...list].sort((a, b) =>
+        compareByDateDesc(a.date, b.date, a.sNo, b.sNo),
+      );
+    }, [expenses, expFromDate, expToDate]);
+
+    const totalExpensesAmount = filteredExpenses.reduce(
+      (sum, item) => sum + (Number(item.totalAmount) || 0),
+      0,
+    );
+
+    // Group filtered expenses by Category matching the PDF structure
+    const groupedExpenses = useMemo(() => {
+      const groups: {
+        category: string;
+        items: InteriorExpenseItem[];
+        subtotal: number;
+      }[] = [];
+      const categoryMap = new Map<string, InteriorExpenseItem[]>();
+
+      filteredExpenses.forEach((exp) => {
+        const cat = exp.category || "OTHER WORK";
+        if (!categoryMap.has(cat)) {
+          categoryMap.set(cat, []);
+        }
+        categoryMap.get(cat)!.push(exp);
+      });
+
+      // 1. Defined categories in ordered sequence
+      INTERIOR_CATEGORIES.forEach((cat) => {
+        if (categoryMap.has(cat)) {
+          const items = categoryMap.get(cat)!;
+          const subtotal = items.reduce(
+            (sum, item) => sum + (Number(item.totalAmount) || 0),
+            0,
+          );
+          groups.push({ category: cat, items, subtotal });
+          categoryMap.delete(cat);
+        }
+      });
+
+      // 2. Any additional custom categories created by the user
+      categoryMap.forEach((items, cat) => {
         const subtotal = items.reduce(
           (sum, item) => sum + (Number(item.totalAmount) || 0),
           0,
         );
         groups.push({ category: cat, items, subtotal });
-        categoryMap.delete(cat);
-      }
-    });
+      });
 
-    // 2. Any additional custom categories created by the user
-    categoryMap.forEach((items, cat) => {
-      const subtotal = items.reduce(
-        (sum, item) => sum + (Number(item.totalAmount) || 0),
-        0,
+      return groups;
+    }, [filteredExpenses]);
+
+    const isAllExpSelected =
+      filteredExpenses.length > 0 &&
+      filteredExpenses.every((item) => selectedExpIds.has(item.id));
+
+    const isSomeExpSelected = selectedExpIds.size > 0 && !isAllExpSelected;
+
+    const handleToggleSelectAllExp = () => {
+      if (isAllExpSelected) {
+        setSelectedExpIds(new Set());
+      } else {
+        setSelectedExpIds(new Set(filteredExpenses.map((e) => e.id)));
+      }
+    };
+
+    const handleToggleSelectExpRow = (id: string, e: React.MouseEvent) => {
+      e.stopPropagation();
+      setSelectedExpIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(id)) next.delete(id);
+        else next.add(id);
+        return next;
+      });
+    };
+
+    // Overall Financial Balance
+    const netBalance = totalAdvanceAmount - totalExpensesAmount;
+
+    // ===================== ADVANCE HANDLERS =====================
+    const isAddAdvValid = isValidDate(newAdvDate) && parseFloat(newAdvAmount) > 0;
+    const handleAddAdvSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!isAddAdvValid) return;
+
+      await onAddAdvance(client.id, {
+        date: newAdvDate,
+        amount: parseFloat(newAdvAmount),
+        mode: newAdvMode,
+        note: newAdvNote.trim() || undefined,
+      });
+
+      setNewAdvAmount("");
+      setNewAdvNote("");
+      setIsAddAdvModalOpen(false);
+    };
+
+    const handleOpenEditAdv = (
+      item: InteriorAdvancePayment,
+      e: React.MouseEvent,
+    ) => {
+      e.stopPropagation();
+      setEditingAdvId(item.id);
+      setEditAdvDate(item.date);
+      setEditAdvAmount(String(item.amount));
+      setEditAdvMode(item.mode);
+      setEditAdvNote(item.note || "");
+      setIsEditAdvModalOpen(true);
+    };
+
+    const handleSaveEditAdv = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!editingAdvId || parseFloat(editAdvAmount) <= 0) return;
+
+      await onUpdateAdvance(client.id, {
+        id: editingAdvId,
+        clientId: client.id,
+        sNo: 1,
+        date: editAdvDate,
+        amount: parseFloat(editAdvAmount),
+        mode: editAdvMode,
+        note: editAdvNote.trim() || undefined,
+      });
+
+      setIsEditAdvModalOpen(false);
+      setEditingAdvId(null);
+    };
+
+    const handleConfirmDeleteAdv = async () => {
+      if (!deleteAdvTarget) return;
+      setIsDeletingAdv(true);
+      try {
+        await onDeleteAdvance(client.id, deleteAdvTarget.id);
+        if (selectedAdvIds.has(deleteAdvTarget.id)) {
+          setSelectedAdvIds((prev) => {
+            const next = new Set(prev);
+            next.delete(deleteAdvTarget.id);
+            return next;
+          });
+        }
+      } finally {
+        setIsDeletingAdv(false);
+        setDeleteAdvTarget(null);
+      }
+    };
+
+    const handleConfirmBulkDeleteAdv = async () => {
+      if (selectedAdvIds.size === 0) return;
+      setIsBulkDeletingAdv(true);
+      try {
+        if (onDeleteMultipleAdvancePayments) {
+          await onDeleteMultipleAdvancePayments(
+            client.id,
+            Array.from(selectedAdvIds),
+          );
+        } else {
+          for (const id of selectedAdvIds) {
+            await onDeleteAdvance(client.id, id);
+          }
+        }
+        setSelectedAdvIds(new Set());
+        setIsBulkDeleteAdvOpen(false);
+      } finally {
+        setIsBulkDeletingAdv(false);
+      }
+    };
+
+    // ===================== EXPENSE HANDLERS =====================
+    const calculatedNewExpTotal =
+      (parseFloat(newExpQuantity) || 0) * (parseFloat(newExpRate) || 0);
+    const isAddExpValid =
+      isValidDate(newExpDate) &&
+      newExpParticulars.trim().length > 0 &&
+      parseFloat(newExpQuantity) > 0 &&
+      parseFloat(newExpRate) >= 0;
+
+    // Preset Selection auto-fill
+    const handleSelectPreset = (
+      presetItem: (typeof PREDEFINED_INTERIOR_ITEMS)[0],
+    ) => {
+      setNewExpCategory(presetItem.category);
+      setNewExpParticulars(presetItem.particulars);
+      setNewExpUnit(presetItem.unit);
+      setNewExpRate(
+        presetItem.defaultRate > 0 ? String(presetItem.defaultRate) : "",
       );
-      groups.push({ category: cat, items, subtotal });
-    });
+    };
 
-    return groups;
-  }, [filteredExpenses]);
+    const handleAddExpSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!isAddExpValid) return;
 
-  const isAllExpSelected =
-    filteredExpenses.length > 0 &&
-    filteredExpenses.every((item) => selectedExpIds.has(item.id));
+      const qty = parseFloat(newExpQuantity);
+      const rate = parseFloat(newExpRate);
+      await onAddExpense(client.id, {
+        date: newExpDate,
+        category: newExpCategory.trim() || "OTHER WORK",
+        expenseName: newExpParticulars.trim(),
+        quantity: qty,
+        unit: newExpUnit.trim() || "Sq.ft",
+        rate: rate,
+        totalAmount: qty * rate,
+      });
 
-  const isSomeExpSelected = selectedExpIds.size > 0 && !isAllExpSelected;
+      setNewExpParticulars("");
+      setNewExpQuantity("1");
+      setNewExpRate("");
+      setIsAddExpModalOpen(false);
+    };
 
-  const handleToggleSelectAllExp = () => {
-    if (isAllExpSelected) {
-      setSelectedExpIds(new Set());
-    } else {
-      setSelectedExpIds(new Set(filteredExpenses.map((e) => e.id)));
-    }
-  };
+    const handleOpenEditExp = (
+      item: InteriorExpenseItem,
+      e: React.MouseEvent,
+    ) => {
+      e.stopPropagation();
+      setEditingExpId(item.id);
+      setEditExpDate(item.date);
+      setEditExpCategory(item.category || INTERIOR_CATEGORIES[0]);
+      setEditExpParticulars(item.expenseName);
+      setEditExpQuantity(String(item.quantity));
+      setEditExpUnit(item.unit || "Sq.ft");
+      setEditExpRate(String(item.rate));
+      setIsEditExpModalOpen(true);
+    };
 
-  const handleToggleSelectExpRow = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setSelectedExpIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
+    const calculatedEditExpTotal =
+      (parseFloat(editExpQuantity) || 0) * (parseFloat(editExpRate) || 0);
+    const handleSaveEditExp = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (
+        !editingExpId ||
+        parseFloat(editExpQuantity) <= 0 ||
+        parseFloat(editExpRate) < 0
+      )
+        return;
 
-  // Overall Financial Balance
-  const netBalance = totalAdvanceAmount - totalExpensesAmount;
+      const qty = parseFloat(editExpQuantity);
+      const rate = parseFloat(editExpRate);
+      await onUpdateExpense(client.id, {
+        id: editingExpId,
+        clientId: client.id,
+        sNo: 1,
+        date: editExpDate,
+        category: editExpCategory.trim() || "OTHER WORK",
+        expenseName: editExpParticulars.trim(),
+        quantity: qty,
+        unit: editExpUnit.trim() || "Sq.ft",
+        rate: rate,
+        totalAmount: qty * rate,
+      });
 
-  // ===================== ADVANCE HANDLERS =====================
-  const isAddAdvValid = isValidDate(newAdvDate) && parseFloat(newAdvAmount) > 0;
-  const handleAddAdvSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isAddAdvValid) return;
+      setIsEditExpModalOpen(false);
+      setEditingExpId(null);
+    };
 
-    await onAddAdvance(client.id, {
-      date: newAdvDate,
-      amount: parseFloat(newAdvAmount),
-      mode: newAdvMode,
-      note: newAdvNote.trim() || undefined,
-    });
-
-    setNewAdvAmount("");
-    setNewAdvNote("");
-    setIsAddAdvModalOpen(false);
-  };
-
-  const handleOpenEditAdv = (
-    item: InteriorAdvancePayment,
-    e: React.MouseEvent,
-  ) => {
-    e.stopPropagation();
-    setEditingAdvId(item.id);
-    setEditAdvDate(item.date);
-    setEditAdvAmount(String(item.amount));
-    setEditAdvMode(item.mode);
-    setEditAdvNote(item.note || "");
-    setIsEditAdvModalOpen(true);
-  };
-
-  const handleSaveEditAdv = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingAdvId || parseFloat(editAdvAmount) <= 0) return;
-
-    await onUpdateAdvance(client.id, {
-      id: editingAdvId,
-      clientId: client.id,
-      sNo: 1,
-      date: editAdvDate,
-      amount: parseFloat(editAdvAmount),
-      mode: editAdvMode,
-      note: editAdvNote.trim() || undefined,
-    });
-
-    setIsEditAdvModalOpen(false);
-    setEditingAdvId(null);
-  };
-
-  const handleConfirmDeleteAdv = async () => {
-    if (!deleteAdvTarget) return;
-    setIsDeletingAdv(true);
-    try {
-      await onDeleteAdvance(client.id, deleteAdvTarget.id);
-      if (selectedAdvIds.has(deleteAdvTarget.id)) {
-        setSelectedAdvIds((prev) => {
-          const next = new Set(prev);
-          next.delete(deleteAdvTarget.id);
-          return next;
-        });
-      }
-    } finally {
-      setIsDeletingAdv(false);
-      setDeleteAdvTarget(null);
-    }
-  };
-
-  const handleConfirmBulkDeleteAdv = async () => {
-    if (selectedAdvIds.size === 0) return;
-    setIsBulkDeletingAdv(true);
-    try {
-      if (onDeleteMultipleAdvancePayments) {
-        await onDeleteMultipleAdvancePayments(
-          client.id,
-          Array.from(selectedAdvIds),
-        );
-      } else {
-        for (const id of selectedAdvIds) {
-          await onDeleteAdvance(client.id, id);
+    const handleConfirmDeleteExp = async () => {
+      if (!deleteExpTarget) return;
+      setIsDeletingExp(true);
+      try {
+        await onDeleteExpense(client.id, deleteExpTarget.id);
+        if (selectedExpIds.has(deleteExpTarget.id)) {
+          setSelectedExpIds((prev) => {
+            const next = new Set(prev);
+            next.delete(deleteExpTarget.id);
+            return next;
+          });
         }
+      } finally {
+        setIsDeletingExp(false);
+        setDeleteExpTarget(null);
       }
-      setSelectedAdvIds(new Set());
-      setIsBulkDeleteAdvOpen(false);
-    } finally {
-      setIsBulkDeletingAdv(false);
-    }
-  };
+    };
 
-  // ===================== EXPENSE HANDLERS =====================
-  const calculatedNewExpTotal =
-    (parseFloat(newExpQuantity) || 0) * (parseFloat(newExpRate) || 0);
-  const isAddExpValid =
-    isValidDate(newExpDate) &&
-    newExpParticulars.trim().length > 0 &&
-    parseFloat(newExpQuantity) > 0 &&
-    parseFloat(newExpRate) >= 0;
-
-  // Preset Selection auto-fill
-  const handleSelectPreset = (
-    presetItem: (typeof PREDEFINED_INTERIOR_ITEMS)[0],
-  ) => {
-    setNewExpCategory(presetItem.category);
-    setNewExpParticulars(presetItem.particulars);
-    setNewExpUnit(presetItem.unit);
-    setNewExpRate(
-      presetItem.defaultRate > 0 ? String(presetItem.defaultRate) : "",
-    );
-  };
-
-  const handleAddExpSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isAddExpValid) return;
-
-    const qty = parseFloat(newExpQuantity);
-    const rate = parseFloat(newExpRate);
-    await onAddExpense(client.id, {
-      date: newExpDate,
-      category: newExpCategory.trim() || "OTHER WORK",
-      expenseName: newExpParticulars.trim(),
-      quantity: qty,
-      unit: newExpUnit.trim() || "Sq.ft",
-      rate: rate,
-      totalAmount: qty * rate,
-    });
-
-    setNewExpParticulars("");
-    setNewExpQuantity("1");
-    setNewExpRate("");
-    setIsAddExpModalOpen(false);
-  };
-
-  const handleOpenEditExp = (
-    item: InteriorExpenseItem,
-    e: React.MouseEvent,
-  ) => {
-    e.stopPropagation();
-    setEditingExpId(item.id);
-    setEditExpDate(item.date);
-    setEditExpCategory(item.category || INTERIOR_CATEGORIES[0]);
-    setEditExpParticulars(item.expenseName);
-    setEditExpQuantity(String(item.quantity));
-    setEditExpUnit(item.unit || "Sq.ft");
-    setEditExpRate(String(item.rate));
-    setIsEditExpModalOpen(true);
-  };
-
-  const calculatedEditExpTotal =
-    (parseFloat(editExpQuantity) || 0) * (parseFloat(editExpRate) || 0);
-  const handleSaveEditExp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (
-      !editingExpId ||
-      parseFloat(editExpQuantity) <= 0 ||
-      parseFloat(editExpRate) < 0
-    )
-      return;
-
-    const qty = parseFloat(editExpQuantity);
-    const rate = parseFloat(editExpRate);
-    await onUpdateExpense(client.id, {
-      id: editingExpId,
-      clientId: client.id,
-      sNo: 1,
-      date: editExpDate,
-      category: editExpCategory.trim() || "OTHER WORK",
-      expenseName: editExpParticulars.trim(),
-      quantity: qty,
-      unit: editExpUnit.trim() || "Sq.ft",
-      rate: rate,
-      totalAmount: qty * rate,
-    });
-
-    setIsEditExpModalOpen(false);
-    setEditingExpId(null);
-  };
-
-  const handleConfirmDeleteExp = async () => {
-    if (!deleteExpTarget) return;
-    setIsDeletingExp(true);
-    try {
-      await onDeleteExpense(client.id, deleteExpTarget.id);
-      if (selectedExpIds.has(deleteExpTarget.id)) {
-        setSelectedExpIds((prev) => {
-          const next = new Set(prev);
-          next.delete(deleteExpTarget.id);
-          return next;
-        });
-      }
-    } finally {
-      setIsDeletingExp(false);
-      setDeleteExpTarget(null);
-    }
-  };
-
-  const handleConfirmBulkDeleteExp = async () => {
-    if (selectedExpIds.size === 0) return;
-    setIsBulkDeletingExp(true);
-    try {
-      if (onDeleteMultipleExpenses) {
-        await onDeleteMultipleExpenses(client.id, Array.from(selectedExpIds));
-      } else {
-        for (const id of selectedExpIds) {
-          await onDeleteExpense(client.id, id);
+    const handleConfirmBulkDeleteExp = async () => {
+      if (selectedExpIds.size === 0) return;
+      setIsBulkDeletingExp(true);
+      try {
+        if (onDeleteMultipleExpenses) {
+          await onDeleteMultipleExpenses(client.id, Array.from(selectedExpIds));
+        } else {
+          for (const id of selectedExpIds) {
+            await onDeleteExpense(client.id, id);
+          }
         }
+        setSelectedExpIds(new Set());
+        setIsBulkDeleteExpOpen(false);
+      } finally {
+        setIsBulkDeletingExp(false);
       }
-      setSelectedExpIds(new Set());
-      setIsBulkDeleteExpOpen(false);
-    } finally {
-      setIsBulkDeletingExp(false);
-    }
-  };
+    };
 
-  // Print Statement Preview State
-  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+    // Print Statement Preview State
+    const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
 
-  // Print Statement Handler - opens preview modal first
-  const handlePrint = () => {
-    setIsPrintPreviewOpen(true);
-  };
+    // Print Statement Handler - opens preview modal first
+    const handlePrint = () => {
+      setIsPrintPreviewOpen(true);
+    };
 
-  return (
-    <div className="client-details-page">
-      {/* PRINT-ONLY STATEMENT HEADER */}
-      <div className="print-only-statement-header">
-        <div className="print-brand-row">
-          <div>
-            <h1 className="print-company-name">ESTIMATE FOR INTERIOR WORKS</h1>
-            <p className="print-company-sub">
-              Materials of 16mm MDF with Mica lamination and 6mm Back-panel ply
-              with PVC edgeband along with Handles and Hardwares etc.
-            </p>
-          </div>
-          <div className="print-badge-statement">
-            <span>KAAB INTERIOR · AFRAH</span>
-          </div>
-        </div>
-
-        <div className="print-meta-grid">
-          <div className="print-meta-box">
-            <span className="print-meta-title">TO / CLIENT</span>
-            <div className="print-meta-val">
-              <strong>{client.name}</strong>
-            </div>
-            <div className="print-meta-sub">
-              Phone: {client.phone} · Address: {client.address}
-            </div>
-          </div>
-
-          <div className="print-meta-box">
-            <span className="print-meta-title">ESTIMATE & PAYMENT TERMS</span>
-            <div className="print-meta-sub">
-              Date:{" "}
-              {new Date().toLocaleDateString("en-IN", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-              })}
-            </div>
-            <div
-              className="print-meta-val"
-              style={{
-                marginTop: "4px",
-                color: netBalance >= 0 ? "#15803d" : "#b91c1c",
-              }}
-            >
-              Balance Due: {formatINR(Math.abs(netBalance))}
-            </div>
-          </div>
-        </div>
-
-        <div className="print-totals-summary-bar">
-          <div className="print-total-item">
-            <span>Estimate Total (Works):</span>{" "}
-            <strong style={{ color: "#b45309" }}>
-              {formatINR(totalExpensesAmount)}
-            </strong>
-          </div>
-          <div className="print-total-item">
-            <span>Total Advance Received:</span>{" "}
-            <strong style={{ color: "#15803d" }}>
-              {formatINR(totalAdvanceAmount)}
-            </strong>
-          </div>
-          <div className="print-total-item">
-            <span>Net Balance:</span>{" "}
-            <strong style={{ color: netBalance >= 0 ? "#15803d" : "#b91c1c" }}>
-              {formatINR(netBalance)}
-            </strong>
-          </div>
-        </div>
-      </div>
-
-      {/* Screen Header Bar */}
-      <div className="client-details-header no-print">
-        <div className="client-details-top-actions">
-          <button
-            onClick={handlePrint}
-            className="afrah-app-back-btn"
-            title="Preview and Print Statement"
-          >
-            <Printer size={15} />
-            <span>Print Preview / Statement</span>
-          </button>
-        </div>
-
-        <div className="client-unified-summary-card">
-          <div className="client-unified-card-item client-info-item">
-            <h1 className="client-unified-name-title">
-              <span className="client-unified-label">Client Name :</span>{" "}
-              <span className="client-unified-name">{client.name}</span>
-            </h1>
-          </div>
-
-          <div className="client-unified-card-item metric-item">
-            <div className="metric-icon-wrap green">
-              <Wallet size={24} />
-            </div>
+    return (
+      <div className="client-details-page">
+        {/* PRINT-ONLY STATEMENT HEADER */}
+        <div className="print-only-statement-header">
+          <div className="print-brand-row">
             <div>
-              <span className="metric-label">TOTAL ADVANCE RECEIVED</span>
-              <span className="metric-value green">
-                {formatINR(totalAdvanceAmount)}
-              </span>
+              <h1 className="print-company-name">ESTIMATE FOR INTERIOR WORKS</h1>
+              <p className="print-company-sub">
+                Materials of 16mm MDF with Mica lamination and 6mm Back-panel ply
+                with PVC edgeband along with Handles and Hardwares etc.
+              </p>
+            </div>
+            <div className="print-badge-statement">
+              <span>KAAB INTERIOR · AFRAH</span>
             </div>
           </div>
 
-          <div className="client-unified-card-item metric-item">
-            <div className="metric-icon-wrap gold">
-              <TrendingDown size={24} />
+          <div className="print-meta-grid">
+            <div className="print-meta-box">
+              <span className="print-meta-title">TO / CLIENT</span>
+              <div className="print-meta-val">
+                <strong>{client.name}</strong>
+              </div>
+              <div className="print-meta-sub">
+                Phone: {client.phone} · Address: {client.address}
+              </div>
             </div>
-            <div>
-              <span className="metric-label">TOTAL ESTIMATE AMOUNT</span>
-              <span className="metric-value gold">
+
+            <div className="print-meta-box">
+              <span className="print-meta-title">ESTIMATE & PAYMENT TERMS</span>
+              <div className="print-meta-sub">
+                Date:{" "}
+                {new Date().toLocaleDateString("en-IN", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })}
+              </div>
+              <div
+                className="print-meta-val"
+                style={{
+                  marginTop: "4px",
+                  color: netBalance >= 0 ? "#15803d" : "#b91c1c",
+                }}
+              >
+                Balance Due: {formatINR(Math.abs(netBalance))}
+              </div>
+            </div>
+          </div>
+
+          <div className="print-totals-summary-bar">
+            <div className="print-total-item">
+              <span>Estimate Total (Works):</span>{" "}
+              <strong style={{ color: "#b45309" }}>
                 {formatINR(totalExpensesAmount)}
-              </span>
+              </strong>
             </div>
-          </div>
-
-          <div className="client-unified-card-item metric-item">
-            <div
-              className={`metric-icon-wrap ${netBalance >= 0 ? "green" : "red"}`}
-            >
-              <Scale size={24} />
+            <div className="print-total-item">
+              <span>Total Advance Received:</span>{" "}
+              <strong style={{ color: "#15803d" }}>
+                {formatINR(totalAdvanceAmount)}
+              </strong>
             </div>
-            <div>
-              <span className="metric-label">
-                {netBalance >= 0
-                  ? "SURPLUS / UNUSED ADVANCE"
-                  : "OUTSTANDING BALANCE DUE"}
-              </span>
-              <span
-                className={`metric-value ${netBalance >= 0 ? "green" : "red"}`}
-              >
+            <div className="print-total-item">
+              <span>Net Balance:</span>{" "}
+              <strong style={{ color: netBalance >= 0 ? "#15803d" : "#b91c1c" }}>
                 {formatINR(netBalance)}
-              </span>
+              </strong>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Combined ledger card: Advance Payments | Interior Expenses */}
-      <section className={`afrah-app-table-section client-ledger-split-card${isAddAdvModalOpen || isAddExpModalOpen ? " with-add-popover" : ""}`}>
-        <div className="client-details-side-by-side-grid">
-          {/* ================= COLUMN 1: ADVANCE PAYMENTS (LEFT AS IS) ================= */}
-          <div className="details-column-panel">
-            <div className="afrah-app-section-header no-print">
-              <div>
-                <h2 className="afrah-app-section-title">
-                  ADVANCE PAYMENT RECEIPTS
-                </h2>
-                <span className="afrah-app-section-subtitle">
-                  {filteredAdvance.length}{" "}
-                  {filteredAdvance.length === 1 ? "receipt" : "receipts"} ·
-                  Total:{" "}
-                  <strong style={{ color: "#4ade80" }}>
-                    {formatINR(totalAdvanceAmount)}
-                  </strong>
-                </span>
-              </div>
-
-              <TableFormPopover
-                open={isAddAdvModalOpen}
-                onOpenChange={setIsAddAdvModalOpen}
-                label="Add Advance"
-                onOpen={() => {
-                  setNewAdvDate(new Date().toISOString().slice(0, 10));
-                  setNewAdvAmount("");
-                  setNewAdvMode(PAYMENT_MODES[0]);
-                  setNewAdvNote("");
-                }}
-              >
-                <form onSubmit={handleAddAdvSubmit} className="afrah-app-add-form">
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Date *</label>
-                    <DateInput
-                      required
-                      value={newAdvDate}
-                      onChange={setNewAdvDate}
-                      className="afrah-app-input"
-                    />
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Amount (₹) *</label>
-                    <input
-                      type="number"
-                      step="any"
-                      min="1"
-                      required
-                      placeholder="e.g. 163845"
-                      value={newAdvAmount}
-                      onChange={(e) => setNewAdvAmount(e.target.value)}
-                      className="afrah-app-input"
-                      style={{
-                        fontSize: "15px",
-                        fontWeight: 700,
-                        color: "#4ade80",
-                      }}
-                    />
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Payment Mode *</label>
-                    <select
-                      value={newAdvMode}
-                      onChange={(e) => setNewAdvMode(e.target.value)}
-                      className="afrah-app-select"
-                    >
-                      {PAYMENT_MODES.map((mode) => (
-                        <option key={mode} value={mode}>
-                          {mode}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">
-                      Note / Milestone Description
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 50% Advance on confirmation & PO"
-                      value={newAdvNote}
-                      onChange={(e) => setNewAdvNote(e.target.value)}
-                      className="afrah-app-input"
-                    />
-                  </div>
-
-                  <div className="afrah-app-add-popover-actions">
-                    <button
-                      type="button"
-                      onClick={() => setIsAddAdvModalOpen(false)}
-                      className="afrah-app-back-btn"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={!isAddAdvValid}
-                      className="btn-theme-primary"
-                    >
-                      <span>Save Advance</span>
-                    </button>
-                  </div>
-                </form>
-              </TableFormPopover>
-            </div>
-
-            <DateFilterBar
-              fromDate={advFromDate}
-              toDate={advToDate}
-              onFromDateChange={setAdvFromDate}
-              onToDateChange={setAdvToDate}
-              onClearDates={() => {
-                setAdvFromDate("");
-                setAdvToDate("");
-              }}
-              selectedCount={selectedAdvIds.size}
-              onBulkDelete={() => setIsBulkDeleteAdvOpen(true)}
-            />
-
-            <div className="afrah-app-table-container">
-              <table className="afrah-app-table">
-                <thead>
-                  <tr>
-                    <th className="text-center" style={{ width: "45px" }}>
-                      S.NO
-                    </th>
-                    <th>DATE</th>
-                    <th>PAYMENT MODE</th>
-                    <th>NOTE / MILESTONE</th>
-                    <th>AMOUNT (₹)</th>
-                    <th
-                      className="no-print text-center"
-                      style={{ width: "70px" }}
-                    >
-                      ACTIONS
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paginatedAdvance.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={6}
-                        style={{
-                          textAlign: "center",
-                          padding: "36px 16px",
-                          color: "var(--text-secondary)",
-                        }}
-                      >
-                        {advFromDate || advToDate
-                          ? "No matching advance receipts found for filter."
-                          : 'No advance receipts logged yet. Click "Add Advance" above.'}
-                      </td>
-                    </tr>
-                  ) : (
-                    paginatedAdvance.map((item, index) => {
-                      return (
-                        <tr key={item.id} className="cursor-default">
-                          <td className="cell-sno">
-                            {advStartIndex + index + 1}
-                          </td>
-                          <td className="cell-date">{formatToDDMMYYYY(item.date)}</td>
-                          <td>
-                            <span className="payment-mode-tag">
-                              <CreditCard size={11} />
-                              {item.mode}
-                            </span>
-                          </td>
-                          <td className="cell-meta">
-                            {item.note || "—"}
-                          </td>
-                          <td className="cell-amount">
-                            {formatINR(item.amount)}
-                          </td>
-                          <td
-                            className="no-print text-center"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <div className="flex-center-4">
-                              <button
-                                onClick={(e) => handleOpenEditAdv(item, e)}
-                                className="afrah-app-action-btn afrah-app-edit-btn"
-                                title="Edit Advance"
-                              >
-                                <Pencil size={13} />
-                              </button>
-                              <button
-                                onClick={() => setDeleteAdvTarget(item)}
-                                className="afrah-app-action-btn afrah-app-delete-btn"
-                                title="Delete Advance"
-                              >
-                                <Trash2 size={13} />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
-            </div>
+        {/* Screen Header Bar */}
+        <div className="client-details-header no-print">
+          <div className="client-details-top-actions">
+            <button
+              onClick={handlePrint}
+              className="afrah-app-back-btn"
+              title="Preview and Print Statement"
+            >
+              <Printer size={15} />
+              <span>Print Preview / Statement</span>
+            </button>
           </div>
 
-          {/* ================= COLUMN 2: ESTIMATE FOR INTERIOR WORKS (SEGREGATED AS IN PDF) ================= */}
-          <div className="details-column-panel">
-            <div className="afrah-app-section-header no-print">
-              <div>
-                <h2 className="afrah-app-section-title">
-                  ESTIMATE FOR INTERIOR WORKS
-                </h2>
-                <span className="afrah-app-section-subtitle">
-                  {filteredExpenses.length} items across{" "}
-                  {groupedExpenses.length} sections · Total:{" "}
-                  <strong className="text-primary-gold">
-                    {formatINR(totalExpensesAmount)}
-                  </strong>
-                </span>
-              </div>
-
-              <TableFormPopover
-                open={isAddExpModalOpen}
-                onOpenChange={setIsAddExpModalOpen}
-                label="Add Item"
-                onOpen={() => {
-                  setNewExpDate(new Date().toISOString().slice(0, 10));
-                  setNewExpCategory(INTERIOR_CATEGORIES[0]);
-                  setNewExpParticulars("");
-                  setNewExpQuantity("1");
-                  setNewExpUnit("Sq.ft");
-                  setNewExpRate("");
-                }}
-              >
-                <form onSubmit={handleAddExpSubmit} className="afrah-app-add-form">
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Date *</label>
-                    <DateInput
-                      required
-                      value={newExpDate}
-                      onChange={setNewExpDate}
-                      className="afrah-app-input"
-                    />
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">
-                      Category / Room Section *
-                    </label>
-                    <SearchableExpenseSelect
-                      value={newExpCategory}
-                      onChange={(val) => setNewExpCategory(val)}
-                      options={INTERIOR_CATEGORIES}
-                      placeholder="Select or type category..."
-                      searchPlaceholder="Filter category..."
-                    />
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">
-                      Particulars (Item Description) *
-                    </label>
-                    <SearchableExpenseSelect
-                      value={newExpParticulars}
-                      onChange={(val) => {
-                        setNewExpParticulars(val);
-                        const matched = PREDEFINED_INTERIOR_ITEMS.find(
-                          (p) =>
-                            p.particulars.toLowerCase() === val.toLowerCase(),
-                        );
-                        if (matched) {
-                          setNewExpCategory(matched.category);
-                          setNewExpUnit(matched.unit);
-                          if (matched.defaultRate > 0) {
-                            setNewExpRate(String(matched.defaultRate));
-                          }
-                        }
-                      }}
-                      options={PREDEFINED_INTERIOR_EXPENSES}
-                      placeholder="Search estimate items or type custom description..."
-                      searchPlaceholder="Type to filter estimate items..."
-                    />
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Qty *</label>
-                    <input
-                      type="number"
-                      step="any"
-                      min="0.1"
-                      required
-                      value={newExpQuantity}
-                      onChange={(e) => setNewExpQuantity(e.target.value)}
-                      className="afrah-app-input"
-                    />
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Per (Unit) *</label>
-                    <select
-                      value={newExpUnit}
-                      onChange={(e) => setNewExpUnit(e.target.value)}
-                      className="afrah-app-select"
-                    >
-                      {INTERIOR_UNITS.map((unit) => (
-                        <option key={unit} value={unit}>
-                          {unit}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Rate (₹) *</label>
-                    <input
-                      type="number"
-                      step="any"
-                      min="0"
-                      required
-                      placeholder="e.g. 1350"
-                      value={newExpRate}
-                      onChange={(e) => setNewExpRate(e.target.value)}
-                      className="afrah-app-input"
-                    />
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Amount (Total)</label>
-                    <div className="total-amount-display">
-                      {formatINR(calculatedNewExpTotal)}
-                    </div>
-                  </div>
-
-                  <div className="afrah-app-add-popover-actions">
-                    <button
-                      type="button"
-                      onClick={() => setIsAddExpModalOpen(false)}
-                      className="afrah-app-back-btn"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={!isAddExpValid}
-                      className="btn-theme-primary"
-                    >
-                      <span>Save Item</span>
-                    </button>
-                  </div>
-                </form>
-              </TableFormPopover>
+          <div className="client-unified-summary-card">
+            <div className="client-unified-card-item client-info-item">
+              <h1 className="client-unified-name-title">
+                <span className="client-unified-label">Client Name :</span>{" "}
+                <span className="client-unified-name">{client.name}</span>
+              </h1>
             </div>
 
-            <DateFilterBar
-              fromDate={expFromDate}
-              toDate={expToDate}
-              onFromDateChange={setExpFromDate}
-              onToDateChange={setExpToDate}
-              onClearDates={() => {
-                setExpFromDate("");
-                setExpToDate("");
-              }}
-              selectedCount={selectedExpIds.size}
-              onBulkDelete={() => setIsBulkDeleteExpOpen(true)}
-            />
+            <div className="client-unified-card-item metric-item">
+              <div className="metric-icon-wrap green">
+                <Wallet size={24} />
+              </div>
+              <div>
+                <span className="metric-label">TOTAL ADVANCE RECEIVED</span>
+                <span className="metric-value green">
+                  {formatINR(totalAdvanceAmount)}
+                </span>
+              </div>
+            </div>
 
-            {/* SEGREGATED TABLE MATCHING PDF COLUMNS: SI.No | Particulars | Qty | Per | Rate | Amount */}
-            <div className="afrah-app-table-container">
-              <table className="afrah-app-table">
-                <thead>
-                  <tr>
-                    <th className="text-center" style={{ width: "50px" }}>
-                      SI.No
-                    </th>
-                    <th>Particulars</th>
-                    <th style={{ width: "60px" }}>
-                      Qty
-                    </th>
-                    <th className="text-center" style={{ width: "60px" }}>
-                      Per
-                    </th>
-                    <th style={{ width: "90px" }}>
-                      Rate
-                    </th>
-                    <th style={{ width: "115px" }}>
-                      Amount
-                    </th>
-                    <th
-                      className="no-print"
-                      style={{ width: "65px", textAlign: "center" }}
-                    >
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {groupedExpenses.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={7}
+            <div className="client-unified-card-item metric-item">
+              <div className="metric-icon-wrap gold">
+                <TrendingDown size={24} />
+              </div>
+              <div>
+                <span className="metric-label">TOTAL ESTIMATE AMOUNT</span>
+                <span className="metric-value gold">
+                  {formatINR(totalExpensesAmount)}
+                </span>
+              </div>
+            </div>
+
+            <div className="client-unified-card-item metric-item">
+              <div
+                className={`metric-icon-wrap ${netBalance >= 0 ? "green" : "red"}`}
+              >
+                <Scale size={24} />
+              </div>
+              <div>
+                <span className="metric-label">
+                  {netBalance >= 0
+                    ? "SURPLUS / UNUSED ADVANCE"
+                    : "OUTSTANDING BALANCE DUE"}
+                </span>
+                <span
+                  className={`metric-value ${netBalance >= 0 ? "green" : "red"}`}
+                >
+                  {formatINR(netBalance)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Combined ledger card: Advance Payments | Interior Expenses */}
+        <section className={`afrah-app-table-section client-ledger-split-card${isAddAdvModalOpen || isAddExpModalOpen ? " with-add-popover" : ""}`}>
+          <div className="client-details-side-by-side-grid">
+            {/* ================= COLUMN 1: ADVANCE PAYMENTS (LEFT AS IS) ================= */}
+            <div className="details-column-panel">
+              <div className="afrah-app-section-header no-print">
+                <div>
+                  <h2 className="afrah-app-section-title">
+                    ADVANCE PAYMENT RECEIPTS
+                  </h2>
+                  <span className="afrah-app-section-subtitle">
+                    {filteredAdvance.length}{" "}
+                    {filteredAdvance.length === 1 ? "receipt" : "receipts"} ·
+                    Total:{" "}
+                    <strong style={{ color: "#4ade80" }}>
+                      {formatINR(totalAdvanceAmount)}
+                    </strong>
+                  </span>
+                </div>
+
+                <TableFormPopover
+                  open={isAddAdvModalOpen}
+                  onOpenChange={setIsAddAdvModalOpen}
+                  label="Add Advance"
+                  onOpen={() => {
+                    setNewAdvDate(new Date().toISOString().slice(0, 10));
+                    setNewAdvAmount("");
+                    setNewAdvMode(PAYMENT_MODES[0]);
+                    setNewAdvNote("");
+                  }}
+                >
+                  <form onSubmit={handleAddAdvSubmit} className="afrah-app-add-form">
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">Date *</label>
+                      <DateInput
+                        required
+                        value={newAdvDate}
+                        onChange={setNewAdvDate}
+                        className="afrah-app-input"
+                      />
+                    </div>
+
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">Amount (₹) *</label>
+                      <input
+                        type="number"
+                        step="any"
+                        min="1"
+                        required
+                        placeholder="e.g. 163845"
+                        value={newAdvAmount}
+                        onChange={(e) => setNewAdvAmount(e.target.value)}
+                        className="afrah-app-input"
                         style={{
-                          textAlign: "center",
-                          padding: "36px 16px",
-                          color: "var(--text-secondary)",
+                          fontSize: "15px",
+                          fontWeight: 700,
+                          color: "#4ade80",
                         }}
+                      />
+                    </div>
+
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">Payment Mode *</label>
+                      <select
+                        value={newAdvMode}
+                        onChange={(e) => setNewAdvMode(e.target.value)}
+                        className="afrah-app-select"
                       >
-                        {expFromDate || expToDate
-                          ? "No matching items found for filter."
-                          : 'No interior estimate items recorded yet. Click "Add Item" above.'}
-                      </td>
+                        {PAYMENT_MODES.map((mode) => (
+                          <option key={mode} value={mode}>
+                            {mode}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">
+                        Note / Milestone Description
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. 50% Advance on confirmation & PO"
+                        value={newAdvNote}
+                        onChange={(e) => setNewAdvNote(e.target.value)}
+                        className="afrah-app-input"
+                      />
+                    </div>
+
+                    <div className="afrah-app-add-popover-actions">
+                      <button
+                        type="button"
+                        onClick={() => setIsAddAdvModalOpen(false)}
+                        className="afrah-app-back-btn"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={!isAddAdvValid}
+                        className="btn-theme-primary"
+                      >
+                        <span>Save Advance</span>
+                      </button>
+                    </div>
+                  </form>
+                </TableFormPopover>
+              </div>
+
+              <DateFilterBar
+                fromDate={advFromDate}
+                toDate={advToDate}
+                onFromDateChange={setAdvFromDate}
+                onToDateChange={setAdvToDate}
+                onClearDates={() => {
+                  setAdvFromDate("");
+                  setAdvToDate("");
+                }}
+                selectedCount={selectedAdvIds.size}
+                onBulkDelete={() => setIsBulkDeleteAdvOpen(true)}
+              />
+
+              <div className="afrah-app-table-container">
+                <table className="afrah-app-table">
+                  <thead>
+                    <tr>
+                      <th className="text-center" style={{ width: "45px" }}>
+                        S.NO
+                      </th>
+                      <th>DATE</th>
+                      <th>PAYMENT MODE</th>
+                      <th>NOTE / MILESTONE</th>
+                      <th>AMOUNT (₹)</th>
+                      <th
+                        className="no-print text-center"
+                        style={{ width: "70px" }}
+                      >
+                        ACTIONS
+                      </th>
                     </tr>
-                  ) : (
-                    groupedExpenses.map((group, groupIdx) => (
-                      <React.Fragment key={group.category}>
-                        {/* CATEGORY SECTION HEADER ROW */}
-                        <tr className="category-header-row">
-                          <td
-                            colSpan={7}
+                  </thead>
+                  <tbody>
+                    {paginatedAdvance.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={6}
+                          style={{
+                            textAlign: "center",
+                            padding: "36px 16px",
+                            color: "var(--text-secondary)",
+                          }}
+                        >
+                          {advFromDate || advToDate
+                            ? "No matching advance receipts found for filter."
+                            : 'No advance receipts logged yet. Click "Add Advance" above.'}
+                        </td>
+                      </tr>
+                    ) : (
+                      paginatedAdvance.map((item, index) => {
+                        return (
+                          <tr key={item.id} className="cursor-default">
+                            <td className="cell-sno">
+                              {advStartIndex + index + 1}
+                            </td>
+                            <td className="cell-date">{formatToDDMMYYYY(item.date)}</td>
+                            <td>
+                              <span className="payment-mode-tag">
+                                <CreditCard size={11} />
+                                {item.mode}
+                              </span>
+                            </td>
+                            <td className="cell-meta">
+                              {item.note || "—"}
+                            </td>
+                            <td className="cell-amount">
+                              {formatINR(item.amount)}
+                            </td>
+                            <td
+                              className="no-print text-center"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <div className="flex-center-4">
+                                <button
+                                  onClick={(e) => handleOpenEditAdv(item, e)}
+                                  className="afrah-app-action-btn afrah-app-edit-btn"
+                                  title="Edit Advance"
+                                >
+                                  <Pencil size={13} />
+                                </button>
+                                <button
+                                  onClick={() => setDeleteAdvTarget(item)}
+                                  className="afrah-app-action-btn afrah-app-delete-btn"
+                                  title="Delete Advance"
+                                >
+                                  <Trash2 size={13} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* ================= COLUMN 2: ESTIMATE FOR INTERIOR WORKS (SEGREGATED AS IN PDF) ================= */}
+            <div className="details-column-panel">
+              <div className="afrah-app-section-header no-print">
+                <div>
+                  <h2 className="afrah-app-section-title">
+                    ESTIMATE FOR INTERIOR WORKS
+                  </h2>
+                  <span className="afrah-app-section-subtitle">
+                    {filteredExpenses.length} items across{" "}
+                    {groupedExpenses.length} sections · Total:{" "}
+                    <strong className="text-primary-gold">
+                      {formatINR(totalExpensesAmount)}
+                    </strong>
+                  </span>
+                </div>
+
+                <TableFormPopover
+                  open={isAddExpModalOpen}
+                  onOpenChange={setIsAddExpModalOpen}
+                  label="Add Item"
+                  onOpen={() => {
+                    setNewExpDate(new Date().toISOString().slice(0, 10));
+                    setNewExpCategory(INTERIOR_CATEGORIES[0]);
+                    setNewExpParticulars("");
+                    setNewExpQuantity("1");
+                    setNewExpUnit("Sq.ft");
+                    setNewExpRate("");
+                  }}
+                >
+                  <form onSubmit={handleAddExpSubmit} className="afrah-app-add-form">
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">Date *</label>
+                      <DateInput
+                        required
+                        value={newExpDate}
+                        onChange={setNewExpDate}
+                        className="afrah-app-input"
+                      />
+                    </div>
+
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">
+                        Category / Room Section *
+                      </label>
+                      <SearchableExpenseSelect
+                        value={newExpCategory}
+                        onChange={(val) => setNewExpCategory(val)}
+                        options={INTERIOR_CATEGORIES}
+                        placeholder="Select or type category..."
+                        searchPlaceholder="Filter category..."
+                      />
+                    </div>
+
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">
+                        Particulars (Item Description) *
+                      </label>
+                      <SearchableExpenseSelect
+                        value={newExpParticulars}
+                        onChange={(val) => {
+                          setNewExpParticulars(val);
+                          const matched = PREDEFINED_INTERIOR_ITEMS.find(
+                            (p) =>
+                              p.particulars.toLowerCase() === val.toLowerCase(),
+                          );
+                          if (matched) {
+                            setNewExpCategory(matched.category);
+                            setNewExpUnit(matched.unit);
+                            if (matched.defaultRate > 0) {
+                              setNewExpRate(String(matched.defaultRate));
+                            }
+                          }
+                        }}
+                        options={PREDEFINED_INTERIOR_EXPENSES}
+                        placeholder="Search estimate items or type custom description..."
+                        searchPlaceholder="Type to filter estimate items..."
+                      />
+                    </div>
+
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">Qty *</label>
+                      <input
+                        type="number"
+                        step="any"
+                        min="0.1"
+                        required
+                        value={newExpQuantity}
+                        onChange={(e) => setNewExpQuantity(e.target.value)}
+                        className="afrah-app-input"
+                      />
+                    </div>
+
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">Per (Unit) *</label>
+                      <select
+                        value={newExpUnit}
+                        onChange={(e) => setNewExpUnit(e.target.value)}
+                        className="afrah-app-select"
+                      >
+                        {INTERIOR_UNITS.map((unit) => (
+                          <option key={unit} value={unit}>
+                            {unit}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">Rate (₹) *</label>
+                      <input
+                        type="number"
+                        step="any"
+                        min="0"
+                        required
+                        placeholder="e.g. 1350"
+                        value={newExpRate}
+                        onChange={(e) => setNewExpRate(e.target.value)}
+                        className="afrah-app-input"
+                      />
+                    </div>
+
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">Amount (Total)</label>
+                      <div className="total-amount-display">
+                        {formatINR(calculatedNewExpTotal)}
+                      </div>
+                    </div>
+
+                    <div className="afrah-app-add-popover-actions">
+                      <button
+                        type="button"
+                        onClick={() => setIsAddExpModalOpen(false)}
+                        className="afrah-app-back-btn"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={!isAddExpValid}
+                        className="btn-theme-primary"
+                      >
+                        <span>Save Item</span>
+                      </button>
+                    </div>
+                  </form>
+                </TableFormPopover>
+              </div>
+
+              <DateFilterBar
+                fromDate={expFromDate}
+                toDate={expToDate}
+                onFromDateChange={setExpFromDate}
+                onToDateChange={setExpToDate}
+                onClearDates={() => {
+                  setExpFromDate("");
+                  setExpToDate("");
+                }}
+                selectedCount={selectedExpIds.size}
+                onBulkDelete={() => setIsBulkDeleteExpOpen(true)}
+              />
+
+              {/* SEGREGATED TABLE MATCHING PDF COLUMNS: SI.No | Particulars | Qty | Per | Rate | Amount */}
+              <div className="afrah-app-table-container">
+                <table className="afrah-app-table">
+                  <thead>
+                    <tr>
+                      <th className="text-center" style={{ width: "50px" }}>
+                        SI.No
+                      </th>
+                      <th>Particulars</th>
+                      <th style={{ width: "60px" }}>
+                        Qty
+                      </th>
+                      <th className="text-center" style={{ width: "60px" }}>
+                        Per
+                      </th>
+                      <th style={{ width: "90px" }}>
+                        Rate
+                      </th>
+                      <th style={{ width: "115px" }}>
+                        Amount
+                      </th>
+                      <th
+                        className="no-print"
+                        style={{ width: "65px", textAlign: "center" }}
+                      >
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {groupedExpenses.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={7}
+                          style={{
+                            textAlign: "center",
+                            padding: "36px 16px",
+                            color: "var(--text-secondary)",
+                          }}
+                        >
+                          {expFromDate || expToDate
+                            ? "No matching items found for filter."
+                            : 'No interior estimate items recorded yet. Click "Add Item" above.'}
+                        </td>
+                      </tr>
+                    ) : (
+                      groupedExpenses.map((group, groupIdx) => (
+                        <React.Fragment key={group.category}>
+                          {/* CATEGORY SECTION HEADER ROW */}
+                          <tr className="category-header-row">
+                            <td
+                              colSpan={7}
+                              style={{
+                                background:
+                                  "var(--surface-container-high, #1e2126)",
+                                padding: "8px 14px",
+                                borderTop:
+                                  groupIdx > 0
+                                    ? "1px solid var(--border-stroke, #2d3139)"
+                                    : undefined,
+                                borderBottom:
+                                  "1px solid var(--border-stroke, #2d3139)",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <div className="flex-center">
+                                  <span
+                                    style={{
+                                      display: "inline-flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      width: "20px",
+                                      height: "20px",
+                                      borderRadius: "4px",
+                                      background: "rgba(226, 195, 153, 0.15)",
+                                      color: "var(--primary)",
+                                      fontSize: "11px",
+                                      fontWeight: 800,
+                                    }}
+                                  >
+                                    {groupIdx + 1}
+                                  </span>
+                                  <span className="row-entity-name" style={{ letterSpacing: "0.04em", textTransform: "uppercase" }}>
+                                    {group.category}
+                                  </span>
+                                </div>
+                                <span className="cell-meta" style={{ fontWeight: 600 }}>
+                                  Subtotal:{" "}
+                                  <strong className="cell-amount">
+                                    {formatINR(group.subtotal)}
+                                  </strong>
+                                </span>
+                              </div>
+                            </td>
+                          </tr>
+
+                          {/* ITEMS UNDER THIS CATEGORY */}
+                          {group.items.map((exp, itemIdx) => {
+                            return (
+                              <tr key={exp.id} className="cursor-default">
+                                <td className="cell-sno">
+                                  {toRomanNumeral(itemIdx + 1)}
+                                </td>
+                                <td>
+                                  <span className="row-entity-name">
+                                    {exp.expenseName}
+                                  </span>
+                                </td>
+                                <td className="cell-amount">
+                                  {exp.quantity}
+                                </td>
+                                <td className="cell-meta" style={{ textAlign: "center" }}>
+                                  {exp.unit || "Sq.ft"}
+                                </td>
+                                <td className="cell-amount">
+                                  {Number(exp.rate || 0).toLocaleString("en-IN")}
+                                </td>
+                                <td className="cell-amount">
+                                  {formatINR(exp.totalAmount)}
+                                </td>
+                                <td
+                                  className="no-print text-center"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <div className="flex-center-4">
+                                    <button
+                                      onClick={(e) => handleOpenEditExp(exp, e)}
+                                      className="afrah-app-action-btn afrah-app-edit-btn"
+                                      title="Edit Item"
+                                    >
+                                      <Pencil size={13} />
+                                    </button>
+                                    <button
+                                      onClick={() => setDeleteExpTarget(exp)}
+                                      className="afrah-app-action-btn afrah-app-delete-btn"
+                                      title="Delete Item"
+                                    >
+                                      <Trash2 size={13} />
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+
+                          {/* SECTION SUBTOTAL ROW */}
+                          <tr
                             style={{
-                              background:
-                                "var(--surface-container-high, #1e2126)",
-                              padding: "8px 14px",
-                              borderTop:
-                                groupIdx > 0
-                                  ? "1px solid var(--border-stroke, #2d3139)"
-                                  : undefined,
+                              background: "rgba(255, 255, 255, 0.02)",
                               borderBottom:
                                 "1px solid var(--border-stroke, #2d3139)",
                             }}
                           >
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                              }}
-                            >
-                              <div className="flex-center">
-                                <span
-                                  style={{
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    width: "20px",
-                                    height: "20px",
-                                    borderRadius: "4px",
-                                    background: "rgba(226, 195, 153, 0.15)",
-                                    color: "var(--primary)",
-                                    fontSize: "11px",
-                                    fontWeight: 800,
-                                  }}
-                                >
-                                  {groupIdx + 1}
-                                </span>
-                                <span className="row-entity-name" style={{ letterSpacing: "0.04em", textTransform: "uppercase" }}>
-                                  {group.category}
-                                </span>
-                              </div>
-                              <span className="cell-meta" style={{ fontWeight: 600 }}>
-                                Subtotal:{" "}
-                                <strong className="cell-amount">
-                                  {formatINR(group.subtotal)}
-                                </strong>
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
-
-                        {/* ITEMS UNDER THIS CATEGORY */}
-                        {group.items.map((exp, itemIdx) => {
-                          return (
-                            <tr key={exp.id} className="cursor-default">
-                              <td className="cell-sno">
-                                {toRomanNumeral(itemIdx + 1)}
-                              </td>
-                              <td>
-                                <span className="row-entity-name">
-                                  {exp.expenseName}
-                                </span>
-                              </td>
-                              <td className="cell-amount">
-                                {exp.quantity}
-                              </td>
-                              <td className="cell-meta" style={{ textAlign: "center" }}>
-                                {exp.unit || "Sq.ft"}
-                              </td>
-                              <td className="cell-amount">
-                                {Number(exp.rate || 0).toLocaleString("en-IN")}
-                              </td>
-                              <td className="cell-amount">
-                                {formatINR(exp.totalAmount)}
-                              </td>
-                              <td
-                                className="no-print text-center"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <div className="flex-center-4">
-                                  <button
-                                    onClick={(e) => handleOpenEditExp(exp, e)}
-                                    className="afrah-app-action-btn afrah-app-edit-btn"
-                                    title="Edit Item"
-                                  >
-                                    <Pencil size={13} />
-                                  </button>
-                                  <button
-                                    onClick={() => setDeleteExpTarget(exp)}
-                                    className="afrah-app-action-btn afrah-app-delete-btn"
-                                    title="Delete Item"
-                                  >
-                                    <Trash2 size={13} />
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })}
-
-                        {/* SECTION SUBTOTAL ROW */}
-                        <tr
-                          style={{
-                            background: "rgba(255, 255, 255, 0.02)",
-                            borderBottom:
-                              "1px solid var(--border-stroke, #2d3139)",
-                          }}
-                        >
-                          <td
+                            {/* <td
                             colSpan={6}
                             className="cell-meta"
                             style={{
@@ -1229,361 +1229,361 @@ export const InteriorClientDetailsView: React.FC<
                           </td>
                           <td className="cell-amount">
                             {formatINR(group.subtotal)}
-                          </td>
-                          <td className="no-print"></td>
-                        </tr>
-                      </React.Fragment>
-                    ))
-                  )}
+                          </td> */}
+                            <td className="no-print"></td>
+                          </tr>
+                        </React.Fragment>
+                      ))
+                    )}
 
-                  {/* FINAL TOTAL ROW AT THE BOTTOM OF THE TABLE */}
-                  {groupedExpenses.length > 0 && (
-                    <tr
-                      style={{
-                        background: "rgba(226, 195, 153, 0.12)",
-                        borderTop: "2px solid var(--primary)",
-                      }}
-                    >
-                      <td
-                        colSpan={6}
+                    {/* FINAL TOTAL ROW AT THE BOTTOM OF THE TABLE */}
+                    {groupedExpenses.length > 0 && (
+                      <tr
                         style={{
-                          textAlign: "right",
-                          fontWeight: 900,
-                          fontSize: "var(--fs-sm)",
-                          letterSpacing: "0.06em",
-                          color: "var(--text-primary)",
-                          padding: "12px 16px",
+                          background: "rgba(226, 195, 153, 0.12)",
+                          borderTop: "2px solid var(--primary)",
                         }}
                       >
-                        FINAL TOTAL:
-                      </td>
-                      <td className="cell-amount" style={{ padding: "12px 16px" }}>
-                        {formatINR(totalExpensesAmount)}
-                      </td>
-                      <td className="no-print"></td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                        <td
+                          colSpan={6}
+                          style={{
+                            textAlign: "right",
+                            fontWeight: 900,
+                            fontSize: "var(--fs-sm)",
+                            letterSpacing: "0.06em",
+                            color: "var(--text-primary)",
+                            padding: "12px 16px",
+                          }}
+                        >
+                          FINAL TOTAL:
+                        </td>
+                        <td className="cell-amount" style={{ padding: "12px 16px" }}>
+                          {formatINR(totalExpensesAmount)}
+                        </td>
+                        <td className="no-print"></td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
 
-      {isEditAdvModalOpen && (
-        <div
-          className="afrah-app-modal-overlay"
-          onClick={() => setIsEditAdvModalOpen(false)}
-        >
+        {isEditAdvModalOpen && (
           <div
-            className="afrah-app-modal-container modal-w-sm"
-            onClick={(e) => e.stopPropagation()}
+            className="afrah-app-modal-overlay"
+            onClick={() => setIsEditAdvModalOpen(false)}
           >
-            <div className="afrah-app-modal-header">
-              <div className="flex-center">
-                <Pencil size={18} color="var(--primary)" />
-                <h3 className="afrah-app-modal-title">Edit Advance Receipt</h3>
-              </div>
-              <button
-                onClick={() => setIsEditAdvModalOpen(false)}
-                className="afrah-app-modal-close-btn"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSaveEditAdv}>
-              <div className="afrah-app-modal-body">
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Date *</label>
-                  <DateInput
-                    required
-                    value={editAdvDate}
-                    onChange={setEditAdvDate}
-                    className="afrah-app-input"
-                  />
+            <div
+              className="afrah-app-modal-container modal-w-sm"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="afrah-app-modal-header">
+                <div className="flex-center">
+                  <Pencil size={18} color="var(--primary)" />
+                  <h3 className="afrah-app-modal-title">Edit Advance Receipt</h3>
                 </div>
-
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Amount (₹) *</label>
-                  <input
-                    type="number"
-                    step="any"
-                    min="1"
-                    required
-                    value={editAdvAmount}
-                    onChange={(e) => setEditAdvAmount(e.target.value)}
-                    className="afrah-app-input"
-                  />
-                </div>
-
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Payment Mode *</label>
-                  <select
-                    value={editAdvMode}
-                    onChange={(e) => setEditAdvMode(e.target.value)}
-                    className="afrah-app-select"
-                  >
-                    {PAYMENT_MODES.map((mode) => (
-                      <option key={mode} value={mode}>
-                        {mode}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Note / Milestone</label>
-                  <input
-                    type="text"
-                    value={editAdvNote}
-                    onChange={(e) => setEditAdvNote(e.target.value)}
-                    className="afrah-app-input"
-                  />
-                </div>
-              </div>
-
-              <div className="afrah-app-modal-footer">
                 <button
-                  type="button"
                   onClick={() => setIsEditAdvModalOpen(false)}
-                  className="afrah-app-back-btn"
+                  className="afrah-app-modal-close-btn"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!editAdvAmount || parseFloat(editAdvAmount) <= 0}
-                  className="btn-theme-primary"
-                >
-                  <span>Save Changes</span>
+                  <X size={18} />
                 </button>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
 
-
-      {isEditExpModalOpen && (
-        <div
-          className="afrah-app-modal-overlay"
-          onClick={() => setIsEditExpModalOpen(false)}
-        >
-          <div
-            className="afrah-app-modal-container"
-            style={{ maxWidth: "520px" }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="afrah-app-modal-header">
-              <div className="flex-center">
-                <Pencil size={18} color="var(--primary)" />
-                <h3 className="afrah-app-modal-title">
-                  Edit Interior Estimate Item
-                </h3>
-              </div>
-              <button
-                onClick={() => setIsEditExpModalOpen(false)}
-                className="afrah-app-modal-close-btn"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSaveEditExp}>
-              <div className="afrah-app-modal-body">
-                <div className="grid-2-12">
+              <form onSubmit={handleSaveEditAdv}>
+                <div className="afrah-app-modal-body">
                   <div className="afrah-app-form-group">
                     <label className="afrah-app-label">Date *</label>
                     <DateInput
                       required
-                      value={editExpDate}
-                      onChange={setEditExpDate}
+                      value={editAdvDate}
+                      onChange={setEditAdvDate}
                       className="afrah-app-input"
                     />
                   </div>
 
                   <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">
-                      Category / Room Section *
-                    </label>
-                    <SearchableExpenseSelect
-                      value={editExpCategory}
-                      onChange={(val) => setEditExpCategory(val)}
-                      options={INTERIOR_CATEGORIES}
-                      placeholder="Select or type category..."
-                      searchPlaceholder="Filter category..."
-                    />
-                  </div>
-                </div>
-
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">
-                    Particulars (Item Description) *
-                  </label>
-                  <SearchableExpenseSelect
-                    value={editExpParticulars}
-                    onChange={(val) => {
-                      setEditExpParticulars(val);
-                      const matched = PREDEFINED_INTERIOR_ITEMS.find(
-                        (p) =>
-                          p.particulars.toLowerCase() === val.toLowerCase(),
-                      );
-                      if (matched) {
-                        setEditExpCategory(matched.category);
-                        setEditExpUnit(matched.unit);
-                        if (matched.defaultRate > 0) {
-                          setEditExpRate(String(matched.defaultRate));
-                        }
-                      }
-                    }}
-                    options={PREDEFINED_INTERIOR_EXPENSES}
-                    placeholder="Search estimate items or type custom description..."
-                    searchPlaceholder="Type to filter estimate items..."
-                  />
-                </div>
-
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr",
-                    gap: "10px",
-                  }}
-                >
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Qty *</label>
+                    <label className="afrah-app-label">Amount (₹) *</label>
                     <input
                       type="number"
                       step="any"
-                      min="0.1"
+                      min="1"
                       required
-                      value={editExpQuantity}
-                      onChange={(e) => setEditExpQuantity(e.target.value)}
+                      value={editAdvAmount}
+                      onChange={(e) => setEditAdvAmount(e.target.value)}
                       className="afrah-app-input"
                     />
                   </div>
 
                   <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Per (Unit) *</label>
+                    <label className="afrah-app-label">Payment Mode *</label>
                     <select
-                      value={editExpUnit}
-                      onChange={(e) => setEditExpUnit(e.target.value)}
+                      value={editAdvMode}
+                      onChange={(e) => setEditAdvMode(e.target.value)}
                       className="afrah-app-select"
                     >
-                      {INTERIOR_UNITS.map((unit) => (
-                        <option key={unit} value={unit}>
-                          {unit}
+                      {PAYMENT_MODES.map((mode) => (
+                        <option key={mode} value={mode}>
+                          {mode}
                         </option>
                       ))}
                     </select>
                   </div>
 
                   <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Rate (₹) *</label>
+                    <label className="afrah-app-label">Note / Milestone</label>
                     <input
-                      type="number"
-                      step="any"
-                      min="0"
-                      required
-                      value={editExpRate}
-                      onChange={(e) => setEditExpRate(e.target.value)}
+                      type="text"
+                      value={editAdvNote}
+                      onChange={(e) => setEditAdvNote(e.target.value)}
                       className="afrah-app-input"
                     />
                   </div>
                 </div>
 
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Amount (Total)</label>
-                  <div className="total-amount-display">
-                    {formatINR(calculatedEditExpTotal)}
+                <div className="afrah-app-modal-footer">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditAdvModalOpen(false)}
+                    className="afrah-app-back-btn"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!editAdvAmount || parseFloat(editAdvAmount) <= 0}
+                    className="btn-theme-primary"
+                  >
+                    <span>Save Changes</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+
+        {isEditExpModalOpen && (
+          <div
+            className="afrah-app-modal-overlay"
+            onClick={() => setIsEditExpModalOpen(false)}
+          >
+            <div
+              className="afrah-app-modal-container"
+              style={{ maxWidth: "520px" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="afrah-app-modal-header">
+                <div className="flex-center">
+                  <Pencil size={18} color="var(--primary)" />
+                  <h3 className="afrah-app-modal-title">
+                    Edit Interior Estimate Item
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setIsEditExpModalOpen(false)}
+                  className="afrah-app-modal-close-btn"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveEditExp}>
+                <div className="afrah-app-modal-body">
+                  <div className="grid-2-12">
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">Date *</label>
+                      <DateInput
+                        required
+                        value={editExpDate}
+                        onChange={setEditExpDate}
+                        className="afrah-app-input"
+                      />
+                    </div>
+
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">
+                        Category / Room Section *
+                      </label>
+                      <SearchableExpenseSelect
+                        value={editExpCategory}
+                        onChange={(val) => setEditExpCategory(val)}
+                        options={INTERIOR_CATEGORIES}
+                        placeholder="Select or type category..."
+                        searchPlaceholder="Filter category..."
+                      />
+                    </div>
+                  </div>
+
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">
+                      Particulars (Item Description) *
+                    </label>
+                    <SearchableExpenseSelect
+                      value={editExpParticulars}
+                      onChange={(val) => {
+                        setEditExpParticulars(val);
+                        const matched = PREDEFINED_INTERIOR_ITEMS.find(
+                          (p) =>
+                            p.particulars.toLowerCase() === val.toLowerCase(),
+                        );
+                        if (matched) {
+                          setEditExpCategory(matched.category);
+                          setEditExpUnit(matched.unit);
+                          if (matched.defaultRate > 0) {
+                            setEditExpRate(String(matched.defaultRate));
+                          }
+                        }
+                      }}
+                      options={PREDEFINED_INTERIOR_EXPENSES}
+                      placeholder="Search estimate items or type custom description..."
+                      searchPlaceholder="Type to filter estimate items..."
+                    />
+                  </div>
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr",
+                      gap: "10px",
+                    }}
+                  >
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">Qty *</label>
+                      <input
+                        type="number"
+                        step="any"
+                        min="0.1"
+                        required
+                        value={editExpQuantity}
+                        onChange={(e) => setEditExpQuantity(e.target.value)}
+                        className="afrah-app-input"
+                      />
+                    </div>
+
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">Per (Unit) *</label>
+                      <select
+                        value={editExpUnit}
+                        onChange={(e) => setEditExpUnit(e.target.value)}
+                        className="afrah-app-select"
+                      >
+                        {INTERIOR_UNITS.map((unit) => (
+                          <option key={unit} value={unit}>
+                            {unit}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="afrah-app-form-group">
+                      <label className="afrah-app-label">Rate (₹) *</label>
+                      <input
+                        type="number"
+                        step="any"
+                        min="0"
+                        required
+                        value={editExpRate}
+                        onChange={(e) => setEditExpRate(e.target.value)}
+                        className="afrah-app-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Amount (Total)</label>
+                    <div className="total-amount-display">
+                      {formatINR(calculatedEditExpTotal)}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="afrah-app-modal-footer">
-                <button
-                  type="button"
-                  onClick={() => setIsEditExpModalOpen(false)}
-                  className="afrah-app-back-btn"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!editExpParticulars || parseFloat(editExpRate) < 0}
-                  className="btn-theme-primary"
-                >
-                  <span>Save Changes</span>
-                </button>
-              </div>
-            </form>
+                <div className="afrah-app-modal-footer">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditExpModalOpen(false)}
+                    className="afrah-app-back-btn"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!editExpParticulars || parseFloat(editExpRate) < 0}
+                    className="btn-theme-primary"
+                  >
+                    <span>Save Changes</span>
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* CONFIRM DELETE ADVANCE MODAL */}
-      <ConfirmDeleteModal
-        isOpen={Boolean(deleteAdvTarget)}
-        title="Delete Advance Receipt"
-        message="Are you sure you want to delete this advance receipt? The client's project balance will be updated immediately."
-        itemName={
-          deleteAdvTarget
-            ? `${deleteAdvTarget.date} — ${formatINR(deleteAdvTarget.amount)} (${deleteAdvTarget.mode})`
-            : undefined
-        }
-        confirmText="Delete Receipt"
-        isDeleting={isDeletingAdv}
-        onConfirm={handleConfirmDeleteAdv}
-        onClose={() => setDeleteAdvTarget(null)}
-      />
+        {/* CONFIRM DELETE ADVANCE MODAL */}
+        <ConfirmDeleteModal
+          isOpen={Boolean(deleteAdvTarget)}
+          title="Delete Advance Receipt"
+          message="Are you sure you want to delete this advance receipt? The client's project balance will be updated immediately."
+          itemName={
+            deleteAdvTarget
+              ? `${deleteAdvTarget.date} — ${formatINR(deleteAdvTarget.amount)} (${deleteAdvTarget.mode})`
+              : undefined
+          }
+          confirmText="Delete Receipt"
+          isDeleting={isDeletingAdv}
+          onConfirm={handleConfirmDeleteAdv}
+          onClose={() => setDeleteAdvTarget(null)}
+        />
 
-      <ConfirmDeleteModal
-        isOpen={isBulkDeleteAdvOpen}
-        title="Delete Selected Advance Receipts"
-        message={`Are you sure you want to delete ${selectedAdvIds.size} selected advance receipts?`}
-        confirmText={`Delete ${selectedAdvIds.size} Receipts`}
-        isDeleting={isBulkDeletingAdv}
-        onConfirm={handleConfirmBulkDeleteAdv}
-        onClose={() => setIsBulkDeleteAdvOpen(false)}
-      />
+        <ConfirmDeleteModal
+          isOpen={isBulkDeleteAdvOpen}
+          title="Delete Selected Advance Receipts"
+          message={`Are you sure you want to delete ${selectedAdvIds.size} selected advance receipts?`}
+          confirmText={`Delete ${selectedAdvIds.size} Receipts`}
+          isDeleting={isBulkDeletingAdv}
+          onConfirm={handleConfirmBulkDeleteAdv}
+          onClose={() => setIsBulkDeleteAdvOpen(false)}
+        />
 
-      {/* CONFIRM DELETE EXPENSE MODAL */}
-      <ConfirmDeleteModal
-        isOpen={Boolean(deleteExpTarget)}
-        title="Delete Estimate Item"
-        message="Are you sure you want to delete this estimate item? The project total and balance will be recalculated."
-        itemName={
-          deleteExpTarget
-            ? `${deleteExpTarget.category ? `[${deleteExpTarget.category}] ` : ""}${deleteExpTarget.expenseName} (${formatINR(deleteExpTarget.totalAmount)})`
-            : undefined
-        }
-        confirmText="Delete Item"
-        isDeleting={isDeletingExp}
-        onConfirm={handleConfirmDeleteExp}
-        onClose={() => setDeleteExpTarget(null)}
-      />
+        {/* CONFIRM DELETE EXPENSE MODAL */}
+        <ConfirmDeleteModal
+          isOpen={Boolean(deleteExpTarget)}
+          title="Delete Estimate Item"
+          message="Are you sure you want to delete this estimate item? The project total and balance will be recalculated."
+          itemName={
+            deleteExpTarget
+              ? `${deleteExpTarget.category ? `[${deleteExpTarget.category}] ` : ""}${deleteExpTarget.expenseName} (${formatINR(deleteExpTarget.totalAmount)})`
+              : undefined
+          }
+          confirmText="Delete Item"
+          isDeleting={isDeletingExp}
+          onConfirm={handleConfirmDeleteExp}
+          onClose={() => setDeleteExpTarget(null)}
+        />
 
-      <ConfirmDeleteModal
-        isOpen={isBulkDeleteExpOpen}
-        title="Delete Selected Estimate Items"
-        message={`Are you sure you want to delete ${selectedExpIds.size} selected estimate items?`}
-        confirmText={`Delete ${selectedExpIds.size} Items`}
-        isDeleting={isBulkDeletingExp}
-        onConfirm={handleConfirmBulkDeleteExp}
-        onClose={() => setIsBulkDeleteExpOpen(false)}
-      />
+        <ConfirmDeleteModal
+          isOpen={isBulkDeleteExpOpen}
+          title="Delete Selected Estimate Items"
+          message={`Are you sure you want to delete ${selectedExpIds.size} selected estimate items?`}
+          confirmText={`Delete ${selectedExpIds.size} Items`}
+          isDeleting={isBulkDeletingExp}
+          onConfirm={handleConfirmBulkDeleteExp}
+          onClose={() => setIsBulkDeleteExpOpen(false)}
+        />
 
-      {/* INTERIOR CLIENT STATEMENT PRINT PREVIEW MODAL */}
-      <InteriorClientPrintPreviewModal
-        isOpen={isPrintPreviewOpen}
-        onClose={() => setIsPrintPreviewOpen(false)}
-        client={client}
-        advancePayments={filteredAdvance}
-        expenses={filteredExpenses}
-        fromDate={expFromDate || advFromDate}
-        toDate={expToDate || advToDate}
-      />
-    </div>
-  );
-};
+        {/* INTERIOR CLIENT STATEMENT PRINT PREVIEW MODAL */}
+        <InteriorClientPrintPreviewModal
+          isOpen={isPrintPreviewOpen}
+          onClose={() => setIsPrintPreviewOpen(false)}
+          client={client}
+          advancePayments={filteredAdvance}
+          expenses={filteredExpenses}
+          fromDate={expFromDate || advFromDate}
+          toDate={expToDate || advToDate}
+        />
+      </div>
+    );
+  };
