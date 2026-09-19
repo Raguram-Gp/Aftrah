@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import type { Vendor, VendorShop } from '../types';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import {
-  ArrowLeft,
   Store,
   Phone,
   MapPin,
@@ -27,7 +26,7 @@ interface VendorShopsViewProps {
 
 export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
   vendor,
-  onBack,
+  onBack: _onBack,
   onSelectShop,
   onAddShop,
   onUpdateShop,
@@ -162,13 +161,7 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      {/* Top Breadcrumb / Back Bar */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-        <button onClick={onBack} className="afrah-app-back-btn">
-          <ArrowLeft size={16} />
-          <span>Back to All Vendor Categories</span>
-        </button>
-
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', flexWrap: 'wrap', gap: '12px' }}>
         <div className="flex-center">
           <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Selected Trade:</span>
           <span className="section-total-badge" style={{ fontWeight: 700, color: 'var(--primary)' }}>

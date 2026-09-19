@@ -248,6 +248,17 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
         </div>
       </div>
 
+      <div className="client-details-top-actions no-print">
+        <button
+          onClick={handlePrint}
+          className="afrah-app-back-btn"
+          title="Preview and Print Statement"
+        >
+          <Printer size={15} />
+          <span>Print Preview / Statement</span>
+        </button>
+      </div>
+
       {/* CLIENT LIST TABLE */}
       <section className="afrah-app-table-section w-full">
         <div className="afrah-app-section-header no-print">
@@ -307,15 +318,6 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
             >
               <Plus size={15} strokeWidth={2.5} />
               <span>Add Details</span>
-            </button>
-
-            <button
-              onClick={handlePrint}
-              className="afrah-app-back-btn"
-              title="Print Interior Directory"
-            >
-              <Printer size={15} />
-              <span>Print</span>
             </button>
           </div>
         </div>

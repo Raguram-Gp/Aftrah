@@ -9,7 +9,6 @@ import {
   compareByDateDesc,
 } from "../components/DateInput";
 import {
-  ArrowLeft,
   Wallet,
   TrendingDown,
   Scale,
@@ -58,7 +57,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
   vendor,
   shop,
   clientOptions = [],
-  onBack,
+  onBack: _onBack,
   onUpdateShop,
   onAddTransaction,
   onUpdateTransaction,
@@ -502,19 +501,14 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
 
       {/* Screen Header Bar */}
       <div className="client-details-header no-print">
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: "8px",
-            flexWrap: "wrap",
-            gap: "12px",
-          }}
-        >
-          <button onClick={onBack} className="afrah-app-back-btn">
-            <ArrowLeft size={16} />
-            <span>Back to {vendor.type} Shops</span>
+        <div className="client-details-top-actions">
+          <button
+            onClick={handlePrint}
+            className="afrah-app-back-btn"
+            title="Preview and Print Statement"
+          >
+            <Printer size={15} />
+            <span>Print Preview / Statement</span>
           </button>
         </div>
 
@@ -606,15 +600,6 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                 className="afrah-app-search-input"
               />
             </div>
-
-            <button
-              onClick={handlePrint}
-              className="print-action-btn"
-              title="Print or Export Supplier Statement"
-            >
-              <Printer size={15} />
-              <span>Print Statement</span>
-            </button>
 
             <div className="afrah-app-add-popover-wrap" ref={addFormWrapRef}>
               <button

@@ -191,8 +191,8 @@ export const DateFilterBar: React.FC<DateFilterBarProps> = ({
         {onPrint && (
           <button
             onClick={onPrint}
-            className="print-action-btn"
-            title="Print or Export Statement as PDF"
+            className="afrah-app-back-btn"
+            title="Preview and Print Statement"
           >
             <Printer size={15} />
             <span>{printLabel}</span>

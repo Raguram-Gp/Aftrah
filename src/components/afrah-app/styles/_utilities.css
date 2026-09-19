@@ -86,6 +86,14 @@
 .text-warning { color: #f59e0b; }
 .text-info { color: #38bdf8; }
 
+@keyframes afrah-spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: afrah-spin 0.8s linear infinite;
+}
+
 /* Alignment & whitespace */
 .text-center { text-align: center; }
 .text-right { text-align: right; }

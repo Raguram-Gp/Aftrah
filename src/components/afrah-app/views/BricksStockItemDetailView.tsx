@@ -262,6 +262,17 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* TOP HEADER & KPI SUMMARY BAR */}
       <div className="no-print" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="client-details-top-actions">
+          <button
+            onClick={handlePrint}
+            className="afrah-app-back-btn"
+            title="Preview and Print Statement"
+          >
+            <Printer size={15} />
+            <span>Print Preview / Statement</span>
+          </button>
+        </div>
+
         {/* Title Bar */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
           <div className="flex-center-10">
@@ -289,17 +300,6 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
                   : `Detailed Stock Opening, Material Usage & Pending Register for ${item.item}`}
               </span>
             </div>
-          </div>
-
-          <div className="flex-center-10">
-            <button
-              onClick={handlePrint}
-              className="afrah-app-back-btn"
-              title="Print Item Stock Statement"
-            >
-              <Printer size={15} />
-              <span>Print Statement</span>
-            </button>
           </div>
         </div>
 

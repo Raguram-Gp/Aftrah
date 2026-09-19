@@ -94,6 +94,17 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
         </div>
       </div>
 
+      <div className="client-details-top-actions no-print">
+        <button
+          onClick={handlePrint}
+          className="afrah-app-back-btn"
+          title="Preview and Print Statement"
+        >
+          <Printer size={15} />
+          <span>Print Preview / Statement</span>
+        </button>
+      </div>
+
       {/* MAIN OVERVIEW TABLE SECTION (Full Width, Add Details Panel Removed) */}
       <section className="afrah-app-table-section" style={{ width: '100%' }}>
         <div className="afrah-app-section-header no-print">
@@ -140,14 +151,6 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
               />
             </div>
 
-            <button
-              onClick={handlePrint}
-              className="afrah-app-back-btn"
-              title="Print Stock Register"
-            >
-              <Printer size={15} />
-              <span>Print</span>
-            </button>
           </div>
         </div>
 
