@@ -124,12 +124,12 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
     const q = searchQuery.toLowerCase().trim();
     const list = q
       ? entries.filter(
-          (e) =>
-            e.workType.toLowerCase().includes(q) ||
-            e.date.includes(q) ||
-            formatToDDMMYYYY(e.date).includes(q) ||
-            (e.note && e.note.toLowerCase().includes(q))
-        )
+        (e) =>
+          e.workType.toLowerCase().includes(q) ||
+          e.date.includes(q) ||
+          formatToDDMMYYYY(e.date).includes(q) ||
+          (e.note && e.note.toLowerCase().includes(q))
+      )
       : entries;
     return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
   }, [entries, searchQuery]);
@@ -291,25 +291,9 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
           <div className="afrah-app-section-header">
             <div>
               <h2 className="afrah-app-section-title">WORK & ATTENDANCE ENTRIES</h2>
-              <span className="afrah-app-section-subtitle">
-                {filteredEntries.length} {filteredEntries.length === 1 ? 'entry' : 'entries'} · Total Paid: {formatINR(paidAmount)} ({totalDays} {totalDays === 1 ? 'Day' : 'Days'})
-              </span>
             </div>
 
             <div className="flex-center-10">
-              <div className="afrah-app-search-wrapper">
-                <Search size={14} className="afrah-app-search-icon" />
-                <input
-                  type="text"
-                  placeholder="Search work type, date..."
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                  className="afrah-app-search-input"
-                />
-              </div>
 
               <TableFormPopover
                 open={isAddModalOpen}
@@ -422,12 +406,12 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
               <thead>
                 <tr>
                   <th className="text-center" style={{ width: '55px' }}>S.NO</th>
-                  <th style={{ width: '105px' }}>DATE</th>
+                  <th style={{ width: '155px' }}>DATE</th>
                   <th>WORK TYPE</th>
-                  <th style={{ width: '85px' }}>DAYS</th>
-                  <th style={{ width: '130px' }}>SALARY / DAY</th>
-                  <th style={{ width: '130px' }}>TOTAL AMOUNT</th>
-                  <th className="text-center" style={{ width: '80px' }}>ACTIONS</th>
+                  <th style={{ width: '155px' }}>DAYS</th>
+                  <th style={{ width: '200px' }}>SALARY / DAY</th>
+                  <th style={{ width: '200px' }}>TOTAL AMOUNT</th>
+                  <th style={{ width: '80px', textAlign: 'center' }} className="no-print">ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
@@ -469,8 +453,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                             display: 'inline-block',
                             padding: '2px 10px',
                             borderRadius: '999px',
-                            background: 'rgba(96, 165, 250, 0.12)',
-                            color: '#60a5fa',
+
                             fontSize: 'var(--fs-sm)',
                             fontWeight: 600
                           }}
@@ -508,19 +491,6 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                   ))
                 )}
               </tbody>
-              {filteredEntries.length > 0 && (
-                <tfoot>
-                  <tr style={{ background: 'rgba(255, 255, 255, 0.02)', fontWeight: 700 }}>
-                    <td colSpan={3} style={{ textAlign: 'right', padding: '12px 16px', color: 'var(--text-secondary)' }}>
-                      Total ({filteredEntries.length} entries):
-                    </td>
-                    <td style={{ textAlign: 'center', color: 'var(--text-primary)' }}>{totalDays}</td>
-                    <td>-</td>
-                    <td className="cell-amount">{formatINR(paidAmount)}</td>
-                    <td />
-                  </tr>
-                </tfoot>
-              )}
             </table>
           </div>
 

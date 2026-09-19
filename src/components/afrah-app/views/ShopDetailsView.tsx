@@ -587,7 +587,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                   {selectedClientFilter === "__general__"
                     ? "General Stock"
                     : clientFilterList.clients.find((c) => c.key === selectedClientFilter)?.label ||
-                      selectedClientFilter}
+                    selectedClientFilter}
                 </strong>
               </div>
             )}
@@ -693,7 +693,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                   {selectedClientFilter === "__general__"
                     ? "General Stock"
                     : clientFilterList.clients.find((c) => c.key === selectedClientFilter)?.label ||
-                      selectedClientFilter}
+                    selectedClientFilter}
                 </span>
                 <button
                   type="button"
@@ -740,9 +740,8 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
 
           <div className="client-unified-card-item metric-item">
             <div
-              className={`metric-icon-wrap ${
-                totalBalance > 0 ? "red" : totalBalance < 0 ? "blue" : "green"
-              }`}
+              className={`metric-icon-wrap ${totalBalance > 0 ? "red" : totalBalance < 0 ? "blue" : "green"
+                }`}
             >
               <Scale size={24} />
             </div>
@@ -755,9 +754,8 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                     : "FULLY SETTLED"}
               </span>
               <span
-                className={`metric-value ${
-                  totalBalance > 0 ? "red" : totalBalance < 0 ? "blue" : "green"
-                }`}
+                className={`metric-value ${totalBalance > 0 ? "red" : totalBalance < 0 ? "blue" : "green"
+                  }`}
               >
                 {totalBalance < 0
                   ? `- ${formatINR(Math.abs(totalBalance))}`
@@ -787,118 +785,6 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
               flexWrap: "wrap",
             }}
           >
-            {/* Search Input */}
-            <div style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
-              <Search
-                size={14}
-                style={{
-                  position: "absolute",
-                  left: "10px",
-                  color: "var(--text-secondary)",
-                  pointerEvents: "none",
-                }}
-              />
-              <input
-                type="text"
-                placeholder="Search ledger..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="afrah-app-input"
-                style={{
-                  paddingLeft: "32px",
-                  paddingRight: searchQuery ? "28px" : "12px",
-                  height: "36px",
-                  fontSize: "var(--fs-sm)",
-                  width: "180px",
-                }}
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  style={{
-                    position: "absolute",
-                    right: "8px",
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    color: "var(--text-secondary)",
-                    padding: 0,
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                  title="Clear search"
-                >
-                  <X size={12} />
-                </button>
-              )}
-            </div>
-
-            {/* Client / Site Tag Filter Dropdown */}
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                background: "rgba(255, 255, 255, 0.03)",
-                padding: "2px 8px 2px 10px",
-                borderRadius: "8px",
-                border: "1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))",
-              }}
-            >
-              <Filter size={13} style={{ color: "var(--primary)" }} />
-              <label
-                htmlFor="client-filter-select"
-                style={{
-                  fontSize: "var(--fs-xs)",
-                  fontWeight: 600,
-                  color: "var(--text-secondary)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.04em",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                Client:
-              </label>
-              <select
-                id="client-filter-select"
-                value={selectedClientFilter}
-                onChange={(e) => {
-                  setSelectedClientFilter(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="afrah-app-input"
-                style={{
-                  height: "32px",
-                  padding: "0 8px",
-                  fontSize: "var(--fs-xs)",
-                  minWidth: "160px",
-                  maxWidth: "240px",
-                  border: "none",
-                  background: "transparent",
-                  cursor: "pointer",
-                  fontWeight: selectedClientFilter !== "all" ? 600 : 400,
-                  color: selectedClientFilter !== "all" ? "var(--primary)" : undefined,
-                }}
-              >
-                <option value="all">
-                  All Clients / Sites ({transactions.length})
-                </option>
-                {clientFilterList.hasGeneral && (
-                  <option value="__general__">
-                    General Stock ({clientFilterList.generalBalance > 0 ? `+${formatINR(clientFilterList.generalBalance)}` : clientFilterList.generalBalance < 0 ? `-${formatINR(Math.abs(clientFilterList.generalBalance))}` : "Settled"})
-                  </option>
-                )}
-                {clientFilterList.clients.map((c) => (
-                  <option key={c.key} value={c.key}>
-                    {c.label} ({c.balance > 0 ? `+${formatINR(c.balance)}` : c.balance < 0 ? `-${formatINR(Math.abs(c.balance))}` : "Settled"})
-                  </option>
-                ))}
-              </select>
-            </div>
             <TableFormPopover
               open={isAddFormOpen}
               onOpenChange={setIsAddFormOpen}
@@ -1293,7 +1179,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                             return (
                               <span
                                 style={{
-                                  color: "var(--danger, #f87171)",
+                                  // color: "var(--danger, #f87171)",
                                   fontWeight: 700,
                                 }}
                                 title={`Running balance: ${formatINR(runningBal)}`}
@@ -1306,7 +1192,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                             return (
                               <span
                                 style={{
-                                  color: "var(--info, #38bdf8)",
+                                  // color: "var(--info, #38bdf8)",
                                   fontWeight: 700,
                                 }}
                                 title={`Advance balance: -${formatINR(Math.abs(runningBal))}`}
@@ -1318,7 +1204,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                           return (
                             <span
                               style={{
-                                color: "var(--success, #34d399)",
+                                // color: "var(--success, #34d399)",
                                 fontWeight: 600,
                               }}
                               title={`Settled balance: ₹0`}
@@ -1636,7 +1522,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
             : selectedClientFilter === "__general__"
               ? "General Stock"
               : clientFilterList.clients.find((c) => c.key === selectedClientFilter)
-                  ?.label || selectedClientFilter
+                ?.label || selectedClientFilter
         }
       />
     </div>
