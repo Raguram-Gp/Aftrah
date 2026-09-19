@@ -684,18 +684,30 @@ html.light .app2-table.has-col-separators td:not(:last-child) {
 }
 
 .afrah-app-table-section.with-add-popover,
-.details-column-panel.with-add-popover {
+.details-column-panel.with-add-popover,
+.client-ledger-split-card.with-add-popover {
   overflow: visible;
 }
 
-.afrah-app-table-section.with-add-popover .afrah-app-section-header,
+.afrah-app-table-section.with-add-popover:not(.client-ledger-split-card) .afrah-app-section-header,
 .details-column-panel.with-add-popover .afrah-app-section-header {
   position: relative;
   z-index: 30;
 }
 
+/* Raise only the open split-card column so Add Advance/Expense is not
+   painted under the sibling column (grid items stack in DOM order). */
+.client-ledger-split-card .details-column-panel.with-add-popover {
+  position: relative;
+  z-index: 40;
+}
+
 .afrah-app-add-popover-wrap {
   position: relative;
+}
+
+.afrah-app-table-section.with-add-popover .afrah-app-add-popover-wrap,
+.details-column-panel.with-add-popover .afrah-app-add-popover-wrap {
   z-index: 20;
 }
 

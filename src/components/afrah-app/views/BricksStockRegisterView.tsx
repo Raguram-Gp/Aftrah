@@ -4,12 +4,14 @@ import {
   Boxes,
   Plus,
   Pencil,
+  Trash2,
   Search,
   ChevronLeft,
   ChevronRight,
   Printer,
   X
 } from 'lucide-react';
+import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { TableFormPopover } from '../components/TableFormPopover';
 import { TablePrintPreviewModal } from '../components/TablePrintPreviewModal';
 
@@ -35,7 +37,8 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
   stockItems,
   onSelectItem,
   onAddStockItem,
-  onUpdateStockItem
+  onUpdateStockItem,
+  onDeleteStockItem
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -56,6 +59,9 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
   const [editUnitName, setEditUnitName] = useState('Units');
   const [editError, setEditError] = useState('');
   const [isSavingEdit, setIsSavingEdit] = useState(false);
+
+  const [deleteTarget, setDeleteTarget] = useState<BrickStockItem | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Filtered Stock Items
   const filteredItems = useMemo(() => {
@@ -199,6 +205,20 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
       }
     } finally {
       setIsSavingEdit(false);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget || !onDeleteStockItem) return;
+    setIsDeleting(true);
+    try {
+      await onDeleteStockItem(deleteTarget.id);
+      const remaining = filteredItems.filter((item) => item.id !== deleteTarget.id).length;
+      const nextTotalPages = Math.max(1, Math.ceil(remaining / itemsPerPage));
+      if (currentPage > nextTotalPages) setCurrentPage(nextTotalPages);
+    } finally {
+      setIsDeleting(false);
+      setDeleteTarget(null);
     }
   };
 
@@ -418,7 +438,7 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
                 <th style={{ width: '28%', paddingLeft: '16px' }}>ITEM</th>
                 <th style={{ width: '32%', textAlign: 'left', paddingLeft: '16px' }}>TOTAL SALES / USAGE</th>
                 <th style={{ width: '28%', textAlign: 'right', paddingRight: '16px' }}>PENDING STOCK</th>
-                <th className="no-print text-center" style={{ width: '80px' }}>EDIT</th>
+                <th className="no-print text-center" style={{ width: '96px' }}>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
@@ -501,6 +521,19 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
                           >
                             <Pencil size={13} />
                           </button>
+                          {onDeleteStockItem && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDeleteTarget(item);
+                              }}
+                              className="afrah-app-action-btn afrah-app-delete-btn"
+                              title={`Delete ${item.item}`}
+                              aria-label={`Delete ${item.item}`}
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -716,6 +749,17 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
           </div>
         </div>
       )}
+
+      <ConfirmDeleteModal
+        isOpen={Boolean(deleteTarget)}
+        title="Delete Stock Category"
+        message="Are you sure you want to delete this stock category? All ledger entries for this item will be permanently deleted."
+        itemName={deleteTarget?.item}
+        confirmText="Delete Category"
+        isDeleting={isDeleting}
+        onConfirm={handleConfirmDelete}
+        onClose={() => setDeleteTarget(null)}
+      />
     </div>
   );
 };

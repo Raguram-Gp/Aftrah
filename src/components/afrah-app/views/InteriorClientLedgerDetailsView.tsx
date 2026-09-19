@@ -559,7 +559,7 @@ export const InteriorClientLedgerDetailsView: React.FC<InteriorClientLedgerDetai
       >
         <div className="client-details-side-by-side-grid">
           {/* COLUMN 1: ADVANCE PAYMENTS (STRICTLY NO NOTE COLUMN) */}
-          <div className="details-column-panel">
+          <div className={`details-column-panel${isAddAdvModalOpen ? " with-add-popover" : ""}`}>
             <div className="afrah-app-section-header no-print">
               <div>
                 <h2 className="afrah-app-section-title">Advance Payments</h2>
@@ -771,7 +771,7 @@ export const InteriorClientLedgerDetailsView: React.FC<InteriorClientLedgerDetai
           </div>
 
           {/* COLUMN 2: SITE / INTERIOR EXPENSES */}
-          <div className="details-column-panel">
+          <div className={`details-column-panel${isAddExpModalOpen ? " with-add-popover" : ""}`}>
             <div className="afrah-app-section-header no-print">
               <div>
                 <h2 className="afrah-app-section-title">Site Expenses</h2>

@@ -721,7 +721,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       <section className={`afrah-app-table-section client-ledger-split-card${isAddAdvModalOpen || isAddExpModalOpen ? " with-add-popover" : ""}`}>
         <div className="client-details-side-by-side-grid">
           {/* COLUMN 1: ADVANCE PAYMENTS */}
-          <div className="details-column-panel">
+          <div className={`details-column-panel${isAddAdvModalOpen ? " with-add-popover" : ""}`}>
             <div className="afrah-app-section-header no-print">
               <div>
                 <h2 className="afrah-app-section-title">Advance Payments</h2>
@@ -932,7 +932,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
           </div>
 
           {/* COLUMN 2: SITE EXPENSES */}
-          <div className="details-column-panel">
+          <div className={`details-column-panel${isAddExpModalOpen ? " with-add-popover" : ""}`}>
             <div className="afrah-app-section-header no-print">
               <div>
                 <h2 className="afrah-app-section-title">Site Expenses</h2>

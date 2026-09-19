@@ -405,6 +405,10 @@
   overflow: hidden;
 }
 
+.client-ledger-split-card.with-add-popover {
+  overflow: visible;
+}
+
 .client-ledger-split-card .client-details-side-by-side-grid {
   gap: 0;
   align-items: stretch;
