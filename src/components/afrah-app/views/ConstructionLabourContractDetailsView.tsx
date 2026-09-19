@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import type { LabourContract, LabourContractEntry } from '../types';
 import { PREDEFINED_CONSTRUCTION_WORK_TYPES } from '../types';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
+import { TableFormPopover } from '../components/TableFormPopover';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
@@ -323,7 +324,7 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
       {/* Table Section */}
       <div className="w-full">
         {/* TABLE (S.NO, Date, Work Type, DAYS, Salary/Day, Total Amount, ACTIONS) */}
-        <section className="afrah-app-table-section w-full">
+        <section className={`afrah-app-table-section w-full${isAddModalOpen ? ' with-add-popover' : ''}`}>
           <div className="afrah-app-section-header">
             <div>
               <h2 className="afrah-app-section-title">DAILY MUSTER & WORK ENTRIES</h2>
@@ -347,14 +348,115 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
                 />
               </div>
 
-              <button
-                type="button"
-                onClick={() => setIsAddModalOpen(true)}
-              className="btn-theme-primary btn-add"
+              <TableFormPopover
+                open={isAddModalOpen}
+                onOpenChange={setIsAddModalOpen}
+                label="Add Details"
               >
-                <Plus size={15} strokeWidth={2.5} />
-                <span>Add Details</span>
-              </button>
+                <form onSubmit={handleAddSubmit} className="afrah-app-add-form">
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Date *</label>
+                    <DateInput
+                      required
+                      value={addDate}
+                      onChange={setAddDate}
+                      className="afrah-app-input"
+                    />
+                  </div>
+
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Work Type *</label>
+                    <SearchableExpenseSelect
+                      options={PREDEFINED_CONSTRUCTION_WORK_TYPES}
+                      value={addWorkType}
+                      onChange={(val) => setAddWorkType(val)}
+                      placeholder="Select or enter work type..."
+                    />
+                  </div>
+
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Days / Labours *</label>
+                    <input
+                      type="number"
+                      required
+                      min="0.5"
+                      step="0.5"
+                      value={addDays}
+                      onChange={(e) => {
+                        setAddDays(e.target.value);
+                        handleDaysOrSalaryChange(e.target.value, addSalaryPerDay);
+                      }}
+                      className="afrah-app-input"
+                    />
+                  </div>
+
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Salary / Day (₹) *</label>
+                    <input
+                      type="number"
+                      required
+                      min="0"
+                      step="50"
+                      value={addSalaryPerDay}
+                      onChange={(e) => {
+                        setAddSalaryPerDay(e.target.value);
+                        handleDaysOrSalaryChange(addDays, e.target.value);
+                      }}
+                      className="afrah-app-input"
+                    />
+                  </div>
+
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Total Amount (₹)</label>
+                    <input
+                      type="number"
+                      required
+                      min="0"
+                      value={addTotalAmount}
+                      onChange={(e) => setAddTotalAmount(e.target.value)}
+                      className="afrah-app-input"
+                    />
+                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '3px', display: 'block' }}>
+                      Auto-calculated: {addDays} × ₹{addSalaryPerDay}
+                    </span>
+                  </div>
+
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Note / Scope</label>
+                    <textarea
+                      rows={2}
+                      placeholder="e.g. Column formwork, Beam tying, 9-inch wall..."
+                      value={addNote}
+                      onChange={(e) => setAddNote(e.target.value)}
+                      className="afrah-app-input afrah-app-textarea"
+                    />
+                  </div>
+
+                  {!isAddFormValid && (
+                    <div className="afrah-app-validation-notice">
+                      * Please fill all required fields.
+                    </div>
+                  )}
+
+                  <div className="afrah-app-add-popover-actions">
+                    <button
+                      type="button"
+                      onClick={() => setIsAddModalOpen(false)}
+                      className="afrah-app-back-btn"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={!isAddFormValid}
+                      className="btn-theme-primary"
+                    >
+                      <Plus size={16} />
+                      <span>Save Details</span>
+                    </button>
+                  </div>
+                </form>
+              </TableFormPopover>
             </div>
           </div>
 
@@ -526,137 +628,6 @@ export const ConstructionLabourContractDetailsView: React.FC<ConstructionLabourC
           )}
         </section>
 
-        {/* Add Details Modal */}
-        {isAddModalOpen && (
-          <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
-            <div
-              className="afrah-app-modal-container modal-w-lg"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="afrah-app-modal-header">
-                <div className="flex-center">
-                  <Plus size={17} color="var(--primary)" />
-                  <h3 className="afrah-app-modal-title">Add Details</h3>
-                </div>
-                <button
-                  onClick={() => setIsAddModalOpen(false)}
-                  className="afrah-app-modal-close-btn"
-                  aria-label="Close"
-                >
-                  <X size={18} />
-                </button>
-              </div>
-
-              <form onSubmit={handleAddSubmit}>
-                <div className="afrah-app-modal-body">
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Date *</label>
-                    <DateInput
-                      required
-                      value={addDate}
-                      onChange={setAddDate}
-                      className="afrah-app-input"
-                    />
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Work Type *</label>
-                    <SearchableExpenseSelect
-                      options={PREDEFINED_CONSTRUCTION_WORK_TYPES}
-                      value={addWorkType}
-                      onChange={(val) => setAddWorkType(val)}
-                      placeholder="Select or enter work type..."
-                    />
-                  </div>
-
-                  <div className="grid-2-10">
-                    <div className="afrah-app-form-group">
-                      <label className="afrah-app-label">Days / Labours *</label>
-                      <input
-                        type="number"
-                        required
-                        min="0.5"
-                        step="0.5"
-                        value={addDays}
-                        onChange={(e) => {
-                          setAddDays(e.target.value);
-                          handleDaysOrSalaryChange(e.target.value, addSalaryPerDay);
-                        }}
-                        className="afrah-app-input"
-                      />
-                    </div>
-
-                    <div className="afrah-app-form-group">
-                      <label className="afrah-app-label">Salary / Day (₹) *</label>
-                      <input
-                        type="number"
-                        required
-                        min="0"
-                        step="50"
-                        value={addSalaryPerDay}
-                        onChange={(e) => {
-                          setAddSalaryPerDay(e.target.value);
-                          handleDaysOrSalaryChange(addDays, e.target.value);
-                        }}
-                        className="afrah-app-input"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Total Amount (₹)</label>
-                    <input
-                      type="number"
-                      required
-                      min="0"
-                      value={addTotalAmount}
-                      onChange={(e) => setAddTotalAmount(e.target.value)}
-                      className="afrah-app-input"
-                    />
-                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '3px', display: 'block' }}>
-                      Auto-calculated: {addDays} × ₹{addSalaryPerDay}
-                    </span>
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Note / Scope</label>
-                    <textarea
-                      rows={2}
-                      placeholder="e.g. Column formwork, Beam tying, 9-inch wall..."
-                      value={addNote}
-                      onChange={(e) => setAddNote(e.target.value)}
-                      className="afrah-app-input afrah-app-textarea"
-                    />
-                  </div>
-
-                  {!isAddFormValid && (
-                    <div className="afrah-app-validation-notice">
-                      * Please fill all required fields.
-                    </div>
-                  )}
-                </div>
-
-                <div className="afrah-app-modal-footer">
-                  <button
-                    type="button"
-                    onClick={() => setIsAddModalOpen(false)}
-                    className="afrah-app-back-btn"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={!isAddFormValid}
-                    className="btn-theme-primary flex-center-6"
-                  >
-                    <Plus size={15} strokeWidth={2.5} />
-                    <span>Add Details</span>
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* EDIT ENTRY MODAL */}

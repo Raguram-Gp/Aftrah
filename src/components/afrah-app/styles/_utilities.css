@@ -46,15 +46,15 @@
   gap: 4px;
 }
 
-/* Grid — two equal columns, concrete gap variants */
+/* Form field stacks — one field per row */
 .grid-2-12 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
 }
 .grid-2-10 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
@@ -71,10 +71,10 @@
   white-space: nowrap;
 }
 
-/* Grid — two equal columns, gap driven by --gap */
+/* Form field stacks — one field per row */
 .grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: var(--gap, 14px);
 }
 

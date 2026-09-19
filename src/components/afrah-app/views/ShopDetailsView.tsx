@@ -1,7 +1,8 @@
-import React, { useState, useMemo, useRef, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import type { Vendor, VendorShop, ShopTransaction } from "../types";
 import { SearchableExpenseSelect } from "../components/SearchableExpenseSelect";
 import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
+import { TableFormPopover } from "../components/TableFormPopover";
 import {
   DateInput,
   isValidDate,
@@ -18,7 +19,6 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
-  ChevronDown,
   X,
   User,
   ArrowDownLeft,
@@ -76,7 +76,6 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
 
   // Add Details popover
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
-  const addFormWrapRef = useRef<HTMLDivElement>(null);
 
   // Purchase Form State
   const [txDate, setTxDate] = useState(() =>
@@ -270,32 +269,9 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
     setTxReceived("");
   };
 
-  const handleToggleAddForm = () => {
-    if (isAddFormOpen) {
-      setIsAddFormOpen(false);
-      return;
-    }
-    resetAddForm();
-    setIsAddFormOpen(true);
-  };
-
   const handleCloseAddForm = () => {
     setIsAddFormOpen(false);
   };
-
-  useEffect(() => {
-    if (!isAddFormOpen) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        addFormWrapRef.current &&
-        !addFormWrapRef.current.contains(e.target as Node)
-      ) {
-        setIsAddFormOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isAddFormOpen]);
 
   const handleAddTransactionSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -601,168 +577,148 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
               />
             </div>
 
-            <div className="afrah-app-add-popover-wrap" ref={addFormWrapRef}>
-              <button
-                onClick={handleToggleAddForm}
-                className="btn-theme-primary"
-                style={{
-                  height: "36px",
-                  padding: "0 14px",
-                  fontSize: "12.5px",
-                }}
-                aria-expanded={isAddFormOpen}
+            <TableFormPopover
+              open={isAddFormOpen}
+              onOpenChange={setIsAddFormOpen}
+              label="Add Details"
+              onOpen={resetAddForm}
+            >
+              <form
+                onSubmit={handleAddTransactionSubmit}
+                className="afrah-app-add-form"
               >
-                {isAddFormOpen ? <X size={15} /> : <Plus size={15} />}
-                <span>Add Details</span>
-                <ChevronDown
-                  size={14}
-                  style={{
-                    transform: isAddFormOpen ? "rotate(180deg)" : undefined,
-                    transition: "transform 0.15s ease",
-                  }}
-                />
-              </button>
-
-              {isAddFormOpen && (
-                <div className="afrah-app-add-popover no-print">
-                  <form
-                    onSubmit={handleAddTransactionSubmit}
-                    className="afrah-app-add-form"
-                  >
-                    <div className="afrah-app-form-group">
-                      <label className="afrah-app-label">Date</label>
-                      <DateInput
-                        value={txDate}
-                        onChange={setTxDate}
-                        className="afrah-app-input"
-                      />
-                    </div>
-
-                    <div className="afrah-app-form-group">
-                      <label className="afrah-app-label">
-                        Client / Site Tag
-                      </label>
-                      <SearchableExpenseSelect
-                        value={txClientName}
-                        onChange={(val) => setTxClientName(val)}
-                        options={clientOptions}
-                        placeholder="Allocate to client..."
-                        searchPlaceholder="Search client name..."
-                      />
-                    </div>
-
-                    <div className="afrah-app-form-group">
-                      <label className="afrah-app-label">
-                        Item / Material Description
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Wirecut Red Bricks Grade A"
-                        value={txItemType}
-                        onChange={(e) => setTxItemType(e.target.value)}
-                        className="afrah-app-input"
-                      />
-                    </div>
-
-                    <div className="afrah-app-form-group">
-                      <label className="afrah-app-label">Quantity</label>
-                      <input
-                        type="number"
-                        step="any"
-                        min="0"
-                        placeholder="e.g. 5000"
-                        value={txQuantity}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setTxQuantity(val);
-                          syncTotalFromQtyRate(val, txRate, setTxTotal);
-                        }}
-                        className="afrah-app-input"
-                      />
-                    </div>
-
-                    <div className="afrah-app-form-group">
-                      <label className="afrah-app-label">
-                        Rate per Unit (₹)
-                      </label>
-                      <input
-                        type="number"
-                        step="any"
-                        min="0"
-                        placeholder="e.g. 12"
-                        value={txRate}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setTxRate(val);
-                          syncTotalFromQtyRate(txQuantity, val, setTxTotal);
-                        }}
-                        className="afrah-app-input"
-                      />
-                    </div>
-
-                    <div className="afrah-app-form-group">
-                      <label className="afrah-app-label">
-                        Total Amount (₹)
-                      </label>
-                      <input
-                        type="number"
-                        step="any"
-                        min="0"
-                        placeholder="0"
-                        value={txTotal}
-                        onChange={(e) => setTxTotal(e.target.value)}
-                        className="afrah-app-input"
-                      />
-                    </div>
-
-                    <div className="afrah-app-form-group">
-                      <label className="afrah-app-label">Paid (₹)</label>
-                      <input
-                        type="number"
-                        step="any"
-                        min="0"
-                        placeholder="0"
-                        value={txReceived}
-                        onChange={(e) => setTxReceived(e.target.value)}
-                        className="afrah-app-input"
-                      />
-                    </div>
-
-                    <div className="afrah-app-form-group">
-                      <label className="afrah-app-label">
-                        Balance Remaining (₹)
-                      </label>
-                      <div
-                        className="total-amount-display"
-                        style={{
-                          color: calculatedBalance > 0 ? "#f87171" : "#4ade80",
-                        }}
-                      >
-                        {formatINR(calculatedBalance)}
-                      </div>
-                    </div>
-
-                    <div className="afrah-app-add-popover-actions">
-                      <button
-                        type="button"
-                        onClick={handleCloseAddForm}
-                        className="afrah-app-back-btn"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={!isAddValid}
-                        className="btn-theme-primary"
-                      >
-                        <Plus size={16} />
-                        <span>Save Details</span>
-                      </button>
-                    </div>
-                  </form>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Date</label>
+                  <DateInput
+                    value={txDate}
+                    onChange={setTxDate}
+                    className="afrah-app-input"
+                  />
                 </div>
-              )}
-            </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Client / Site Tag
+                  </label>
+                  <SearchableExpenseSelect
+                    value={txClientName}
+                    onChange={(val) => setTxClientName(val)}
+                    options={clientOptions}
+                    placeholder="Allocate to client..."
+                    searchPlaceholder="Search client name..."
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Item / Material Description
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Wirecut Red Bricks Grade A"
+                    value={txItemType}
+                    onChange={(e) => setTxItemType(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Quantity</label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0"
+                    placeholder="e.g. 5000"
+                    value={txQuantity}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setTxQuantity(val);
+                      syncTotalFromQtyRate(val, txRate, setTxTotal);
+                    }}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Rate per Unit (₹)
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0"
+                    placeholder="e.g. 12"
+                    value={txRate}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setTxRate(val);
+                      syncTotalFromQtyRate(txQuantity, val, setTxTotal);
+                    }}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Total Amount (₹)
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0"
+                    placeholder="0"
+                    value={txTotal}
+                    onChange={(e) => setTxTotal(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Paid (₹)</label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0"
+                    placeholder="0"
+                    value={txReceived}
+                    onChange={(e) => setTxReceived(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Balance Remaining (₹)
+                  </label>
+                  <div
+                    className="total-amount-display"
+                    style={{
+                      color: calculatedBalance > 0 ? "#f87171" : "#4ade80",
+                    }}
+                  >
+                    {formatINR(calculatedBalance)}
+                  </div>
+                </div>
+
+                <div className="afrah-app-add-popover-actions">
+                  <button
+                    type="button"
+                    onClick={handleCloseAddForm}
+                    className="afrah-app-back-btn"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!isAddValid}
+                    className="btn-theme-primary"
+                  >
+                    <Plus size={16} />
+                    <span>Save Details</span>
+                  </button>
+                </div>
+              </form>
+            </TableFormPopover>
           </div>
         </div>
 
@@ -1085,30 +1041,22 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
 
             <form onSubmit={handleSaveEdit}>
               <div className="afrah-app-modal-body">
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "12px",
-                  }}
-                >
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Date</label>
-                    <DateInput
-                      value={editTxDate}
-                      onChange={setEditTxDate}
-                      className="afrah-app-input"
-                    />
-                  </div>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Date</label>
+                  <DateInput
+                    value={editTxDate}
+                    onChange={setEditTxDate}
+                    className="afrah-app-input"
+                  />
+                </div>
 
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Client / Site Tag</label>
-                    <SearchableExpenseSelect
-                      value={editTxClientName}
-                      onChange={(val) => setEditTxClientName(val)}
-                      options={clientOptions}
-                    />
-                  </div>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Client / Site Tag</label>
+                  <SearchableExpenseSelect
+                    value={editTxClientName}
+                    onChange={(val) => setEditTxClientName(val)}
+                    options={clientOptions}
+                  />
                 </div>
 
                 <div className="afrah-app-form-group">
@@ -1123,82 +1071,66 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                   />
                 </div>
 
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "12px",
-                  }}
-                >
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Quantity</label>
-                    <input
-                      type="number"
-                      step="any"
-                      min="0"
-                      value={editTxQuantity}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setEditTxQuantity(val);
-                        syncTotalFromQtyRate(val, editTxRate, setEditTxTotal);
-                      }}
-                      className="afrah-app-input"
-                    />
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Rate per Unit (₹)</label>
-                    <input
-                      type="number"
-                      step="any"
-                      min="0"
-                      value={editTxRate}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setEditTxRate(val);
-                        syncTotalFromQtyRate(
-                          editTxQuantity,
-                          val,
-                          setEditTxTotal,
-                        );
-                      }}
-                      className="afrah-app-input"
-                    />
-                  </div>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Quantity</label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0"
+                    value={editTxQuantity}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setEditTxQuantity(val);
+                      syncTotalFromQtyRate(val, editTxRate, setEditTxTotal);
+                    }}
+                    className="afrah-app-input"
+                  />
                 </div>
 
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "12px",
-                  }}
-                >
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Total Amount (₹)</label>
-                    <input
-                      type="number"
-                      step="any"
-                      min="0"
-                      placeholder="0"
-                      value={editTxTotal}
-                      onChange={(e) => setEditTxTotal(e.target.value)}
-                      className="afrah-app-input"
-                    />
-                  </div>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Rate per Unit (₹)</label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0"
+                    value={editTxRate}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setEditTxRate(val);
+                      syncTotalFromQtyRate(
+                        editTxQuantity,
+                        val,
+                        setEditTxTotal,
+                      );
+                    }}
+                    className="afrah-app-input"
+                  />
+                </div>
 
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Paid (₹)</label>
-                    <input
-                      type="number"
-                      step="any"
-                      min="0"
-                      placeholder="0"
-                      value={editTxReceived}
-                      onChange={(e) => setEditTxReceived(e.target.value)}
-                      className="afrah-app-input"
-                    />
-                  </div>
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Total Amount (₹)</label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0"
+                    placeholder="0"
+                    value={editTxTotal}
+                    onChange={(e) => setEditTxTotal(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Paid (₹)</label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0"
+                    placeholder="0"
+                    value={editTxReceived}
+                    onChange={(e) => setEditTxReceived(e.target.value)}
+                    className="afrah-app-input"
+                  />
                 </div>
 
                 <div className="afrah-app-form-group">

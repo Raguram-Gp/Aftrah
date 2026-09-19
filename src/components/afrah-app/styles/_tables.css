@@ -648,11 +648,13 @@ html.light .app2-table.has-col-separators td:not(:last-child) {
   gap: 14px;
 }
 
-.afrah-app-table-section.with-add-popover {
+.afrah-app-table-section.with-add-popover,
+.details-column-panel.with-add-popover {
   overflow: visible;
 }
 
-.afrah-app-table-section.with-add-popover .afrah-app-section-header {
+.afrah-app-table-section.with-add-popover .afrah-app-section-header,
+.details-column-panel.with-add-popover .afrah-app-section-header {
   position: relative;
   z-index: 30;
 }

@@ -3,6 +3,7 @@ import type { BrickCustomer, BrickTransaction } from "../types";
 import { PREDEFINED_BRICK_TYPES } from "../types";
 import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
 import { DateFilterBar } from "../components/DateFilterBar";
+import { TableFormPopover } from "../components/TableFormPopover";
 import {
   DateInput,
   isValidDate,
@@ -557,7 +558,7 @@ export const BricksCustomerDetailsView: React.FC<
 
       {/* Transactions Section */}
       <section
-        className="afrah-app-table-section"
+        className={`afrah-app-table-section${isAddModalOpen ? " with-add-popover" : ""}`}
         style={{ minHeight: "auto" }}
       >
         <div className="afrah-app-section-header no-print">
@@ -590,22 +591,171 @@ export const BricksCustomerDetailsView: React.FC<
               />
             </div>
 
-            <button
-              onClick={() => {
-                resetAddForm();
-                setIsAddModalOpen(true);
-              }}
-              className="btn-theme-primary"
-              style={{
-                height: "36px",
-                padding: "0 14px",
-                fontSize: "12.5px",
-                whiteSpace: "nowrap",
-              }}
+            <TableFormPopover
+              open={isAddModalOpen}
+              onOpenChange={setIsAddModalOpen}
+              label="Add Entry"
+              onOpen={resetAddForm}
             >
-              <Plus size={15} />
-              <span>Add Entry</span>
-            </button>
+              <form onSubmit={handleAddSubmit} className="afrah-app-add-form">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Date *</label>
+                  <DateInput
+                    required
+                    value={txDate}
+                    onChange={setTxDate}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Brick Type *</label>
+                  <select
+                    value={txBrickType}
+                    onChange={(e) => setTxBrickType(e.target.value)}
+                    className="afrah-app-input"
+                  >
+                    {PREDEFINED_BRICK_TYPES.map((type) => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {txBrickType === "Custom / Other" && (
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">
+                      Specify Custom Brick Type *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Special Handmade Fire Bricks"
+                      value={customBrickType}
+                      onChange={(e) => setCustomBrickType(e.target.value)}
+                      className="afrah-app-input"
+                    />
+                  </div>
+                )}
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Site / Delivery Location
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Site #4, Anna Nagar"
+                    value={txSiteLocation}
+                    onChange={(e) => setTxSiteLocation(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Vehicle Number</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. TN 58 AA 1234"
+                    value={txVehicleNumber}
+                    onChange={(e) => setTxVehicleNumber(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Quantity (Units) *</label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="1"
+                    required
+                    placeholder="e.g. 5000"
+                    value={txQuantity}
+                    onChange={(e) => setTxQuantity(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Rate per Unit (₹) *</label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0.01"
+                    required
+                    placeholder="e.g. 11.50"
+                    value={txRate}
+                    onChange={(e) => setTxRate(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Calculated Total</label>
+                  <div className="total-amount-display">
+                    {formatINR(calculatedTotal)}
+                  </div>
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">
+                    Amount Paid / Advance (₹) *
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0"
+                    required
+                    placeholder="0"
+                    value={txPaid}
+                    onChange={(e) => setTxPaid(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Pending Balance (₹)</label>
+                  <div
+                    className="total-amount-display"
+                    style={{
+                      color: calculatedBalance > 0 ? "#f87171" : "#4ade80",
+                    }}
+                  >
+                    {formatINR(calculatedBalance)}
+                  </div>
+                </div>
+
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">Notes / Remarks</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Unloaded at site 2nd floor, driver Murugan"
+                    value={txNotes}
+                    onChange={(e) => setTxNotes(e.target.value)}
+                    className="afrah-app-input"
+                  />
+                </div>
+
+                <div className="afrah-app-add-popover-actions">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddModalOpen(false)}
+                    className="afrah-app-back-btn"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!isAddValid}
+                    className="btn-theme-primary"
+                  >
+                    <Plus size={16} />
+                    <span>Save Entry</span>
+                  </button>
+                </div>
+              </form>
+            </TableFormPopover>
           </div>
         </div>
 
@@ -828,243 +978,6 @@ export const BricksCustomerDetailsView: React.FC<
         )}
       </section>
 
-      {/* ADD TRANSACTION MODAL */}
-      {isAddModalOpen && (
-        <div
-          className="afrah-app-modal-overlay"
-          onClick={() => setIsAddModalOpen(false)}
-        >
-          <div
-            className="afrah-app-modal-container"
-            style={{ maxWidth: "580px" }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="afrah-app-modal-header">
-              <div className="flex-center">
-                <BrickWall size={17} color="var(--primary)" />
-                <h3 className="afrah-app-modal-title">
-                  New Brick Delivery Entry
-                </h3>
-              </div>
-              <button
-                onClick={() => setIsAddModalOpen(false)}
-                className="afrah-app-modal-close-btn"
-                aria-label="Close"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <form onSubmit={handleAddSubmit}>
-              <div className="afrah-app-modal-body">
-                <div className="grid-2">
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Date *</label>
-                    <DateInput
-                      required
-                      value={txDate}
-                      onChange={setTxDate}
-                      className="afrah-app-input"
-                    />
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Brick Type *</label>
-                    <select
-                      value={txBrickType}
-                      onChange={(e) => setTxBrickType(e.target.value)}
-                      className="afrah-app-input"
-                    >
-                      {PREDEFINED_BRICK_TYPES.map((type) => (
-                        <option key={type} value={type}>
-                          {type}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {txBrickType === "Custom / Other" && (
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">
-                      Specify Custom Brick Type *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Special Handmade Fire Bricks"
-                      value={customBrickType}
-                      onChange={(e) => setCustomBrickType(e.target.value)}
-                      className="afrah-app-input"
-                    />
-                  </div>
-                )}
-
-                <div className="grid-2">
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">
-                      Site / Delivery Location
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Site #4, Anna Nagar"
-                      value={txSiteLocation}
-                      onChange={(e) => setTxSiteLocation(e.target.value)}
-                      className="afrah-app-input"
-                    />
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Vehicle Number</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. TN 58 AA 1234"
-                      value={txVehicleNumber}
-                      onChange={(e) => setTxVehicleNumber(e.target.value)}
-                      className="afrah-app-input"
-                    />
-                  </div>
-                </div>
-
-                {/* Calculation Fields */}
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr 1.2fr",
-                    gap: "14px",
-                  }}
-                >
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">
-                      Quantity (Units) *
-                    </label>
-                    <input
-                      type="number"
-                      step="any"
-                      min="1"
-                      required
-                      placeholder="e.g. 5000"
-                      value={txQuantity}
-                      onChange={(e) => setTxQuantity(e.target.value)}
-                      className="afrah-app-input"
-                    />
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">
-                      Rate per Unit (₹) *
-                    </label>
-                    <input
-                      type="number"
-                      step="any"
-                      min="0.01"
-                      required
-                      placeholder="e.g. 11.50"
-                      value={txRate}
-                      onChange={(e) => setTxRate(e.target.value)}
-                      className="afrah-app-input"
-                    />
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Calculated Total</label>
-                    <div
-                      style={{
-                        height: "42px",
-                        display: "flex",
-                        alignItems: "center",
-                        padding: "0 12px",
-                        background: "var(--surface-container-low, #141618)",
-                        border: "1px solid var(--border-stroke, #232730)",
-                        borderRadius: "8px",
-                        fontWeight: 700,
-                        fontFamily: "monospace",
-                        color: "var(--primary)",
-                      }}
-                    >
-                      {formatINR(calculatedTotal)}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid-2">
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">
-                      Amount Paid / Advance (₹) *
-                    </label>
-                    <input
-                      type="number"
-                      step="any"
-                      min="0"
-                      required
-                      placeholder="0"
-                      value={txPaid}
-                      onChange={(e) => setTxPaid(e.target.value)}
-                      className="afrah-app-input"
-                    />
-                  </div>
-
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">
-                      Pending Balance (₹)
-                    </label>
-                    <div
-                      style={{
-                        height: "42px",
-                        display: "flex",
-                        alignItems: "center",
-                        padding: "0 12px",
-                        background: "var(--surface-container-low, #141618)",
-                        border: "1px solid var(--border-stroke, #232730)",
-                        borderRadius: "8px",
-                        fontWeight: 700,
-                        fontFamily: "monospace",
-                        color: calculatedBalance > 0 ? "#f87171" : "#4ade80",
-                      }}
-                    >
-                      {formatINR(calculatedBalance)}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Notes / Remarks</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Unloaded at site 2nd floor, driver Murugan"
-                    value={txNotes}
-                    onChange={(e) => setTxNotes(e.target.value)}
-                    className="afrah-app-input"
-                  />
-                </div>
-              </div>
-
-              <div className="afrah-app-modal-footer">
-                <button
-                  type="button"
-                  onClick={() => setIsAddModalOpen(false)}
-                  className="afrah-app-back-btn"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!isAddValid}
-                  className="btn-theme-primary"
-                  style={{
-                    minWidth: "130px",
-                    height: "40px",
-                    fontSize: "13px",
-                  }}
-                >
-                  <Plus size={16} strokeWidth={2.5} />
-                  <span>Save Delivery</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* EDIT TRANSACTION MODAL */}
       {isEditModalOpen && (
@@ -1164,7 +1077,7 @@ export const BricksCustomerDetailsView: React.FC<
                 <div
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "1fr 1fr 1.2fr",
+                    gridTemplateColumns: "1fr",
                     gap: "14px",
                   }}
                 >

@@ -3,6 +3,7 @@ import type { Vendor } from '../types';
 import { PREDEFINED_INTERIOR_VENDOR_TYPES } from '../types';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
+import { TableFormPopover } from '../components/TableFormPopover';
 import {
   Truck,
   Plus,
@@ -147,7 +148,7 @@ export const InteriorVendorView: React.FC<InteriorVendorViewProps> = ({
   return (
     <div className="w-full">
       {/* VENDOR CATEGORIES LIST */}
-      <section className="afrah-app-table-section w-full">
+      <section className={`afrah-app-table-section w-full${isAddModalOpen ? ' with-add-popover' : ''}`}>
         <div className="afrah-app-section-header">
           <div>
             <h1 className="afrah-app-section-title">VENDOR CATEGORIES</h1>
@@ -171,14 +172,49 @@ export const InteriorVendorView: React.FC<InteriorVendorViewProps> = ({
               />
             </div>
 
-            <button
-              type="button"
-              onClick={() => setIsAddModalOpen(true)}
-              className="btn-theme-primary btn-add"
+            <TableFormPopover
+              open={isAddModalOpen}
+              onOpenChange={setIsAddModalOpen}
+              label="Add Details"
+              onOpen={() => setAddType('')}
             >
-              <Plus size={15} strokeWidth={2.5} />
-              <span>Add Details</span>
-            </button>
+              <form onSubmit={handleAddSubmit} className="afrah-app-add-form">
+                <div className="afrah-app-form-group">
+                  <label className="afrah-app-label">TYPE (VENDOR / MATERIAL CATEGORY) *</label>
+                  <SearchableExpenseSelect
+                    value={addType}
+                    onChange={(val) => setAddType(val)}
+                    options={PREDEFINED_INTERIOR_VENDOR_TYPES}
+                    placeholder="Select or enter vendor trade..."
+                    searchPlaceholder="Filter or type trade (e.g. Hardware, Carpenter, Plywoods)..."
+                  />
+                </div>
+
+                {!isAddFormValid && (
+                  <div className="afrah-app-validation-notice" style={{ marginTop: '10px' }}>
+                    * Enter or select a trade type to enable submission.
+                  </div>
+                )}
+
+                <div className="afrah-app-add-popover-actions">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddModalOpen(false)}
+                    className="afrah-app-back-btn"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!isAddFormValid}
+                    className="btn-theme-primary"
+                  >
+                    <Plus size={16} />
+                    <span>Save Details</span>
+                  </button>
+                </div>
+              </form>
+            </TableFormPopover>
           </div>
         </div>
 
@@ -315,68 +351,6 @@ export const InteriorVendorView: React.FC<InteriorVendorViewProps> = ({
           </div>
         )}
       </section>
-
-      {/* Add Details Modal */}
-      {isAddModalOpen && (
-        <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
-          <div
-              className="afrah-app-modal-container modal-w-sm"
-              onClick={(e) => e.stopPropagation()}
-          >
-            <div className="afrah-app-modal-header">
-              <div className="flex-center">
-                <Plus size={17} color="var(--primary)" />
-                <h3 className="afrah-app-modal-title">Add Details</h3>
-              </div>
-              <button
-                onClick={() => setIsAddModalOpen(false)}
-                className="afrah-app-modal-close-btn"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <form onSubmit={handleAddSubmit}>
-              <div className="afrah-app-modal-body">
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">TYPE (VENDOR / MATERIAL CATEGORY) *</label>
-                  <SearchableExpenseSelect
-                    value={addType}
-                    onChange={(val) => setAddType(val)}
-                    options={PREDEFINED_INTERIOR_VENDOR_TYPES}
-                    placeholder="Select or enter vendor trade..."
-                    searchPlaceholder="Filter or type trade (e.g. Hardware, Carpenter, Plywoods)..."
-                  />
-                </div>
-
-                {!isAddFormValid && (
-                  <div className="afrah-app-validation-notice" style={{ marginTop: '10px' }}>
-                    * Enter or select a trade type to enable submission.
-                  </div>
-                )}
-              </div>
-
-              <div className="afrah-app-modal-footer">
-                <button
-                  type="button"
-                  onClick={() => setIsAddModalOpen(false)}
-                  className="afrah-app-back-btn"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!isAddFormValid}
-                  className="btn-theme-primary flex-center-6"
-                >
-                  <Plus size={15} strokeWidth={2.5} />
-                  <span>Add Details</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* Edit Vendor Modal */}
       {isEditModalOpen && (

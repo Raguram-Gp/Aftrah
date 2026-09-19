@@ -3,6 +3,7 @@ import { AfrahAppSidebar, type TabType } from './layout/AfrahAppSidebar';
 import { AfrahAppTopBar } from './layout/AfrahAppTopBar';
 import { ToastContainer, showToast } from './layout/ToastContainer';
 import { ConfirmDeleteModal } from './components/ConfirmDeleteModal';
+import { TableFormPopover } from './components/TableFormPopover';
 import { EntityNotFound } from './components/EntityNotFound';
 import { useClients } from './hooks/useClients';
 import { useInteriorClients } from './hooks/useInteriorClients';
@@ -40,8 +41,8 @@ import {
   Trash2,
   Phone,
   MapPin,
-  UserPlus,
   Pencil,
+  Plus,
   Check,
   X,
   ChevronLeft,
@@ -410,13 +411,6 @@ export const AfrahAppPortal: React.FC = () => {
     setIsAddModalOpen(false);
     setCurrentPage(1);
     showToast('Client added successfully!', 'success');
-  };
-
-  const handleOpenAddModal = () => {
-    setAddName('');
-    setAddPhone('');
-    setAddAddress('');
-    setIsAddModalOpen(true);
   };
 
   // Open Edit Client Modal
@@ -977,7 +971,7 @@ export const AfrahAppPortal: React.FC = () => {
             />
           ) : (
             /* CLIENT LIST FULL-PAGE VIEW */
-            <section className="afrah-app-table-section" style={{ width: '100%' }}>
+            <section className={`afrah-app-table-section${isAddModalOpen ? ' with-add-popover' : ''}`} style={{ width: '100%' }}>
               <div className="afrah-app-section-header">
                 <div>
                   <h1 className="afrah-app-section-title">CLIENT NAME LIST</h1>
@@ -999,16 +993,79 @@ export const AfrahAppPortal: React.FC = () => {
                     />
                   </div>
 
-                  {/* Add Details Modal Trigger */}
-                  <button
-                    type="button"
-                    onClick={handleOpenAddModal}
-                    className="btn-theme-primary"
-                    style={{ height: '36px', padding: '0 16px', fontSize: '13px' }}
+                  <TableFormPopover
+                    open={isAddModalOpen}
+                    onOpenChange={setIsAddModalOpen}
+                    label="Add Details"
+                    onOpen={() => {
+                      setAddName('');
+                      setAddPhone('');
+                      setAddAddress('');
+                    }}
                   >
-                    <UserPlus size={15} strokeWidth={2.5} />
-                    <span>Add Details</span>
-                  </button>
+                    <form onSubmit={handleAddClientSubmit} className="afrah-app-add-form">
+                      <div className="afrah-app-form-group">
+                        <label className="afrah-app-label">Name *</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. Ramesh Patel"
+                          value={addName}
+                          onChange={(e) => setAddName(e.target.value)}
+                          className="afrah-app-input"
+                          autoFocus
+                        />
+                      </div>
+
+                      <div className="afrah-app-form-group">
+                        <label className="afrah-app-label">Phone *</label>
+                        <input
+                          type="tel"
+                          required
+                          placeholder="+91 98765 43210"
+                          value={addPhone}
+                          onChange={(e) => setAddPhone(e.target.value)}
+                          className="afrah-app-input"
+                        />
+                      </div>
+
+                      <div className="afrah-app-form-group">
+                        <label className="afrah-app-label">Address *</label>
+                        <textarea
+                          rows={3}
+                          required
+                          placeholder="Street, City, Postal Code..."
+                          value={addAddress}
+                          onChange={(e) => setAddAddress(e.target.value)}
+                          className="afrah-app-input afrah-app-textarea"
+                        />
+                      </div>
+
+                      {!isAddClientValid && (
+                        <div className="afrah-app-validation-notice">
+                          * All 3 fields are required to enable submission.
+                        </div>
+                      )}
+
+                      <div className="afrah-app-add-popover-actions">
+                        <button
+                          type="button"
+                          onClick={() => setIsAddModalOpen(false)}
+                          className="afrah-app-back-btn"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={!isAddClientValid}
+                          className="btn-theme-primary"
+                        >
+                          <Plus size={16} />
+                          <span>Save Details</span>
+                        </button>
+                      </div>
+                    </form>
+                  </TableFormPopover>
                 </div>
               </div>
 
@@ -1159,94 +1216,6 @@ export const AfrahAppPortal: React.FC = () => {
         </main>
       </div>
 
-      {/* Add Client Modal */}
-      {isAddModalOpen && (
-        <div className="afrah-app-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
-          <div
-              className="afrah-app-modal-container modal-w-md"
-              onClick={(e) => e.stopPropagation()}
-          >
-            <div className="afrah-app-modal-header">
-              <div className="flex-center">
-                <UserPlus size={17} color="var(--primary)" />
-                <h3 className="afrah-app-modal-title">Add Details</h3>
-              </div>
-              <button
-                onClick={() => setIsAddModalOpen(false)}
-                className="afrah-app-modal-close-btn"
-                aria-label="Close"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <form onSubmit={handleAddClientSubmit}>
-              <div className="afrah-app-modal-body">
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Name *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Ramesh Patel"
-                    value={addName}
-                    onChange={(e) => setAddName(e.target.value)}
-                    className="afrah-app-input"
-                    autoFocus
-                  />
-                </div>
-
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Phone *</label>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="+91 98765 43210"
-                    value={addPhone}
-                    onChange={(e) => setAddPhone(e.target.value)}
-                    className="afrah-app-input"
-                  />
-                </div>
-
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Address *</label>
-                  <textarea
-                    rows={3}
-                    required
-                    placeholder="Street, City, Postal Code..."
-                    value={addAddress}
-                    onChange={(e) => setAddAddress(e.target.value)}
-                    className="afrah-app-input afrah-app-textarea"
-                  />
-                </div>
-
-                {!isAddClientValid && (
-                  <div className="afrah-app-validation-notice">
-                    * All 3 fields are required to enable submission.
-                  </div>
-                )}
-              </div>
-
-              <div className="afrah-app-modal-footer">
-                <button
-                  type="button"
-                  onClick={() => setIsAddModalOpen(false)}
-                  className="afrah-app-back-btn"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!isAddClientValid}
-                  className="btn-theme-primary btn-secondary-lg"
-                >
-                  <UserPlus size={16} strokeWidth={2.5} />
-                  <span>Add Details</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* Edit Client Modal */}
       {isEditModalOpen && (

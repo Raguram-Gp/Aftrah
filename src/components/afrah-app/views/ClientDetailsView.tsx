@@ -3,6 +3,7 @@ import type { Client, AdvancePayment, ExpenseItem, Expense } from "../types";
 import { PAYMENT_MODES } from "../types";
 import { SearchableExpenseSelect } from "../components/SearchableExpenseSelect";
 import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
+import { TableFormPopover } from "../components/TableFormPopover";
 import {
   DateInput,
   isValidDate,
@@ -716,7 +717,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       </div>
 
       {/* Combined ledger card: Advance Payments | Site Expenses */}
-      <section className="afrah-app-table-section client-ledger-split-card">
+      <section className={`afrah-app-table-section client-ledger-split-card${isAddAdvModalOpen || isAddExpModalOpen ? " with-add-popover" : ""}`}>
         <div className="client-details-side-by-side-grid">
           {/* COLUMN 1: ADVANCE PAYMENTS */}
           <div className="details-column-panel">
@@ -728,19 +729,67 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 </span>
               </div>
 
-              <button
-                onClick={() => setIsAddAdvModalOpen(true)}
-                className="btn-theme-primary"
-                style={{
-                  height: "34px",
-                  padding: "0 12px",
-                  fontSize: "12px",
-                  whiteSpace: "nowrap",
-                }}
+              <TableFormPopover
+                open={isAddAdvModalOpen}
+                onOpenChange={setIsAddAdvModalOpen}
+                label="Add Advance"
               >
-                <Plus size={14} />
-                <span>Add Advance</span>
-              </button>
+                <form onSubmit={handleAddAdvanceSubmit} className="afrah-app-add-form">
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Date *</label>
+                    <DateInput
+                      required
+                      value={advDate}
+                      onChange={setAdvDate}
+                      className="afrah-app-input"
+                    />
+                  </div>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Amount (₹) *</label>
+                    <input
+                      type="number"
+                      step="any"
+                      min="1"
+                      required
+                      placeholder="e.g. 250000"
+                      value={advAmount}
+                      onChange={(e) => setAdvAmount(e.target.value)}
+                      className="afrah-app-input"
+                    />
+                  </div>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Payment Mode *</label>
+                    <select
+                      value={advMode}
+                      onChange={(e) => setAdvMode(e.target.value)}
+                      className="afrah-app-input"
+                    >
+                      {PAYMENT_MODES.map((mode) => (
+                        <option key={mode} value={mode}>
+                          {mode}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="afrah-app-add-popover-actions">
+                    <button
+                      type="button"
+                      onClick={() => setIsAddAdvModalOpen(false)}
+                      className="afrah-app-back-btn"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={!isAdvValid}
+                      className="btn-theme-primary"
+                    >
+                      <Plus size={16} />
+                      <span>Save Advance</span>
+                    </button>
+                  </div>
+                </form>
+              </TableFormPopover>
             </div>
 
             <div className="afrah-app-table-container">
@@ -893,19 +942,82 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 </span>
               </div>
 
-              <button
-                onClick={() => setIsAddExpModalOpen(true)}
-                className="btn-theme-primary"
-                style={{
-                  height: "34px",
-                  padding: "0 12px",
-                  fontSize: "12px",
-                  whiteSpace: "nowrap",
-                }}
+              <TableFormPopover
+                open={isAddExpModalOpen}
+                onOpenChange={setIsAddExpModalOpen}
+                label="Add Expense"
               >
-                <Plus size={14} />
-                <span>Add Expense</span>
-              </button>
+                <form onSubmit={handleAddExpenseSubmit} className="afrah-app-add-form">
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Date *</label>
+                    <DateInput
+                      required
+                      value={expDate}
+                      onChange={setExpDate}
+                      className="afrah-app-input"
+                    />
+                  </div>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Expense Category *</label>
+                    <SearchableExpenseSelect
+                      value={expName}
+                      onChange={(val) => setExpName(val)}
+                      placeholder="Select or type custom expense..."
+                    />
+                  </div>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Quantity *</label>
+                    <input
+                      type="number"
+                      step="any"
+                      min="0.1"
+                      required
+                      placeholder="e.g. 10"
+                      value={expQuantity}
+                      onChange={(e) => setExpQuantity(e.target.value)}
+                      className="afrah-app-input"
+                    />
+                  </div>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">Rate (₹) *</label>
+                    <input
+                      type="number"
+                      step="any"
+                      min="1"
+                      required
+                      placeholder="e.g. 1500"
+                      value={expRate}
+                      onChange={(e) => setExpRate(e.target.value)}
+                      className="afrah-app-input"
+                    />
+                  </div>
+                  <div className="afrah-app-form-group">
+                    <label className="afrah-app-label">
+                      Total Calculated (₹)
+                    </label>
+                    <div className="total-amount-display">
+                      {formatINR(expTotalAmount)}
+                    </div>
+                  </div>
+                  <div className="afrah-app-add-popover-actions">
+                    <button
+                      type="button"
+                      onClick={() => setIsAddExpModalOpen(false)}
+                      className="afrah-app-back-btn"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={!isExpValid}
+                      className="btn-theme-primary"
+                    >
+                      <Plus size={16} />
+                      <span>Save Expense</span>
+                    </button>
+                  </div>
+                </form>
+              </TableFormPopover>
             </div>
 
             <div className="afrah-app-table-container">
@@ -1064,88 +1176,6 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         </div>
       </section>
 
-      {/* MODAL 1: ADD ADVANCE PAYMENT */}
-      {isAddAdvModalOpen && (
-        <div
-          className="afrah-app-modal-overlay"
-          onClick={() => setIsAddAdvModalOpen(false)}
-        >
-          <div
-            className="afrah-app-modal-container modal-w-sm"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="afrah-app-modal-header">
-              <div className="flex-center">
-                <Receipt size={17} color="var(--primary)" />
-                <h3 className="afrah-app-modal-title">Add Advance Payment</h3>
-              </div>
-              <button
-                onClick={() => setIsAddAdvModalOpen(false)}
-                className="afrah-app-modal-close-btn"
-              >
-                <X size={18} />
-              </button>
-            </div>
-            <form onSubmit={handleAddAdvanceSubmit}>
-              <div className="afrah-app-modal-body">
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Date *</label>
-                  <DateInput
-                    required
-                    value={advDate}
-                    onChange={setAdvDate}
-                    className="afrah-app-input"
-                  />
-                </div>
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Amount (₹) *</label>
-                  <input
-                    type="number"
-                    step="any"
-                    min="1"
-                    required
-                    placeholder="e.g. 250000"
-                    value={advAmount}
-                    onChange={(e) => setAdvAmount(e.target.value)}
-                    className="afrah-app-input"
-                  />
-                </div>
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Payment Mode *</label>
-                  <select
-                    value={advMode}
-                    onChange={(e) => setAdvMode(e.target.value)}
-                    className="afrah-app-input"
-                  >
-                    {PAYMENT_MODES.map((mode) => (
-                      <option key={mode} value={mode}>
-                        {mode}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className="afrah-app-modal-footer">
-                <button
-                  type="button"
-                  onClick={() => setIsAddAdvModalOpen(false)}
-                  className="afrah-app-back-btn"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!isAdvValid}
-                  className="btn-theme-primary"
-                >
-                  <Plus size={16} />
-                  <span>Add Advance</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* MODAL 2: EDIT ADVANCE PAYMENT */}
       {isEditAdvModalOpen && (
@@ -1228,105 +1258,6 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         </div>
       )}
 
-      {/* MODAL 3: ADD EXPENSE */}
-      {isAddExpModalOpen && (
-        <div
-          className="afrah-app-modal-overlay"
-          onClick={() => setIsAddExpModalOpen(false)}
-        >
-          <div
-            className="afrah-app-modal-container modal-w-md"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="afrah-app-modal-header">
-              <div className="flex-center">
-                <CreditCard size={17} color="var(--primary)" />
-                <h3 className="afrah-app-modal-title">Add Site Expense</h3>
-              </div>
-              <button
-                onClick={() => setIsAddExpModalOpen(false)}
-                className="afrah-app-modal-close-btn"
-              >
-                <X size={18} />
-              </button>
-            </div>
-            <form onSubmit={handleAddExpenseSubmit}>
-              <div className="afrah-app-modal-body">
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Date *</label>
-                  <DateInput
-                    required
-                    value={expDate}
-                    onChange={setExpDate}
-                    className="afrah-app-input"
-                  />
-                </div>
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">Expense Category *</label>
-                  <SearchableExpenseSelect
-                    value={expName}
-                    onChange={(val) => setExpName(val)}
-                    placeholder="Select or type custom expense..."
-                  />
-                </div>
-                <div className="grid-2-12">
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Quantity *</label>
-                    <input
-                      type="number"
-                      step="any"
-                      min="0.1"
-                      required
-                      placeholder="e.g. 10"
-                      value={expQuantity}
-                      onChange={(e) => setExpQuantity(e.target.value)}
-                      className="afrah-app-input"
-                    />
-                  </div>
-                  <div className="afrah-app-form-group">
-                    <label className="afrah-app-label">Rate (₹) *</label>
-                    <input
-                      type="number"
-                      step="any"
-                      min="1"
-                      required
-                      placeholder="e.g. 1500"
-                      value={expRate}
-                      onChange={(e) => setExpRate(e.target.value)}
-                      className="afrah-app-input"
-                    />
-                  </div>
-                </div>
-                <div className="afrah-app-form-group">
-                  <label className="afrah-app-label">
-                    Total Calculated (₹)
-                  </label>
-                  <div className="total-amount-display">
-                    {formatINR(expTotalAmount)}
-                  </div>
-                </div>
-              </div>
-              <div className="afrah-app-modal-footer">
-                <button
-                  type="button"
-                  onClick={() => setIsAddExpModalOpen(false)}
-                  className="afrah-app-back-btn"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!isExpValid}
-                  className="btn-theme-primary"
-                >
-                  <Plus size={16} />
-                  <span>Add Expense</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* MODAL 4: EDIT EXPENSE */}
       {isEditExpModalOpen && (
