@@ -16,7 +16,7 @@ const {
 <html lang="en" data-theme="dark" class="dark">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content={description} />
     {robots ? <meta name="robots" content={robots} /> : null}
     <meta name="generator" content={Astro.generator} />
@@ -42,6 +42,23 @@ const {
         } catch (e) {
           document.documentElement.setAttribute('data-theme', 'dark');
           document.documentElement.classList.add('dark');
+        }
+
+        var standalone =
+          window.matchMedia('(display-mode: fullscreen)').matches ||
+          window.matchMedia('(display-mode: standalone)').matches ||
+          window.matchMedia('(display-mode: minimal-ui)').matches ||
+          window.navigator.standalone === true;
+        if (!standalone) return;
+
+        try {
+          window.moveTo(screen.availLeft || 0, screen.availTop || 0);
+          window.resizeTo(screen.availWidth, screen.availHeight);
+        } catch (e) {}
+
+        var path = window.location.pathname;
+        if (path === '/' || path === '') {
+          window.location.replace('/afrah-app/');
         }
       })();
     </script>

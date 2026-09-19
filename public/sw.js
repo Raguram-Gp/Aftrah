@@ -1,3 +1,5 @@
+// afrah-pwa-v2 — keep this comment so browsers fetch a new worker after manifest changes.
+
 self.addEventListener('install', (event) => {
   self.skipWaiting();
 });

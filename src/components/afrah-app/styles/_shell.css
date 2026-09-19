@@ -15,6 +15,25 @@
   -webkit-font-smoothing: antialiased;
 }
 
+@media (display-mode: fullscreen), (display-mode: standalone) {
+  html,
+  body {
+    height: 100dvh;
+    min-height: 100dvh;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .afrah-app-container,
+  .app2-container,
+  .afrah-app-sidebar,
+  .app2-sidebar {
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 100dvh;
+  }
+}
+
 .afrah-app-container button,
 .afrah-app-container input,
 .afrah-app-container select,
