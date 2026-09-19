@@ -660,29 +660,6 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       <div className="client-details-side-by-side-grid">
         {/* COLUMN 1: ADVANCE PAYMENTS */}
         <div className="details-column-panel">
-          {/* Date Filter & Bulk Actions for Advance Payments */}
-          <DateFilterBar
-            fromDate={advFromDate}
-            toDate={advToDate}
-            onFromDateChange={(d) => {
-              setAdvFromDate(d);
-              setAdvCurrentPage(1);
-            }}
-            onToDateChange={(d) => {
-              setAdvToDate(d);
-              setAdvCurrentPage(1);
-            }}
-            onClearDates={() => {
-              setAdvFromDate('');
-              setAdvToDate('');
-              setAdvCurrentPage(1);
-            }}
-            selectedCount={selectedAdvIds.size}
-            onBulkDelete={() => setIsBulkDeleteAdvOpen(true)}
-            deleteLabel="Delete Selected"
-            onPrint={() => handleOpenPrintPreview('advances')}
-            printLabel="Print Advances"
-          />
 
           <section className="afrah-app-table-section">
             <div className="afrah-app-section-header no-print">
@@ -844,29 +821,6 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
         {/* COLUMN 2: SITE EXPENSES */}
         <div className="details-column-panel">
-          {/* Date Filter & Bulk Actions for Expenses */}
-          <DateFilterBar
-            fromDate={expFromDate}
-            toDate={expToDate}
-            onFromDateChange={(d) => {
-              setExpFromDate(d);
-              setExpCurrentPage(1);
-            }}
-            onToDateChange={(d) => {
-              setExpToDate(d);
-              setExpCurrentPage(1);
-            }}
-            onClearDates={() => {
-              setExpFromDate('');
-              setExpToDate('');
-              setExpCurrentPage(1);
-            }}
-            selectedCount={selectedExpIds.size}
-            onBulkDelete={() => setIsBulkDeleteExpOpen(true)}
-            deleteLabel="Delete Selected"
-            onPrint={() => handleOpenPrintPreview('expenses')}
-            printLabel="Print Expenses"
-          />
 
           <section className="afrah-app-table-section">
             <div className="afrah-app-section-header no-print">
