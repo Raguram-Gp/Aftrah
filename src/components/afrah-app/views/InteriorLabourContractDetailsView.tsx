@@ -416,7 +416,7 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
                     <td colSpan={3} style={{ textAlign: 'right', padding: '12px 16px', color: 'var(--text-secondary)' }}>
                       Total ({filteredEntries.length} entries):
                     </td>
-                    <td style={{ textAlign: 'center', color: '#60a5fa' }}>{totalDays}</td>
+                    <td style={{ textAlign: 'center', color: 'var(--text-primary)' }}>{totalDays}</td>
                     <td>-</td>
                     <td className="cell-amount">{formatINR(paidAmount)}</td>
                     <td />
