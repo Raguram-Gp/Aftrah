@@ -318,6 +318,19 @@ html.light .app2-table td {
   gap: 4px;
 }
 
+/* Vertical divider after identity columns (date, description, client) */
+.afrah-app-table .col-divider,
+.app2-table .col-divider {
+  border-right: 2px solid rgba(232, 226, 214, 0.45);
+}
+
+[data-theme="light"] .afrah-app-table .col-divider,
+[data-theme="light"] .app2-table .col-divider,
+html.light .afrah-app-table .col-divider,
+html.light .app2-table .col-divider {
+  border-right-color: #E8E2D6;
+}
+
 /* ============================================
    TABLE-SPECIFIC UTILITIES
    Generic layout utilities live in _utilities.css.

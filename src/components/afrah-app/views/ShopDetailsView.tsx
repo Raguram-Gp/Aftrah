@@ -790,9 +790,9 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
             <thead>
               <tr>
                 <th style={{ width: "45px", textAlign: "center" }}>S.NO</th>
-                <th>DATE</th>
-                <th>TYPE / ITEM DESCRIPTION</th>
-                <th>CLIENT / SITE TAG</th>
+                <th className="col-divider">DATE</th>
+                <th className="col-divider">TYPE / ITEM DESCRIPTION</th>
+                <th className="col-divider">CLIENT / SITE TAG</th>
                 <th className="text-right">QTY</th>
                 <th className="text-right">RATE</th>
                 <th className="text-right">TOTAL AMOUNT</th>
@@ -845,8 +845,8 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                       >
                         {startIndex + index + 1}
                       </td>
-                      <td>{formatToDDMMYYYY(tx.date)}</td>
-                      <td>
+                      <td className="col-divider">{formatToDDMMYYYY(tx.date)}</td>
+                      <td className="col-divider">
                         {isSettlement ? (
                           <div
                             style={{
@@ -907,7 +907,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                           </span>
                         )}
                       </td>
-                      <td>
+                      <td className="col-divider">
                         {tx.clientName ? (
                           <div
                             style={{
