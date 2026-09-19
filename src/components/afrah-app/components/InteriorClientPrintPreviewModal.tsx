@@ -7,6 +7,8 @@ import { Paintbrush } from 'lucide-react';
 import type { StatementSnapshot } from '@/lib/statementSnapshot';
 import { defaultStatementBrand } from '@/lib/statementSnapshot';
 import { resolveInteriorQuoteNo } from '../utils/quoteNo';
+import { buildInteriorQuoteExtras } from '../utils/interiorQuoteTerms';
+import { QuoteClosing, QuoteGreeting } from '@/components/shared-statement/QuoteDocumentExtras';
 
 const INTERIOR_COMPANY_NAME = 'KAAB INTERIOR · AFRAH CONSTRUCTIONS';
 const INTERIOR_COMPANY_SUB = 'LUXURY INTERIORS, MODULAR WOODWORK & TURNKEY EXECUTION';
@@ -106,6 +108,7 @@ function buildInteriorQuotePayload(args: {
   const brand = defaultStatementBrand('kaab');
   const grouped = groupInteriorExpenses(expenses);
   const extra = [siteLine(client), `Quote No: ${resolveInteriorQuoteNo(client)}`].filter(Boolean);
+  const quoteExtras = buildInteriorQuoteExtras(client, totalExpenses);
 
   const rows: string[][] =
     grouped.length === 0
@@ -139,6 +142,7 @@ function buildInteriorQuotePayload(args: {
       },
     ],
     summary: [{ label: 'Estimation Amount', value: formatInvoiceINR(totalExpenses) }],
+    quoteExtras,
     capturedAt: new Date().toISOString(),
   };
 }
@@ -162,6 +166,7 @@ export const InteriorClientPrintPreviewModal: React.FC<InteriorClientPrintPrevie
   const formattedQuoteDate = formatToDDMMYYYY(quoteDate);
   const totalExpenses = expenses.reduce((sum, exp) => sum + (exp.totalAmount || 0), 0);
   const location = siteLine(client);
+  const quoteExtras = buildInteriorQuoteExtras(client, totalExpenses);
 
   if (!isOpen) return null;
 
@@ -208,10 +213,15 @@ export const InteriorClientPrintPreviewModal: React.FC<InteriorClientPrintPrevie
         </div>
       </div>
 
+      <QuoteGreeting extras={quoteExtras} />
+
       <div className="statement-table-block">
         <div className="statement-section-title-row" style={{ fontSize: '18px' }}>
           ESTIMATE FOR INTERIOR WORKS
         </div>
+        {quoteExtras.materials ? (
+          <div className="quote-materials-line">{quoteExtras.materials}</div>
+        ) : null}
 
         <table
           className="statement-invoice-table"
@@ -304,12 +314,7 @@ export const InteriorClientPrintPreviewModal: React.FC<InteriorClientPrintPrevie
         </table>
       </div>
 
-      {client.projectScope ? (
-        <div className="quote-terms-block">
-          <div className="quote-terms-heading">Materials / Scope</div>
-          <p>{client.projectScope}</p>
-        </div>
-      ) : null}
+      <QuoteClosing extras={quoteExtras} />
     </PrintPreviewModal>
   );
 };

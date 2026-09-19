@@ -28,6 +28,15 @@ export interface StatementSnapshot {
     totalValue?: string;
   }>;
   summary: Array<{ label: string; value: string }>;
+  quoteExtras?: {
+    greetingTitle: string;
+    greetingBody: string;
+    materials?: string;
+    deliveryTerms: string;
+    paymentTerms: Array<{ label: string; amount: string }>;
+    notes: string[];
+    closing: string;
+  };
   capturedAt: string;
 }
 

@@ -373,8 +373,22 @@
   .quote-terms-heading,
   .quote-terms-block p,
   .quote-terms-line,
-  .quote-notes-row {
+  .quote-notes-row,
+  .quote-greeting-body,
+  .quote-materials-line,
+  .quote-notes-list li,
+  .quote-closing {
     color: #111827 !important;
+  }
+
+  .quote-greeting,
+  .quote-materials-line {
+    background: #ffffff !important;
+    border-color: #000000 !important;
+  }
+
+  .quote-greeting-title {
+    color: #000000 !important;
   }
 
   .quote-party-sub {
@@ -982,6 +996,51 @@ html.light .statement-preview-viewport {
   color: #9ca3af;
 }
 
+.quote-greeting {
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid var(--border-stroke, #2e3440);
+  background: #161921;
+}
+
+.quote-greeting-title {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  color: #f5f5f7;
+  margin-bottom: 4px;
+}
+
+.quote-greeting-body {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: #d1d5db;
+}
+
+.quote-materials-line {
+  padding: 6px 12px 8px;
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 600;
+  color: #9ca3af;
+  border-bottom: 1px solid var(--border-stroke, #2e3440);
+}
+
+.quote-notes-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.quote-notes-list li {
+  margin: 0 0 4px;
+}
+
+.quote-closing {
+  margin: 10px 0 0;
+  font-weight: 800;
+}
+
 .quote-meta-right {
   text-align: right;
   display: flex;
@@ -1276,10 +1335,34 @@ html.light .quote-notes-row {
   color: #111827;
 }
 
-.statement-pdf-sheet.sheet-paper-mode .quote-notes-row,
-[data-theme="light"] .quote-notes-row,
-html.light .quote-notes-row {
-  border-top-color: #000000;
-  color: #374151;
+.statement-pdf-sheet.sheet-paper-mode .quote-greeting,
+.statement-pdf-sheet.sheet-paper-mode .quote-materials-line,
+[data-theme="light"] .quote-greeting,
+[data-theme="light"] .quote-materials-line,
+html.light .quote-greeting,
+html.light .quote-materials-line {
+  background: #ffffff;
+  border-color: #000000;
+}
+
+.statement-pdf-sheet.sheet-paper-mode .quote-greeting-title,
+[data-theme="light"] .quote-greeting-title,
+html.light .quote-greeting-title {
+  color: #000000;
+}
+
+.statement-pdf-sheet.sheet-paper-mode .quote-greeting-body,
+.statement-pdf-sheet.sheet-paper-mode .quote-materials-line,
+.statement-pdf-sheet.sheet-paper-mode .quote-notes-list li,
+.statement-pdf-sheet.sheet-paper-mode .quote-closing,
+[data-theme="light"] .quote-greeting-body,
+[data-theme="light"] .quote-materials-line,
+[data-theme="light"] .quote-notes-list li,
+[data-theme="light"] .quote-closing,
+html.light .quote-greeting-body,
+html.light .quote-materials-line,
+html.light .quote-notes-list li,
+html.light .quote-closing {
+  color: #111827;
 }
 

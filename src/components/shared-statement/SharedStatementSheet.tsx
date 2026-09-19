@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import type { StatementSnapshot } from '@/lib/statementSnapshot';
 import { StatementBrandLockup } from './StatementBrandLockup';
+import { QuoteClosing, QuoteGreeting } from './QuoteDocumentExtras';
 import '../afrah-app/styles/_print.css';
 
 const FONT_META = '18px';
@@ -19,8 +20,8 @@ function findPendingSummaryItem(summary: StatementSnapshot['summary']) {
 }
 
 export function SharedStatementSheet({ payload }: SharedStatementSheetProps) {
-  const { company, subtitle, address, party, dateLabel, sections, summary } = payload;
-  const pendingItem = findPendingSummaryItem(summary);
+  const { company, subtitle, address, party, dateLabel, sections, summary, quoteExtras } = payload;
+  const pendingItem = quoteExtras ? null : findPendingSummaryItem(summary);
 
   return (
     <div className="statement-pdf-sheet sheet-paper-mode">
@@ -34,14 +35,24 @@ export function SharedStatementSheet({ payload }: SharedStatementSheetProps) {
 
         <div className="statement-meta-row" style={{ fontSize: FONT_META }}>
           <div className="meta-left">
-            <span className="meta-label">NAME:</span>{' '}
+            <span className="meta-label">{quoteExtras ? 'TO:' : 'NAME:'}</span>{' '}
             <span className="meta-name-value">{party.name}</span>
+            {quoteExtras && party.phone ? (
+              <span style={{ fontSize: '14px', marginLeft: '12px', opacity: 0.85 }}>
+                ({party.phone})
+              </span>
+            ) : null}
+            {quoteExtras && party.extra?.length ? (
+              <div className="quote-party-sub">{party.extra.join(' · ')}</div>
+            ) : null}
           </div>
           <div className="meta-right">
             <span className="meta-label">DATE:</span>{' '}
             <span className="meta-date-value">{dateLabel}</span>
           </div>
         </div>
+
+        {quoteExtras ? <QuoteGreeting extras={quoteExtras} /> : null}
 
         {pendingItem ? (
           <div className="statement-pending-balance-row" style={{ fontSize: FONT_TITLE }}>
@@ -59,6 +70,9 @@ export function SharedStatementSheet({ payload }: SharedStatementSheetProps) {
             <div className="statement-section-title-row" style={{ fontSize: FONT_TITLE }}>
               {section.title}
             </div>
+            {sectionIndex === 0 && quoteExtras?.materials ? (
+              <div className="quote-materials-line">{quoteExtras.materials}</div>
+            ) : null}
 
             <table
               className="statement-invoice-table"
@@ -98,7 +112,9 @@ export function SharedStatementSheet({ payload }: SharedStatementSheetProps) {
           </div>
         ))}
 
-        {summary.length > 0 ? (
+        {quoteExtras ? <QuoteClosing extras={quoteExtras} /> : null}
+
+        {!quoteExtras && summary.length > 0 ? (
           <div className="statement-final-reconciliation-row" style={{ fontSize: FONT_META }}>
             {summary.map((item, index) => (
               <div
