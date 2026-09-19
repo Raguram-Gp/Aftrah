@@ -126,13 +126,13 @@ export const InteriorClientPrintPreviewModal: React.FC<InteriorClientPrintPrevie
 
           <table className="statement-invoice-table" style={{ '--stmt-cell-padding': '9px 12px' } as React.CSSProperties}>
             <thead>
-              <tr className="table-header-row" style={{ fontSize: '18px' }}>
-                <th className="text-center" style={{ width: '55px' }}>S.NO</th>
-                <th className="text-center" style={{ width: '125px' }}>DATE</th>
-                <th className="text-center">ITEM / DESCRIPTION</th>
-                <th className="text-center" style={{ width: '95px' }}>QTY</th>
-                <th className="text-center" style={{ width: '95px' }}>RATE</th>
-                <th className="text-center" style={{ width: '160px' }}>AMOUNT</th>
+              <tr className="table-header-row">
+                <th className="text-center" style={{ width: '8%' }}>S.NO</th>
+                <th className="text-center" style={{ width: '14%' }}>DATE</th>
+                <th className="text-center" style={{ width: '38%' }}>ITEM / DESCRIPTION</th>
+                <th className="text-center" style={{ width: '10%' }}>QTY</th>
+                <th className="text-center" style={{ width: '12%' }}>RATE</th>
+                <th className="text-center" style={{ width: '18%' }}>AMOUNT</th>
               </tr>
             </thead>
             <tbody>

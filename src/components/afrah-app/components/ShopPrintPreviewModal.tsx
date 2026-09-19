@@ -94,16 +94,16 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
 
         <table className="statement-invoice-table" style={{ '--stmt-cell-padding': '9px 12px' } as React.CSSProperties}>
           <thead>
-            <tr className="table-header-row" style={{ fontSize: '18px' }}>
-              <th className="text-center" style={{ width: '55px' }}>S.NO</th>
-              <th className="text-center" style={{ width: '120px' }}>DATE</th>
-              <th className="text-center" style={{ width: '100px' }}>BILL NO</th>
-              <th className="text-center">ITEM / DESCRIPTION</th>
-              <th className="text-center" style={{ width: '85px' }}>QTY</th>
-              <th className="text-center" style={{ width: '85px' }}>RATE</th>
-              <th className="text-center" style={{ width: '135px' }}>PURCHASE</th>
-              <th className="text-center" style={{ width: '130px' }}>PAID</th>
-              <th className="text-center" style={{ width: '135px' }}>BALANCE</th>
+            <tr className="table-header-row">
+              <th className="text-center" style={{ width: '6%' }}>S.NO</th>
+              <th className="text-center" style={{ width: '11%' }}>DATE</th>
+              <th className="text-center" style={{ width: '10%' }}>BILL NO</th>
+              <th className="text-center" style={{ width: '24%' }}>ITEM / DESCRIPTION</th>
+              <th className="text-center" style={{ width: '7%' }}>QTY</th>
+              <th className="text-center" style={{ width: '8%' }}>RATE</th>
+              <th className="text-center" style={{ width: '12%' }}>PURCHASE</th>
+              <th className="text-center" style={{ width: '11%' }}>PAID</th>
+              <th className="text-center" style={{ width: '11%' }}>BALANCE</th>
             </tr>
           </thead>
           <tbody>
@@ -118,7 +118,7 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
               </tr>
             ) : (
               transactions.map((tx, index) => (
-                <tr key={tx.id} className="invoice-data-row" style={{ fontSize: '18px' }}>
+                <tr key={tx.id} className="invoice-data-row">
                   <td className="statement-cell">{index + 1}</td>
                   <td className="statement-cell">{formatToDDMMYYYY(tx.date)}</td>
                   <td className="statement-cell" style={{ fontWeight: 600 }}>
@@ -128,7 +128,7 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
                     className="statement-cell"
                     style={{
                       textAlign: 'left',
-                      paddingLeft: '16px',
+                      paddingLeft: '8px',
                       textTransform: 'uppercase',
                       fontWeight: 700
                     }}
@@ -172,7 +172,7 @@ export const ShopPrintPreviewModal: React.FC<ShopPrintPreviewModalProps> = ({
             )}
 
             {/* BOTTOM TOTALS ROW */}
-            <tr className="invoice-total-row" style={{ fontSize: '18px' }}>
+            <tr className="invoice-total-row">
               <td></td>
               <td></td>
               <td></td>

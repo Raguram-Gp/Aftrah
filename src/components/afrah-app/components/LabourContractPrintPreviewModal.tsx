@@ -90,13 +90,13 @@ export const LabourContractPrintPreviewModal: React.FC<LabourContractPrintPrevie
 
         <table className="statement-invoice-table" style={{ '--stmt-cell-padding': '9px 12px' } as React.CSSProperties}>
           <thead>
-            <tr className="table-header-row" style={{ fontSize: '18px' }}>
-              <th className="text-center" style={{ width: '72px' }}>S.NO</th>
-              <th className="text-center" style={{ width: '110px' }}>DATE</th>
-              <th className="text-center">WORK TYPE / SCOPE</th>
-              <th className="text-center" style={{ width: '70px' }}>DAYS</th>
-              <th className="text-center" style={{ width: '110px' }}>RATE / DAY</th>
-              <th className="text-center" style={{ width: '130px' }}>AMOUNT (₹)</th>
+            <tr className="table-header-row">
+              <th className="text-center" style={{ width: '8%' }}>S.NO</th>
+              <th className="text-center" style={{ width: '14%' }}>DATE</th>
+              <th className="text-center" style={{ width: '34%' }}>WORK TYPE / SCOPE</th>
+              <th className="text-center" style={{ width: '10%' }}>DAYS</th>
+              <th className="text-center" style={{ width: '16%' }}>RATE / DAY</th>
+              <th className="text-center" style={{ width: '18%' }}>AMOUNT (₹)</th>
             </tr>
           </thead>
           <tbody>

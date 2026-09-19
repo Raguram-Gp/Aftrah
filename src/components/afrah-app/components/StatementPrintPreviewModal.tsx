@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import type { Client, AdvancePayment, ExpenseItem } from '../types';
 import { formatToDDMMYYYY } from './DateInput';
 import {
@@ -38,6 +39,7 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
 
   // Business Header info matching construction theme
   const [companyName] = useState('AFRAH CONSTRUCTIONS');
+  const [companySub] = useState('CIVIL CONSTRUCTION & ARCHITECTURAL WORKS');
   const [addressLine1] = useState('32/2 Sps Complex, Alaguseenivasan Mahal Opp,');
   const [addressLine2] = useState('Main road, Chinnamanur, Theni - 625 515.');
 
@@ -116,21 +118,21 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
     window.print();
   };
 
-  return (
+  return createPortal(
     <div className="statement-preview-backdrop" onClick={onClose}>
       <div
         className={`statement-preview-dialog ${isFullWidth ? 'fullwidth' : ''}`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Top Controls Toolbar: Clean, Single-Row Layout with Print on First Row */}
         <div className="statement-preview-toolbar no-print">
           <div className="preview-toolbar-left">
             <div className="preview-doc-badge">
               <Building2 size={16} color="var(--primary, #e2c399)" />
               <span>Statement PDF Preview</span>
             </div>
+          </div>
 
-            {/* Document Mode Selector */}
+          <div className="preview-toolbar-center">
             <div className="preview-tab-pills">
               <button
                 type="button"
@@ -141,7 +143,6 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
                 <FileText size={14} />
                 <span>Purchase Details ({expenses.length})</span>
               </button>
-
               <button
                 type="button"
                 className={`preview-pill-btn ${activeTab === 'advances' ? 'active' : ''}`}
@@ -151,7 +152,6 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
                 <CreditCard size={14} />
                 <span>Advance Payments ({advancePayments.length})</span>
               </button>
-
               <button
                 type="button"
                 className={`preview-pill-btn ${activeTab === 'statement' ? 'active' : ''}`}
@@ -165,7 +165,6 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
           </div>
 
           <div className="preview-toolbar-right">
-            {/* Print Button directly on the first row */}
             <button
               type="button"
               className="preview-print-primary-btn"
@@ -175,13 +174,12 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
               <Printer size={15} />
               <span>Print / Save PDF</span>
             </button>
-
-            {/* Close Button on the first row */}
             <button
               type="button"
               className="preview-close-btn"
               onClick={onClose}
               title="Close Preview"
+              aria-label="Close Preview"
             >
               <X size={17} />
             </button>
@@ -448,6 +446,7 @@ export const StatementPrintPreviewModal: React.FC<StatementPrintPreviewModalProp
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

@@ -214,6 +214,15 @@
     color: #000000 !important;
     padding: 0 !important;
     margin: 0 !important;
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  html:has(.statement-preview-backdrop) {
+    overflow: visible !important;
+    height: auto !important;
+    background: #ffffff !important;
   }
 
   body.statement-preview-active .statement-preview-backdrop,
@@ -224,6 +233,7 @@
     margin: 0 !important;
     overflow: visible !important;
     display: block !important;
+    inset: auto !important;
   }
 
   body.statement-preview-active .statement-preview-dialog,
@@ -235,6 +245,9 @@
     background: transparent !important;
     margin: 0 !important;
     padding: 0 !important;
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
   }
 
   body.statement-preview-active .statement-preview-viewport,
@@ -276,9 +289,12 @@
   .statement-invoice-table th,
   .statement-invoice-table td {
     overflow-wrap: break-word !important;
-    word-break: normal !important;
+    word-break: keep-all !important;
     white-space: normal !important;
-    min-width: 0 !important;
+  }
+
+  .statement-invoice-table td {
+    word-break: normal !important;
   }
 
   .statement-final-reconciliation-row,
@@ -298,31 +314,11 @@
     flex-shrink: 0 !important;
   }
 
-  /* Hide background content when statement preview is printed */
-  body.statement-preview-active .print-only-statement-header,
-  body.statement-preview-active .client-details-side-by-side-grid,
-  body.statement-preview-active .client-details-header,
-  body.statement-preview-active .client-unified-summary-card,
-  body.statement-preview-active .afrah-app-table-section,
-  body.statement-preview-active .afrah-app-sidebar,
-  body.statement-preview-active .afrah-app-topbar,
-  body.statement-preview-active .client-details-top-actions,
-  body.statement-preview-active .afrah-app-container > *:not(.statement-preview-backdrop),
-  body.statement-preview-active .client-details-page > *:not(.statement-preview-backdrop),
-  body.statement-preview-active .afrah-app-main-viewport > *:not(.statement-preview-backdrop),
-  body.statement-preview-active .w-full:not(.statement-pdf-sheet *),
-  body:has(.statement-preview-backdrop) .print-only-statement-header,
-  body:has(.statement-preview-backdrop) .client-details-side-by-side-grid,
-  body:has(.statement-preview-backdrop) .client-details-header,
-  body:has(.statement-preview-backdrop) .client-unified-summary-card,
-  body:has(.statement-preview-backdrop) .afrah-app-table-section,
-  body:has(.statement-preview-backdrop) .afrah-app-sidebar,
-  body:has(.statement-preview-backdrop) .afrah-app-topbar,
-  body:has(.statement-preview-backdrop) .client-details-top-actions,
-  body:has(.statement-preview-backdrop) .afrah-app-container > *:not(.statement-preview-backdrop),
-  body:has(.statement-preview-backdrop) .client-details-page > *:not(.statement-preview-backdrop),
-  body:has(.statement-preview-backdrop) .afrah-app-main-viewport > *:not(.statement-preview-backdrop),
-  body:has(.statement-preview-backdrop) .w-full:not(.statement-pdf-sheet *) {
+  /* Isolate the A4 sheet: hide every body child except the preview portal.
+     The preview is nested inside the app chrome, so hiding container/viewport
+     children or .w-full ancestors would also hide the sheet. */
+  body.statement-preview-active > *:not(.statement-preview-backdrop),
+  body:has(.statement-preview-backdrop) > *:not(.statement-preview-backdrop) {
     display: none !important;
   }
 
@@ -376,12 +372,13 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 16px;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  padding: 20px 24px 28px;
+  overflow-x: hidden;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 [data-theme="light"] .statement-preview-backdrop,
@@ -390,7 +387,7 @@ html.light .statement-preview-backdrop {
 }
 
 .statement-preview-dialog {
-  width: min(920px, calc(100vw - 32px));
+  width: min(calc(210mm + 40px), 100%);
   max-width: 100%;
   background: var(--surface-container, #1e2023);
   border: 1px solid var(--border-stroke, #2d3340);
@@ -399,7 +396,7 @@ html.light .statement-preview-backdrop {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  margin: 12px auto;
+  margin: 0;
   min-width: 0;
   box-sizing: border-box;
 }
@@ -412,19 +409,23 @@ html.light .statement-preview-dialog {
 }
 
 .statement-preview-dialog.fullwidth {
-  width: min(1080px, calc(100vw - 32px));
+  width: min(calc(210mm + 40px), 100%);
 }
 
-/* Floating Toolbar: Single-Row Layout */
+/* Floating Toolbar: title + print/close on row 1, centered tabs on row 2 */
 .statement-preview-toolbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'title actions'
+    'tabs tabs';
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
+  padding: 8px 12px 10px;
   background: var(--surface-container-low, #141618);
   border-bottom: 1px solid var(--border-stroke, #232730);
-  gap: 10px;
-  flex-wrap: nowrap;
+  gap: 8px 12px;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 [data-theme="light"] .statement-preview-toolbar,
@@ -434,11 +435,36 @@ html.light .statement-preview-toolbar {
 }
 
 .preview-toolbar-left,
+.preview-toolbar-center,
 .preview-toolbar-right {
   display: flex;
   align-items: center;
+  min-width: 0;
+}
+
+.preview-toolbar-left {
+  grid-area: title;
+  justify-self: start;
+  justify-content: flex-start;
+}
+
+.preview-toolbar-center {
+  grid-area: tabs;
+  justify-self: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.preview-toolbar-center:not(:has(.preview-tab-pills)) {
+  display: none;
+}
+
+.preview-toolbar-right {
+  grid-area: actions;
+  justify-self: end;
+  justify-content: flex-end;
   gap: 8px;
-  flex-wrap: nowrap;
+  flex-shrink: 0;
 }
 
 .preview-doc-badge {
@@ -448,15 +474,18 @@ html.light .statement-preview-toolbar {
   font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--primary, #e2c399);
-  padding-right: 10px;
-  border-right: 1px solid var(--border-stroke, #2d3340);
   white-space: nowrap;
+  overflow: hidden;
+}
+
+.preview-doc-badge span {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 [data-theme="light"] .preview-doc-badge,
 html.light .preview-doc-badge {
   color: var(--primary, #967032);
-  border-right-color: #e2e8f0;
 }
 
 .preview-tab-pills {
@@ -479,7 +508,7 @@ html.light .preview-tab-pills {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 5px 12px;
+  padding: 5px 10px;
   font-size: var(--fs-2xs);
   font-weight: 600;
   color: var(--text-secondary, #9ca3af);
@@ -524,8 +553,9 @@ html.light .preview-pill-btn.active {
 .preview-print-primary-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 18px;
+  flex-shrink: 0;
+  gap: 6px;
+  padding: 7px 12px;
   background: linear-gradient(135deg, var(--primary, #e2c399) 0%, #c8a676 100%);
   color: #111317;
   font-size: var(--fs-xs);
@@ -561,6 +591,7 @@ html.light .preview-print-primary-btn:hover {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 32px;
   height: 32px;
   border-radius: 6px;
@@ -578,14 +609,16 @@ html.light .preview-print-primary-btn:hover {
 
 /* Preview Viewport & Physical Sheet */
 .statement-preview-viewport {
-  padding: 20px 24px 28px;
+  padding: 16px 20px 24px;
   background: var(--surface-container-lowest, #0c0e11);
   background-image: radial-gradient(rgba(226, 195, 153, 0.05) 1px, transparent 1px);
   background-size: 24px 24px;
   overflow: auto;
-  max-height: calc(88vh - 70px);
+  max-height: calc(100vh - 120px);
   min-width: 0;
   box-sizing: border-box;
+  display: flex;
+  justify-content: center;
 }
 
 [data-theme="light"] .statement-preview-viewport,
@@ -599,7 +632,8 @@ html.light .statement-preview-viewport {
    STATEMENT PDF SHEET: DARK LUXURY ARCHITECTURAL THEME (DEFAULT SCREEN VIEW)
    ========================================================================== */
 
-.statement-pdf-sheet {
+.statement-pdf-sheet,
+.statement-pdf-sheet.a4-sheet {
   width: 210mm;
   max-width: 100%;
   min-width: 0;
@@ -798,33 +832,36 @@ html.light .statement-preview-viewport {
   color: var(--primary, #e2c399);
   font-weight: 900;
   letter-spacing: 0.02em;
-  padding: 7px 4px;
+  padding: 8px 5px;
   border: 1px solid var(--border-stroke, #2e3440);
   text-align: center;
+  vertical-align: middle;
+  line-height: 1.25;
   white-space: normal;
   overflow-wrap: break-word;
-  word-break: normal;
-  min-width: 0;
-  hyphens: manual;
+  word-break: keep-all;
+  hyphens: none;
 }
 
 .statement-invoice-table td {
   color: #f3f4f6;
   border: 1px solid #252b36;
-  padding: 7px 4px;
+  padding: 6px 5px;
   vertical-align: middle;
   background: transparent;
+  line-height: 1.35;
   overflow-wrap: break-word;
   word-break: normal;
-  min-width: 0;
 }
 
-.statement-pdf-sheet.a4-sheet .statement-invoice-table th,
+.statement-pdf-sheet.a4-sheet .statement-invoice-table th {
+  font-size: 10px !important;
+}
+
 .statement-pdf-sheet.a4-sheet .statement-invoice-table td,
-.statement-pdf-sheet.a4-sheet .table-header-row,
 .statement-pdf-sheet.a4-sheet .invoice-data-row,
 .statement-pdf-sheet.a4-sheet .invoice-total-row {
-  font-size: 12px !important;
+  font-size: 11px !important;
 }
 
 .statement-pdf-sheet.a4-sheet .statement-meta-row,

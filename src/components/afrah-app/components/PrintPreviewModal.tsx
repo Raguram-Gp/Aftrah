@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Printer,
   X,
@@ -77,21 +78,21 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
     window.print();
   };
 
-  return (
+  return createPortal(
     <div className="statement-preview-backdrop" onClick={onClose}>
       <div
         className={`statement-preview-dialog ${isFullWidth ? 'fullwidth' : ''}`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Top Controls Toolbar: Clean, Single-Row Layout with Print on First Row */}
         <div className="statement-preview-toolbar no-print">
           <div className="preview-toolbar-left">
             <div className="preview-doc-badge">
               {badgeIcon || <Building2 size={16} color="var(--primary, #e2c399)" />}
               <span>{badgeLabel || title}</span>
             </div>
+          </div>
 
-            {/* Document Mode / Tabs Selector if provided */}
+          <div className="preview-toolbar-center">
             {tabs && tabs.length > 1 && (
               <div className="preview-tab-pills">
                 {tabs.map((tab) => (
@@ -114,7 +115,6 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
           </div>
 
           <div className="preview-toolbar-right">
-            {/* Print Button directly on first row */}
             <button
               type="button"
               className="preview-print-primary-btn"
@@ -124,8 +124,6 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
               <Printer size={15} />
               <span>Print / Save PDF</span>
             </button>
-
-            {/* Close Button on first row */}
             <button
               type="button"
               className="preview-close-btn"
@@ -191,6 +189,7 @@ export const PrintPreviewModal: React.FC<PrintPreviewModalProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
