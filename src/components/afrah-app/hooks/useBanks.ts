@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import type { BankAccount, BankTransaction } from '../types';
 import { INITIAL_BANKS } from '../data/initialBanks';
+import { compareByDateDesc } from '../utils/dateUtils';
 
 export const useBanks = () => {
   const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
@@ -68,7 +69,7 @@ export const useBanks = () => {
               createdAt: tx.created_at,
             }))
             .sort((a: BankTransaction, b: BankTransaction) =>
-              b.date.localeCompare(a.date)
+              compareByDateDesc(a.date, b.date, a.createdAt, b.createdAt)
             ),
         }));
 
@@ -219,7 +220,9 @@ export const useBanks = () => {
               ...b,
               balance: newBalance,
               updatedAt: new Date().toISOString(),
-              transactions: [newTx, ...(b.transactions || [])],
+              transactions: [newTx, ...(b.transactions || [])].sort((t1, t2) =>
+                compareByDateDesc(t1.date, t2.date, t1.createdAt, t2.createdAt)
+              ),
             }
           : b
       )

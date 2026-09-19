@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import type { Client, AdvancePayment, ExpenseItem } from '../types';
 import { INITIAL_CLIENTS } from '../data/initialClients';
+import { compareByDateDesc } from '../utils/dateUtils';
 
 export const useClients = () => {
   const [clients, setClients] = useState<Client[]>([]);
@@ -71,7 +72,9 @@ export const useClients = () => {
               mode: p.mode,
               createdAt: p.created_at,
             }))
-            .sort((a: AdvancePayment, b: AdvancePayment) => a.sNo - b.sNo),
+            .sort((a: AdvancePayment, b: AdvancePayment) =>
+              compareByDateDesc(a.date, b.date, a.sNo, b.sNo)
+            ),
           expenses: (c.client_expenses || [])
             .map((e: any) => ({
               id: e.id,
@@ -84,7 +87,9 @@ export const useClients = () => {
               totalAmount: Number(e.total_amount),
               createdAt: e.created_at,
             }))
-            .sort((a: ExpenseItem, b: ExpenseItem) => a.sNo - b.sNo),
+            .sort((a: ExpenseItem, b: ExpenseItem) =>
+              compareByDateDesc(a.date, b.date, a.sNo, b.sNo)
+            ),
         }));
 
         setClients(mappedClients);
@@ -216,7 +221,12 @@ export const useClients = () => {
     setClients((prev) =>
       prev.map((c) =>
         c.id === clientId
-          ? { ...c, advancePayments: [...(c.advancePayments || []), newPayment] }
+          ? {
+              ...c,
+              advancePayments: [...(c.advancePayments || []), newPayment].sort(
+                (a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo)
+              ),
+            }
           : c
       )
     );
@@ -244,9 +254,9 @@ export const useClients = () => {
             c.id === clientId
               ? {
                   ...c,
-                  advancePayments: (c.advancePayments || []).map((p) =>
-                    p.id === tempId ? { ...p, id: data.id } : p
-                  ),
+                  advancePayments: (c.advancePayments || [])
+                    .map((p) => (p.id === tempId ? { ...p, id: data.id } : p))
+                    .sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo)),
                 }
               : c
           )
@@ -267,9 +277,9 @@ export const useClients = () => {
         c.id === clientId
           ? {
               ...c,
-              advancePayments: (c.advancePayments || []).map((p) =>
-                p.id === updated.id ? updated : p
-              ),
+              advancePayments: (c.advancePayments || [])
+                .map((p) => (p.id === updated.id ? updated : p))
+                .sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo)),
             }
           : c
       )
@@ -349,7 +359,12 @@ export const useClients = () => {
     setClients((prev) =>
       prev.map((c) =>
         c.id === clientId
-          ? { ...c, expenses: [...(c.expenses || []), newExpense] }
+          ? {
+              ...c,
+              expenses: [...(c.expenses || []), newExpense].sort((a, b) =>
+                compareByDateDesc(a.date, b.date, a.sNo, b.sNo)
+              ),
+            }
           : c
       )
     );
@@ -379,9 +394,9 @@ export const useClients = () => {
             c.id === clientId
               ? {
                   ...c,
-                  expenses: (c.expenses || []).map((e) =>
-                    e.id === tempId ? { ...e, id: data.id } : e
-                  ),
+                  expenses: (c.expenses || [])
+                    .map((e) => (e.id === tempId ? { ...e, id: data.id } : e))
+                    .sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo)),
                 }
               : c
           )
@@ -402,9 +417,9 @@ export const useClients = () => {
         c.id === clientId
           ? {
               ...c,
-              expenses: (c.expenses || []).map((e) =>
-                e.id === updated.id ? updated : e
-              ),
+              expenses: (c.expenses || [])
+                .map((e) => (e.id === updated.id ? updated : e))
+                .sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo)),
             }
           : c
       )

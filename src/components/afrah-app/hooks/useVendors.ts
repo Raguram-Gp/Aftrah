@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import type { Vendor, VendorShop, ShopTransaction } from '../types';
 import { INITIAL_VENDORS } from '../data/initialVendors';
+import { compareByDateDesc } from '../utils/dateUtils';
 
 export const useVendors = () => {
   const [vendors, setVendors] = useState<Vendor[]>([]);
@@ -94,7 +95,9 @@ export const useVendors = () => {
                   balanceAmount: Number(t.balance_amount),
                   createdAt: t.created_at,
                 }))
-                .sort((a: ShopTransaction, b: ShopTransaction) => a.sNo - b.sNo),
+                .sort((a: ShopTransaction, b: ShopTransaction) =>
+                  compareByDateDesc(a.date, b.date, a.sNo, b.sNo)
+                ),
             }))
             .sort((a: VendorShop, b: VendorShop) => a.sNo - b.sNo),
         }));
@@ -369,7 +372,12 @@ export const useVendors = () => {
               ...v,
               shops: (v.shops || []).map((s) =>
                 s.id === shopId
-                  ? { ...s, transactions: [...(s.transactions || []), newTx] }
+                  ? {
+                      ...s,
+                      transactions: [...(s.transactions || []), newTx].sort(
+                        (a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo)
+                      ),
+                    }
                   : s
               ),
             }
@@ -443,9 +451,9 @@ export const useVendors = () => {
                 s.id === shopId
                   ? {
                       ...s,
-                      transactions: (s.transactions || []).map((t) =>
-                        t.id === updatedTx.id ? updatedTx : t
-                      ),
+                      transactions: (s.transactions || [])
+                        .map((t) => (t.id === updatedTx.id ? updatedTx : t))
+                        .sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo)),
                     }
                   : s
               ),

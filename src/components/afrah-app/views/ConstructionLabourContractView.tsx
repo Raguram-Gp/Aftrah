@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import type { LabourContract } from '../types';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
-import { DateInput, isValidDate, formatToDDMMYYYY } from '../components/DateInput';
+import { DateInput, isValidDate, formatToDDMMYYYY, compareByDateDesc } from '../components/DateInput';
 import {
   HardHat,
   Search,
@@ -93,14 +93,17 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
   // Filter contracts
   const filteredContracts = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
-    if (!q) return contracts;
-    return contracts.filter(
-      (c) =>
-        c.labourName.toLowerCase().includes(q) ||
-        c.siteName.toLowerCase().includes(q) ||
-        c.phone.includes(q) ||
-        c.date.includes(q)
-    );
+    const list = q
+      ? contracts.filter(
+          (c) =>
+            c.labourName.toLowerCase().includes(q) ||
+            c.siteName.toLowerCase().includes(q) ||
+            c.phone.includes(q) ||
+            c.date.includes(q) ||
+            formatToDDMMYYYY(c.date).includes(q)
+        )
+      : contracts;
+    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
   }, [contracts, searchQuery]);
 
   // Overall calculations
@@ -291,7 +294,7 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
                             {contract.labourName.charAt(0).toUpperCase()}
                           </div>
                           <div>
-                            <span style={{ color: 'var(--text-primary)', fontSize: '13.5px', fontWeight: 600 }}>
+                            <span className="row-entity-name" style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 750 }}>
                               {contract.labourName}
                             </span>
                           </div>
@@ -300,25 +303,26 @@ export const ConstructionLabourContractView: React.FC<ConstructionLabourContract
                       <td>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)' }}>
                           <MapPin size={13} color="#f59e0b" />
-                          <span style={{ fontSize: '13px', fontWeight: 500 }}>{contract.siteName}</span>
+                          <span style={{ fontSize: '13.5px', fontWeight: 600 }}>{contract.siteName}</span>
                         </div>
                       </td>
                       <td style={{ whiteSpace: 'nowrap' }}>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                           <Phone size={13} color="var(--primary)" />
-                          <span style={{ fontFamily: 'monospace', fontSize: '12px' }}>{contract.phone}</span>
+                          <span style={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 600 }}>{contract.phone}</span>
                         </div>
                       </td>
                       <td style={{ whiteSpace: 'nowrap' }}>
-                        <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '13px' }}>
+                        <span style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: '14.5px', fontFamily: 'JetBrains Mono, monospace' }}>
                           {formatINR(charge)}
                         </span>
                       </td>
                       <td style={{ whiteSpace: 'nowrap' }}>
                         <span
                           style={{
-                            fontWeight: 700,
-                            fontSize: '13px',
+                            fontWeight: 800,
+                            fontSize: '14.5px',
+                            fontFamily: 'JetBrains Mono, monospace',
                             color: balance > 0 ? '#f59e0b' : '#4ade80'
                           }}
                         >

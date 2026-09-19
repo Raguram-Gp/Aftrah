@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import type { InteriorClient, InteriorAdvancePayment, InteriorExpenseItem } from '../types';
+import { compareByDateDesc } from '../utils/dateUtils';
 
 export const useInteriorClients = () => {
   const [interiorClients, setInteriorClients] = useState<InteriorClient[]>([]);
@@ -78,7 +79,7 @@ export const useInteriorClients = () => {
               note: a.note || '',
               createdAt: a.created_at,
             }))
-            .sort((a: any, b: any) => a.sNo - b.sNo),
+            .sort((a: any, b: any) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo)),
           expenses: (c.interior_client_expenses || [])
             .map((e: any) => ({
               id: e.id,
@@ -93,7 +94,7 @@ export const useInteriorClients = () => {
               totalAmount: Number(e.total_amount) || 0,
               createdAt: e.created_at,
             }))
-            .sort((a: any, b: any) => a.sNo - b.sNo),
+            .sort((a: any, b: any) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo)),
         }));
 
         setInteriorClients(mapped);
@@ -264,7 +265,9 @@ export const useInteriorClients = () => {
           return {
             ...c,
             updatedAt: new Date().toISOString(),
-            advancePayments: [...currentAdv, newAdv].map((item, idx) => ({ ...item, sNo: idx + 1 })),
+            advancePayments: [...currentAdv, newAdv]
+              .sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo))
+              .map((item, idx) => ({ ...item, sNo: idx + 1 })),
           };
         })
       );
@@ -300,9 +303,9 @@ export const useInteriorClients = () => {
           return {
             ...c,
             updatedAt: new Date().toISOString(),
-            advancePayments: (c.advancePayments || []).map((item) =>
-              item.id === updatedAdv.id ? updatedAdv : item
-            ),
+            advancePayments: (c.advancePayments || [])
+              .map((item) => (item.id === updatedAdv.id ? updatedAdv : item))
+              .sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo)),
           };
         })
       );
@@ -417,7 +420,9 @@ export const useInteriorClients = () => {
           return {
             ...c,
             updatedAt: new Date().toISOString(),
-            expenses: [...currentExp, newExp].map((item, idx) => ({ ...item, sNo: idx + 1 })),
+            expenses: [...currentExp, newExp]
+              .sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo))
+              .map((item, idx) => ({ ...item, sNo: idx + 1 })),
           };
         })
       );
@@ -456,9 +461,9 @@ export const useInteriorClients = () => {
           return {
             ...c,
             updatedAt: new Date().toISOString(),
-            expenses: (c.expenses || []).map((item) =>
-              item.id === updatedExp.id ? updatedExp : item
-            ),
+            expenses: (c.expenses || [])
+              .map((item) => (item.id === updatedExp.id ? updatedExp : item))
+              .sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo)),
           };
         })
       );

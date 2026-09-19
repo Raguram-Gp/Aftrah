@@ -1,13 +1,13 @@
 import React, { useState, useMemo } from 'react';
-import type { Client, AdvancePayment, ExpenseItem } from '../types';
+import type { Client, AdvancePayment, ExpenseItem, Expense } from '../types';
 import { PAYMENT_MODES } from '../types';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { DateFilterBar } from '../components/DateFilterBar';
-import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD } from '../components/DateInput';
+import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import { showToast } from '../layout/ToastContainer';
+import { StatementPrintPreviewModal } from '../components/StatementPrintPreviewModal';
 import {
-  ArrowLeft,
   Phone,
   MapPin,
   CreditCard,
@@ -23,26 +23,27 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
+  Filter,
   Printer
 } from 'lucide-react';
 
 interface ClientDetailsViewProps {
   client: Client;
-  onBack: () => void;
-  onUpdateClient: (updated: Client) => void;
-  onAddAdvance?: (clientId: string, payment: Omit<AdvancePayment, 'id' | 'sNo'>) => Promise<any>;
-  onUpdateAdvance?: (clientId: string, payment: AdvancePayment) => Promise<any>;
-  onDeleteAdvance?: (clientId: string, paymentId: string) => Promise<any>;
-  onDeleteMultipleAdvancePayments?: (clientId: string, paymentIds: string[]) => Promise<any>;
-  onAddExpense?: (clientId: string, expense: Omit<ExpenseItem, 'id' | 'sNo'>) => Promise<any>;
-  onUpdateExpense?: (clientId: string, expense: ExpenseItem) => Promise<any>;
-  onDeleteExpense?: (clientId: string, expenseId: string) => Promise<any>;
-  onDeleteMultipleExpenses?: (clientId: string, expenseIds: string[]) => Promise<any>;
+  onBack?: () => void;
+  onUpdateClient: (id: string, updates: Partial<Client>) => Promise<Client | null>;
+  onAddAdvance: (payment: Omit<AdvancePayment, 'id' | 'createdAt'>) => Promise<AdvancePayment | null>;
+  onUpdateAdvance: (id: string, updates: Partial<AdvancePayment>) => Promise<AdvancePayment | null>;
+  onDeleteAdvance: (id: string) => Promise<boolean>;
+  onDeleteMultipleAdvancePayments: (ids: string[]) => Promise<boolean>;
+  onAddExpense: (expense: Omit<Expense, 'id' | 'createdAt'>) => Promise<Expense | null>;
+  onUpdateExpense: (id: string, updates: Partial<Expense>) => Promise<Expense | null>;
+  onDeleteExpense: (id: string) => Promise<boolean>;
+  onDeleteMultipleExpenses: (ids: string[]) => Promise<boolean>;
 }
 
 export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   client,
-  onBack,
+  onBack: _onBack,
   onUpdateClient,
   onAddAdvance,
   onUpdateAdvance,
@@ -138,7 +139,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
           String(p.sNo).includes(q)
       );
     }
-    return list;
+    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
   }, [advancePayments, advSearch, advFromDate, advToDate]);
 
   // Filtered Expenses by search AND date range
@@ -165,7 +166,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
           String(exp.sNo).includes(q)
       );
     }
-    return list;
+    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
   }, [expenses, expSearch, expFromDate, expToDate]);
 
   // Advance Multi-select handlers
@@ -260,9 +261,18 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
     }
   };
 
-  // Print Statement Handler
+  // Statement Print Preview Modal State
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+  const [previewMode, setPreviewMode] = useState<'expenses' | 'advances' | 'statement'>('expenses');
+
+  // Print Statement Handler - opens preview modal before printing
+  const handleOpenPrintPreview = (mode: 'expenses' | 'advances' | 'statement' = 'statement') => {
+    setPreviewMode(mode);
+    setIsPrintPreviewOpen(true);
+  };
+
   const handlePrint = () => {
-    window.print();
+    handleOpenPrintPreview('statement');
   };
 
   // Validation
@@ -588,28 +598,26 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
       {/* Screen Header Bar */}
       <div className="client-details-header no-print">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '12px' }}>
-          <button onClick={onBack} className="afrah-app-back-btn">
-            <ArrowLeft size={16} />
-            <span>Back to Clients</span>
-          </button>
-
+        <div className="client-details-top-actions">
           <button
-            onClick={handlePrint}
+            onClick={() => handleOpenPrintPreview('statement')}
             className="afrah-app-back-btn"
-            title="Print or Export Client Statement"
+            title="Preview and Print Client Statement"
           >
             <Printer size={15} />
-            <span>Print Statement</span>
+            <span>Print Preview / Statement</span>
           </button>
         </div>
 
-        <div className="client-details-title-row">
-          <div>
-            <h1 className="client-details-main-title">
-              {client.name} <span>· Client Ledger</span>
+        {/* Unified Card Container for Client Name & Financial Summary */}
+        <div className="client-unified-summary-card">
+          {/* Client Name & Contact */}
+          <div className="client-unified-card-item client-info-item">
+            <h1 className="client-unified-name-title">
+              <span className="client-unified-label">Client Name :</span>{' '}
+              <span className="client-unified-name">{client.name}</span>
             </h1>
-            <div className="client-meta-row">
+            <div className="client-meta-row" style={{ marginTop: '6px' }}>
               <span className="client-meta-pill">
                 <Phone size={13} color="var(--primary)" />
                 {client.phone}
@@ -621,40 +629,40 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
             </div>
           </div>
 
-          {/* Top KPI Financial Summary Cards */}
-          <div className="client-financial-summary">
-            <div className="summary-metric-card">
-              <div className="metric-icon-wrap gold">
-                <Wallet size={24} />
-              </div>
-              <div>
-                <span className="metric-label">TOTAL ADVANCE</span>
-                <span className="metric-value gold">{formatINR(totalAdvance)}</span>
-              </div>
+          {/* Total Advance */}
+          <div className="client-unified-card-item metric-item">
+            <div className="metric-icon-wrap gold">
+              <Wallet size={24} />
             </div>
-
-            <div className="summary-metric-card">
-              <div className="metric-icon-wrap blue">
-                <TrendingDown size={24} />
-              </div>
-              <div>
-                <span className="metric-label">TOTAL EXPENSES</span>
-                <span className="metric-value blue">{formatINR(totalExpenses)}</span>
-              </div>
+            <div>
+              <span className="metric-label">TOTAL ADVANCE</span>
+              <span className="metric-value gold">{formatINR(totalAdvance)}</span>
             </div>
+          </div>
 
-            <div className="summary-metric-card">
-              <div className={`metric-icon-wrap ${balance >= 0 ? 'green' : 'red'}`}>
-                <Scale size={24} />
-              </div>
-              <div>
-                <span className="metric-label">
-                  {balance >= 0 ? 'REMAINING BALANCE' : 'DEFICIT OVERDUE'}
-                </span>
-                <span className={`metric-value ${balance >= 0 ? 'green' : 'red'}`}>
-                  {formatINR(Math.abs(balance))}
-                </span>
-              </div>
+          {/* Total Expense */}
+          <div className="client-unified-card-item metric-item">
+            <div className="metric-icon-wrap blue">
+              <TrendingDown size={24} />
+            </div>
+            <div>
+              <span className="metric-label">TOTAL EXPENSE</span>
+              <span className="metric-value blue">{formatINR(totalExpenses)}</span>
+            </div>
+          </div>
+
+          {/* Remaining Amount */}
+          <div className="client-unified-card-item metric-item">
+            <div className={`metric-icon-wrap ${balance >= 0 ? 'green' : 'red'}`}>
+              <Scale size={24} />
+            </div>
+            <div>
+              <span className="metric-label">
+                {balance >= 0 ? 'REMAINING AMOUNT' : 'DEFICIT OVERDUE'}
+              </span>
+              <span className={`metric-value ${balance >= 0 ? 'green' : 'red'}`}>
+                {formatINR(Math.abs(balance))}
+              </span>
             </div>
           </div>
         </div>
@@ -684,6 +692,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
             selectedCount={selectedAdvIds.size}
             onBulkDelete={() => setIsBulkDeleteAdvOpen(true)}
             deleteLabel="Delete Selected"
+            onPrint={() => handleOpenPrintPreview('advances')}
+            printLabel="Print Advances"
           />
 
           <section className="afrah-app-table-section">
@@ -691,7 +701,6 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               <div>
                 <h2 className="afrah-app-section-title">Advance Payments</h2>
                 <span className="afrah-app-section-subtitle">
-                  {filteredAdvance.length} {filteredAdvance.length === 1 ? 'payment' : 'payments'} recorded
                   {(advFromDate || advToDate) && ' (filtered)'}
                 </span>
               </div>
@@ -751,12 +760,12 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                             #{advStartIndex + index + 1}
                           </td>
                           <td>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                              <Calendar size={12} color="var(--primary)" />
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600 }}>
+                              <Calendar size={13} color="var(--primary)" />
                               <span>{formatToDDMMYYYY(item.date)}</span>
                             </div>
                           </td>
-                          <td style={{ fontWeight: 700, color: 'var(--primary)', fontFamily: 'JetBrains Mono, monospace' }}>
+                          <td style={{ fontWeight: 800, fontSize: '14.5px', color: 'var(--primary)', fontFamily: 'JetBrains Mono, monospace' }}>
                             {formatINR(item.amount)}
                           </td>
                           <td>
@@ -867,6 +876,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
             selectedCount={selectedExpIds.size}
             onBulkDelete={() => setIsBulkDeleteExpOpen(true)}
             deleteLabel="Delete Selected"
+            onPrint={() => handleOpenPrintPreview('expenses')}
+            printLabel="Print Expenses"
           />
 
           <section className="afrah-app-table-section">
@@ -874,7 +885,6 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               <div>
                 <h2 className="afrah-app-section-title">Site Expenses</h2>
                 <span className="afrah-app-section-subtitle">
-                  {filteredExpenses.length} {filteredExpenses.length === 1 ? 'expense' : 'expenses'} recorded
                   {(expFromDate || expToDate) && ' (filtered)'}
                 </span>
               </div>
@@ -936,8 +946,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                             #{expStartIndex + index + 1}
                           </td>
                           <td>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                              <Calendar size={12} color="var(--primary)" />
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600 }}>
+                              <Calendar size={13} color="var(--primary)" />
                               <span>{formatToDDMMYYYY(exp.date)}</span>
                             </div>
                           </td>
@@ -946,13 +956,13 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                               {exp.expenseName}
                             </span>
                           </td>
-                          <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '12px' }}>
+                          <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '13.5px', fontWeight: 600 }}>
                             {exp.quantity}
                           </td>
-                          <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '12px' }}>
+                          <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '13.5px', fontWeight: 600 }}>
                             {formatINR(exp.rate)}
                           </td>
-                          <td style={{ fontWeight: 700, color: 'var(--primary)', fontFamily: 'JetBrains Mono, monospace' }}>
+                          <td style={{ fontWeight: 800, fontSize: '14.5px', color: 'var(--primary)', fontFamily: 'JetBrains Mono, monospace' }}>
                             {formatINR(exp.totalAmount)}
                           </td>
                           <td className="no-print" style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
@@ -1369,6 +1379,18 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         isDeleting={isBulkDeletingExp}
         onConfirm={handleConfirmBulkDeleteExp}
         onClose={() => setIsBulkDeleteExpOpen(false)}
+      />
+
+      {/* STATEMENT PRINT PREVIEW MODAL */}
+      <StatementPrintPreviewModal
+        isOpen={isPrintPreviewOpen}
+        onClose={() => setIsPrintPreviewOpen(false)}
+        client={client}
+        advancePayments={filteredAdvance}
+        expenses={filteredExpenses}
+        initialMode={previewMode}
+        fromDate={previewMode === 'expenses' ? expFromDate : previewMode === 'advances' ? advFromDate : undefined}
+        toDate={previewMode === 'expenses' ? expToDate : previewMode === 'advances' ? advToDate : undefined}
       />
     </div>
   );

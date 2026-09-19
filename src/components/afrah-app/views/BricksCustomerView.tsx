@@ -378,10 +378,11 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                           </div>
                           <div>
                             <span
+                              className="row-entity-name"
                               style={{
                                 color: 'var(--text-primary)',
-                                fontSize: '13.5px',
-                                fontWeight: 600,
+                                fontSize: '15px',
+                                fontWeight: 750,
                                 display: 'block'
                               }}
                             >
@@ -389,7 +390,8 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                             </span>
                             <span
                               style={{
-                                fontSize: '11px',
+                                fontSize: '12px',
+                                fontWeight: 500,
                                 color: 'var(--text-secondary)'
                               }}
                             >
@@ -401,7 +403,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                       <td style={{ whiteSpace: 'nowrap' }}>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                           <Phone size={13} color="var(--primary)" />
-                          <span style={{ fontFamily: 'monospace', fontSize: '12px' }}>
+                          <span style={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 600 }}>
                             {customer.phone}
                           </span>
                         </div>
@@ -410,11 +412,11 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                         <span
                           style={{
                             display: 'inline-block',
-                            padding: '3px 8px',
+                            padding: '4px 10px',
                             borderRadius: '6px',
-                            fontWeight: 700,
-                            fontFamily: 'monospace',
-                            fontSize: '12.5px',
+                            fontWeight: 800,
+                            fontFamily: 'JetBrains Mono, monospace',
+                            fontSize: '14px',
                             background:
                               currentBalance > 0
                                 ? 'rgba(239, 68, 68, 0.12)'

@@ -369,13 +369,13 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
                         #{startIndex + index + 1}
                       </td>
                       <td>
-                        <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '13.5px' }}>
+                        <span className="row-client-name" style={{ fontWeight: 750, color: 'var(--text-primary)', fontSize: '15px' }}>
                           {client.name}
                         </span>
                       </td>
                       <td>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '13px', fontWeight: 600 }}>
                             <Phone size={12} color="var(--primary)" />
                             <span>{client.phone}</span>
                           </div>
@@ -385,7 +385,7 @@ export const InteriorClientView: React.FC<InteriorClientViewProps> = ({
                                 display: 'inline-flex',
                                 alignItems: 'center',
                                 gap: '5px',
-                                fontSize: '11.5px',
+                                fontSize: '12.5px',
                                 color: 'var(--text-secondary)'
                               }}
                             >

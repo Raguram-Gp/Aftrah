@@ -846,7 +846,7 @@ export const AfrahAppPortal: React.FC = () => {
                               <div className="afrah-app-user-avatar">
                                 {client.name.charAt(0).toUpperCase()}
                               </div>
-                              <span style={{ color: 'var(--text-primary)', fontSize: '13.5px', fontWeight: 500 }}>
+                              <span className="row-client-name" style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 750 }}>
                                 {client.name}
                               </span>
                             </div>
@@ -854,13 +854,13 @@ export const AfrahAppPortal: React.FC = () => {
                           <td style={{ whiteSpace: 'nowrap' }}>
                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                               <Phone size={13} color="var(--primary)" />
-                              <span style={{ fontFamily: 'monospace', fontSize: '12px' }}>{client.phone}</span>
+                              <span style={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 600 }}>{client.phone}</span>
                             </div>
                           </td>
                           <td>
                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)' }}>
                               <MapPin size={13} color="var(--primary)" />
-                              <span style={{ fontSize: '12.5px' }}>{client.address}</span>
+                              <span style={{ fontSize: '13.5px', fontWeight: 500 }}>{client.address}</span>
                             </div>
                           </td>
                           <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>

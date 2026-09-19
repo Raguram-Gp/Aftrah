@@ -252,7 +252,7 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
                             <div className="afrah-app-user-avatar" style={{ background: 'rgba(226, 195, 153, 0.15)', color: 'var(--primary)' }}>
                               <Store size={14} />
                             </div>
-                            <span style={{ color: 'var(--text-primary)', fontSize: '13.5px', fontWeight: 600 }}>
+                            <span className="row-entity-name" style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 750 }}>
                               {shop.name}
                             </span>
                           </div>
@@ -260,21 +260,21 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
                         <td style={{ whiteSpace: 'nowrap' }}>
                           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                             <Phone size={13} color="var(--primary)" />
-                            <span style={{ fontFamily: 'monospace', fontSize: '12px' }}>{shop.phone}</span>
+                            <span style={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 600 }}>{shop.phone}</span>
                           </div>
                         </td>
                         <td>
                           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)' }}>
                             <MapPin size={13} color="var(--primary)" />
-                            <span style={{ fontSize: '12.5px' }}>{shop.address}</span>
+                            <span style={{ fontSize: '13.5px', fontWeight: 500 }}>{shop.address}</span>
                           </div>
                         </td>
                         <td style={{ textAlign: 'right' }}>
                           <span
                             style={{
                               fontFamily: 'JetBrains Mono, monospace',
-                              fontWeight: 700,
-                              fontSize: '12.5px',
+                              fontWeight: 800,
+                              fontSize: '14px',
                               color: pending > 0 ? '#f87171' : '#4ade80'
                             }}
                           >

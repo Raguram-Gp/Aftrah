@@ -192,6 +192,31 @@ export const formatToYYYYMMDD = (val: string): string => {
 };
 
 /**
+ * Comparator to sort two records descending by date (newest first).
+ * Converts any date format (YYYY-MM-DD, DD/MM/YYYY, DD-MM-YYYY, etc.) to ISO format.
+ * If dates are equal, optionally breaks ties using tieBreakerB vs tieBreakerA (e.g. sNo or createdAt).
+ */
+export const compareByDateDesc = (
+  dateA?: string | null,
+  dateB?: string | null,
+  tieBreakerA?: number | string | null,
+  tieBreakerB?: number | string | null
+): number => {
+  const isoA = formatToYYYYMMDD(dateA || '');
+  const isoB = formatToYYYYMMDD(dateB || '');
+  const dateDiff = isoB.localeCompare(isoA);
+  if (dateDiff !== 0) return dateDiff;
+
+  if (typeof tieBreakerA === 'number' && typeof tieBreakerB === 'number') {
+    return tieBreakerB - tieBreakerA;
+  }
+  if (typeof tieBreakerA === 'string' && typeof tieBreakerB === 'string') {
+    return tieBreakerB.localeCompare(tieBreakerA);
+  }
+  return 0;
+};
+
+/**
  * Get current date as DD/MM/YYYY string
  */
 export const getTodayDDMMYYYY = (): string => {

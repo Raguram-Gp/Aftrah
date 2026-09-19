@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import type { BrickStockItem, BrickStockItemEntry } from '../types';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
-import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD } from '../components/DateInput';
+import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
   Boxes,
   Plus,
@@ -236,7 +236,7 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
       );
     }
 
-    return list;
+    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
   }, [entries, fromDate, toDate, searchQuery]);
 
   // Pagination computations

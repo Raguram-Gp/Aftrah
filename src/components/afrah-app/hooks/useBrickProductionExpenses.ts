@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import type { BrickProductionExpense } from '../types';
+import { compareByDateDesc } from '../utils/dateUtils';
 
 export const useBrickProductionExpenses = () => {
   const [expenses, setExpenses] = useState<BrickProductionExpense[]>([]);
@@ -38,7 +39,7 @@ export const useBrickProductionExpenses = () => {
           updated_at
         `)
         .order('date', { ascending: false })
-        .order('s_no', { ascending: true });
+        .order('s_no', { ascending: false });
 
       if (fetchError) throw fetchError;
 
@@ -59,7 +60,7 @@ export const useBrickProductionExpenses = () => {
           notes: item.notes || '',
           createdAt: item.created_at,
           updatedAt: item.updated_at,
-        }));
+        })).sort((a: any, b: any) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
 
         setExpenses(mapped);
       }
@@ -123,7 +124,11 @@ export const useBrickProductionExpenses = () => {
           updatedAt: inserted.updated_at,
         };
 
-        setExpenses((prev) => [newExpense, ...prev].map((item, idx) => ({ ...item, sNo: idx + 1 })));
+        setExpenses((prev) =>
+          [newExpense, ...prev]
+            .sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo))
+            .map((item, idx) => ({ ...item, sNo: idx + 1 }))
+        );
         return newExpense;
       } catch (err: any) {
         console.error('Error adding production expense:', err);
@@ -159,17 +164,19 @@ export const useBrickProductionExpenses = () => {
         if (updateError) throw updateError;
 
         setExpenses((prev) =>
-          prev.map((item) =>
-            item.id === updated.id
-              ? {
-                  ...updated,
-                  quantity: Number(updated.quantity) || 1,
-                  rate: Number(updated.rate) || 0,
-                  totalAmount: Number(updated.totalAmount) || 0,
-                  updatedAt: new Date().toISOString(),
-                }
-              : item
-          )
+          prev
+            .map((item) =>
+              item.id === updated.id
+                ? {
+                    ...updated,
+                    quantity: Number(updated.quantity) || 1,
+                    rate: Number(updated.rate) || 0,
+                    totalAmount: Number(updated.totalAmount) || 0,
+                    updatedAt: new Date().toISOString(),
+                  }
+                : item
+            )
+            .sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo))
         );
       } catch (err: any) {
         console.error('Error updating production expense:', err);

@@ -10,7 +10,7 @@ import {
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { DateFilterBar } from '../components/DateFilterBar';
-import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD } from '../components/DateInput';
+import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
   ArrowLeft,
   Phone,
@@ -166,7 +166,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
           String(a.amount).includes(q)
       );
     }
-    return list;
+    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
   }, [advancePayments, advSearch, advFromDate, advToDate]);
 
   const totalAdvanceAmount = filteredAdvance.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
@@ -225,7 +225,7 @@ export const InteriorClientDetailsView: React.FC<InteriorClientDetailsViewProps>
           String(e.totalAmount).includes(q)
       );
     }
-    return list;
+    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
   }, [expenses, expSearch, expFromDate, expToDate]);
 
   const totalExpensesAmount = filteredExpenses.reduce((sum, item) => sum + (Number(item.totalAmount) || 0), 0);

@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import type { LabourContract, LabourContractEntry } from '../types';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
-import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD } from '../components/DateInput';
+import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
   ArrowLeft,
   HardHat,
@@ -121,13 +121,16 @@ export const InteriorLabourContractDetailsView: React.FC<InteriorLabourContractD
   // Filter entries
   const filteredEntries = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
-    if (!q) return entries;
-    return entries.filter(
-      (e) =>
-        e.workType.toLowerCase().includes(q) ||
-        e.date.includes(q) ||
-        (e.note && e.note.toLowerCase().includes(q))
-    );
+    const list = q
+      ? entries.filter(
+          (e) =>
+            e.workType.toLowerCase().includes(q) ||
+            e.date.includes(q) ||
+            formatToDDMMYYYY(e.date).includes(q) ||
+            (e.note && e.note.toLowerCase().includes(q))
+        )
+      : entries;
+    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
   }, [entries, searchQuery]);
 
   // Pagination

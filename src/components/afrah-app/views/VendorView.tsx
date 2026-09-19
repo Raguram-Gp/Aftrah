@@ -201,14 +201,14 @@ export const VendorView: React.FC<VendorViewProps> = ({
                             <Truck size={14} />
                           </div>
                           <div>
-                            <span style={{ color: 'var(--text-primary)', fontSize: '13.5px', fontWeight: 600 }}>
+                            <span className="row-entity-name" style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 750 }}>
                               {vendor.type}
                             </span>
                           </div>
                         </div>
                       </td>
                       <td style={{ textAlign: 'center' }}>
-                        <span className="section-total-badge" style={{ fontSize: '11.5px', padding: '2px 8px' }}>
+                        <span className="section-total-badge" style={{ fontSize: '12.5px', fontWeight: 700, padding: '3px 10px' }}>
                           {shopsCount} {shopsCount === 1 ? 'shop' : 'shops'}
                         </span>
                       </td>

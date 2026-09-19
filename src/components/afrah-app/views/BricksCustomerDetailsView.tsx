@@ -3,7 +3,7 @@ import type { BrickCustomer, BrickTransaction } from '../types';
 import { PREDEFINED_BRICK_TYPES } from '../types';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { DateFilterBar } from '../components/DateFilterBar';
-import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD } from '../components/DateInput';
+import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
   ArrowLeft,
   Phone,
@@ -153,7 +153,7 @@ export const BricksCustomerDetailsView: React.FC<BricksCustomerDetailsViewProps>
       );
     }
 
-    return list;
+    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
   }, [transactions, searchQuery, fromDate, toDate]);
 
   // Metrics for filtered selection

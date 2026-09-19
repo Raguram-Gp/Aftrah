@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import type { BrickCustomer, BrickTransaction } from '../types';
+import { compareByDateDesc } from '../utils/dateUtils';
 
 export const useBrickCustomers = () => {
   const [brickCustomers, setBrickCustomers] = useState<BrickCustomer[]>([]);
@@ -74,7 +75,7 @@ export const useBrickCustomers = () => {
             driverPhone: t.driver_phone || '',
             notes: t.notes || '',
             createdAt: t.created_at,
-          })).sort((a: any, b: any) => a.sNo - b.sNo);
+          })).sort((a: any, b: any) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
 
           return {
             id: cust.id,
@@ -274,10 +275,12 @@ export const useBrickCustomers = () => {
         setBrickCustomers((prev) =>
           prev.map((cust) => {
             if (cust.id !== customerId) return cust;
-            const updatedTxs = [...(cust.transactions || []), newTx].map((tx, idx) => ({
-              ...tx,
-              sNo: idx + 1,
-            }));
+            const updatedTxs = [...(cust.transactions || []), newTx]
+              .sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo))
+              .map((tx, idx) => ({
+                ...tx,
+                sNo: idx + 1,
+              }));
             const newBal = computeCustomerBalance(updatedTxs);
             // update balance on customer table asynchronously
             supabase.from('brick_customers').update({ balance: newBal }).eq('id', customerId).then();
@@ -328,9 +331,9 @@ export const useBrickCustomers = () => {
         setBrickCustomers((prev) =>
           prev.map((cust) => {
             if (cust.id !== customerId) return cust;
-            const updatedTxs = (cust.transactions || []).map((t) =>
-              t.id === txData.id ? { ...txData } : t
-            );
+            const updatedTxs = (cust.transactions || [])
+              .map((t) => (t.id === txData.id ? { ...txData } : t))
+              .sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
             const newBal = computeCustomerBalance(updatedTxs);
             supabase.from('brick_customers').update({ balance: newBal }).eq('id', customerId).then();
 

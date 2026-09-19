@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import type { LabourContract } from '../types';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
-import { DateInput, isValidDate, formatToDDMMYYYY } from '../components/DateInput';
+import { DateInput, isValidDate, formatToDDMMYYYY, compareByDateDesc } from '../components/DateInput';
 import {
   HardHat,
   Search,
@@ -93,14 +93,17 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
   // Filter contracts
   const filteredContracts = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
-    if (!q) return contracts;
-    return contracts.filter(
-      (c) =>
-        c.labourName.toLowerCase().includes(q) ||
-        c.siteName.toLowerCase().includes(q) ||
-        c.phone.includes(q) ||
-        c.date.includes(q)
-    );
+    const list = q
+      ? contracts.filter(
+          (c) =>
+            c.labourName.toLowerCase().includes(q) ||
+            c.siteName.toLowerCase().includes(q) ||
+            c.phone.includes(q) ||
+            c.date.includes(q) ||
+            formatToDDMMYYYY(c.date).includes(q)
+        )
+      : contracts;
+    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
   }, [contracts, searchQuery]);
 
   // Pagination computations
@@ -270,7 +273,7 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
                             <HardHat size={14} />
                           </div>
                           <div>
-                            <span style={{ color: 'var(--text-primary)', fontSize: '13.5px', fontWeight: 600 }}>
+                            <span className="row-entity-name" style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 750 }}>
                               {contract.labourName}
                             </span>
                           </div>
@@ -279,17 +282,17 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
                       <td>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--text-primary)' }}>
                           <MapPin size={13} color="var(--primary)" />
-                          <span style={{ fontSize: '13px', fontWeight: 500 }}>{contract.siteName}</span>
+                          <span style={{ fontSize: '13.5px', fontWeight: 600 }}>{contract.siteName}</span>
                         </div>
                       </td>
                       <td style={{ whiteSpace: 'nowrap' }}>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                           <Phone size={13} color="var(--primary)" />
-                          <span style={{ fontFamily: 'monospace', fontSize: '12px' }}>{contract.phone}</span>
+                          <span style={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 600 }}>{contract.phone}</span>
                         </div>
                       </td>
                       <td>
-                        <strong style={{ color: 'var(--primary)', fontSize: '13.5px', fontWeight: 700 }}>
+                        <strong style={{ color: 'var(--primary)', fontSize: '14.5px', fontWeight: 800, fontFamily: 'JetBrains Mono, monospace' }}>
                           {formatINR(charge)}
                         </strong>
                       </td>
@@ -297,10 +300,11 @@ export const InteriorLabourContractView: React.FC<InteriorLabourContractViewProp
                         <span
                           style={{
                             display: 'inline-block',
-                            padding: '3px 10px',
+                            padding: '4px 10px',
                             borderRadius: '6px',
-                            fontSize: '12.5px',
-                            fontWeight: 700,
+                            fontSize: '14px',
+                            fontWeight: 800,
+                            fontFamily: 'JetBrains Mono, monospace',
                             background: balance > 0 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)',
                             color: balance > 0 ? '#f87171' : '#4ade80',
                             border: `1px solid ${balance > 0 ? 'rgba(239, 68, 68, 0.25)' : 'rgba(34, 197, 94, 0.25)'}`

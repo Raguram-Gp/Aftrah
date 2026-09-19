@@ -3,7 +3,7 @@ import type { BankAccount, BankTransaction } from '../types';
 import { BankLogo } from '../components/BankLogo';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { DateFilterBar } from '../components/DateFilterBar';
-import { formatToDDMMYYYY, formatToYYYYMMDD } from '../components/DateInput';
+import { formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import { showToast } from '../layout/ToastContainer';
 import {
   Landmark,
@@ -259,7 +259,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
       const toISO = formatToYYYYMMDD(ledgerToDate);
       list = list.filter((t) => formatToYYYYMMDD(t.date) <= toISO);
     }
-    return list;
+    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.createdAt, b.createdAt));
   }, [activeLedgerBank, ledgerFromDate, ledgerToDate]);
 
   // Ledger Multi-select Checkbox Handlers

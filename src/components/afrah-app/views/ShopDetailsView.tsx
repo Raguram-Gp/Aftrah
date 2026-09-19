@@ -3,7 +3,7 @@ import type { Vendor, VendorShop, ShopTransaction } from '../types';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
 import { DateFilterBar } from '../components/DateFilterBar';
-import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD } from '../components/DateInput';
+import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
   ArrowLeft,
   Phone,
@@ -151,7 +151,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
           String(tx.sNo).includes(q)
       );
     }
-    return list;
+    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
   }, [transactions, searchQuery, fromDate, toDate]);
 
   // Financial summary computations

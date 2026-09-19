@@ -3,7 +3,7 @@ import type { BrickProductionExpense } from '../types';
 import { BRICK_PRODUCTION_EXPENSE_OPTIONS } from '../types';
 import { SearchableExpenseSelect } from '../components/SearchableExpenseSelect';
 import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
-import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD } from '../components/DateInput';
+import { DateInput, isValidDate, formatToDDMMYYYY, formatToYYYYMMDD, compareByDateDesc } from '../components/DateInput';
 import {
   Flame,
   Plus,
@@ -196,17 +196,20 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
   // Filter expenses by search query
   const filteredExpenses = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
-    if (!q) return expenses;
-    return expenses.filter(
-      (item) =>
-        item.expenseName.toLowerCase().includes(q) ||
-        (item.category && item.category.toLowerCase().includes(q)) ||
-        (item.date && item.date.includes(q)) ||
-        String(item.quantity).includes(q) ||
-        String(item.rate).includes(q) ||
-        String(item.totalAmount).includes(q) ||
-        String(item.sNo).includes(q)
-    );
+    const list = q
+      ? expenses.filter(
+          (item) =>
+            item.expenseName.toLowerCase().includes(q) ||
+            (item.category && item.category.toLowerCase().includes(q)) ||
+            (item.date && item.date.includes(q)) ||
+            formatToDDMMYYYY(item.date).includes(q) ||
+            String(item.quantity).includes(q) ||
+            String(item.rate).includes(q) ||
+            String(item.totalAmount).includes(q) ||
+            String(item.sNo).includes(q)
+        )
+      : expenses;
+    return [...list].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
   }, [expenses, searchQuery]);
 
   // Overall Total

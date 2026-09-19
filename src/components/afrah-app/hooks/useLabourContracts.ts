@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import type { LabourContract, LabourContractEntry } from '../types';
+import { compareByDateDesc } from '../utils/dateUtils';
 
 export const useLabourContracts = () => {
   const [contracts, setContracts] = useState<LabourContract[]>([]);
@@ -61,7 +62,7 @@ export const useLabourContracts = () => {
             totalAmount: Number(e.total_amount || 0),
             note: e.note || '',
             createdAt: e.created_at
-          })).sort((a: any, b: any) => a.sNo - b.sNo);
+          })).sort((a: any, b: any) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
 
           return {
             id: c.id,
@@ -76,7 +77,7 @@ export const useLabourContracts = () => {
             updatedAt: c.updated_at,
             entries: rawEntries
           };
-        });
+        }).sort((a: LabourContract, b: LabourContract) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo));
 
         setContracts(mapped);
       }
@@ -123,7 +124,9 @@ export const useLabourContracts = () => {
         entries: []
       };
 
-      setContracts((prev) => [...prev, newContract]);
+      setContracts((prev) =>
+        [newContract, ...prev].sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo))
+      );
       return newContract;
     } catch (err: any) {
       console.error('Error adding interior labour contract:', err);
@@ -259,7 +262,12 @@ export const useLabourContracts = () => {
       setContracts((prev) =>
         prev.map((c) =>
           c.id === contractId
-            ? { ...c, entries: [...(c.entries || []), newEntry] }
+            ? {
+                ...c,
+                entries: [...(c.entries || []), newEntry].sort((a, b) =>
+                  compareByDateDesc(a.date, b.date, a.sNo, b.sNo)
+                ),
+              }
             : c
         )
       );
@@ -293,9 +301,9 @@ export const useLabourContracts = () => {
           c.id === contractId
             ? {
                 ...c,
-                entries: (c.entries || []).map((e) =>
-                  e.id === updatedEntry.id ? updatedEntry : e
-                )
+                entries: (c.entries || [])
+                  .map((e) => (e.id === updatedEntry.id ? updatedEntry : e))
+                  .sort((a, b) => compareByDateDesc(a.date, b.date, a.sNo, b.sNo)),
               }
             : c
         )
