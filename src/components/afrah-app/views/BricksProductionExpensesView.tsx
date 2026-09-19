@@ -386,16 +386,10 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
             <tbody>
               {paginatedExpenses.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="afrah-app-empty-cell">
-                    <div className="empty-state-wrap">
-                      <Flame size={28} className="empty-icon" color="var(--text-secondary)" style={{ opacity: 0.5 }} />
-                      <span className="empty-text">No production expense records found</span>
-                      <span className="empty-subtext">
-                        {searchQuery
-                          ? 'No entries match your search query.'
-                          : 'Use the "Add details" form on the right to record new production expenses.'}
-                      </span>
-                    </div>
+                  <td colSpan={7} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
+                    {searchQuery
+                      ? 'No matching production expense records found.'
+                      : 'No production expense records found. Use the "Add details" form on the right to record new ones.'}
                   </td>
                 </tr>
               ) : (

@@ -111,9 +111,11 @@
   flex-direction: column;
   background: var(--surface-container-low, #141618);
   border-right: 1px solid var(--border-stroke, #232730);
+  position: relative;
   z-index: 100;
   box-sizing: border-box;
-  overflow: hidden;
+  /* Must stay visible: collapse control hangs over the sidebar/main seam */
+  overflow: visible;
   transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -121,7 +123,6 @@
 .app2-sidebar.collapsed {
   width: 68px;
   min-width: 68px;
-  overflow: visible !important;
 }
 
 [data-theme="light"] .afrah-app-sidebar,
@@ -136,20 +137,21 @@ html.light .app2-sidebar {
 /* Sidebar Brand: Afrah Constructions */
 .afrah-app-sidebar-brand,
 .app2-sidebar-brand {
-  padding: 16px 14px;
+  padding: 16px 22px 16px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--border-stroke, #232730);
   height: 56px;
   box-sizing: border-box;
+  position: relative;
+  overflow: visible;
 }
 
 .afrah-app-sidebar.collapsed .afrah-app-sidebar-brand,
 .app2-sidebar.collapsed .app2-sidebar-brand {
   padding: 12px 8px;
   justify-content: center;
-  position: relative;
 }
 
 .afrah-app-brand-link,
@@ -159,6 +161,9 @@ html.light .app2-sidebar {
   gap: 10px;
   text-decoration: none;
   color: inherit;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
 }
 
 .afrah-app-brand-icon,
@@ -178,59 +183,57 @@ html.light .app2-sidebar {
 .app2-brand-text {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .afrah-app-brand-title,
 .app2-brand-title {
   font-family: 'Cinzel', serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   color: var(--primary, #e2c399);
   line-height: 1.1;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .afrah-app-sidebar-collapse-btn,
 .app2-sidebar-collapse-btn {
-  background: none;
-  border: 1px solid var(--border-stroke, #232730);
-  border-radius: 6px;
-  width: 26px;
-  height: 26px;
+  position: absolute;
+  top: 50%;
+  right: -12px;
+  transform: translateY(-50%);
+  background: var(--surface-container-high, #25282c);
+  border: 1px solid var(--border-stroke, #3a3f4a);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.15s ease;
+  flex-shrink: 0;
+  z-index: 110;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .afrah-app-sidebar-collapse-btn:hover,
 .app2-sidebar-collapse-btn:hover {
   color: var(--text-primary);
   border-color: var(--primary);
-  background: rgba(226, 195, 153, 0.15);
+  background: rgba(226, 195, 153, 0.2);
 }
 
-.afrah-app-sidebar.collapsed .afrah-app-sidebar-collapse-btn,
-.app2-sidebar.collapsed .app2-sidebar-collapse-btn {
-  position: absolute;
-  top: 15px;
-  right: -13px;
-  background: var(--surface-container-high, #25282c);
-  border: 1px solid var(--border-stroke, #3a3f4a);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  z-index: 1000;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-}
-
-[data-theme="light"] .afrah-app-sidebar.collapsed .afrah-app-sidebar-collapse-btn,
-[data-theme="light"] .app2-sidebar.collapsed .app2-sidebar-collapse-btn {
+[data-theme="light"] .afrah-app-sidebar-collapse-btn,
+[data-theme="light"] .app2-sidebar-collapse-btn {
   background: #FFFFFF;
   border-color: #CBD5E1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .afrah-app-sidebar-mobile-close,
@@ -403,6 +406,7 @@ html.light .app2-sidebar {
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
+  z-index: 1;
 }
 
 /* TopBar */
@@ -1950,18 +1954,33 @@ html.light .app2-sidebar {
 }
 
 /* Responsive */
-@media (max-width: 992px) {
+@media (min-width: 993px) {
   .afrah-app-sidebar,
   .app2-sidebar {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 992px) {
+  .afrah-app-sidebar,
+  .afrah-app-sidebar.collapsed,
+  .app2-sidebar,
+  .app2-sidebar.collapsed {
     position: fixed;
     top: 0;
     left: 0;
     transform: translateX(-100%);
+    overflow: hidden !important;
   }
 
   .afrah-app-sidebar.mobile-open,
   .app2-sidebar.mobile-open {
     transform: translateX(0);
+  }
+
+  .afrah-app-sidebar-collapse-btn,
+  .app2-sidebar-collapse-btn {
+    display: none;
   }
 
   .afrah-app-sidebar-mobile-close,

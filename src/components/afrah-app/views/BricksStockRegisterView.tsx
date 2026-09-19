@@ -165,14 +165,10 @@ export const BricksStockRegisterView: React.FC<BricksStockRegisterViewProps> = (
             <tbody>
               {paginatedItems.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="afrah-app-empty-cell">
-                    <div className="empty-state-wrap">
-                      <Boxes size={28} className="empty-icon" color="var(--text-secondary)" style={{ opacity: 0.5 }} />
-                      <span className="empty-text">No stock items found</span>
-                      <span className="empty-subtext">
-                        {searchQuery ? 'No items match your search query.' : 'No stock items available.'}
-                      </span>
-                    </div>
+                  <td colSpan={4} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
+                    {searchQuery
+                      ? 'No matching stock items found.'
+                      : 'No stock items found. Use the "Add details" form on the right to add one.'}
                   </td>
                 </tr>
               ) : (

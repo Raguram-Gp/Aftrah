@@ -468,14 +468,8 @@ export const BricksStockItemDetailView: React.FC<BricksStockItemDetailViewProps>
               <tbody>
                 {paginatedEntries.length === 0 ? (
                   <tr>
-                    <td colSpan={isBricks ? 7 : 7} className="afrah-app-empty-cell">
-                      <div className="empty-state-wrap">
-                        <Boxes size={28} className="empty-icon" color="var(--text-secondary)" style={{ opacity: 0.5 }} />
-                        <span className="empty-text">No entries recorded for this item yet</span>
-                        <span className="empty-subtext">
-                          Use the "Add details" form on the right to log new records.
-                        </span>
-                      </div>
+                    <td colSpan={7} style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--text-secondary)' }}>
+                      No entries recorded for this item yet. Use the "Add details" form on the right to log new records.
                     </td>
                   </tr>
                 ) : (
