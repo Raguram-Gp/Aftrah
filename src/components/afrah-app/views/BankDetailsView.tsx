@@ -877,7 +877,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                       <th>DATE</th>
                       <th>TYPE</th>
                       <th>DESCRIPTION / NOTE</th>
-                      <th className="text-right">AMOUNT</th>
+                      <th>AMOUNT</th>
                       <th
                         className="no-print"
                         style={{ width: "50px", textAlign: "center" }}
@@ -953,14 +953,7 @@ export const BankDetailsView: React.FC<BankDetailsViewProps> = ({
                             >
                               {tx.note || "—"}
                             </td>
-                            <td
-                              style={{
-                                textAlign: "right",
-                                fontWeight: 700,
-                                fontFamily: "JetBrains Mono, monospace",
-                                color: isCredit ? "#4ade80" : "#f87171",
-                              }}
-                            >
+                            <td className="cell-amount">
                               {isCredit ? "+" : "-"}
                               {formatINR(tx.amount)}
                             </td>

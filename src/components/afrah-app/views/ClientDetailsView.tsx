@@ -789,14 +789,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                               {formatToDDMMYYYY(item.date)}
                             </span>
                           </td>
-                          <td
-                            style={{
-                              fontWeight: 800,
-                              fontSize: "14.5px",
-                              color: "var(--text-primary)",
-                              fontFamily: "JetBrains Mono, monospace",
-                            }}
-                          >
+                          <td className="cell-amount">
                             {formatINR(item.amount)}
                           </td>
                           <td>
@@ -977,23 +970,10 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                           >
                             {exp.quantity}
                           </td>
-                          <td
-                            style={{
-                              fontFamily: "JetBrains Mono, monospace",
-                              fontSize: "13.5px",
-                              fontWeight: 600,
-                            }}
-                          >
+                          <td className="cell-amount">
                             {formatINR(exp.rate)}
                           </td>
-                          <td
-                            style={{
-                              fontWeight: 800,
-                              fontSize: "14.5px",
-                              color: "var(--text-primary)",
-                              fontFamily: "JetBrains Mono, monospace",
-                            }}
-                          >
+                          <td className="cell-amount">
                             {formatINR(exp.totalAmount)}
                           </td>
                           <td

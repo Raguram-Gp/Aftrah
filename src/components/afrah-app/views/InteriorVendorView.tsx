@@ -184,7 +184,7 @@ export const InteriorVendorView: React.FC<InteriorVendorViewProps> = ({
 
         {/* Table matching handwritten sketch: S.NO, TYPE (TRADE / MATERIAL), SHOPS COUNT, ACTIONS */}
         <div className="afrah-app-table-container">
-          <table className="afrah-app-table">
+          <table className="afrah-app-table has-col-separators">
             <thead>
               <tr>
                 <th className="text-center" style={{ width: '60px' }}>S.NO</th>

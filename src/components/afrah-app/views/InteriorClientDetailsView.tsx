@@ -761,7 +761,7 @@ export const InteriorClientDetailsView: React.FC<
                     <th>DATE</th>
                     <th>PAYMENT MODE</th>
                     <th>NOTE / MILESTONE</th>
-                    <th className="text-right">AMOUNT (₹)</th>
+                    <th>AMOUNT (₹)</th>
                     <th
                       className="no-print text-center"
                       style={{ width: "70px" }}
@@ -820,14 +820,7 @@ export const InteriorClientDetailsView: React.FC<
                           >
                             {item.note || "—"}
                           </td>
-                          <td
-                            style={{
-                              textAlign: "right",
-                              fontFamily: "monospace",
-                              fontWeight: 700,
-                              color: "#4ade80",
-                            }}
-                          >
+                          <td className="cell-amount">
                             {formatINR(item.amount)}
                           </td>
                           <td
@@ -926,10 +919,10 @@ export const InteriorClientDetailsView: React.FC<
                     <th className="text-center" style={{ width: "60px" }}>
                       Per
                     </th>
-                    <th className="text-right" style={{ width: "90px" }}>
+                    <th style={{ width: "90px" }}>
                       Rate
                     </th>
-                    <th className="text-right" style={{ width: "115px" }}>
+                    <th style={{ width: "115px" }}>
                       Amount
                     </th>
                     <th
@@ -1019,12 +1012,7 @@ export const InteriorClientDetailsView: React.FC<
                                 }}
                               >
                                 Subtotal:{" "}
-                                <strong
-                                  style={{
-                                    color: "var(--primary)",
-                                    fontFamily: "monospace",
-                                  }}
-                                >
+                                <strong className="cell-amount">
                                   {formatINR(group.subtotal)}
                                 </strong>
                               </span>
@@ -1077,23 +1065,10 @@ export const InteriorClientDetailsView: React.FC<
                               >
                                 {exp.unit || "Sq.ft"}
                               </td>
-                              <td
-                                style={{
-                                  textAlign: "right",
-                                  fontFamily: "monospace",
-                                  color: "var(--text-secondary)",
-                                }}
-                              >
+                              <td className="cell-amount">
                                 {Number(exp.rate || 0).toLocaleString("en-IN")}
                               </td>
-                              <td
-                                style={{
-                                  textAlign: "right",
-                                  fontFamily: "monospace",
-                                  fontWeight: 700,
-                                  color: "var(--primary)",
-                                }}
-                              >
+                              <td className="cell-amount">
                                 {formatINR(exp.totalAmount)}
                               </td>
                               <td
@@ -1141,15 +1116,7 @@ export const InteriorClientDetailsView: React.FC<
                           >
                             TOTAL ({group.category}):
                           </td>
-                          <td
-                            style={{
-                              textAlign: "right",
-                              fontWeight: 800,
-                              fontFamily: "monospace",
-                              fontSize: "13px",
-                              color: "var(--primary)",
-                            }}
-                          >
+                          <td className="cell-amount">
                             {formatINR(group.subtotal)}
                           </td>
                           <td className="no-print"></td>
@@ -1179,16 +1146,7 @@ export const InteriorClientDetailsView: React.FC<
                       >
                         FINAL TOTAL:
                       </td>
-                      <td
-                        style={{
-                          textAlign: "right",
-                          fontWeight: 900,
-                          fontFamily: "monospace",
-                          fontSize: "15px",
-                          color: "var(--primary)",
-                          padding: "12px 16px",
-                        }}
-                      >
+                      <td className="cell-amount" style={{ padding: "12px 16px" }}>
                         {formatINR(totalExpensesAmount)}
                       </td>
                       <td className="no-print"></td>

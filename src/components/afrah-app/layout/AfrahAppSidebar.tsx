@@ -185,7 +185,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                   )}
                 </div>
                 {!isCollapsed ? (
-                  <div style={{ display: 'flex', alignItems: 'center', color: 'var(--text-secondary)' }}>
+                  <div className="afrah-app-nav-chevron">
                     {isConstructionExpanded ? (
                       <ChevronUp size={15} />
                     ) : (
@@ -280,7 +280,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                   )}
                 </div>
                 {!isCollapsed ? (
-                  <div style={{ display: 'flex', alignItems: 'center', color: 'var(--text-secondary)' }}>
+                  <div className="afrah-app-nav-chevron">
                     {isBricksExpanded ? (
                       <ChevronUp size={15} />
                     ) : (
@@ -385,7 +385,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                   )}
                 </div>
                 {!isCollapsed ? (
-                  <div style={{ display: 'flex', alignItems: 'center', color: 'var(--text-secondary)' }}>
+                  <div className="afrah-app-nav-chevron">
                     {isInteriorExpanded ? (
                       <ChevronUp size={15} />
                     ) : (

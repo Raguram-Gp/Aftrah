@@ -377,8 +377,8 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                 <th style={{ width: '110px' }}>DATE</th>
                 <th>EXPENSES</th>
                 <th className="text-right" style={{ width: '110px' }}>Quality</th>
-                <th className="text-right" style={{ width: '110px' }}>Rate</th>
-                <th className="text-right" style={{ width: '130px' }}>Total</th>
+                <th style={{ width: '110px' }}>Rate</th>
+                <th style={{ width: '130px' }}>Total</th>
                 <th className="no-print text-center" style={{ width: '90px' }}>EDIT / DELETE</th>
               </tr>
             </thead>
@@ -450,12 +450,12 @@ export const BricksProductionExpensesView: React.FC<BricksProductionExpensesView
                       </td>
 
                       {/* Rate */}
-                      <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>
+                      <td className="cell-amount">
                         {expense.rate > 0 ? `₹${Number(expense.rate).toLocaleString('en-IN')}` : '-'}
                       </td>
 
                       {/* Total */}
-                      <td style={{ textAlign: 'right', fontWeight: 700, color: '#f87171' }}>
+                      <td className="cell-amount">
                         {formatINR(expense.totalAmount)}
                       </td>
 

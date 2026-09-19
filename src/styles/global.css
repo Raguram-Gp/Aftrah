@@ -5,7 +5,7 @@
    ============================================ */
 
 /* --- Google Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@600;700;800&display=swap");
 
 /* --- CSS Custom Properties (Dark Theme — Default) --- */
 :root,
@@ -17,7 +17,7 @@ html.dark {
   --surface-bright: #37393d;
   --surface-container-lowest: #0c0e11;
   --surface-container-low: #1a1c1f;
-  --sidebar-bg: #141618;
+  --sidebar-bg: #2e2924;
   --surface-container: #1e2023;
   --surface-container-high: #282a2d;
   --surface-container-highest: #333538;
@@ -42,8 +42,8 @@ html.dark {
   --tertiary-container: #9fadc7;
 
   /* Text */
-  --text-primary: #F5F5F7;
-  --text-secondary: #A1A1AA;
+  --text-primary: #f5f5f7;
+  --text-secondary: #a1a1aa;
   --on-surface: #e2e2e6;
   --on-surface-variant: #d1c5b8;
 
@@ -65,10 +65,14 @@ html.dark {
   --mobile-overlay-bg: rgba(17, 19, 23, 0.98);
   --glow-color: rgba(226, 195, 153, 0.2);
   --glow-color-intense: rgba(226, 195, 153, 0.4);
-  --inquiry-radial: radial-gradient(circle at 100% 100%, var(--primary) 0%, transparent 60%);
+  --inquiry-radial: radial-gradient(
+    circle at 100% 100%,
+    var(--primary) 0%,
+    transparent 60%
+  );
   --logo-blend-mode: screen;
   --logo-filter: brightness(1) contrast(1);
-  --select-arrow-fill: '%23A1A1AA';
+  --select-arrow-fill: "%23A1A1AA";
 
   /* 3D WebGL Scene Sync Colors (Hex references) */
   --webgl-clear-color: #111317;
@@ -86,17 +90,17 @@ html.dark {
   --section-gap: 160px;
 
   /* Typography Scale — anchored to client list (20px row name) */
-  --fs-3xl: 32px;   /* hero metric, big total */
-  --fs-2xl: 26px;   /* large metric, page hero number */
-  --fs-xl: 22px;    /* card balance, big emphasis */
-  --fs-lg: 20px;    /* table row primary text (client name — reference) */
-  --fs-md: 18px;    /* table row secondary data, body large */
-  --fs-base: 16px;  /* section title, button, emphasis */
-  --fs-sm: 14px;    /* input, body, button label */
-  --fs-xs: 13px;    /* label, mono data, caption */
-  --fs-2xs: 12px;   /* small caption, secondary meta */
-  --fs-3xs: 11px;   /* badge, micro label */
-  --fs-4xs: 10px;   /* sub-badge, print micro meta */
+  --fs-3xl: 32px; /* hero metric, big total */
+  --fs-2xl: 26px; /* large metric, page hero number */
+  --fs-xl: 22px; /* card balance, big emphasis */
+  --fs-lg: 20px; /* table row primary text (client name — reference) */
+  --fs-md: 18px; /* table row secondary data, body large */
+  --fs-base: 16px; /* section title, button, emphasis */
+  --fs-sm: 14px; /* input, body, button label */
+  --fs-xs: 13px; /* label, mono data, caption */
+  --fs-2xs: 12px; /* small caption, secondary meta */
+  --fs-3xs: 11px; /* badge, micro label */
+  --fs-4xs: 10px; /* sub-badge, print micro meta */
 
   /* Font Weights */
   --fw-regular: 400;
@@ -116,45 +120,45 @@ html.dark {
 [data-theme="light"],
 html.light {
   /* Surface & Background */
-  --surface: #FFFFFF;
-  --surface-dim: #F0F1F5;
-  --surface-bright: #FFFFFF;
-  --surface-container-lowest: #FFFFFF;
-  --surface-container-low: #F6F7FA;
-  --sidebar-bg: #FBF8F3;
-  --surface-container: #EEF0F5;
-  --surface-container-high: #E4E7EE;
-  --surface-container-highest: #D9DDE6;
-  --background: #F8F9FB;
+  --surface: #ffffff;
+  --surface-dim: #f0f1f5;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f6f7fa;
+  --sidebar-bg: #2e2924;
+  --surface-container: #eef0f5;
+  --surface-container-high: #e4e7ee;
+  --surface-container-highest: #d9dde6;
+  --background: #f8f9fb;
 
   /* Primary — High-Contrast Architectural Bronze Gold */
   --primary: #967032;
-  --on-primary: #FFFFFF;
+  --on-primary: #ffffff;
   --primary-container: #835f25;
-  --on-primary-container: #FFFFFF;
+  --on-primary-container: #ffffff;
   --inverse-primary: #fedeb2;
   --primary-fixed: #967032;
   --primary-fixed-dim: #835f25;
 
   /* Secondary */
-  --secondary: #4F5565;
-  --on-secondary: #FFFFFF;
-  --secondary-container: #E0E3EC;
+  --secondary: #4f5565;
+  --on-secondary: #ffffff;
+  --secondary-container: #e0e3ec;
 
   /* Tertiary */
-  --tertiary: #3D5A80;
-  --tertiary-container: #D1DBE8;
+  --tertiary: #3d5a80;
+  --tertiary-container: #d1dbe8;
 
   /* Text — Deep Obsidian & Graphite Slate */
   --text-primary: #101216;
-  --text-secondary: #575E6E;
+  --text-secondary: #575e6e;
   --on-surface: #101216;
-  --on-surface-variant: #3A404E;
+  --on-surface-variant: #3a404e;
 
   /* Borders */
-  --border-stroke: #E0E3E9;
-  --outline: #6B7280;
-  --outline-variant: #C2C6D1;
+  --border-stroke: #e0e3e9;
+  --outline: #6b7280;
+  --outline-variant: #c2c6d1;
 
   /* Glassmorphism */
   --surface-glass: rgba(255, 255, 255, 0.85);
@@ -169,18 +173,22 @@ html.light {
   --mobile-overlay-bg: rgba(248, 249, 251, 0.98);
   --glow-color: rgba(150, 112, 50, 0.15);
   --glow-color-intense: rgba(150, 112, 50, 0.3);
-  --inquiry-radial: radial-gradient(circle at 100% 100%, rgba(150, 112, 50, 0.12) 0%, transparent 60%);
+  --inquiry-radial: radial-gradient(
+    circle at 100% 100%,
+    rgba(150, 112, 50, 0.12) 0%,
+    transparent 60%
+  );
   --logo-blend-mode: multiply;
   --logo-filter: brightness(0.15) contrast(1.2);
-  --select-arrow-fill: '%23575E6E';
+  --select-arrow-fill: "%23575E6E";
 
   /* 3D WebGL Scene Sync Colors (Hex references) */
-  --webgl-clear-color: #F8F9FB;
-  --webgl-viewer-clear: #FFFFFF;
+  --webgl-clear-color: #f8f9fb;
+  --webgl-viewer-clear: #ffffff;
   --webgl-wireframe-gold: #967032;
   --webgl-wireframe-accent: #835f25;
-  --webgl-wireframe-dim: #A0A6B5;
-  --webgl-grid: #D8DCE4;
+  --webgl-wireframe-dim: #a0a6b5;
+  --webgl-grid: #d8dce4;
 }
 
 /* --- Base Reset & Globals --- */
@@ -201,12 +209,20 @@ html {
 body {
   background-color: var(--background);
   color: var(--text-primary);
-  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family:
+    "Hanken Grotesk",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   line-height: 1.6;
-  transition: background-color 0.4s ease, color 0.4s ease;
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease;
 }
 
 a {
@@ -229,18 +245,21 @@ img {
   height: auto;
 }
 
-ul, ol {
+ul,
+ol {
   list-style: none;
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   font-family: inherit;
   outline: none;
 }
 
 /* --- Typography Classes --- */
 .font-display-xl {
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-size: 96px;
   font-weight: 800;
   line-height: 100%;
@@ -248,7 +267,7 @@ input, textarea, select {
 }
 
 .font-display-lg {
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-size: 64px;
   font-weight: 700;
   line-height: 110%;
@@ -256,35 +275,35 @@ input, textarea, select {
 }
 
 .font-headline-md {
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-size: 32px;
   font-weight: 600;
   line-height: 120%;
 }
 
 .font-headline-md-mobile {
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-size: 24px;
   font-weight: 600;
   line-height: 120%;
 }
 
 .font-body-lg {
-  font-family: 'Hanken Grotesk', sans-serif;
+  font-family: "Hanken Grotesk", sans-serif;
   font-size: 18px;
   font-weight: 400;
   line-height: 160%;
 }
 
 .font-body-sm {
-  font-family: 'Hanken Grotesk', sans-serif;
+  font-family: "Hanken Grotesk", sans-serif;
   font-size: 14px;
   font-weight: 400;
   line-height: 150%;
 }
 
 .font-label-caps {
-  font-family: 'Hanken Grotesk', sans-serif;
+  font-family: "Hanken Grotesk", sans-serif;
   font-size: 12px;
   font-weight: 600;
   line-height: 100%;
@@ -293,39 +312,85 @@ input, textarea, select {
 }
 
 .font-mono-data {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 13px;
   font-weight: 400;
   line-height: 140%;
 }
 
 /* --- App Typography Utilities (token-backed, theme-agnostic) --- */
-.text-3xl { font-size: var(--fs-3xl); }
-.text-2xl { font-size: var(--fs-2xl); }
-.text-xl { font-size: var(--fs-xl); }
-.text-lg { font-size: var(--fs-lg); }
-.text-md { font-size: var(--fs-md); }
-.text-base { font-size: var(--fs-base); }
-.text-sm { font-size: var(--fs-sm); }
-.text-xs { font-size: var(--fs-xs); }
-.text-2xs { font-size: var(--fs-2xs); }
-.text-3xs { font-size: var(--fs-3xs); }
-.text-4xs { font-size: var(--fs-4xs); }
+.text-3xl {
+  font-size: var(--fs-3xl);
+}
+.text-2xl {
+  font-size: var(--fs-2xl);
+}
+.text-xl {
+  font-size: var(--fs-xl);
+}
+.text-lg {
+  font-size: var(--fs-lg);
+}
+.text-md {
+  font-size: var(--fs-md);
+}
+.text-base {
+  font-size: var(--fs-base);
+}
+.text-sm {
+  font-size: var(--fs-sm);
+}
+.text-xs {
+  font-size: var(--fs-xs);
+}
+.text-2xs {
+  font-size: var(--fs-2xs);
+}
+.text-3xs {
+  font-size: var(--fs-3xs);
+}
+.text-4xs {
+  font-size: var(--fs-4xs);
+}
 
-.fw-regular { font-weight: var(--fw-regular); }
-.fw-medium { font-weight: var(--fw-medium); }
-.fw-semibold { font-weight: var(--fw-semibold); }
-.fw-bold { font-weight: var(--fw-bold); }
-.fw-heavy { font-weight: var(--fw-heavy); }
-.fw-black { font-weight: var(--fw-black); }
+.fw-regular {
+  font-weight: var(--fw-regular);
+}
+.fw-medium {
+  font-weight: var(--fw-medium);
+}
+.fw-semibold {
+  font-weight: var(--fw-semibold);
+}
+.fw-bold {
+  font-weight: var(--fw-bold);
+}
+.fw-heavy {
+  font-weight: var(--fw-heavy);
+}
+.fw-black {
+  font-weight: var(--fw-black);
+}
 
 /* --- Color Utility Classes --- */
-.text-primary-gold { color: var(--primary); }
-.text-secondary-muted { color: var(--text-secondary); }
-.text-on-surface { color: var(--on-surface); }
-.bg-surface { background-color: var(--surface); }
-.bg-surface-lowest { background-color: var(--surface-container-lowest); }
-.bg-surface-container { background-color: var(--surface-container); }
+.text-primary-gold {
+  color: var(--primary);
+}
+.text-secondary-muted {
+  color: var(--text-secondary);
+}
+.text-on-surface {
+  color: var(--on-surface);
+}
+.bg-surface {
+  background-color: var(--surface);
+}
+.bg-surface-lowest {
+  background-color: var(--surface-container-lowest);
+}
+.bg-surface-container {
+  background-color: var(--surface-container);
+}
 
 /* --- Layout Utilities --- */
 .grid-12 {
@@ -351,7 +416,9 @@ input, textarea, select {
 .section-padding {
   padding-top: 80px;
   padding-bottom: 80px;
-  transition: background-color 0.4s ease, border-color 0.4s ease;
+  transition:
+    background-color 0.4s ease,
+    border-color 0.4s ease;
 }
 
 @media (min-width: 768px) {
@@ -368,7 +435,10 @@ input, textarea, select {
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--surface-glass-border);
   box-shadow: var(--surface-glass-shadow);
-  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+  transition:
+    background 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
 }
 
 /* --- Subtle Border --- */
@@ -395,10 +465,11 @@ input, textarea, select {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.3s ease,
-              background-color 0.3s ease,
-              color 0.3s ease;
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .theme-toggle-btn:hover {
@@ -413,7 +484,9 @@ input, textarea, select {
 
 .theme-toggle-icon {
   font-size: 20px !important;
-  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+  transition:
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.3s ease;
   line-height: 1;
 }
 
@@ -482,12 +555,20 @@ input, textarea, select {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
     transform: translateY(0);
   }
   40% {
@@ -499,11 +580,14 @@ input, textarea, select {
 }
 
 @keyframes glowPulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 20px var(--glow-color);
   }
   50% {
-    box-shadow: 0 0 40px var(--glow-color-intense), 0 0 60px var(--glow-color);
+    box-shadow:
+      0 0 40px var(--glow-color-intense),
+      0 0 60px var(--glow-color);
   }
 }
 
@@ -581,7 +665,9 @@ input, textarea, select {
 
 /* --- Capability list hover --- */
 .capability-item {
-  transition: background-color 0.3s ease, padding-left 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    padding-left 0.3s ease;
 }
 
 .capability-item:hover {
@@ -593,7 +679,9 @@ input, textarea, select {
 }
 
 .capability-title {
-  transition: padding-left 0.3s ease, color 0.3s ease;
+  transition:
+    padding-left 0.3s ease,
+    color 0.3s ease;
 }
 
 /* --- Nav link underline grow --- */
@@ -603,7 +691,7 @@ input, textarea, select {
 }
 
 .nav-link::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -4px;
   left: 0;
@@ -636,10 +724,13 @@ input, textarea, select {
   border: 1px solid var(--border-stroke);
   padding: 12px 16px;
   color: var(--text-primary);
-  font-family: 'Hanken Grotesk', sans-serif;
+  font-family: "Hanken Grotesk", sans-serif;
   font-size: 14px;
   border-radius: 2px;
-  transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .form-input:focus {
@@ -669,7 +760,11 @@ input, textarea, select {
 
 /* --- Material Symbols --- */
 .material-symbols-outlined {
-  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 300,
+    "GRAD" 0,
+    "opsz" 24;
 }
 
 /* --- Selection --- */

@@ -102,8 +102,8 @@
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  background: var(--sidebar-bg, #141618);
-  border-right: 1px solid var(--border-stroke, #232730);
+  background: var(--sidebar-bg, #2E2924);
+  border-right: 1px solid #433C35;
   position: relative;
   z-index: 100;
   box-sizing: border-box;
@@ -122,9 +122,83 @@
 [data-theme="light"] .app2-sidebar,
 html.light .afrah-app-sidebar,
 html.light .app2-sidebar {
-  background: var(--sidebar-bg, #FBF8F3);
-  border-right: 1px solid #E2E8F0;
-  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.03);
+  background: var(--sidebar-bg, #2E2924);
+  border-right: 1px solid #433C35;
+  box-shadow: 2px 0 18px rgba(30, 27, 24, 0.16);
+}
+
+/* Dark espresso rail keeps gold-on-dark chrome in light theme */
+[data-theme="light"] .afrah-app-sidebar-brand,
+html.light .afrah-app-sidebar-brand,
+[data-theme="light"] .afrah-app-sidebar-footer,
+html.light .afrah-app-sidebar-footer {
+  border-color: #433C35;
+}
+
+[data-theme="light"] .afrah-app-sidebar .afrah-app-brand-title,
+html.light .afrah-app-sidebar .afrah-app-brand-title {
+  color: #e2c399;
+}
+
+[data-theme="light"] .afrah-app-sidebar .afrah-app-nav-item,
+html.light .afrah-app-sidebar .afrah-app-nav-item,
+[data-theme="light"] .afrah-app-sidebar .afrah-app-nav-subitem,
+html.light .afrah-app-sidebar .afrah-app-nav-subitem,
+[data-theme="light"] .afrah-app-sidebar .afrah-app-tool-btn,
+html.light .afrah-app-sidebar .afrah-app-tool-btn {
+  color: #F7F5F2;
+}
+
+[data-theme="light"] .afrah-app-sidebar .afrah-app-division-header,
+html.light .afrah-app-sidebar .afrah-app-division-header {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: #433C35;
+  color: #FFFFFF;
+}
+
+[data-theme="light"] .afrah-app-sidebar .afrah-app-division-header:hover,
+html.light .afrah-app-sidebar .afrah-app-division-header:hover {
+  background: rgba(226, 195, 153, 0.08);
+  border-color: rgba(226, 195, 153, 0.3);
+}
+
+[data-theme="light"] .afrah-app-sidebar .afrah-app-division-header.division-active,
+html.light .afrah-app-sidebar .afrah-app-division-header.division-active {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(226, 195, 153, 0.35);
+  border-left: 3px solid #e2c399;
+}
+
+[data-theme="light"] .afrah-app-sidebar .afrah-app-nav-subitem:hover,
+html.light .afrah-app-sidebar .afrah-app-nav-subitem:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.05);
+}
+[data-theme="light"] .afrah-app-sidebar .afrah-app-nav-subitem.active,
+html.light .afrah-app-sidebar .afrah-app-nav-subitem.active {
+  background: rgba(226, 195, 153, 0.14);
+  color: #e2c399;
+  border-color: rgba(226, 195, 153, 0.28);
+}
+
+[data-theme="light"] .afrah-app-sidebar .afrah-app-badge-count,
+html.light .afrah-app-sidebar .afrah-app-badge-count,
+[data-theme="light"] .afrah-app-sidebar .afrah-app-subbadge-count,
+html.light .afrah-app-sidebar .afrah-app-subbadge-count {
+  background: rgba(226, 195, 153, 0.18);
+  color: #e2c399;
+}
+
+[data-theme="light"] .afrah-app-sidebar .afrah-app-tool-btn,
+html.light .afrah-app-sidebar .afrah-app-tool-btn {
+  border-color: #433C35;
+}
+
+[data-theme="light"] .afrah-app-sidebar .afrah-app-tool-btn:hover,
+html.light .afrah-app-sidebar .afrah-app-tool-btn:hover {
+  color: #FFFFFF;
+  background: rgba(226, 195, 153, 0.1);
+  border-color: #e2c399;
 }
 
 /* Sidebar Brand: Afrah Constructions */
@@ -264,7 +338,7 @@ html.light .app2-sidebar {
   border-radius: 8px;
   font-size: var(--fs-xs);
   font-weight: var(--fw-semibold);
-  color: var(--text-secondary);
+  color: #F7F5F2;
   background: transparent;
   border: 1px solid transparent;
   cursor: pointer;
@@ -286,6 +360,13 @@ html.light .app2-sidebar {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.afrah-app-nav-chevron {
+  display: flex;
+  align-items: center;
+  color: inherit;
+  opacity: 0.92;
 }
 
 .afrah-app-sidebar.collapsed .afrah-app-nav-left,
@@ -375,7 +456,7 @@ html.light .app2-sidebar {
   border-radius: 6px;
   border: 1px solid var(--border-stroke, #232730);
   background: transparent;
-  color: var(--text-secondary);
+  color: #F7F5F2;
   font-size: var(--fs-3xs);
   font-weight: 600;
   text-decoration: none;

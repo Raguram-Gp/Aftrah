@@ -216,14 +216,14 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
 
           {/* Table matching handwritten sketch: S.NO, NAME, PHONE, ADDRESS + Pending Balance + Actions */}
           <div className="afrah-app-table-container">
-            <table className="afrah-app-table">
+            <table className="afrah-app-table has-col-separators">
               <thead>
                 <tr>
                   <th className="text-center" style={{ width: '50px' }}>S.NO</th>
                   <th>NAME (SUPPLIER / SHOP)</th>
                   <th style={{ width: '155px' }}>PHONE</th>
                   <th>ADDRESS</th>
-                  <th className="text-right" style={{ width: '135px' }}>PENDING DUES</th>
+                  <th style={{ width: '135px' }}>PENDING DUES</th>
                   <th className="text-center" style={{ width: '80px' }}>ACTIONS</th>
                 </tr>
               </thead>
@@ -268,8 +268,8 @@ export const VendorShopsView: React.FC<VendorShopsViewProps> = ({
                             <span className="cell-address">{shop.address}</span>
                           </div>
                         </td>
-                        <td className="text-right">
-                          <span className={`cell-amount ${pending > 0 ? 'is-negative' : 'is-positive'}`}>
+                        <td>
+                          <span className="cell-amount">
                             {formatINR(pending)}
                           </span>
                         </td>

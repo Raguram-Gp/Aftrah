@@ -14,7 +14,7 @@
   font-weight: var(--fw-bold);
   transition: all 0.2s ease;
   margin-bottom: 2px;
-  color: var(--text-primary);
+  color: #FFFFFF;
 }
 
 .afrah-app-division-header:hover {
@@ -64,7 +64,7 @@
   border-radius: 6px;
   font-size: var(--fs-xs);
   font-weight: var(--fw-medium);
-  color: var(--text-secondary);
+  color: #F7F5F2;
   background: transparent;
   border: 1px solid transparent;
   cursor: pointer;
@@ -74,7 +74,7 @@
 }
 
 .afrah-app-nav-subitem:hover {
-  color: var(--text-primary);
+  color: #FFFFFF;
   background: rgba(255, 255, 255, 0.04);
 }
 

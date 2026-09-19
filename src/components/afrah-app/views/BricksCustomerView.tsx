@@ -328,7 +328,7 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                 <th className="text-center" style={{ width: '55px' }}>S.NO</th>
                 <th>NAME</th>
                 <th style={{ width: '150px' }}>PHONE</th>
-                <th className="text-right" style={{ width: '140px' }}>BALANCE</th>
+                <th style={{ width: '140px' }}>BALANCE</th>
                 <th>ADDRESS</th>
                 <th className="no-print text-center" style={{ width: '90px' }}>EDIT / DELETE</th>
               </tr>
@@ -386,8 +386,8 @@ export const BricksCustomerView: React.FC<BricksCustomerViewProps> = ({
                           </span>
                         </div>
                       </td>
-                      <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
-                        <span className={`cell-amount-pill ${currentBalance > 0 ? 'is-negative' : 'is-positive'}`}>
+                      <td style={{ whiteSpace: 'nowrap' }}>
+                        <span className="cell-amount">
                           {formatINR(currentBalance)}
                         </span>
                       </td>

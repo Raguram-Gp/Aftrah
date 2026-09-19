@@ -786,7 +786,7 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
 
         {/* Ledger Table: S.NO, DATE, TYPE, CLIENT NAME, QTY, RATE, TOTAL, PAID, BALANCE */}
         <div className="afrah-app-table-container">
-          <table className="afrah-app-table">
+          <table className="afrah-app-table has-col-separators">
             <thead>
               <tr>
                 <th style={{ width: "45px", textAlign: "center" }}>S.NO</th>
@@ -794,10 +794,10 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                 <th className="col-divider">TYPE / ITEM DESCRIPTION</th>
                 <th className="col-divider">CLIENT / SITE TAG</th>
                 <th className="text-right">QTY</th>
-                <th className="text-right">RATE</th>
-                <th className="text-right">TOTAL AMOUNT</th>
-                <th className="text-right">PAID</th>
-                <th className="text-right">STATUS / BALANCE</th>
+                <th>RATE</th>
+                <th>TOTAL</th>
+                <th>PAID</th>
+                <th>BALANCE</th>
                 <th
                   className="no-print"
                   style={{ width: "70px", textAlign: "center" }}
@@ -954,63 +954,20 @@ export const ShopDetailsView: React.FC<ShopDetailsViewProps> = ({
                       >
                         {tx.quantity ? tx.quantity : "—"}
                       </td>
-                      <td
-                        style={{
-                          textAlign: "right",
-                          fontFamily: "JetBrains Mono, monospace",
-                          fontSize: "12px",
-                          color:
-                            !tx.rate || isSettlement
-                              ? "var(--text-secondary)"
-                              : undefined,
-                        }}
-                      >
+                      <td className="cell-amount">
                         {tx.rate ? formatINR(tx.rate) : "—"}
                       </td>
-                      <td
-                        style={{
-                          textAlign: "right",
-                          fontWeight: 700,
-                          color: tx.totalAmount
-                            ? "var(--primary)"
-                            : "var(--text-secondary)",
-                          fontFamily: "JetBrains Mono, monospace",
-                        }}
-                      >
+                      <td className="cell-amount">
                         {tx.totalAmount ? formatINR(tx.totalAmount) : "—"}
                       </td>
-                      <td
-                        style={{
-                          textAlign: "right",
-                          color: isSettlement ? "#34d399" : "#93c5fd",
-                          fontWeight: 700,
-                          fontFamily: "JetBrains Mono, monospace",
-                        }}
-                      >
+                      <td className="cell-amount">
                         {formatINR(tx.receivedAmount)}
                       </td>
-                      <td
-                        style={{
-                          textAlign: "right",
-                          fontWeight: 700,
-                          fontFamily: "JetBrains Mono, monospace",
-                        }}
-                      >
+                      <td className="cell-amount">
                         {isSettlement ? (
-                          <span
-                            style={{ color: "#34d399", fontSize: "11.5px" }}
-                          >
-                            - {formatINR(tx.receivedAmount)}
-                          </span>
+                          <span>- {formatINR(tx.receivedAmount)}</span>
                         ) : (
-                          <span
-                            style={{
-                              color:
-                                tx.balanceAmount > 0 ? "#f87171" : "#4ade80",
-                            }}
-                          >
-                            {formatINR(tx.balanceAmount)}
-                          </span>
+                          <span>{formatINR(tx.balanceAmount)}</span>
                         )}
                       </td>
                       <td style={{ textAlign: "center" }}>

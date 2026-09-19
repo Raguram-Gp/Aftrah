@@ -658,16 +658,16 @@ export const BricksCustomerDetailsView: React.FC<
                 <th className="text-right" style={{ width: "90px" }}>
                   QTY
                 </th>
-                <th className="text-right" style={{ width: "90px" }}>
+                <th style={{ width: "90px" }}>
                   RATE (₹)
                 </th>
-                <th className="text-right" style={{ width: "120px" }}>
+                <th style={{ width: "120px" }}>
                   TOTAL (₹)
                 </th>
-                <th className="text-right" style={{ width: "120px" }}>
+                <th style={{ width: "120px" }}>
                   PAID (₹)
                 </th>
-                <th className="text-right" style={{ width: "120px" }}>
+                <th style={{ width: "120px" }}>
                   BALANCE (₹)
                 </th>
                 <th
@@ -750,56 +750,17 @@ export const BricksCustomerDetailsView: React.FC<
                       >
                         {Number(tx.quantity).toLocaleString("en-IN")}
                       </td>
-                      <td
-                        style={{
-                          textAlign: "right",
-                          fontFamily: "monospace",
-                          color: "var(--text-secondary)",
-                        }}
-                      >
+                      <td className="cell-amount">
                         ₹{Number(tx.rate).toFixed(2)}
                       </td>
-                      <td
-                        style={{
-                          textAlign: "right",
-                          fontFamily: "monospace",
-                          fontWeight: 600,
-                          color: "var(--text-primary)",
-                        }}
-                      >
+                      <td className="cell-amount">
                         {formatINR(tx.totalAmount)}
                       </td>
-                      <td
-                        style={{
-                          textAlign: "right",
-                          fontFamily: "monospace",
-                          color: "#4ade80",
-                          fontWeight: 600,
-                        }}
-                      >
+                      <td className="cell-amount">
                         {formatINR(tx.paidAmount)}
                       </td>
-                      <td className="text-right">
-                        <span
-                          style={{
-                            display: "inline-block",
-                            padding: "2px 6px",
-                            borderRadius: "4px",
-                            fontWeight: 700,
-                            fontFamily: "monospace",
-                            fontSize: "12px",
-                            background:
-                              (tx.balanceAmount || 0) > 0
-                                ? "rgba(239, 68, 68, 0.12)"
-                                : "rgba(34, 197, 94, 0.12)",
-                            color:
-                              (tx.balanceAmount || 0) > 0
-                                ? "#f87171"
-                                : "#4ade80",
-                          }}
-                        >
-                          {formatINR(tx.balanceAmount)}
-                        </span>
+                      <td className="cell-amount">
+                        {formatINR(tx.balanceAmount)}
                       </td>
                       <td className="text-center">
                         <div
