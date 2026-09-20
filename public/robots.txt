@@ -1,5 +1,10 @@
 User-agent: *
+Allow: /
 Disallow: /afrah-app
 Disallow: /afrah-app/
+Disallow: /aftrah-app
+Disallow: /aftrah-app/
 Disallow: /s
 Disallow: /s/
+
+Sitemap: https://aftrah.vercel.app/sitemap-index.xml

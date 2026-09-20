@@ -1,0 +1,113 @@
+---
+export interface Props {
+  name?: string;
+  description?: string;
+  url?: string;
+  image?: string;
+}
+
+const siteUrl = Astro.site ? Astro.site.origin : 'https://aftrah.vercel.app';
+
+const {
+  name = 'Afrah Construction & Interiors',
+  description = 'Turnkey residential home construction, architectural elevation design, and interior finishing across Theni district, Tamil Nadu.',
+  url = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : 'https://aftrah.vercel.app/',
+  image = new URL('/og-image.jpg', siteUrl).href,
+} = Astro.props;
+
+const businessSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}/#website`,
+      'url': `${siteUrl}/`,
+      'name': name,
+      'description': description,
+      'publisher': {
+        '@id': `${siteUrl}/#organization`,
+      },
+      'inLanguage': 'en-IN',
+    },
+    {
+      '@type': ['HomeAndConstructionBusiness', 'GeneralContractor', 'Organization'],
+      '@id': `${siteUrl}/#organization`,
+      'name': name,
+      'alternateName': ['AFRAH Construction', 'Afrah Interiors', 'AFRAH'],
+      'url': `${siteUrl}/`,
+      'logo': new URL('/logos/afrah-construction.jpg', siteUrl).href,
+      'image': image,
+      'description': description,
+      'sameAs': [
+        'https://www.instagram.com/afrah_construction_10/',
+      ],
+      'address': {
+        '@type': 'PostalAddress',
+        'addressLocality': 'Chinnamanur',
+        'addressRegion': 'Tamil Nadu',
+        'postalCode': '625515',
+        'addressCountry': 'IN',
+      },
+      'areaServed': [
+        {
+          '@type': 'AdministrativeArea',
+          'name': 'Theni District',
+        },
+        {
+          '@type': 'City',
+          'name': 'Chinnamanur',
+        },
+        {
+          '@type': 'City',
+          'name': 'Uthamapalayam',
+        },
+        {
+          '@type': 'City',
+          'name': 'Cumbum',
+        },
+      ],
+      'hasOfferCatalog': {
+        '@type': 'OfferCatalog',
+        'name': 'Construction & Design Services',
+        'itemListElement': [
+          {
+            '@type': 'Offer',
+            'itemOffered': {
+              '@type': 'Service',
+              'name': 'Turnkey Home Construction',
+              'description': 'End-to-end residential construction from foundation and structural engineering to final handover.',
+            },
+          },
+          {
+            '@type': 'Offer',
+            'itemOffered': {
+              '@type': 'Service',
+              'name': 'Interior Design & Finishing',
+              'description': 'Contemporary woodwork, bespoke lighting, teak, stone, and luxury modular interior spaces.',
+            },
+          },
+          {
+            '@type': 'Offer',
+            'itemOffered': {
+              '@type': 'Service',
+              'name': 'Architectural Elevation & Renovation',
+              'description': 'Modern facade architecture, jaali screens, 3D elevations, and structural renovations.',
+            },
+          },
+        ],
+      },
+      'knowsAbout': [
+        'Turnkey Home Construction',
+        'Interior Design',
+        'Home Renovation',
+        'Architectural Elevation',
+        'Civil Contracting',
+        'Structural Engineering',
+      ],
+      'priceRange': '₹₹',
+    },
+  ],
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(businessSchema)} />

@@ -9,16 +9,16 @@
       <div class="hero-building-motion" id="hero-building-motion">
         <!-- Morning Daylight Version (Visible on Load) -->
         <img
-          src="/images/afrah-tower-morning.jpg"
-          alt="AFRAH Commercial Skyscraper in Morning Daylight"
+          src="/images/homes/villa-horizon.jpg"
+          alt="AFRAH Horizon Villa Residence in Morning Daylight"
           class="building-layer building-morning"
           id="building-morning"
         />
 
         <!-- Radiant Night Version (Gradually Appears on Scroll via GSAP) -->
         <img
-          src="/images/afrah-tower-night.jpg"
-          alt="AFRAH Commercial Skyscraper in Radiant Night Illumination"
+          src="/images/homes/villa-horizon-night.jpg"
+          alt="AFRAH Horizon Villa Residence in Radiant Night Illumination"
           class="building-layer building-night"
           id="building-night"
         />
@@ -38,11 +38,11 @@
     <div class="hero-telemetry-bar font-mono-data" id="hero-telemetry-bar">
       <div class="telemetry-item">
         <span class="telemetry-line"></span>
-        <span>01 / FLAGSHIP TOWER · 312M</span>
+        <span>01 / HORIZON VILLA · THENI</span>
       </div>
       <div class="telemetry-item">
         <span class="telemetry-line"></span>
-        <span>72 STOREYS · HIGH-TENSILE DIAGRID</span>
+        <span>CONTEMPORARY RESIDENCE · TURNKEY BUILD</span>
       </div>
     </div>
 
@@ -79,12 +79,12 @@
 
     heroTl
       .to(nightLayer, {
-        opacity: 1,
+        opacity: 0.85,
         ease: 'none',
       }, 0)
       .to(motion, {
-        scale: 1.18,
-        y: -30,
+        scale: 1.06,
+        y: -15,
         ease: 'none',
       }, 0);
 
@@ -137,7 +137,7 @@
 
   [data-theme="light"] .hero-scroll-track,
   html.light .hero-scroll-track {
-    background-color: #F8F9FB;
+    background-color: #070B20;
   }
 
   /* 2. Sticky Viewport Frame */
@@ -170,9 +170,9 @@
     width: 100%;
     height: 100%;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: center;
-    transform-origin: center 80%;
+    transform-origin: center center;
     will-change: transform;
   }
 
@@ -182,15 +182,15 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center bottom;
+    object-position: center center;
     display: block;
     user-select: none;
   }
 
-  /* Morning Daylight Layer (Base) */
+  /* Morning Daylight Layer (Base) — Reduced opacity for soft, elegant contrast */
   .building-morning {
     z-index: 1;
-    opacity: 1;
+    opacity: 0.75;
   }
 
   /* Radiant Night Layer (Fades in over morning on scroll via GSAP) */

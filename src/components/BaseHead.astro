@@ -1,0 +1,100 @@
+---
+import StructuredData from './StructuredData.astro';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalURL?: string | URL;
+  robots?: string;
+  type?: string;
+}
+
+const siteUrl = Astro.site ? Astro.site.origin : 'https://aftrah.vercel.app';
+
+const {
+  title = 'AFRAH CONSTRUCTION & INTERIORS | Homes in Theni, Tamil Nadu',
+  description = 'AFRAH builds contemporary residences across Theni district — Uthamapalayam, Chinnamanur, and Cumbum. Turnkey home construction, luxury interior design, and modern elevations.',
+  image = '/og-image.jpg',
+  canonicalURL,
+  robots = 'index, follow',
+  type = 'website',
+} = Astro.props;
+
+// Dynamic canonical URL resolution
+const resolvedCanonical = canonicalURL
+  ? (typeof canonicalURL === 'string' ? new URL(canonicalURL, siteUrl) : canonicalURL)
+  : new URL(Astro.url.pathname, Astro.site || siteUrl);
+
+// Absolute image URL for social preview cards
+const resolvedImage = new URL(image, siteUrl).href;
+
+const keywords = [
+  'Afrah Construction',
+  'Afrah Interiors',
+  'construction',
+  'contracting',
+  'general contractor',
+  'renovation',
+  'interior design',
+  'turnkey home construction',
+  'elevation design',
+  'residential contractor',
+  'civil engineering',
+  'Theni',
+  'Chinnamanur',
+  'Uthamapalayam',
+  'Cumbum',
+  'Tamil Nadu',
+].join(', ');
+---
+
+<!-- Global Metadata -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="generator" content={Astro.generator} />
+<meta name="theme-color" content="#111317" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="AFRAH" />
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/manifest.webmanifest" />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={resolvedCanonical.href} />
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+<meta name="keywords" content={keywords} />
+<meta name="robots" content={robots} />
+
+<!-- Open Graph / Facebook / WhatsApp / LinkedIn -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={resolvedCanonical.href} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={resolvedImage} />
+<meta property="og:image:alt" content="Afrah Construction & Interiors - Luxury Architecture and Modern Residential Homes" />
+<meta property="og:site_name" content="Afrah Construction & Interiors" />
+<meta property="og:locale" content="en_IN" />
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={resolvedCanonical.href} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={resolvedImage} />
+<meta name="twitter:image:alt" content="Afrah Construction & Interiors - Luxury Architecture and Modern Residential Homes" />
+
+<!-- Structured Data (JSON-LD Schema) -->
+<StructuredData
+  name="Afrah Construction & Interiors"
+  description={description}
+  url={resolvedCanonical.href}
+  image={resolvedImage}
+/>
