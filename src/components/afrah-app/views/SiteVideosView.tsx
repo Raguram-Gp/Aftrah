@@ -1280,32 +1280,6 @@ export const SiteVideosView: React.FC<SiteVideosViewProps> = ({
             {/* Modal Body Form */}
             <form onSubmit={handleSubmitAdd} style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
               <div style={{ padding: '24px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                {/* Supabase Storage Notice Banner */}
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '12px 16px',
-                    borderRadius: '10px',
-                    background: 'rgba(56, 189, 248, 0.08)',
-                    border: '1px solid rgba(56, 189, 248, 0.25)',
-                    color: '#e0f2fe',
-                    fontSize: '12.5px',
-                    lineHeight: 1.45,
-                  }}
-                >
-                  <Cloud size={22} color="#38bdf8" style={{ flexShrink: 0 }} />
-                  <div>
-                    <div style={{ fontWeight: 700, color: '#38bdf8', marginBottom: '2px' }}>
-                      Supabase Cloud Storage Integration Active
-                    </div>
-                    <div>
-                      Videos and extracted poster frames are uploaded to the public Supabase bucket <code style={{ background: 'rgba(0,0,0,0.3)', padding: '2px 6px', borderRadius: '4px', color: '#bae6fd', fontFamily: 'monospace' }}>{SUPABASE_VIDEO_BUCKET}</code> for high-bandwidth CDN video streaming.
-                    </div>
-                  </div>
-                </div>
-
                 {/* 1. Video Source Picker */}
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>
