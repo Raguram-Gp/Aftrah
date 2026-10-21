@@ -10,6 +10,7 @@ const VALID_TABS: TabType[] = [
   'construction_labour',
   'kabibullah_bricks',
   'kaab_interior',
+  'site_videos',
 ];
 
 const VALID_INTERIOR_SUBS: InteriorSubTab[] = ['clients', 'directory', 'vendor', 'labour_contract'];
@@ -22,6 +23,7 @@ const TAB_TO_SEGMENT: Record<TabType, string> = {
   construction_labour: 'construction-labour',
   kabibullah_bricks: 'bricks',
   kaab_interior: 'interior',
+  site_videos: 'videos',
 };
 
 const SEGMENT_TO_TAB: Record<string, TabType> = {
@@ -31,6 +33,7 @@ const SEGMENT_TO_TAB: Record<string, TabType> = {
   'construction-labour': 'construction_labour',
   bricks: 'kabibullah_bricks',
   interior: 'kaab_interior',
+  videos: 'site_videos',
 };
 
 const INTERIOR_SUB_TO_SEGMENT: Record<InteriorSubTab, string> = {

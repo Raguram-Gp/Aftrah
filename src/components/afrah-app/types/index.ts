@@ -687,3 +687,25 @@ export interface BrickStockMovement {
   notes?: string;
   createdAt?: string;
 }
+
+export interface SiteReelSpec {
+  label: string;
+  value: string;
+}
+
+export interface SiteReel {
+  id: string;
+  category: 'ongoing' | 'finished';
+  title: string;
+  subtitle: string;
+  stage: string;
+  location: string;
+  duration: string;
+  poster: string;
+  videoSrc: string;
+  specs: SiteReelSpec[];
+  description: string;
+  sortOrder?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}

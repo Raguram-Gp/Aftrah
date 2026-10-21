@@ -68,13 +68,20 @@ export const AfrahAppAuthGate: React.FC<AfrahAppAuthGateProps> = ({ children }) 
     );
   }
 
-  if (!session) {
+  const isGuestMode = typeof window !== 'undefined' && localStorage.getItem('afrah-guest-session') === 'true';
+
+  if (!session && !isGuestMode) {
     return (
       <AfrahAppLogin
         onSubmit={async (email, password) => {
           const { error } = await supabase.auth.signInWithPassword({ email, password });
           if (error) return error.message;
           return null;
+        }}
+        onGuestAccess={() => {
+          localStorage.setItem('afrah-guest-session', 'true');
+          setReady(false);
+          setTimeout(() => setReady(true), 10);
         }}
       />
     );

@@ -11,7 +11,8 @@ import {
   ChevronRight,
   HardHat,
   FileText,
-  LogOut
+  LogOut,
+  Film
 } from 'lucide-react';
 import type {
   Client,
@@ -37,6 +38,7 @@ interface AfrahAppTopBarProps {
   interiorLabourContractsCount?: number;
   vendorsCount: number;
   banksCount: number;
+  siteVideosCount?: number;
   brickCustomersCount?: number;
   brickExpensesCount?: number;
   brickStockUnits?: number;
@@ -299,6 +301,11 @@ export const AfrahAppTopBar: React.FC<AfrahAppTopBarProps> = ({
             <div className="flex-center">
               <Landmark size={16} color="var(--primary)" />
               <span className="afrah-app-breadcrumb-active">Bank Details</span>
+            </div>
+          ) : activeTab === 'site_videos' ? (
+            <div className="flex-center">
+              <Film size={16} color="var(--primary)" />
+              <span className="afrah-app-breadcrumb-active">Site Videos</span>
             </div>
           ) : (
             <>

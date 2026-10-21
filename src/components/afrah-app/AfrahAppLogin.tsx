@@ -3,9 +3,10 @@ import { Loader2, Lock } from 'lucide-react';
 
 interface AfrahAppLoginProps {
   onSubmit: (email: string, password: string) => Promise<string | null>;
+  onGuestAccess?: () => void;
 }
 
-export const AfrahAppLogin: React.FC<AfrahAppLoginProps> = ({ onSubmit }) => {
+export const AfrahAppLogin: React.FC<AfrahAppLoginProps> = ({ onSubmit, onGuestAccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -67,6 +68,28 @@ export const AfrahAppLogin: React.FC<AfrahAppLoginProps> = ({ onSubmit }) => {
           {submitting ? <Loader2 size={16} className="afrah-app-login-spinner" /> : null}
           <span>{submitting ? 'Signing in…' : 'Sign in'}</span>
         </button>
+
+        {onGuestAccess && (
+          <button
+            type="button"
+            onClick={onGuestAccess}
+            style={{
+              marginTop: '12px',
+              width: '100%',
+              height: '38px',
+              borderRadius: '8px',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid var(--border-stroke, #333842)',
+              color: 'var(--text-secondary, #9ca3af)',
+              fontSize: '12.5px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            Explore as Guest / Dev Mode
+          </button>
+        )}
       </form>
     </div>
   );

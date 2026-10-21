@@ -1,0 +1,1859 @@
+---
+// Section 03 / Site Cinematics & Walkthroughs — Ongoing Construction & Finished Homes
+import { INITIAL_REELS } from './afrah-app/data/initialReels';
+import type { SiteReel } from './afrah-app/types';
+
+const reels: SiteReel[] = INITIAL_REELS;
+
+const filters = [
+  { label: 'All Reels', key: 'all', count: reels.length },
+  { label: 'Ongoing Sites', key: 'ongoing', count: reels.filter(r => r.category === 'ongoing').length },
+  { label: 'Finished Homes', key: 'finished', count: reels.filter(r => r.category === 'finished').length },
+];
+---
+
+<section class="section-padding cinematics-section" id="cinematics">
+  <!-- Decorative Background Architectural Grid Glow -->
+  <div class="cinematics-ambient-glow"></div>
+
+  <!-- Section Header -->
+  <div class="grid-12 cinematics-header">
+    <div class="cinematics-label-col">
+      <div class="cinematics-badge font-mono-data" data-animate="fade-up">
+        <span class="pulsing-record-dot"></span>
+        <span>LIVE SITES & ARCHIVE</span>
+      </div>
+      <h2 class="font-mono-data cinematics-section-num" data-animate="fade-up" style="--stagger: 50ms;">
+        03 / CRAFTSMANSHIP IN MOTION
+      </h2>
+    </div>
+
+    <div class="cinematics-title-col">
+      <div class="cinematics-headline-wrap">
+        <h3 class="font-display-lg cinematics-heading" data-animate="fade-up" style="--stagger: 100ms;">
+          Raw On-Site Precision.<br />Finished Landmarks.
+        </h3>
+        <p class="font-body-lg cinematics-lead" data-animate="fade-up" style="--stagger: 150ms;">
+          Watch our engineers pour foundations, assemble bespoke teak elevations, and walk through completed turnkey family residences across Theni district.
+        </p>
+      </div>
+
+      <!-- Filter Tabs & Carousel Controls -->
+      <div class="cinematics-controls-bar" data-animate="fade-up" style="--stagger: 200ms;">
+        <!-- Filter Tabs -->
+        <div class="reel-filter-tabs">
+          {filters.map((filter, i) => (
+            <button
+              class={`filter-tab-pill font-label-caps ${i === 0 ? 'active' : ''}`}
+              data-filter={filter.key}
+              aria-label={`Filter by ${filter.label}`}
+            >
+              <span>{filter.label}</span>
+              <span class="tab-count font-mono-data">{filter.count}</span>
+            </button>
+          ))}
+        </div>
+
+        <!-- Carousel Navigation Controls -->
+        <div class="carousel-nav-group">
+          <div class="carousel-counter font-mono-data">
+            <span id="carousel-current">01</span>
+            <span class="counter-divider">/</span>
+            <span id="carousel-total">{reels.length < 10 ? `0${reels.length}` : reels.length}</span>
+          </div>
+
+          <div class="carousel-buttons">
+            <button class="carousel-btn prev-btn" id="carousel-prev-btn" aria-label="Previous Video Slide">
+              <span class="material-symbols-outlined">chevron_left</span>
+            </button>
+            <button class="carousel-btn next-btn" id="carousel-next-btn" aria-label="Next Video Slide">
+              <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carousel Viewport & Track Container -->
+  <div class="carousel-viewport">
+    <div class="carousel-track" id="cinematics-carousel-track">
+      {reels.map((reel, index) => (
+        <article
+          class="reel-item"
+          data-category={reel.category}
+          data-reel-id={reel.id}
+          data-index={index}
+          data-animate="fade-up"
+          style={`--stagger: ${(index % 3 + 1) * 100}ms;`}
+        >
+          <!-- Video Box Container -->
+          <div class="reel-video-container" id={`video-box-${reel.id}`}>
+            <!-- HTML5 Video Player -->
+            <video
+              class="reel-video-element"
+              id={`video-${reel.id}`}
+              poster={reel.poster}
+              preload="metadata"
+              playsinline
+              muted
+              loop
+            >
+              <source src={reel.videoSrc} type={reel.videoSrc.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
+              Your browser does not support HTML5 video playback.
+            </video>
+
+            <!-- Video Poster & Play Trigger Overlay -->
+            <div class="video-poster-overlay" id={`poster-overlay-${reel.id}`}>
+              <img
+                src={reel.poster}
+                alt={`${reel.title} - ${reel.subtitle}`}
+                class="poster-fallback-img"
+                loading="lazy"
+              />
+              <div class="poster-gradient-shade"></div>
+
+              <!-- Top Badges in Overlay -->
+              <div class="poster-top-bar">
+                <span class="stage-tag font-mono-data">{reel.stage}</span>
+                <span class={`category-tag font-mono-data ${reel.category}`}>
+                  <span class="status-dot"></span>
+                  {reel.category === 'ongoing' ? 'ON-SITE' : 'FINISHED'}
+                </span>
+              </div>
+
+              <!-- Center Glowing Play Button -->
+              <button
+                class="central-play-trigger"
+                id={`play-btn-${reel.id}`}
+                aria-label={`Play video: ${reel.title}`}
+                data-reel-id={reel.id}
+              >
+                <div class="play-pulse-ring"></div>
+                <div class="play-icon-disc">
+                  <span class="material-symbols-outlined play-arrow-icon">play_arrow</span>
+                </div>
+              </button>
+
+              <!-- Bottom Meta in Overlay -->
+              <div class="poster-bottom-meta">
+                <span class="duration-chip font-mono-data">
+                  <span class="material-symbols-outlined" style="font-size: 13px;">schedule</span>
+                  {reel.duration}
+                </span>
+                <button
+                  class="overlay-expand-btn"
+                  data-theater-id={reel.id}
+                  aria-label="Fullscreen Theater View"
+                  title="Fullscreen Theater View"
+                >
+                  <span class="material-symbols-outlined" style="font-size: 16px;">open_in_full</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Inline Floating Video Controls Bar (Visible during active inline playback) -->
+            <div class="inline-video-controls" id={`controls-${reel.id}`}>
+              <div class="controls-left">
+                <button
+                  class="control-icon-btn inline-play-pause-btn"
+                  id={`inline-toggle-${reel.id}`}
+                  aria-label="Pause video"
+                  data-reel-id={reel.id}
+                >
+                  <span class="material-symbols-outlined control-symbol">pause</span>
+                </button>
+                <button
+                  class="control-icon-btn inline-mute-btn"
+                  id={`inline-mute-${reel.id}`}
+                  aria-label="Toggle audio"
+                  data-reel-id={reel.id}
+                >
+                  <span class="material-symbols-outlined control-symbol">volume_off</span>
+                </button>
+              </div>
+
+              <!-- Video Timeline Scrubber Track -->
+              <div class="inline-progress-track">
+                <div class="inline-progress-fill" id={`progress-${reel.id}`}></div>
+              </div>
+
+              <div class="controls-right">
+                <button
+                  class="control-icon-btn theater-expand-btn"
+                  aria-label="Open in Cinematic Theater Mode"
+                  data-theater-id={reel.id}
+                  title="Expand to Fullscreen Theater View"
+                >
+                  <span class="material-symbols-outlined control-symbol">open_in_full</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Meta Bar (Refined architectural presentation) -->
+          <div class="reel-item-info">
+            <div class="reel-item-meta">
+              <h4 class="font-headline-md reel-title">{reel.title}</h4>
+              <p class="font-body-sm reel-subtitle">{reel.subtitle}</p>
+            </div>
+            <div class="reel-item-data">
+              <span class="reel-location-pill font-mono-data">{reel.location}</span>
+              <button
+                class="reel-theater-btn font-mono-data"
+                data-theater-id={reel.id}
+                title="View full project specifications"
+              >
+                <span>SPECS</span>
+                <span class="material-symbols-outlined" style="font-size: 13px;">arrow_outward</span>
+              </button>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  <!-- Bottom Interactive Scroll Progress Indicator -->
+  <div class="grid-12" style="margin-top: 32px;">
+    <div class="carousel-progress-col">
+      <div class="carousel-progress-bar">
+        <div class="carousel-progress-thumb" id="carousel-progress-thumb"></div>
+      </div>
+      <div class="carousel-swipe-hint font-mono-data">
+        <span>← DRAG OR SCROLL TO EXPLORE ARCHIVE →</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CINEMATIC THEATER MODAL -->
+  <div class="cinematic-modal-overlay" id="cinematic-modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-backdrop" id="modal-backdrop"></div>
+    <div class="modal-dialog-container">
+      <div class="modal-window glass-panel">
+        <!-- Modal Top Bar -->
+        <div class="modal-header-bar">
+          <div class="modal-header-info">
+            <span class="modal-category-chip font-mono-data" id="modal-category-chip">ON-SITE SITE</span>
+            <h4 class="font-headline-md modal-title" id="modal-title">Project Title</h4>
+            <span class="modal-location font-mono-data" id="modal-location">Location</span>
+          </div>
+
+          <button class="modal-close-btn" id="modal-close-btn" aria-label="Close Theater View">
+            <span class="material-symbols-outlined" style="font-size: 24px;">close</span>
+          </button>
+        </div>
+
+        <!-- Modal Video Viewport -->
+        <div class="modal-video-box">
+          <video
+            class="modal-video-element"
+            id="modal-video-element"
+            playsinline
+            preload="auto"
+          >
+            Your browser does not support HTML5 video.
+          </video>
+
+          <!-- Custom Modal Video Overlay Controls -->
+          <div class="modal-controls-overlay">
+            <div class="modal-progress-bar" id="modal-progress-bar">
+              <div class="modal-progress-fill" id="modal-progress-fill"></div>
+            </div>
+
+            <div class="modal-controls-bottom">
+              <div class="modal-controls-left">
+                <button class="modal-ctrl-btn" id="modal-play-btn" aria-label="Play/Pause">
+                  <span class="material-symbols-outlined" id="modal-play-icon">play_arrow</span>
+                </button>
+                <button class="modal-ctrl-btn" id="modal-volume-btn" aria-label="Audio Mute">
+                  <span class="material-symbols-outlined" id="modal-volume-icon">volume_up</span>
+                </button>
+                <span class="modal-time-display font-mono-data" id="modal-time-display">0:00 / 0:00</span>
+              </div>
+
+              <div class="modal-controls-right">
+                <button class="modal-ctrl-btn" id="modal-fullscreen-btn" aria-label="Toggle Fullscreen">
+                  <span class="material-symbols-outlined">fullscreen</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Details Drawer -->
+        <div class="modal-details-drawer">
+          <div class="modal-desc-wrap">
+            <h5 class="modal-stage-headline font-label-caps" id="modal-stage-headline">Stage: Framework</h5>
+            <p class="font-body-sm modal-desc-text" id="modal-desc-text">Full narrative description...</p>
+          </div>
+
+          <div class="modal-specs-wrap">
+            <div class="modal-specs-list" id="modal-specs-list">
+              <!-- Dynamically populated -->
+            </div>
+            <a href="/#inquiry" class="modal-inquire-btn font-label-caps" id="modal-inquire-cta">
+              <span>Inquire For Your Project</span>
+              <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import {
+    getStoredReels,
+    resolveMediaUrl,
+    subscribeToReelsUpdates,
+  } from '@/lib/videoStorage';
+  import type { SiteReel } from './afrah-app/types';
+
+  function escapeHtml(str: string): string {
+    if (!str) return '';
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function initSiteCinematics() {
+    const track = document.getElementById('cinematics-carousel-track');
+    const prevBtn = document.getElementById('carousel-prev-btn');
+    const nextBtn = document.getElementById('carousel-next-btn');
+    const currentIndicator = document.getElementById('carousel-current');
+    const totalIndicator = document.getElementById('carousel-total');
+    const progressThumb = document.getElementById('carousel-progress-thumb');
+    const filterTabs = document.querySelectorAll('.filter-tab-pill');
+
+    const modal = document.getElementById('cinematic-modal');
+    const modalBackdrop = document.getElementById('modal-backdrop');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+    const modalVideo = document.getElementById('modal-video-element') as HTMLVideoElement | null;
+    const modalTitle = document.getElementById('modal-title');
+    const modalLocation = document.getElementById('modal-location');
+    const modalCategoryChip = document.getElementById('modal-category-chip');
+    const modalStageHeadline = document.getElementById('modal-stage-headline');
+    const modalDescText = document.getElementById('modal-desc-text');
+    const modalSpecsList = document.getElementById('modal-specs-list');
+    const modalPlayBtn = document.getElementById('modal-play-btn');
+    const modalPlayIcon = document.getElementById('modal-play-icon');
+    const modalVolumeBtn = document.getElementById('modal-volume-btn');
+    const modalVolumeIcon = document.getElementById('modal-volume-icon');
+    const modalTimeDisplay = document.getElementById('modal-time-display');
+    const modalProgressBar = document.getElementById('modal-progress-bar');
+    const modalProgressFill = document.getElementById('modal-progress-fill');
+    const modalFullscreenBtn = document.getElementById('modal-fullscreen-btn');
+    const modalInquireCta = document.getElementById('modal-inquire-cta');
+
+    let activeFilter = 'all';
+    let reelsData: SiteReel[] = [];
+    let cards: HTMLElement[] = [];
+
+    function getVisibleCards() {
+      return cards.filter(card => card.style.display !== 'none');
+    }
+
+    function updateCarouselIndicators() {
+      if (!track) return;
+      const visible = getVisibleCards();
+      if (visible.length === 0) return;
+
+      const trackScroll = track.scrollLeft;
+      const cardWidth = (visible[0] as HTMLElement).offsetWidth + 24;
+      let activeIndex = Math.round(trackScroll / cardWidth);
+      activeIndex = Math.max(0, Math.min(activeIndex, visible.length - 1));
+
+      if (currentIndicator) {
+        currentIndicator.textContent = activeIndex + 1 < 10 ? `0${activeIndex + 1}` : `${activeIndex + 1}`;
+      }
+      if (totalIndicator) {
+        totalIndicator.textContent = visible.length < 10 ? `0${visible.length}` : `${visible.length}`;
+      }
+
+      if (progressThumb) {
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        const progress = maxScroll > 0 ? (track.scrollLeft / maxScroll) * 100 : 0;
+        progressThumb.style.width = `${Math.max(12, Math.min(100, progress))}%`;
+      }
+
+      if (prevBtn) {
+        (prevBtn as HTMLButtonElement).disabled = track.scrollLeft <= 10;
+        (prevBtn as HTMLElement).style.opacity = track.scrollLeft <= 10 ? '0.4' : '1';
+      }
+      if (nextBtn) {
+        const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 10;
+        (nextBtn as HTMLButtonElement).disabled = atEnd;
+        (nextBtn as HTMLElement).style.opacity = atEnd ? '0.4' : '1';
+      }
+    }
+
+    if (prevBtn) {
+      prevBtn.onclick = () => {
+        if (!track) return;
+        const visible = getVisibleCards();
+        const cardWidth = visible.length > 0 ? (visible[0] as HTMLElement).offsetWidth + 24 : 400;
+        track.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+      };
+    }
+
+    if (nextBtn) {
+      nextBtn.onclick = () => {
+        if (!track) return;
+        const visible = getVisibleCards();
+        const cardWidth = visible.length > 0 ? (visible[0] as HTMLElement).offsetWidth + 24 : 400;
+        track.scrollBy({ left: cardWidth, behavior: 'smooth' });
+      };
+    }
+
+    if (track) {
+      track.addEventListener('scroll', updateCarouselIndicators, { passive: true });
+    }
+
+    function pauseAllInlineVideos(exceptId?: string) {
+      cards.forEach((card) => {
+        const id = card.getAttribute('data-reel-id');
+        if (id && id !== exceptId) {
+          const video = document.getElementById(`video-${id}`) as HTMLVideoElement | null;
+          const videoBox = document.getElementById(`video-box-${id}`);
+          const toggleBtn = document.getElementById(`inline-toggle-${id}`);
+
+          if (video && !video.paused) {
+            video.pause();
+          }
+          if (videoBox) {
+            videoBox.classList.remove('is-playing');
+          }
+          if (toggleBtn) {
+            const sym = toggleBtn.querySelector('.control-symbol');
+            if (sym) sym.textContent = 'play_arrow';
+          }
+        }
+      });
+    }
+
+    async function openTheaterModal(reelId: string) {
+      const reel = reelsData.find((r) => r.id === reelId);
+      if (!reel || !modal || !modalVideo) return;
+
+      pauseAllInlineVideos();
+
+      if (modalTitle) modalTitle.textContent = reel.title;
+      if (modalLocation) modalLocation.textContent = reel.location;
+      if (modalCategoryChip) {
+        modalCategoryChip.textContent = reel.category === 'ongoing' ? 'ON-SITE SITE' : 'HANDED OVER';
+        modalCategoryChip.className = `modal-category-chip font-mono-data ${reel.category}`;
+      }
+      if (modalStageHeadline) modalStageHeadline.textContent = reel.stage;
+      if (modalDescText) modalDescText.textContent = reel.description;
+
+      if (modalSpecsList) {
+        modalSpecsList.innerHTML = (reel.specs || [])
+          .map(
+            (s) => `
+          <div class="modal-spec-item font-mono-data">
+            <span class="m-spec-label">${escapeHtml(s.label)}</span>
+            <span class="m-spec-val">${escapeHtml(s.value)}</span>
+          </div>
+        `
+          )
+          .join('');
+      }
+
+      const resolvedVideo = await resolveMediaUrl(reel.videoSrc);
+      const resolvedPoster = await resolveMediaUrl(reel.poster);
+
+      modalVideo.src = resolvedVideo;
+      modalVideo.poster = resolvedPoster;
+      modalVideo.currentTime = 0;
+      modalVideo.muted = false;
+
+      if (modalVolumeIcon) {
+        modalVolumeIcon.textContent = 'volume_up';
+      }
+
+      modal.setAttribute('aria-hidden', 'false');
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+
+      modalVideo.play().then(() => {
+        if (modalPlayIcon) modalPlayIcon.textContent = 'pause';
+      }).catch(() => {
+        if (modalPlayIcon) modalPlayIcon.textContent = 'play_arrow';
+      });
+    }
+
+    function closeTheaterModal() {
+      if (!modal) return;
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+
+      if (modalVideo) {
+        modalVideo.pause();
+        modalVideo.src = '';
+      }
+    }
+
+    if (modalCloseBtn) modalCloseBtn.onclick = closeTheaterModal;
+    if (modalBackdrop) modalBackdrop.onclick = closeTheaterModal;
+
+    if (modalPlayBtn && modalVideo) {
+      modalPlayBtn.onclick = () => {
+        if (modalVideo.paused) {
+          modalVideo.play();
+          if (modalPlayIcon) modalPlayIcon.textContent = 'pause';
+        } else {
+          modalVideo.pause();
+          if (modalPlayIcon) modalPlayIcon.textContent = 'play_arrow';
+        }
+      };
+    }
+
+    if (modalVolumeBtn && modalVideo) {
+      modalVolumeBtn.onclick = () => {
+        modalVideo.muted = !modalVideo.muted;
+        if (modalVolumeIcon) {
+          modalVolumeIcon.textContent = modalVideo.muted ? 'volume_off' : 'volume_up';
+        }
+      };
+    }
+
+    if (modalVideo) {
+      modalVideo.ontimeupdate = () => {
+        if (modalProgressFill && modalVideo.duration) {
+          const pct = (modalVideo.currentTime / modalVideo.duration) * 100;
+          modalProgressFill.style.width = `${pct}%`;
+        }
+        if (modalTimeDisplay && modalVideo.duration) {
+          const curM = Math.floor(modalVideo.currentTime / 60);
+          const curS = Math.floor(modalVideo.currentTime % 60);
+          const durM = Math.floor(modalVideo.duration / 60);
+          const durS = Math.floor(modalVideo.duration % 60);
+          modalTimeDisplay.textContent = `${curM}:${curS < 10 ? '0' : ''}${curS} / ${durM}:${durS < 10 ? '0' : ''}${durS}`;
+        }
+      };
+      modalVideo.onended = () => {
+        if (modalPlayIcon) modalPlayIcon.textContent = 'play_arrow';
+      };
+    }
+
+    if (modalProgressBar && modalVideo) {
+      modalProgressBar.onclick = (e) => {
+        const rect = modalProgressBar.getBoundingClientRect();
+        const pos = (e.clientX - rect.left) / rect.width;
+        if (modalVideo.duration) {
+          modalVideo.currentTime = pos * modalVideo.duration;
+        }
+      };
+    }
+
+    if (modalFullscreenBtn && modalVideo) {
+      modalFullscreenBtn.onclick = () => {
+        if (!document.fullscreenElement) {
+          modalVideo.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      };
+    }
+
+    if (modalInquireCta) {
+      modalInquireCta.onclick = closeTheaterModal;
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal?.classList.contains('open')) {
+        closeTheaterModal();
+      }
+    });
+
+    function bindCardListeners() {
+      cards.forEach((card) => {
+        const reelId = card.getAttribute('data-reel-id');
+        if (!reelId) return;
+
+        const videoBox = document.getElementById(`video-box-${reelId}`);
+        const video = document.getElementById(`video-${reelId}`) as HTMLVideoElement | null;
+        const playTrigger = document.getElementById(`play-btn-${reelId}`);
+        const toggleBtn = document.getElementById(`inline-toggle-${reelId}`);
+        const muteBtn = document.getElementById(`inline-mute-${reelId}`);
+        const progressFill = document.getElementById(`progress-${reelId}`);
+        const theaterBtns = card.querySelectorAll('[data-theater-id]');
+
+        if (!video) return;
+
+        function startInlinePlayback() {
+          pauseAllInlineVideos(reelId);
+          if (videoBox) videoBox.classList.add('is-playing');
+          if (toggleBtn) {
+            const sym = toggleBtn.querySelector('.control-symbol');
+            if (sym) sym.textContent = 'pause';
+          }
+          video.play().catch(() => {
+            if (videoBox) videoBox.classList.remove('is-playing');
+          });
+        }
+
+        function toggleInlinePlayback() {
+          if (video.paused) {
+            startInlinePlayback();
+          } else {
+            video.pause();
+            if (toggleBtn) {
+              const sym = toggleBtn.querySelector('.control-symbol');
+              if (sym) sym.textContent = 'play_arrow';
+            }
+          }
+        }
+
+        if (playTrigger) {
+          playTrigger.onclick = (e) => {
+            e.stopPropagation();
+            startInlinePlayback();
+          };
+        }
+
+        if (toggleBtn) {
+          toggleBtn.onclick = (e) => {
+            e.stopPropagation();
+            toggleInlinePlayback();
+          };
+        }
+
+        if (muteBtn) {
+          muteBtn.onclick = (e) => {
+            e.stopPropagation();
+            video.muted = !video.muted;
+            const sym = muteBtn.querySelector('.control-symbol');
+            if (sym) {
+              sym.textContent = video.muted ? 'volume_off' : 'volume_up';
+            }
+          };
+        }
+
+        video.ontimeupdate = () => {
+          if (progressFill && video.duration) {
+            const pct = (video.currentTime / video.duration) * 100;
+            progressFill.style.width = `${pct}%`;
+          }
+        };
+
+        video.onended = () => {
+          if (toggleBtn) {
+            const sym = toggleBtn.querySelector('.control-symbol');
+            if (sym) sym.textContent = 'play_arrow';
+          }
+          if (videoBox) videoBox.classList.remove('is-playing');
+        };
+
+        theaterBtns.forEach((btn) => {
+          (btn as HTMLElement).onclick = (e) => {
+            e.stopPropagation();
+            openTheaterModal(reelId);
+          };
+        });
+      });
+    }
+
+    async function renderReels(items: SiteReel[]) {
+      if (!track) return;
+      reelsData = items;
+      (window as any).__AFRAH_REELS_DATA = items;
+
+      pauseAllInlineVideos();
+
+      const resolvedItems = await Promise.all(
+        items.map(async (r, index) => {
+          const videoSrc = await resolveMediaUrl(r.videoSrc);
+          const poster = await resolveMediaUrl(r.poster);
+          return { ...r, videoSrc, poster, index };
+        })
+      );
+
+      track.innerHTML = resolvedItems
+        .map(
+          (reel) => `
+        <article
+          class="reel-item"
+          data-category="${reel.category}"
+          data-reel-id="${reel.id}"
+          data-index="${reel.index}"
+          data-animate="fade-up"
+          style="--stagger: ${((reel.index % 3) + 1) * 100}ms;"
+        >
+          <div class="reel-video-container" id="video-box-${reel.id}">
+            <video
+              class="reel-video-element"
+              id="video-${reel.id}"
+              poster="${reel.poster}"
+              preload="metadata"
+              playsinline
+              muted
+              loop
+            >
+              <source src="${reel.videoSrc}" type="${reel.videoSrc.endsWith('.webm') ? 'video/webm' : 'video/mp4'}" />
+              Your browser does not support HTML5 video playback.
+            </video>
+
+            <div class="video-poster-overlay" id="poster-overlay-${reel.id}">
+              <img
+                src="${reel.poster}"
+                alt="${escapeHtml(reel.title)} - ${escapeHtml(reel.subtitle)}"
+                class="poster-fallback-img"
+                loading="lazy"
+              />
+              <div class="poster-gradient-shade"></div>
+
+              <div class="poster-top-bar">
+                <span class="stage-tag font-mono-data">${escapeHtml(reel.stage)}</span>
+                <span class="category-tag font-mono-data ${reel.category}">
+                  <span class="status-dot"></span>
+                  ${reel.category === 'ongoing' ? 'ON-SITE' : 'FINISHED'}
+                </span>
+              </div>
+
+              <button
+                class="central-play-trigger"
+                id="play-btn-${reel.id}"
+                aria-label="Play video: ${escapeHtml(reel.title)}"
+                data-reel-id="${reel.id}"
+              >
+                <div class="play-pulse-ring"></div>
+                <div class="play-icon-disc">
+                  <span class="material-symbols-outlined play-arrow-icon">play_arrow</span>
+                </div>
+              </button>
+
+              <div class="poster-bottom-meta">
+                <span class="duration-chip font-mono-data">
+                  <span class="material-symbols-outlined" style="font-size: 13px;">schedule</span>
+                  ${escapeHtml(reel.duration)}
+                </span>
+                <button
+                  class="overlay-expand-btn"
+                  data-theater-id="${reel.id}"
+                  aria-label="Fullscreen Theater View"
+                  title="Fullscreen Theater View"
+                >
+                  <span class="material-symbols-outlined" style="font-size: 16px;">open_in_full</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="inline-video-controls" id="controls-${reel.id}">
+              <div class="controls-left">
+                <button
+                  class="control-icon-btn inline-play-pause-btn"
+                  id="inline-toggle-${reel.id}"
+                  aria-label="Pause video"
+                  data-reel-id="${reel.id}"
+                >
+                  <span class="material-symbols-outlined control-symbol">pause</span>
+                </button>
+                <button
+                  class="control-icon-btn inline-mute-btn"
+                  id="inline-mute-${reel.id}"
+                  aria-label="Toggle audio"
+                  data-reel-id="${reel.id}"
+                >
+                  <span class="material-symbols-outlined control-symbol">volume_off</span>
+                </button>
+              </div>
+
+              <div class="inline-progress-track">
+                <div class="inline-progress-fill" id="progress-${reel.id}"></div>
+              </div>
+
+              <div class="controls-right">
+                <button
+                  class="control-icon-btn theater-expand-btn"
+                  aria-label="Open in Cinematic Theater Mode"
+                  data-theater-id="${reel.id}"
+                  title="Expand to Fullscreen Theater View"
+                >
+                  <span class="material-symbols-outlined control-symbol">open_in_full</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="reel-item-info">
+            <div class="reel-item-meta">
+              <h4 class="font-headline-md reel-title">${escapeHtml(reel.title)}</h4>
+              <p class="font-body-sm reel-subtitle">${escapeHtml(reel.subtitle)}</p>
+            </div>
+            <div class="reel-item-data">
+              <span class="reel-location-pill font-mono-data">${escapeHtml(reel.location)}</span>
+              <button
+                class="reel-theater-btn font-mono-data"
+                data-theater-id="${reel.id}"
+                title="View full project specifications"
+              >
+                <span>SPECS</span>
+                <span class="material-symbols-outlined" style="font-size: 13px;">arrow_outward</span>
+              </button>
+            </div>
+          </div>
+        </article>
+      `
+        )
+        .join('');
+
+      cards = Array.from(document.querySelectorAll('.reel-item'));
+
+      filterTabs.forEach((tab) => {
+        const key = tab.getAttribute('data-filter');
+        const countSpan = tab.querySelector('.tab-count');
+        if (countSpan) {
+          const count =
+            key === 'all'
+              ? items.length
+              : items.filter((r) => r.category === key).length;
+          countSpan.textContent = String(count);
+        }
+      });
+
+      cards.forEach((card) => {
+        const category = card.getAttribute('data-category');
+        const isMatch = activeFilter === 'all' || category === activeFilter;
+        card.style.display = isMatch ? 'flex' : 'none';
+      });
+
+      if (totalIndicator) {
+        totalIndicator.textContent = items.length < 10 ? `0${items.length}` : `${items.length}`;
+      }
+
+      bindCardListeners();
+      updateCarouselIndicators();
+    }
+
+    filterTabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        filterTabs.forEach((t) => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        activeFilter = tab.getAttribute('data-filter') || 'all';
+        pauseAllInlineVideos();
+
+        cards.forEach((card) => {
+          const category = card.getAttribute('data-category');
+          const isMatch = activeFilter === 'all' || category === activeFilter;
+          card.style.display = isMatch ? 'flex' : 'none';
+        });
+
+        if (track) {
+          track.scrollTo({ left: 0, behavior: 'smooth' });
+        }
+        setTimeout(updateCarouselIndicators, 150);
+      });
+    });
+
+    // 1. Initial render with stored / live reels
+    const initialLiveReels = getStoredReels();
+    renderReels(initialLiveReels);
+
+    // 2. Subscribe to live updates from the app
+    subscribeToReelsUpdates((updatedReels) => {
+      renderReels(updatedReels);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSiteCinematics);
+  } else {
+    initSiteCinematics();
+  }
+</script>
+
+<style is:global>
+  /* ============================================
+     SITE CINEMATICS STYLES (GLOBAL SECTION SCOPED)
+     Scoped to .cinematics-section & .cinematic-modal-overlay
+     ============================================ */
+
+  .cinematics-section {
+    position: relative;
+    background-color: var(--surface-container-low);
+    border-top: 1px solid var(--border-stroke);
+    overflow: hidden;
+    padding-top: 80px;
+    padding-bottom: 80px;
+    transition: background-color 0.4s ease, border-color 0.4s ease;
+  }
+
+  @media (min-width: 768px) {
+    .cinematics-section {
+      padding-top: var(--section-gap, 140px);
+      padding-bottom: var(--section-gap, 140px);
+    }
+  }
+
+  .cinematics-ambient-glow {
+    position: absolute;
+    top: -160px;
+    right: -120px;
+    width: 640px;
+    height: 640px;
+    background: radial-gradient(circle, var(--glow-color, rgba(226, 195, 153, 0.2)) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.7;
+  }
+
+  /* Section Header */
+  .cinematics-section .cinematics-header {
+    margin-bottom: 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cinematics-section .cinematics-label-col {
+    grid-column: span 4;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .cinematics-section .cinematics-title-col {
+    grid-column: span 4;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  @media (min-width: 768px) {
+    .cinematics-section .cinematics-label-col {
+      grid-column: span 3;
+    }
+    .cinematics-section .cinematics-title-col {
+      grid-column: span 9;
+    }
+  }
+
+  .cinematics-section .cinematics-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: var(--surface-glass);
+    border: 1px solid var(--surface-glass-border);
+    border-radius: 9999px;
+    color: var(--primary);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    width: fit-content;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  }
+
+  .cinematics-section .pulsing-record-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #ef4444;
+    animation: livePulseDot 1.8s infinite;
+  }
+
+  @keyframes livePulseDot {
+    0% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+    70% { transform: scale(1.3); opacity: 0.8; box-shadow: 0 0 0 7px rgba(239, 68, 68, 0); }
+    100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+  }
+
+  .cinematics-section .cinematics-section-num {
+    color: var(--text-secondary);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .cinematics-section .cinematics-heading {
+    color: var(--primary);
+    line-height: 1.15;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .cinematics-section .cinematics-lead {
+    color: var(--text-secondary);
+    max-width: 720px;
+    line-height: 1.6;
+  }
+
+  /* Filter Tabs and Carousel Controls */
+  .cinematics-section .cinematics-controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-stroke);
+  }
+
+  .cinematics-section .reel-filter-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .cinematics-section .filter-tab-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 9999px;
+    border: 1px solid var(--border-stroke);
+    background: var(--surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    transition: all 0.25s ease;
+  }
+
+  .cinematics-section .filter-tab-pill .tab-count {
+    padding: 2px 7px;
+    background: var(--surface-container-high);
+    border-radius: 10px;
+    font-size: 10px;
+    color: var(--text-secondary);
+    transition: all 0.25s ease;
+  }
+
+  .cinematics-section .filter-tab-pill.active {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: var(--on-primary);
+    box-shadow: 0 4px 16px var(--glow-color);
+  }
+
+  .cinematics-section .filter-tab-pill.active .tab-count {
+    background: var(--on-primary);
+    color: var(--primary);
+  }
+
+  .cinematics-section .filter-tab-pill:not(.active):hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--hover-highlight-bg);
+  }
+
+  /* Carousel Navigation Buttons & Counter */
+  .cinematics-section .carousel-nav-group {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-left: auto;
+  }
+
+  .cinematics-section .carousel-counter {
+    font-size: 13px;
+    color: var(--text-secondary);
+    letter-spacing: 0.1em;
+  }
+
+  .cinematics-section .carousel-counter #carousel-current {
+    color: var(--primary);
+    font-weight: 700;
+  }
+
+  .cinematics-section .counter-divider {
+    margin: 0 4px;
+    opacity: 0.4;
+  }
+
+  .cinematics-section .carousel-buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  .cinematics-section .carousel-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid var(--border-stroke);
+    background: var(--surface);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .cinematics-section .carousel-btn:hover:not(:disabled) {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: var(--on-primary);
+    transform: scale(1.06);
+    box-shadow: 0 4px 14px var(--glow-color);
+  }
+
+  .cinematics-section .carousel-btn:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  /* ============================================
+     CAROUSEL VIEWPORT & HORIZONTAL TRACK
+     ============================================ */
+  .cinematics-section .carousel-viewport {
+    width: 100%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    padding: 10px var(--margin-mobile);
+  }
+
+  @media (min-width: 768px) {
+    .cinematics-section .carousel-viewport {
+      padding: 10px var(--margin-desktop);
+    }
+  }
+
+  .cinematics-section .carousel-track {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 8px;
+  }
+
+  .cinematics-section .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Reel Item Card */
+  .cinematics-section .reel-item {
+    flex: 0 0 calc(100vw - 48px);
+    max-width: 380px;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.35s ease;
+  }
+
+  @media (min-width: 640px) {
+    .cinematics-section .reel-item {
+      flex: 0 0 380px;
+      max-width: 400px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .cinematics-section .reel-item {
+      flex: 0 0 400px;
+      max-width: 420px;
+    }
+  }
+
+  /* Video Box Container */
+  .cinematics-section .reel-video-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-color: #0b0c0e;
+    overflow: hidden;
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--border-stroke);
+    margin-bottom: 16px;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+  }
+
+  .cinematics-section .reel-item:hover .reel-video-container {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14), 0 0 20px var(--glow-color);
+  }
+
+  /* Video Element: Strictly absolute and covering 100% of container */
+  .cinematics-section .reel-video-element {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    background-color: #000;
+  }
+
+  /* Video Poster & Play Trigger Overlay */
+  .cinematics-section .video-poster-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px;
+    z-index: 2;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+  }
+
+  .cinematics-section .reel-video-container.is-playing .video-poster-overlay {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .cinematics-section .poster-fallback-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .cinematics-section .reel-item:hover .poster-fallback-img {
+    transform: scale(1.05);
+  }
+
+  .cinematics-section .poster-gradient-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.48) 0%, rgba(0,0,0,0.08) 40%, rgba(0,0,0,0.8) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Top Bar in Overlay */
+  .cinematics-section .poster-top-bar {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .cinematics-section .stage-tag {
+    font-size: 10.5px;
+    color: #ffffff;
+    background: rgba(11, 13, 17, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cinematics-section .category-tag {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #ffffff;
+    background: rgba(11, 13, 17, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+
+  .cinematics-section .category-tag .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .cinematics-section .category-tag.ongoing .status-dot {
+    background-color: #ef4444;
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.8);
+  }
+
+  .cinematics-section .category-tag.finished .status-dot {
+    background-color: #22c55e;
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.8);
+  }
+
+  /* Central Play Trigger Button */
+  .cinematics-section .central-play-trigger {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cinematics-section .play-icon-disc {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: rgba(17, 19, 23, 0.65);
+    border: 1.5px solid var(--primary);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .cinematics-section .play-arrow-icon {
+    font-size: 32px;
+    margin-left: 3px;
+  }
+
+  .cinematics-section .play-pulse-ring {
+    position: absolute;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: 1.5px solid var(--primary);
+    opacity: 0.5;
+    animation: centralRingPulse 2.4s ease-out infinite;
+  }
+
+  @keyframes centralRingPulse {
+    0% { transform: scale(0.9); opacity: 0.8; }
+    100% { transform: scale(1.45); opacity: 0; }
+  }
+
+  .cinematics-section .central-play-trigger:hover .play-icon-disc {
+    transform: scale(1.12);
+    background: var(--primary);
+    color: var(--on-primary);
+    box-shadow: 0 8px 28px var(--glow-color-intense);
+  }
+
+  /* Bottom Meta in Overlay */
+  .cinematics-section .poster-bottom-meta {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: auto;
+  }
+
+  .cinematics-section .duration-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: #ffffff;
+    background: rgba(11, 13, 17, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .cinematics-section .overlay-expand-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    background: rgba(11, 13, 17, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .cinematics-section .overlay-expand-btn:hover {
+    background: var(--primary);
+    color: var(--on-primary);
+    border-color: var(--primary);
+    transform: scale(1.08);
+  }
+
+  /* Inline Floating Video Controls Bar (active on play) */
+  .cinematics-section .inline-video-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 14px;
+    background: linear-gradient(180deg, transparent 0%, rgba(10, 12, 16, 0.92) 100%);
+    display: none;
+    align-items: center;
+    gap: 12px;
+    z-index: 4;
+  }
+
+  .cinematics-section .reel-video-container.is-playing .inline-video-controls {
+    display: flex;
+  }
+
+  .cinematics-section .controls-left,
+  .cinematics-section .controls-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cinematics-section .control-icon-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: all 0.2s ease;
+  }
+
+  .cinematics-section .control-icon-btn:hover {
+    background: var(--primary);
+    color: var(--on-primary);
+    border-color: var(--primary);
+    transform: scale(1.08);
+  }
+
+  .cinematics-section .control-symbol {
+    font-size: 18px;
+  }
+
+  .cinematics-section .inline-progress-track {
+    flex: 1;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.28);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .cinematics-section .inline-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.15s linear;
+  }
+
+  /* Bottom Meta Bar below video */
+  .cinematics-section .reel-item-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 0 4px;
+  }
+
+  .cinematics-section .reel-item-meta {
+    flex: 1;
+  }
+
+  .cinematics-section .reel-title {
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    line-height: 1.3;
+    transition: color 0.3s ease;
+  }
+
+  .cinematics-section .reel-item:hover .reel-title {
+    color: var(--primary);
+  }
+
+  .cinematics-section .reel-subtitle {
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .cinematics-section .reel-item-data {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .cinematics-section .reel-location-pill {
+    color: var(--primary);
+    background-color: var(--surface);
+    padding: 4px 10px;
+    border-radius: 3px;
+    border: 1px solid var(--border-stroke);
+    font-size: 11px;
+    white-space: nowrap;
+    letter-spacing: 0.08em;
+    transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+  }
+
+  .cinematics-section .reel-theater-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    padding: 2px 0;
+    transition: color 0.25s ease, transform 0.25s ease;
+  }
+
+  .cinematics-section .reel-theater-btn:hover {
+    color: var(--primary);
+    transform: translateX(2px);
+  }
+
+  /* Bottom Progress Indicator */
+  .cinematics-section .carousel-progress-col {
+    grid-column: span 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  @media (min-width: 768px) {
+    .cinematics-section .carousel-progress-col {
+      grid-column: span 12;
+    }
+  }
+
+  .cinematics-section .carousel-progress-bar {
+    width: 100%;
+    max-width: 440px;
+    height: 3px;
+    background: var(--border-stroke);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .cinematics-section .carousel-progress-thumb {
+    width: 20%;
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.15s ease-out;
+  }
+
+  .cinematics-section .carousel-swipe-hint {
+    font-size: 11px;
+    color: var(--text-secondary);
+    letter-spacing: 0.15em;
+    opacity: 0.75;
+  }
+
+  /* ============================================
+     CINEMATIC THEATER MODAL STYLES
+     ============================================ */
+  .cinematic-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .cinematic-modal-overlay.open {
+    display: flex;
+  }
+
+  .cinematic-modal-overlay .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.86);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .cinematic-modal-overlay .modal-dialog-container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 960px;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    animation: modalScaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes modalScaleIn {
+    from { opacity: 0; transform: scale(0.95) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .cinematic-modal-overlay .modal-window {
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border-stroke);
+    background: var(--surface);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  }
+
+  .cinematic-modal-overlay .modal-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: var(--surface-glass);
+    border-bottom: 1px solid var(--border-stroke);
+  }
+
+  .cinematic-modal-overlay .modal-header-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .cinematic-modal-overlay .modal-category-chip {
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+  }
+
+  .cinematic-modal-overlay .modal-category-chip.ongoing {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .cinematic-modal-overlay .modal-category-chip.finished {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+  }
+
+  .cinematic-modal-overlay .modal-title {
+    color: var(--primary);
+    font-size: 18px;
+    margin: 0;
+  }
+
+  .cinematic-modal-overlay .modal-location {
+    color: var(--text-secondary);
+    font-size: 12px;
+  }
+
+  .cinematic-modal-overlay .modal-close-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border-stroke);
+    background: var(--surface-container-high);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .cinematic-modal-overlay .modal-close-btn:hover {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: var(--on-primary);
+  }
+
+  .cinematic-modal-overlay .modal-video-box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+  }
+
+  .cinematic-modal-overlay .modal-video-element {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .cinematic-modal-overlay .modal-controls-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 20px;
+    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.92) 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cinematic-modal-overlay .modal-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 3px;
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .cinematic-modal-overlay .modal-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.1s linear;
+  }
+
+  .cinematic-modal-overlay .modal-controls-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .cinematic-modal-overlay .modal-controls-left,
+  .cinematic-modal-overlay .modal-controls-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .cinematic-modal-overlay .modal-ctrl-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s ease;
+  }
+
+  .cinematic-modal-overlay .modal-ctrl-btn:hover {
+    background: var(--primary);
+    color: var(--on-primary);
+    border-color: var(--primary);
+  }
+
+  .cinematic-modal-overlay .modal-time-display {
+    color: #ffffff;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  /* Modal Details Drawer */
+  .cinematic-modal-overlay .modal-details-drawer {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px;
+    background: var(--surface);
+    border-top: 1px solid var(--border-stroke);
+    max-height: 28vh;
+    overflow-y: auto;
+  }
+
+  @media (min-width: 768px) {
+    .cinematic-modal-overlay .modal-details-drawer {
+      grid-template-columns: 1.2fr 1fr;
+    }
+  }
+
+  .cinematic-modal-overlay .modal-stage-headline {
+    color: var(--primary);
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+
+  .cinematic-modal-overlay .modal-desc-text {
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .cinematic-modal-overlay .modal-specs-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: space-between;
+  }
+
+  .cinematic-modal-overlay .modal-specs-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .cinematic-modal-overlay .modal-spec-item {
+    display: flex;
+    flex-direction: column;
+    padding: 6px 10px;
+    background: var(--surface-container-high);
+    border-radius: 4px;
+    border: 1px solid var(--border-stroke);
+    font-size: 11px;
+  }
+
+  .cinematic-modal-overlay .m-spec-label {
+    color: var(--text-secondary);
+    font-size: 10px;
+  }
+
+  .cinematic-modal-overlay .m-spec-val {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .cinematic-modal-overlay .modal-inquire-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--primary);
+    color: var(--on-primary);
+    border-radius: 4px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    align-self: flex-start;
+    text-decoration: none;
+  }
+
+  .cinematic-modal-overlay .modal-inquire-btn:hover {
+    box-shadow: 0 4px 16px var(--glow-color);
+    transform: translateY(-2px);
+  }
+</style>

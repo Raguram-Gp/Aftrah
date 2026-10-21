@@ -17,6 +17,7 @@ import { useBanks } from './hooks/useBanks';
 import { useBrickCustomers } from './hooks/useBrickCustomers';
 import { useBrickProductionExpenses } from './hooks/useBrickProductionExpenses';
 import { useBrickStock } from './hooks/useBrickStock';
+import { useSiteVideos } from './hooks/useSiteVideos';
 import {
   buildNavPath,
   parseNavState,
@@ -44,6 +45,7 @@ import { BricksCustomerDetailsView } from './views/BricksCustomerDetailsView';
 import { BricksProductionExpensesView } from './views/BricksProductionExpensesView';
 import { BricksStockRegisterView } from './views/BricksStockRegisterView';
 import { BricksStockItemDetailView } from './views/BricksStockItemDetailView';
+import { SiteVideosView } from './views/SiteVideosView';
 import type { Client, InteriorClient, Vendor, VendorShop, BrickCustomer, BrickStockItem, BricksSubTab, InteriorSubTab, LabourContract } from './types';
 import {
   Users,
@@ -310,6 +312,13 @@ const AfrahAppShell: React.FC = () => {
     deleteMultipleStockItemEntries
   } = useBrickStock();
 
+  const {
+    reels: siteVideos,
+    addReel,
+    updateReel,
+    deleteReel
+  } = useSiteVideos();
+
   // Selected Entities Memo
   const selectedClient = useMemo(() => {
     return clients.find((c) => c.id === selectedClientId) || null;
@@ -497,6 +506,7 @@ const AfrahAppShell: React.FC = () => {
         interiorLabourContractsCount={labourContracts.length}
         vendorsCount={vendors.length}
         banksCount={bankAccounts.length}
+        siteVideosCount={siteVideos.length}
         brickCustomersCount={brickCustomers.length}
         brickExpensesCount={brickExpenses.length}
         brickStockCount={stockItems.length}
@@ -557,6 +567,7 @@ const AfrahAppShell: React.FC = () => {
           interiorLabourContractsCount={labourContracts.length}
           vendorsCount={vendors.length}
           banksCount={bankAccounts.length}
+          siteVideosCount={siteVideos.length}
           brickCustomersCount={brickCustomers.length}
           brickExpensesCount={brickExpenses.length}
           brickStockUnits={stockStats.totalStockUnits}
@@ -914,6 +925,14 @@ const AfrahAppShell: React.FC = () => {
               onAddTransaction={addBankTransaction}
               onDeleteTransaction={deleteBankTransaction}
               onDeleteMultipleTransactions={deleteMultipleBankTransactions}
+            />
+          ) : activeTab === 'site_videos' ? (
+            /* SITE VIDEOS & REELS MANAGEMENT VIEW */
+            <SiteVideosView
+              reels={siteVideos}
+              onAddReel={addReel}
+              onUpdateReel={updateReel}
+              onDeleteReel={deleteReel}
             />
           ) : activeTab === 'vendor' ? (
             selectedVendor && selectedShop ? (

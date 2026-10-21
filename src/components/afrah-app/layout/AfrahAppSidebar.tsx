@@ -17,7 +17,8 @@ import {
   ChevronUp,
   X,
   HardHat,
-  FileText
+  FileText,
+  Film
 } from 'lucide-react';
 import type { BricksSubTab, InteriorSubTab } from '../types';
 
@@ -27,13 +28,15 @@ export type TabType =
   | 'banks'
   | 'construction_labour'
   | 'kabibullah_bricks'
-  | 'kaab_interior';
+  | 'kaab_interior'
+  | 'site_videos';
 
 interface AfrahAppSidebarProps {
   clientsCount: number;
   constructionLabourContractsCount?: number;
   vendorsCount: number;
   banksCount: number;
+  siteVideosCount?: number;
   brickCustomersCount?: number;
   brickExpensesCount?: number;
   brickStockCount?: number;
@@ -58,6 +61,7 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
   constructionLabourContractsCount = 0,
   vendorsCount,
   banksCount,
+  siteVideosCount = 0,
   brickCustomersCount = 0,
   brickExpensesCount = 0,
   brickStockCount = 0,
@@ -511,6 +515,36 @@ export const AfrahAppSidebar: React.FC<AfrahAppSidebarProps> = ({
                 {!isCollapsed ? (
                   banksCount > 0 ? (
                     <span className="afrah-app-subbadge-count">{banksCount}</span>
+                  ) : null
+                ) : (
+                  <span className="afrah-app-badge-dot" />
+                )}
+              </button>
+            </div>
+
+            {/* Top-level: Site Videos / Landing Page Reels */}
+            <div className="afrah-app-nav-group mt-6">
+              <button
+                onClick={() => {
+                  onSelectTab('site_videos');
+                  onCloseMobile();
+                }}
+                className={`afrah-app-nav-item afrah-app-division-header ${activeTab === 'site_videos' ? 'division-active' : ''}`}
+                title="Site Videos"
+              >
+                <div className="afrah-app-nav-left">
+                  <Film size={17} className="nav-icon" />
+                  {!isCollapsed && (
+                    <span className="nav-label">
+                      SITE VIDEOS
+                    </span>
+                  )}
+                </div>
+                {!isCollapsed ? (
+                  siteVideosCount > 0 ? (
+                    <span className="afrah-app-subbadge-count" style={{ background: 'rgba(217, 180, 130, 0.2)', color: 'var(--primary)' }}>
+                      {siteVideosCount}
+                    </span>
                   ) : null
                 ) : (
                   <span className="afrah-app-badge-dot" />
