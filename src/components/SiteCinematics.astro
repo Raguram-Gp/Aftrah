@@ -331,6 +331,10 @@ const filters = [
     const filterTabs = document.querySelectorAll('.filter-tab-pill');
 
     const modal = document.getElementById('cinematic-modal');
+    // The page wraps sections in a z-indexed container, which would trap the modal below the fixed navbar.
+    if (modal && modal.parentElement !== document.body) {
+      document.body.appendChild(modal);
+    }
     const modalBackdrop = document.getElementById('modal-backdrop');
     const modalCloseBtn = document.getElementById('modal-close-btn');
     const modalVideo = document.getElementById('modal-video-element') as HTMLVideoElement | null;
@@ -1583,7 +1587,7 @@ const filters = [
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
   }
 
   .cinematic-modal-overlay.open {
@@ -1602,8 +1606,10 @@ const filters = [
     position: relative;
     z-index: 10;
     width: 100%;
-    max-width: 960px;
-    max-height: 92vh;
+    max-width: min(960px, calc(62vh * 16 / 9));
+    max-width: min(960px, calc(62dvh * 16 / 9));
+    max-height: 100%;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     animation: modalScaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1617,27 +1623,42 @@ const filters = [
   .cinematic-modal-overlay .modal-window {
     display: flex;
     flex-direction: column;
+    max-height: 100%;
+    min-height: 0;
+    container: cinematic-modal / inline-size;
     border-radius: 8px;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
     border: 1px solid var(--border-stroke);
     background: var(--surface);
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
   }
 
   .cinematic-modal-overlay .modal-header-bar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
     padding: 16px 24px;
-    background: var(--surface-glass);
+    background-color: var(--surface);
+    background-image: linear-gradient(var(--surface-glass), var(--surface-glass));
     border-bottom: 1px solid var(--border-stroke);
   }
 
   .cinematic-modal-overlay .modal-header-info {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 8px 16px;
     flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
   }
 
   .cinematic-modal-overlay .modal-category-chip {
@@ -1672,6 +1693,7 @@ const filters = [
   }
 
   .cinematic-modal-overlay .modal-close-btn {
+    flex-shrink: 0;
     width: 36px;
     height: 36px;
     border-radius: 50%;
@@ -1693,15 +1715,18 @@ const filters = [
 
   .cinematic-modal-overlay .modal-video-box {
     position: relative;
+    flex-shrink: 0;
     width: 100%;
     aspect-ratio: 16 / 9;
+    max-height: 62vh;
+    max-height: 62dvh;
     background: #000;
   }
 
   .cinematic-modal-overlay .modal-video-element {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
   }
 
@@ -1777,15 +1802,14 @@ const filters = [
   .cinematic-modal-overlay .modal-details-drawer {
     display: grid;
     grid-template-columns: 1fr;
+    flex-shrink: 0;
     gap: 24px;
     padding: 24px;
     background: var(--surface);
     border-top: 1px solid var(--border-stroke);
-    max-height: 28vh;
-    overflow-y: auto;
   }
 
-  @media (min-width: 768px) {
+  @container cinematic-modal (min-width: 720px) {
     .cinematic-modal-overlay .modal-details-drawer {
       grid-template-columns: 1.2fr 1fr;
     }
@@ -1855,5 +1879,73 @@ const filters = [
   .cinematic-modal-overlay .modal-inquire-btn:hover {
     box-shadow: 0 4px 16px var(--glow-color);
     transform: translateY(-2px);
+  }
+
+  @media (max-width: 640px) {
+    .cinematic-modal-overlay {
+      padding: 0;
+    }
+
+    .cinematic-modal-overlay .modal-dialog-container {
+      height: 100%;
+      max-width: none;
+    }
+
+    .cinematic-modal-overlay .modal-window {
+      height: 100%;
+      border-radius: 0;
+      border: none;
+    }
+
+    .cinematic-modal-overlay .modal-header-bar {
+      padding: max(12px, env(safe-area-inset-top)) 16px 12px;
+    }
+
+    .cinematic-modal-overlay .modal-header-info {
+      gap: 4px 10px;
+    }
+
+    .cinematic-modal-overlay .modal-title {
+      flex-basis: 100%;
+      font-size: 16px;
+      line-height: 1.3;
+      order: 2;
+    }
+
+    .cinematic-modal-overlay .modal-location {
+      font-size: 11px;
+    }
+
+    .cinematic-modal-overlay .modal-video-box {
+      max-height: none;
+    }
+
+    .cinematic-modal-overlay .modal-controls-overlay {
+      padding: 8px 12px;
+      gap: 8px;
+    }
+
+    .cinematic-modal-overlay .modal-ctrl-btn {
+      width: 32px;
+      height: 32px;
+    }
+
+    .cinematic-modal-overlay .modal-controls-left {
+      gap: 8px;
+    }
+
+    .cinematic-modal-overlay .modal-time-display {
+      font-size: 11px;
+    }
+
+    .cinematic-modal-overlay .modal-details-drawer {
+      gap: 20px;
+      padding: 20px 16px max(24px, env(safe-area-inset-bottom));
+    }
+
+    .cinematic-modal-overlay .modal-inquire-btn {
+      align-self: stretch;
+      padding: 14px 20px;
+    }
   }
 </style>
